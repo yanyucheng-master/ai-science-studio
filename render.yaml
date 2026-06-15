@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: ai-science-studio
+    runtime: static
+    buildCommand: echo "No build step"
+    staticPublishPath: .

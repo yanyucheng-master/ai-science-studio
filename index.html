@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f2f6ff">
+  <title>大师实验室 - AI 理科实验工作台</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <button class="brand-mark" aria-label="大师实验室首页">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <path d="M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6" />
+          <path d="M17 33c5-4 9 5 16-2" />
+          <circle cx="22" cy="28" r="2" />
+          <circle cx="29" cy="35" r="2" />
+        </svg>
+      </button>
+
+      <nav class="side-nav" aria-label="主导航">
+        <button class="nav-item active" data-nav="实验台" aria-label="实验台">
+          <svg viewBox="0 0 24 24"><path d="M4 5.5 12 2l8 3.5v13L12 22l-8-3.5zM12 22V9m8-3.5L12 9 4 5.5"/></svg>
+          <span>实验台</span>
+        </button>
+        <button class="nav-item" data-nav="探索库" aria-label="探索库">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4m-5-9v8m-4-4h8"/></svg>
+          <span>探索库</span>
+        </button>
+        <button class="nav-item" data-nav="学习报告" aria-label="学习报告">
+          <svg viewBox="0 0 24 24"><path d="M4 19V9m6 10V5m6 14v-7m4 7H2"/></svg>
+          <span>报告</span>
+        </button>
+        <button class="nav-item" data-nav="收藏夹" aria-label="收藏夹">
+          <svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>
+          <span>收藏</span>
+        </button>
+      </nav>
+
+      <button class="profile-button" aria-label="个人中心">
+        <span>学</span>
+        <i></i>
+      </button>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow"><span></span> AI SCIENCE STUDIO</p>
+          <h1>早上好，同学</h1>
+          <p class="subheading">今天想把哪一道题“动”起来？</p>
+        </div>
+        <div class="top-actions">
+          <div class="streak">
+            <span class="streak-icon">7</span>
+            <div><strong>连续探索 7 天</strong><small>本周完成 12 个实验</small></div>
+          </div>
+          <button class="icon-button" data-toast="暂时没有新通知" aria-label="通知">
+            <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8 13h4"/></svg>
+            <i></i>
+          </button>
+        </div>
+      </header>
+
+      <section class="prompt-panel">
+        <div class="prompt-icon">
+          <svg viewBox="0 0 24 24"><path d="m12 3 1.8 4.8L19 9.5l-4.2 3.1 1.5 5-4.3-3-4.3 3 1.5-5L5 9.5l5.2-1.7z"/></svg>
+        </div>
+        <div class="prompt-main">
+          <div class="prompt-label">
+            <span>AI 习题即时建模</span>
+            <small>支持文字、拍照和语音输入</small>
+          </div>
+          <div class="prompt-input-wrap">
+            <input id="questionInput" value="一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。" aria-label="输入理科题目">
+            <button class="input-tool" data-toast="拍照识题入口已打开" aria-label="拍照识题">
+              <svg viewBox="0 0 24 24"><path d="M4 7h4l2-3h4l2 3h4v13H4z"/><circle cx="12" cy="13" r="4"/></svg>
+            </button>
+            <button class="input-tool" data-toast="正在聆听，请读出题目" aria-label="语音输入">
+              <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0m-7 7v3m-4 0h8"/></svg>
+            </button>
+            <button class="generate-button" id="generateButton">
+              <span>生成实验</span>
+              <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </div>
+          <div class="prompt-foot">
+            <div class="subject-tabs" role="tablist">
+              <button class="subject-tab active" data-subject="物理"><i class="physics"></i>物理</button>
+              <button class="subject-tab" data-subject="化学"><i class="chemistry"></i>化学</button>
+              <button class="subject-tab" data-subject="数学"><i class="math"></i>数学</button>
+              <button class="subject-tab" data-subject="生物"><i class="biology"></i>生物</button>
+            </div>
+            <span class="free-count">今日免费生成 <strong id="freeCountCurrent">2</strong>/3 次</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="content-grid">
+        <section class="experiment-card card">
+          <div class="card-header">
+            <div>
+              <div class="title-row">
+                <span class="live-dot"></span>
+                <h2 id="experimentTitle">匀变速直线运动 · 紧急刹车</h2>
+              </div>
+              <p id="problemText">汽车以 20m/s 行驶并紧急刹车，观察速度、时间与位移的关系。</p>
+            </div>
+            <div class="header-tools">
+              <button class="soft-button" id="arButton">
+                <svg viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5zM3 7v10l9 5 9-5V7m-9 5v10"/></svg>
+                AR 模式
+              </button>
+              <button class="square-button" id="favoriteButton" aria-label="收藏实验">
+                <svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>
+              </button>
+              <button class="square-button" id="shareButton" aria-label="分享实验">
+                <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 10.5 6.8-4m-6.8 7 6.8 4"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="scene" id="scene">
+            <div class="scene-top">
+              <div class="scene-badge"><span></span><b id="engineBadge">PhysX 实时演算</b></div>
+              <div class="scene-actions">
+                <button id="viewButton"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5"/></svg>视角</button>
+                <button id="annotationButton"><svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2"/></svg>标注</button>
+              </div>
+            </div>
+
+            <div class="metric-panel">
+              <div><span id="metricLabel1">当前速度</span><strong id="speedValue">20.0</strong><small id="metricUnit1">m/s</small></div>
+              <div><span id="metricLabel2">已行驶</span><strong id="distanceValue">0.0</strong><small id="metricUnit2">m</small></div>
+              <div><span id="metricLabel3">实验时间</span><strong id="timeValue">0.0</strong><small id="metricUnit3">s</small></div>
+            </div>
+
+            <div class="sun physics-visual"></div>
+            <div class="city city-back physics-visual"></div>
+            <div class="city city-front physics-visual"></div>
+            <div class="mountain mountain-one physics-visual"></div>
+            <div class="mountain mountain-two physics-visual"></div>
+
+            <div class="road-area physics-visual">
+              <div class="distance-flag" id="distanceFlag">
+                <span>停止点</span>
+                <strong id="stopDistanceLabel">40 m</strong>
+              </div>
+              <div class="road">
+                <div class="road-lines"></div>
+                <div class="brake-trace" id="brakeTrace"></div>
+                <div class="car" id="car">
+                  <div class="car-glow"></div>
+                  <div class="car-body">
+                    <div class="car-window"></div>
+                    <div class="car-light"></div>
+                  </div>
+                  <div class="wheel wheel-one"></div>
+                  <div class="wheel wheel-two"></div>
+                </div>
+              </div>
+              <div class="ruler" id="ruler">
+                <span>0</span><span>10</span><span>20</span><span>30</span><span>40 m</span>
+              </div>
+            </div>
+
+            <div class="subject-stage chemistry-stage">
+              <div class="lab-shelf"></div>
+              <div class="chem-flask flask-left"><span></span><i></i><i></i><i></i></div>
+              <div class="chem-flask flask-right"><span></span><i></i><i></i><i></i></div>
+              <div class="molecule molecule-one"></div>
+              <div class="molecule molecule-two"></div>
+              <div class="chem-label"><span>反应速率</span><strong id="chemRate">1.00×</strong></div>
+            </div>
+
+            <div class="subject-stage math-stage">
+              <div class="graph-grid"></div>
+              <div class="graph-axis axis-x"></div>
+              <div class="graph-axis axis-y"></div>
+              <svg class="parabola" viewBox="0 0 600 260" preserveAspectRatio="none">
+                <path d="M40 235 Q300 -190 560 235"></path>
+                <line id="tangentLine" x1="145" y1="230" x2="390" y2="35"></line>
+                <circle id="mathPoint" cx="210" cy="122" r="8"></circle>
+              </svg>
+              <div class="math-label"><span>动点 P</span><strong id="mathCoordinate">(-1.0, 1.0)</strong></div>
+            </div>
+
+            <div class="subject-stage biology-stage">
+              <div class="cell-shell">
+                <div class="cell-core"></div>
+                <div class="organelle organelle-one"></div>
+                <div class="organelle organelle-two"></div>
+                <div class="organelle organelle-three"></div>
+                <div class="transport-particle particle-one"></div>
+                <div class="transport-particle particle-two"></div>
+                <div class="transport-particle particle-three"></div>
+              </div>
+              <div class="bio-label"><span>细胞膜流动性</span><strong id="bioFluidity">68%</strong></div>
+            </div>
+
+            <div class="scene-tip" id="sceneTip">
+              <span>观察提示</span>
+              刹车开始后，速度每秒减少 5m/s。
+            </div>
+          </div>
+
+          <div class="transport">
+            <button class="play-button" id="playButton" aria-label="播放实验">
+              <svg class="play-icon" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></svg>
+              <svg class="pause-icon" viewBox="0 0 24 24"><path d="M8 5v14m8-14v14"/></svg>
+            </button>
+            <button class="mini-control" id="resetButton" aria-label="重置实验">
+              <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8m0-5v5h5"/></svg>
+            </button>
+            <span class="timecode" id="currentTime">00:00</span>
+            <input class="timeline" id="timeline" type="range" min="0" max="100" value="0" aria-label="实验进度">
+            <span class="timecode" id="totalTime">00:04</span>
+            <button class="mini-control" id="playbackButton">1×</button>
+            <button class="mini-control" id="fullscreenButton" aria-label="全屏">
+              <svg viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M8 21H3v-5m13 5h5v-5"/></svg>
+            </button>
+          </div>
+
+          <div class="parameters">
+            <div class="parameter">
+              <div class="parameter-label">
+                <span class="parameter-icon speed-param"><svg viewBox="0 0 24 24"><path d="M4 18a8 8 0 1 1 16 0M12 12l4-4"/></svg></span>
+                <div><strong id="paramLabel1">初速度 v₀</strong><small id="paramDesc1">调整车辆起始速度</small></div>
+              </div>
+              <input id="speedRange" type="range" min="10" max="30" step="1" value="20">
+              <div class="number-control">
+                <button data-target="speedRange" data-delta="-1">−</button>
+                <strong id="speedParam">20</strong><small id="paramUnit1">m/s</small>
+                <button data-target="speedRange" data-delta="1">+</button>
+              </div>
+            </div>
+            <div class="parameter">
+              <div class="parameter-label">
+                <span class="parameter-icon accel-param"><svg viewBox="0 0 24 24"><path d="M5 15c2-4 4-6 7-6s5 2 7 6M5 19h14M12 9V4m-3 3 3-3 3 3"/></svg></span>
+                <div><strong id="paramLabel2">加速度 a</strong><small id="paramDesc2">调整刹车减速度</small></div>
+              </div>
+              <input id="accelRange" type="range" min="2" max="10" step="1" value="5">
+              <div class="number-control">
+                <button data-target="accelRange" data-delta="-1">−</button>
+                <strong id="accelParam">−5</strong><small id="paramUnit2">m/s²</small>
+                <button data-target="accelRange" data-delta="1">+</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="insight-column">
+          <section class="reasoning-card card">
+            <div class="side-card-header">
+              <div>
+                <span class="section-kicker">双重可视化</span>
+                <h2>解题思维链</h2>
+              </div>
+              <span class="progress-ring"><strong id="reasonProgress">2</strong>/4</span>
+            </div>
+
+            <div class="reasoning-steps">
+              <button class="reason-step done" data-step="1" data-tip="已知初速度 20m/s，加速度为 −5m/s²，末速度为 0。">
+                <span class="step-index">1</span>
+                <div><small>已完成</small><strong>提取已知条件</strong><p>v₀ = 20m/s，a = −5m/s²</p></div>
+                <i><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg></i>
+              </button>
+              <button class="reason-step active" data-step="2" data-tip="题目没有给出时间，所以选择不含时间 t 的速度位移公式。">
+                <span class="step-index">2</span>
+                <div><small>当前步骤</small><strong>选择运动学公式</strong><p class="formula">v² − v₀² = 2as</p></div>
+                <i><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></i>
+              </button>
+              <button class="reason-step" data-step="3" data-tip="代入数据：0² − 20² = 2 × (−5) × s。">
+                <span class="step-index">3</span>
+                <div><small>待探索</small><strong>代入数据求解</strong><p>计算刹车距离 s</p></div>
+                <i><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></i>
+              </button>
+              <button class="reason-step" data-step="4" data-tip="结果为正且单位正确，刹车距离为 40m，符合实际。">
+                <span class="step-index">4</span>
+                <div><small>待探索</small><strong>检验结果</strong><p>s &gt; 0，单位为 m</p></div>
+                <i><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></i>
+              </button>
+            </div>
+
+            <button class="compare-button" data-toast="已开启实验与思维链联动模式">
+              <svg viewBox="0 0 24 24"><path d="M8 7h12m-4-4 4 4-4 4M16 17H4m4-4-4 4 4 4"/></svg>
+              对比我的解题思路
+            </button>
+          </section>
+
+          <section class="mentor-card card">
+            <div class="mentor-head">
+              <div class="mascot">
+                <div class="ear left"></div><div class="ear right"></div>
+                <div class="mane"></div>
+                <div class="face"><i></i><i></i><b></b><span></span></div>
+                <em>AI</em>
+              </div>
+              <div>
+                <span class="online"><i></i> AI 导师在线</span>
+                <h3>大狮</h3>
+              </div>
+              <button data-toast="已展开导师对话" aria-label="展开对话">
+                <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+            <div class="mentor-message" id="mentorMessage">
+              为什么这里选 <strong>v² − v₀² = 2as</strong>，而不是含时间 t 的公式？
+            </div>
+            <div class="mentor-actions">
+              <button id="hintButton">给我一点提示</button>
+              <button class="primary" id="challengeButton">我想试试看</button>
+            </div>
+          </section>
+
+          <section class="history-card card">
+            <div class="history-header"><h3>最近实验</h3><button data-toast="已展开全部实验">查看全部</button></div>
+            <button class="history-item" data-subject="物理" data-question="一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。">
+              <span class="history-visual brake"><i></i></span>
+              <div><strong>紧急刹车距离</strong><small>物理 · 昨天 21:36</small></div>
+              <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+            <button class="history-item" data-subject="化学" data-question="改变反应物浓度，观察化学反应速率的变化。">
+              <span class="history-visual flask"><i></i></span>
+              <div><strong>浓度与反应速率</strong><small>化学 · 6 月 11 日</small></div>
+              <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </section>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="arModal" aria-hidden="true">
+    <div class="ar-modal">
+      <button class="modal-close" id="closeModal" aria-label="关闭">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+      <div class="ar-orbit">
+        <div class="ar-cube"><span></span><span></span><span></span></div>
+      </div>
+      <span class="section-kicker">增强现实模式</span>
+      <h2>把实验放到真实桌面</h2>
+      <p id="arDescription">使用移动设备扫码，即可在 AR 中观察并调节汽车刹车实验。</p>
+      <div class="fake-qr">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <button class="modal-primary" id="copyLink">复制体验链接</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"><span></span><p>操作成功</p></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
