@@ -7,7 +7,7 @@
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="demo-mode">
   <div class="ambient ambient-one"></div>
   <div class="ambient ambient-two"></div>
 
@@ -52,7 +52,7 @@
         <div>
           <p class="eyebrow"><span></span> AI SCIENCE STUDIO</p>
           <h1>早上好，同学</h1>
-          <p class="subheading">今天想把哪一道题“动”起来？</p>
+          <p class="subheading">1 分钟看见一道刹车题如何变成实验过程</p>
         </div>
         <div class="top-actions">
           <div class="streak">
@@ -72,8 +72,8 @@
         </div>
         <div class="prompt-main">
           <div class="prompt-label">
-            <span>AI 习题即时建模</span>
-            <small>支持文字、拍照和语音输入</small>
+            <span>题目生成实验演示</span>
+            <small>预设刹车题：输入题目 → 生成实验 → 看见 40m</small>
           </div>
           <div class="prompt-input-wrap">
             <input id="questionInput" value="一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。" aria-label="输入理科题目">
@@ -126,7 +126,7 @@
 
           <div class="scene" id="scene">
             <div class="scene-top">
-              <div class="scene-badge"><span></span><b id="engineBadge">PhysX 实时演算</b></div>
+              <div class="scene-badge"><span></span><b id="engineBadge">运动过程可视化</b></div>
               <div class="scene-actions">
                 <button id="viewButton"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5"/></svg>视角</button>
                 <button id="annotationButton"><svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2"/></svg>标注</button>
@@ -257,10 +257,16 @@
           <section class="reasoning-card card">
             <div class="side-card-header">
               <div>
-                <span class="section-kicker">双重可视化</span>
+                <span class="section-kicker">公式 × 过程联动</span>
                 <h2>解题思维链</h2>
               </div>
               <span class="progress-ring"><strong id="reasonProgress">2</strong>/4</span>
+            </div>
+
+            <div class="formula-spotlight">
+              <span>核心公式</span>
+              <strong>v² − v₀² = 2as</strong>
+              <p>0² − 20² = 2 × (−5) × s，得到 s = 40m</p>
             </div>
 
             <div class="reasoning-steps">
@@ -302,7 +308,7 @@
               </div>
               <div>
                 <span class="online"><i></i> AI 导师在线</span>
-                <h3>大狮</h3>
+                <h3>关键追问</h3>
               </div>
               <button data-toast="已展开导师对话" aria-label="展开对话">
                 <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
@@ -333,6 +339,24 @@
         </aside>
       </div>
     </main>
+  </div>
+
+  <div class="generation-overlay" id="generationOverlay" aria-hidden="true">
+    <div class="generation-card">
+      <div class="generation-orbit">
+        <span></span>
+        <i></i>
+      </div>
+      <span class="section-kicker">SEMANTIC INPUT</span>
+      <h2>正在把题目生成实验</h2>
+      <p id="generationStatus">识别题干条件：v₀ = 20m/s，a = −5m/s²</p>
+      <div class="generation-progress"><i id="generationProgress"></i></div>
+      <div class="generation-steps">
+        <span class="active">识别条件</span>
+        <span>匹配刹车场景</span>
+        <span>生成可视化实验</span>
+      </div>
+    </div>
   </div>
 
   <div class="modal-backdrop" id="arModal" aria-hidden="true">

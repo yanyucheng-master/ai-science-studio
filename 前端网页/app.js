@@ -4,22 +4,22 @@ const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)]
 const SUBJECTS = {
   "物理": {
     question: "一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。",
-    title: "匀变速直线运动 · 紧急刹车",
-    description: "汽车紧急刹车，观察速度、时间与位移的关系。",
-    engine: "PhysX 实时演算",
-    ar: "使用移动设备扫码，即可在 AR 中观察并调节汽车刹车实验。",
-    metrics: [["当前速度", "m/s"], ["已行驶", "m"], ["实验时间", "s"]],
+    title: "刹车距离实验 · 速度如何归零",
+    description: "从自然语言题目生成刹车实验：速度逐步归零，停止点对应 40m。",
+    engine: "运动过程可视化",
+    ar: "移动端扩展可继续展示汽车刹车实验。",
+    metrics: [["速度 v", "m/s"], ["位移 s", "m"], ["时间 t", "s"]],
     params: [
       { label: "初速度 v₀", desc: "调整车辆起始速度", unit: "m/s", min: 10, max: 30, step: 1, value: 20 },
       { label: "加速度 a", desc: "调整刹车减速度", unit: "m/s²", min: 2, max: 10, step: 1, value: 5, prefix: "−" }
     ],
     steps: [
-      ["提取已知条件", "v₀ = 20m/s，a = −5m/s²", "识别初速度、加速度和末速度。"],
-      ["选择运动学公式", "v² − v₀² = 2as", "题目没有给出时间，所以选择不含时间 t 的速度位移公式。"],
-      ["代入数据求解", "计算刹车距离 s", "代入数据：0² − v₀² = 2 × (−a) × s。"],
-      ["检验结果", "s > 0，单位为 m", "结果为正且单位正确，符合实际。"]
+      ["题干条件", "v₀ = 20m/s，a = −5m/s²，v = 0", "先识别初速度、刹车加速度和末速度。"],
+      ["选择公式", "v² − v₀² = 2as", "题目没有给出时间，所以选择不含 t 的速度位移公式。"],
+      ["代入求解", "0² − 20² = 2×(−5)×s", "代入数据后得到刹车距离 s = 40m。"],
+      ["现象验证", "速度归零，停止点 40m", "结果为正且单位正确，并与实验停止点一致。"]
     ],
-    mentor: "为什么这里选 <strong>v² − v₀² = 2as</strong>，而不是含时间 t 的公式？",
+    mentor: "为什么这里选 <strong>v² − v₀² = 2as</strong>？因为题目没有给时间，却给了速度、加速度和位移关系。",
     hint: "小提示：题目给出了 <strong>初速度、末速度和加速度</strong>，但没有给时间。哪条公式不含 t？",
     challenge: "很好！现在初速度变成了 <strong>30m/s</strong>。预测一下：刹车距离会变成原来的多少倍？"
   },
@@ -96,10 +96,12 @@ const state = {
   p1: 20,
   p2: 5,
   playbackRate: 1,
-  reasonStep: 2,
+  reasonStep: 1,
   generated: 2,
   favorite: false,
-  toastTimer: null
+  toastTimer: null,
+  demoTimers: [],
+  generationTimers: []
 };
 
 const elements = {
@@ -122,8 +124,17 @@ const elements = {
   stopDistanceLabel: $("#stopDistanceLabel"),
   sceneTip: $("#sceneTip"),
   mentorMessage: $("#mentorMessage"),
-  toast: $("#toast")
+  toast: $("#toast"),
+  generationOverlay: $("#generationOverlay"),
+  generationStatus: $("#generationStatus"),
+  generationProgress: $("#generationProgress")
 };
+
+const GENERATION_STAGES = [
+  { text: "识别题干条件：v₀ = 20m/s，a = −5m/s²", progress: 28 },
+  { text: "匹配刹车实验场景：速度递减至 0", progress: 63 },
+  { text: "生成可视化过程：停止点锁定 40m", progress: 100 }
+];
 
 function config() {
   return SUBJECTS[state.subject];
@@ -278,9 +289,10 @@ function updateParameters(reset = true) {
 }
 
 function applySubject(subject, updateQuestion = true) {
+  clearDemoTimers();
   pauseExperiment();
   state.subject = subject;
-  state.reasonStep = 2;
+  state.reasonStep = 1;
   state.favorite = false;
   const current = config();
 
@@ -358,6 +370,65 @@ function showToast(message) {
   state.toastTimer = setTimeout(() => elements.toast.classList.remove("show"), 2200);
 }
 
+function clearDemoTimers() {
+  state.demoTimers.forEach(timer => clearTimeout(timer));
+  state.demoTimers = [];
+}
+
+function clearGenerationTimers() {
+  state.generationTimers.forEach(timer => clearTimeout(timer));
+  state.generationTimers = [];
+}
+
+function setGenerationStage(index) {
+  const stage = GENERATION_STAGES[index];
+  if (!stage) return;
+  elements.generationStatus.textContent = stage.text;
+  elements.generationProgress.style.width = `${stage.progress}%`;
+  $$(".generation-steps span").forEach((item, itemIndex) => {
+    item.classList.toggle("active", itemIndex <= index);
+  });
+}
+
+function showGenerationOverlay() {
+  clearGenerationTimers();
+  elements.generationOverlay.classList.add("show");
+  elements.generationOverlay.setAttribute("aria-hidden", "false");
+  setGenerationStage(0);
+
+  return new Promise(resolve => {
+    state.generationTimers = [
+      setTimeout(() => setGenerationStage(1), 620),
+      setTimeout(() => setGenerationStage(2), 1280),
+      setTimeout(resolve, 1850)
+    ];
+  });
+}
+
+function hideGenerationOverlay() {
+  clearGenerationTimers();
+  elements.generationOverlay.classList.remove("show");
+  elements.generationOverlay.setAttribute("aria-hidden", "true");
+}
+
+function setReasoningStep(step, message) {
+  state.reasonStep = step;
+  renderReasoning();
+  if (message) elements.sceneTip.innerHTML = message;
+}
+
+function playDemoSequence() {
+  clearDemoTimers();
+  resetExperiment();
+  setReasoningStep(1, "<span>观察目标</span>先看速度如何从 20m/s 逐步归零。");
+  state.demoTimers = [
+    setTimeout(() => setReasoningStep(2, "<span>公式选择</span>没有给时间 t，直接用速度—位移关系式。"), 520),
+    setTimeout(() => playExperiment(), 820),
+    setTimeout(() => setReasoningStep(3, "<span>代入求解</span>0² − 20² = 2 × (−5) × s，所以 s = 40m。"), 1900),
+    setTimeout(() => setReasoningStep(4, "<span>现象验证</span>小车速度归零时，停止点正好对应 40m。"), 3400)
+  ];
+}
+
 function detectSubject(question) {
   if (/反应|浓度|溶液|化学/.test(question)) return "化学";
   if (/函数|抛物线|斜率|切线|数学/.test(question)) return "数学";
@@ -366,22 +437,33 @@ function detectSubject(question) {
   return state.subject;
 }
 
-elements.playButton.addEventListener("click", () => state.playing ? pauseExperiment() : playExperiment());
-$("#resetButton").addEventListener("click", resetExperiment);
+elements.playButton.addEventListener("click", () => {
+  clearDemoTimers();
+  state.playing ? pauseExperiment() : playExperiment();
+});
+$("#resetButton").addEventListener("click", () => {
+  clearDemoTimers();
+  resetExperiment();
+});
 
 elements.timeline.addEventListener("input", event => {
+  clearDemoTimers();
   pauseExperiment();
   state.time = (Number(event.target.value) / 100) * duration();
   updateScene();
 });
 
-elements.ranges.forEach(input => input.addEventListener("input", () => updateParameters()));
+elements.ranges.forEach(input => input.addEventListener("input", () => {
+  clearDemoTimers();
+  updateParameters();
+}));
 
 $$(".number-control button").forEach(button => {
   button.addEventListener("click", () => {
     const input = $(`#${button.dataset.target}`);
     const next = Number(input.value) + Number(button.dataset.delta) * Number(input.step);
     input.value = Math.max(Number(input.min), Math.min(Number(input.max), next));
+    clearDemoTimers();
     updateParameters();
   });
 });
@@ -405,29 +487,32 @@ $$(".subject-tab").forEach(button => {
   });
 });
 
-$("#generateButton").addEventListener("click", () => {
+$("#generateButton").addEventListener("click", async () => {
   const button = $("#generateButton");
-  const question = $("#questionInput").value.trim();
+  const demoMode = document.body.classList.contains("demo-mode");
+  let question = $("#questionInput").value.trim();
   if (!question) {
     showToast("请先输入一道理科题目");
     return;
   }
-  if (state.generated >= 3) {
-    showToast("今日免费生成次数已用完，仍可切换并体验现有实验");
-    return;
+  if (demoMode) {
+    question = SUBJECTS["物理"].question;
+    $("#questionInput").value = question;
   }
+  clearDemoTimers();
   button.classList.add("loading");
-  $("span", button).textContent = "解析题目中";
-  setTimeout(() => {
-    const detected = detectSubject(question);
-    applySubject(detected, false);
-    $("#problemText").textContent = question;
-    state.generated = Math.min(3, state.generated + 1);
-    $("#freeCountCurrent").textContent = state.generated;
-    button.classList.remove("loading");
-    $("span", button).textContent = "生成实验";
-    showToast(`AI 已完成解析，${detected}实验生成成功`);
-  }, 650);
+  $("span", button).textContent = "生成中";
+  await showGenerationOverlay();
+  const detected = demoMode ? "物理" : detectSubject(question);
+  applySubject(detected, false);
+  $("#problemText").textContent = question;
+  state.generated = Math.min(3, state.generated + 1);
+  $("#freeCountCurrent").textContent = state.generated;
+  button.classList.remove("loading");
+  $("span", button).textContent = "生成实验";
+  hideGenerationOverlay();
+  showToast(`${detected}实验已生成，正在播放可视化过程`);
+  playDemoSequence();
 });
 
 $(".reasoning-steps").addEventListener("click", event => {
