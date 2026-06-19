@@ -101,10 +101,7 @@ const state = {
   favorite: false,
   toastTimer: null,
   demoTimers: [],
-  generationTimers: [],
-  autoDemoTimer: null,
-  userGeneratedOnce: false,
-  autoDemoStarted: false
+  generationTimers: []
 };
 
 const elements = {
@@ -130,13 +127,12 @@ const elements = {
   toast: $("#toast"),
   generationOverlay: $("#generationOverlay"),
   generationStatus: $("#generationStatus"),
-  generationProgress: $("#generationProgress"),
-  demoStepIndicator: $("#demoStepIndicator")
+  generationProgress: $("#generationProgress")
 };
 
 const GENERATION_STAGES = [
   { text: "识别题干条件：v₀ = 20m/s，a = −5m/s²", progress: 28 },
-  { text: "匹配刹车实验模板：速度递减至 0", progress: 63 },
+  { text: "匹配刹车实验场景：速度递减至 0", progress: 63 },
   { text: "生成可视化过程：停止点锁定 40m", progress: 100 }
 ];
 
@@ -264,67 +260,6 @@ function renderReasoning() {
   $("#reasonProgress").textContent = state.reasonStep;
 }
 
-function updateFormulaSpotlight(subject) {
-  const spotlight = $(".formula-spotlight");
-  if (!spotlight) return;
-
-  const formulas = {
-    "物理": [
-      "核心公式",
-      "v² − v₀² = 2as",
-      "0² − 20² = 2 × (−5) × s，得到 s = 40m"
-    ],
-    "化学": [
-      "速率关系",
-      "反应速率 ∝ 有效碰撞频率",
-      "浓度升高，单位体积内粒子数增加，反应更快"
-    ],
-    "数学": [
-      "导数关系",
-      "y′ = 2x",
-      "抛物线 y = x² 上，切线斜率随横坐标 x 改变"
-    ],
-    "生物": [
-      "结构功能",
-      "流动镶嵌模型",
-      "膜结构的流动性支持物质运输与选择透过性"
-    ]
-  };
-
-  const [label, formula, desc] = formulas[subject] || formulas["物理"];
-  const labelEl = $("span", spotlight);
-  const formulaEl = $("strong", spotlight);
-  const descEl = $("p", spotlight);
-
-  if (labelEl) labelEl.textContent = label;
-  if (formulaEl) formulaEl.textContent = formula;
-  if (descEl) descEl.textContent = desc;
-}
-
-function updateGreeting() {
-  const hour = new Date().getHours();
-  const greeting = hour < 12 ? "早上好" : hour < 18 ? "下午好" : "晚上好";
-  const greetingTitle = $(".topbar h1");
-  if (greetingTitle) greetingTitle.textContent = `${greeting}，同学`;
-}
-
-function setDemoStep(step, text) {
-  if (!elements.demoStepIndicator) return;
-  const numberEl = $(".demo-step-number", elements.demoStepIndicator);
-  const textEl = $("strong", elements.demoStepIndicator);
-  if (numberEl) numberEl.textContent = `Step ${step}`;
-  if (textEl) textEl.textContent = text;
-}
-
-function scheduleAutoDemo() {
-  if (!document.body.classList.contains("demo-mode")) return;
-  state.autoDemoTimer = setTimeout(() => {
-    if (state.userGeneratedOnce) return;
-    state.autoDemoStarted = true;
-    $("#generateButton")?.click();
-  }, 3000);
-}
-
 function setRange(range, param) {
   range.min = param.min;
   range.max = param.max;
@@ -359,7 +294,6 @@ function applySubject(subject, updateQuestion = true) {
   state.subject = subject;
   state.reasonStep = 1;
   state.favorite = false;
-  updateFormulaSpotlight(subject);
   const current = config();
 
   $$(".subject-tab").forEach(tab => {
@@ -398,7 +332,6 @@ function playExperiment() {
   state.playing = true;
   state.lastFrame = performance.now();
   elements.playButton.classList.add("playing");
-  if (document.body.classList.contains("demo-mode")) setDemoStep(4, "看见速度如何归零");
   requestAnimationFrame(animationFrame);
 }
 
@@ -459,7 +392,6 @@ function setGenerationStage(index) {
 
 function showGenerationOverlay() {
   clearGenerationTimers();
-  setDemoStep(2, "识别题干并匹配实验");
   elements.generationOverlay.classList.add("show");
   elements.generationOverlay.setAttribute("aria-hidden", "false");
   setGenerationStage(0);
@@ -488,7 +420,6 @@ function setReasoningStep(step, message) {
 function playDemoSequence() {
   clearDemoTimers();
   resetExperiment();
-  setDemoStep(3, "观察实验过程");
   setReasoningStep(1, "<span>观察目标</span>先看速度如何从 20m/s 逐步归零。");
   state.demoTimers = [
     setTimeout(() => setReasoningStep(2, "<span>公式选择</span>没有给时间 t，直接用速度—位移关系式。"), 520),
@@ -558,9 +489,6 @@ $$(".subject-tab").forEach(button => {
 
 $("#generateButton").addEventListener("click", async () => {
   const button = $("#generateButton");
-  if (button.classList.contains("loading")) return;
-  state.userGeneratedOnce = true;
-  if (state.autoDemoTimer) clearTimeout(state.autoDemoTimer);
   const demoMode = document.body.classList.contains("demo-mode");
   let question = $("#questionInput").value.trim();
   if (!question) {
@@ -583,7 +511,6 @@ $("#generateButton").addEventListener("click", async () => {
   button.classList.remove("loading");
   $("span", button).textContent = "生成实验";
   hideGenerationOverlay();
-  setDemoStep(3, "观察实验过程");
   showToast(`${detected}实验已生成，正在播放可视化过程`);
   playDemoSequence();
 });
@@ -601,13 +528,11 @@ $(".reasoning-steps").addEventListener("click", event => {
 });
 
 $("#hintButton").addEventListener("click", () => {
-  setDemoStep(5, "AI 导师追问与迁移");
   elements.mentorMessage.innerHTML = config().hint;
-  showToast("AI 导师给出了一条启发式提示");
+  showToast("大狮给出了一条启发式提示");
 });
 
 $("#challengeButton").addEventListener("click", () => {
-  setDemoStep(5, "AI 导师追问与迁移");
   const challengeValues = { "物理": 30, "化学": 55, "数学": 2, "生物": 37 };
   const rangeIndex = state.subject === "物理" || state.subject === "生物" ? 0 : 1;
   elements.ranges[rangeIndex].value = challengeValues[state.subject];
@@ -702,7 +627,4 @@ document.addEventListener("keydown", event => {
   if (event.code === "Escape") closeModal();
 });
 
-updateGreeting();
 applySubject("物理");
-setDemoStep(1, "输入题目，生成实验");
-scheduleAutoDemo();
