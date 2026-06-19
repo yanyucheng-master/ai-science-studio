@@ -2672,7 +2672,69 @@ input[type="range"] {
 }
 
 .demo-mode .mentor-actions {
+  display: grid;
+  margin-top: 12px;
+  gap: 9px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.demo-mode .mentor-actions button {
+  height: 40px;
+  font-size: 11px;
+  border-radius: 12px;
+}
+
+.demo-mode .input-tool,
+.demo-mode #arButton,
+.demo-mode #favoriteButton,
+.demo-mode #shareButton,
+.demo-mode .icon-button,
+.demo-mode .streak,
+.demo-mode .free-count {
+  display: none !important;
+}
+
+.demo-step-indicator {
   display: none;
+}
+
+.demo-mode .demo-step-indicator {
+  position: fixed;
+  z-index: 42;
+  top: 20px;
+  right: 24px;
+  display: flex;
+  min-width: 214px;
+  padding: 10px 14px;
+  gap: 10px;
+  align-items: center;
+  color: #173d84;
+  font-size: 13px;
+  font-weight: 800;
+  border: 1px solid rgba(139, 177, 242, 0.9);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 14px 32px rgba(51, 91, 159, 0.14);
+  backdrop-filter: blur(14px);
+}
+
+.demo-mode .demo-step-indicator span {
+  display: grid;
+  min-width: 58px;
+  height: 26px;
+  place-items: center;
+  color: #fff;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  border-radius: 999px;
+  background: linear-gradient(120deg, #2d70ff, #1748df);
+  box-shadow: 0 8px 18px rgba(34, 98, 243, 0.22);
+}
+
+.demo-mode .demo-step-indicator strong {
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .generation-overlay {
