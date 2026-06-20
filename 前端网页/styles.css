@@ -2854,3 +2854,309 @@ input[type="range"] {
   0%, 100% { transform: scale(0.94); }
   50% { transform: scale(1.08); }
 }
+
+/* Mode split refinement: keep the default product UI intact; demo mode stays lightweight. */
+.demo-step-indicator {
+  display: none !important;
+}
+
+.formula-spotlight {
+  padding: 14px;
+  border-radius: 15px;
+  box-shadow: 0 10px 22px rgba(34, 98, 243, 0.07);
+}
+
+.formula-spotlight strong {
+  font-size: 23px;
+}
+
+.formula-spotlight p {
+  font-size: 11px;
+}
+
+.demo-mode .content-grid {
+  gap: 18px;
+  grid-template-columns: minmax(720px, 1fr) 350px;
+}
+
+.demo-mode .scene {
+  height: 400px;
+  box-shadow: inset 0 0 58px rgba(60, 125, 226, 0.1), 0 12px 24px rgba(56, 94, 150, 0.08);
+}
+
+.demo-mode .metric-panel {
+  top: 58px;
+  left: 18px;
+  gap: 8px;
+}
+
+.demo-mode .metric-panel div {
+  min-width: 116px;
+  padding: 12px 14px;
+  border-radius: 15px;
+  box-shadow: 0 12px 24px rgba(47, 84, 140, 0.11);
+}
+
+.demo-mode .metric-panel span {
+  font-size: 10px;
+}
+
+.demo-mode .metric-panel strong {
+  font-size: 26px;
+}
+
+.demo-mode .metric-panel small {
+  margin-top: 10px;
+  font-size: 10px;
+}
+
+.demo-mode .distance-flag {
+  top: -8px;
+  padding: 8px 11px 0;
+  font-size: 11px;
+  box-shadow: 0 10px 22px rgba(213, 78, 63, 0.11);
+}
+
+.demo-mode .distance-flag::after {
+  height: 74px;
+}
+
+.demo-mode .distance-flag strong {
+  font-size: 24px;
+}
+
+.demo-mode .formula-spotlight strong {
+  font-size: 25px;
+}
+
+.demo-mode .side-card-header h2 {
+  font-size: 17px;
+}
+
+.demo-mode .reason-step {
+  padding: 11px 9px;
+  gap: 9px;
+  grid-template-columns: 34px 1fr 18px;
+  border-radius: 14px;
+}
+
+.demo-mode .step-index {
+  width: 28px;
+  height: 28px;
+  font-size: 10px;
+}
+
+.demo-mode .reason-step strong {
+  font-size: 11px;
+}
+
+.demo-mode .reason-step p {
+  font-size: 9px;
+}
+
+.demo-mode .mentor-message {
+  padding: 11px;
+  font-size: 10px;
+}
+
+.demo-mode .mentor-actions {
+  display: grid !important;
+  margin-top: 10px;
+  gap: 8px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.demo-mode .mentor-actions button {
+  height: 35px;
+  font-size: 9px;
+  border-radius: 10px;
+}
+
+.demo-mode .demo-step-indicator {
+  position: fixed;
+  z-index: 42;
+  top: 18px;
+  right: 30px;
+  display: flex !important;
+  min-width: 184px;
+  padding: 8px 12px;
+  gap: 8px;
+  align-items: center;
+  color: #173d84;
+  font-size: 12px;
+  font-weight: 800;
+  border: 1px solid rgba(139, 177, 242, 0.78);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 10px 24px rgba(51, 91, 159, 0.12);
+  backdrop-filter: blur(14px);
+}
+
+.demo-mode .demo-step-indicator span {
+  display: grid;
+  min-width: 52px;
+  height: 23px;
+  place-items: center;
+  color: #fff;
+  font-size: 10px;
+  letter-spacing: 0.3px;
+  border-radius: 999px;
+  background: linear-gradient(120deg, #2d70ff, #1748df);
+}
+
+.demo-mode .demo-step-indicator strong {
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Default product waiting state: no topic-specific model appears before generation. */
+.scene-empty-state {
+  position: absolute;
+  z-index: 8;
+  inset: 72px 48px 58px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #506783;
+  border: 1px dashed rgba(140, 170, 216, 0.72);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(34, 98, 243, 0.1), transparent 35%),
+    rgba(255, 255, 255, 0.48);
+  backdrop-filter: blur(8px);
+}
+
+.scene-empty-state strong {
+  margin-top: 14px;
+  color: #213455;
+  font-size: 18px;
+}
+
+.scene-empty-state p {
+  max-width: 420px;
+  margin: 8px 0 0;
+  color: #75849b;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.empty-orbit {
+  position: relative;
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border: 1px solid rgba(87, 130, 215, 0.3);
+  border-radius: 50%;
+  background: rgba(237, 244, 255, 0.72);
+}
+
+.empty-orbit::before,
+.empty-orbit::after {
+  position: absolute;
+  width: 82px;
+  height: 24px;
+  border: 1px solid rgba(91, 139, 226, 0.35);
+  border-radius: 50%;
+  content: "";
+}
+
+.empty-orbit::before {
+  transform: rotate(26deg);
+}
+
+.empty-orbit::after {
+  transform: rotate(-26deg);
+}
+
+.empty-orbit i {
+  width: 22px;
+  height: 22px;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #6aa5ff, #2262f3);
+  box-shadow: 0 0 22px rgba(54, 114, 239, 0.26);
+}
+
+.awaiting-generation .scene {
+  background:
+    radial-gradient(circle at 50% 10%, rgba(34, 98, 243, 0.08), transparent 28%),
+    linear-gradient(#eff6ff 0%, #f8fbff 100%);
+}
+
+.awaiting-generation .scene::before {
+  opacity: 0.45;
+  mask-image: linear-gradient(to bottom, #000, transparent 86%);
+}
+
+.awaiting-generation .scene-empty-state {
+  display: flex;
+}
+
+.awaiting-generation .scene-actions,
+.awaiting-generation .metric-panel,
+.awaiting-generation .physics-visual,
+.awaiting-generation .subject-stage,
+.awaiting-generation .road-area,
+.awaiting-generation .scene-tip {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.awaiting-generation .transport,
+.awaiting-generation .parameters {
+  display: none;
+}
+
+.awaiting-generation .reasoning-steps::before {
+  background: #edf2f8;
+}
+
+.awaiting-generation .reason-step {
+  cursor: default;
+}
+
+.awaiting-generation .reason-step:hover {
+  transform: none;
+  border-color: #e7edf6;
+}
+
+.awaiting-generation .pending-placeholder {
+  color: #7c8aa0;
+  background: #fbfcff;
+}
+
+.awaiting-generation .pending-placeholder .step-index {
+  color: #97a5b8;
+  border-color: #e0e8f3;
+  background: #fff;
+}
+
+.awaiting-generation .pending-placeholder strong {
+  color: #344764;
+}
+
+.awaiting-generation .pending-placeholder p {
+  color: #8b98aa;
+}
+
+.awaiting-generation .formula-spotlight {
+  background:
+    radial-gradient(circle at 100% 0, rgba(113, 145, 196, 0.1), transparent 42%),
+    linear-gradient(135deg, #fbfdff, #f3f7fc);
+  box-shadow: 0 10px 22px rgba(75, 103, 148, 0.06);
+}
+
+.awaiting-generation .formula-spotlight strong {
+  color: #526682;
+  font-size: 19px;
+}
+
+.awaiting-generation .compare-button,
+.awaiting-generation .mentor-actions {
+  opacity: 0.55;
+  pointer-events: none;
+}

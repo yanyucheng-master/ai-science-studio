@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231648e6'/%3E%3Cpath d='M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css?v=20260620-subject-sync-1">
 </head>
-<body class="demo-mode">
+<body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
   <div class="ambient ambient-two"></div>
 
@@ -52,7 +53,7 @@
         <div>
           <p class="eyebrow"><span></span> AI SCIENCE STUDIO</p>
           <h1>早上好，同学</h1>
-          <p class="subheading">1 分钟看见一道刹车题如何变成实验过程</p>
+          <p class="subheading">今天想把哪一道题“动”起来？</p>
         </div>
         <div class="top-actions">
           <div class="streak">
@@ -72,11 +73,11 @@
         </div>
         <div class="prompt-main">
           <div class="prompt-label">
-            <span>题目生成实验演示</span>
-            <small>预设刹车题：输入题目 → 生成实验 → 看见 40m</small>
+            <span>AI 习题即时建模</span>
+            <small>输入题目后生成可视化实验、公式推理与 AI 提示</small>
           </div>
           <div class="prompt-input-wrap">
-            <input id="questionInput" value="一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。" aria-label="输入理科题目">
+            <input id="questionInput" value="一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。" placeholder="请输入或粘贴一道理科题目" autocomplete="off" aria-label="输入理科题目">
             <button class="input-tool" data-toast="拍照识题入口已打开" aria-label="拍照识题">
               <svg viewBox="0 0 24 24"><path d="M4 7h4l2-3h4l2 3h4v13H4z"/><circle cx="12" cy="13" r="4"/></svg>
             </button>
@@ -106,9 +107,9 @@
             <div>
               <div class="title-row">
                 <span class="live-dot"></span>
-                <h2 id="experimentTitle">匀变速直线运动 · 紧急刹车</h2>
+                <h2 id="experimentTitle">等待生成实验</h2>
               </div>
-              <p id="problemText">汽车以 20m/s 行驶并紧急刹车，观察速度、时间与位移的关系。</p>
+              <p id="problemText">输入题目并点击“生成实验”后，这里会构建对应的可视化实验。</p>
             </div>
             <div class="header-tools">
               <button class="soft-button" id="arButton">
@@ -126,7 +127,7 @@
 
           <div class="scene" id="scene">
             <div class="scene-top">
-              <div class="scene-badge"><span></span><b id="engineBadge">运动过程可视化</b></div>
+              <div class="scene-badge"><span></span><b id="engineBadge">等待题目输入</b></div>
               <div class="scene-actions">
                 <button id="viewButton"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5"/></svg>视角</button>
                 <button id="annotationButton"><svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2"/></svg>标注</button>
@@ -134,9 +135,15 @@
             </div>
 
             <div class="metric-panel">
-              <div><span id="metricLabel1">当前速度</span><strong id="speedValue">20.0</strong><small id="metricUnit1">m/s</small></div>
-              <div><span id="metricLabel2">已行驶</span><strong id="distanceValue">0.0</strong><small id="metricUnit2">m</small></div>
-              <div><span id="metricLabel3">实验时间</span><strong id="timeValue">0.0</strong><small id="metricUnit3">s</small></div>
+              <div><span id="metricLabel1">参数识别</span><strong id="speedValue">--</strong><small id="metricUnit1"></small></div>
+              <div><span id="metricLabel2">过程建模</span><strong id="distanceValue">--</strong><small id="metricUnit2"></small></div>
+              <div><span id="metricLabel3">实验输出</span><strong id="timeValue">--</strong><small id="metricUnit3"></small></div>
+            </div>
+
+            <div class="scene-empty-state" id="sceneEmptyState">
+              <span class="empty-orbit"><i></i></span>
+              <strong>等待输入题目</strong>
+              <p>题目生成后，将在这里展示实验模型、关键参数与可视化过程。</p>
             </div>
 
             <div class="sun physics-visual"></div>
@@ -148,7 +155,7 @@
             <div class="road-area physics-visual">
               <div class="distance-flag" id="distanceFlag">
                 <span>停止点</span>
-                <strong id="stopDistanceLabel">40 m</strong>
+                <strong id="stopDistanceLabel">--</strong>
               </div>
               <div class="road">
                 <div class="road-lines"></div>
@@ -203,8 +210,8 @@
             </div>
 
             <div class="scene-tip" id="sceneTip">
-              <span>观察提示</span>
-              刹车开始后，速度每秒减少 5m/s。
+              <span>等待生成</span>
+              输入题目后，AI 会识别条件并生成实验场景。
             </div>
           </div>
 
@@ -257,37 +264,37 @@
           <section class="reasoning-card card">
             <div class="side-card-header">
               <div>
-                <span class="section-kicker">公式 × 过程联动</span>
-                <h2>解题思维链</h2>
+                <span class="section-kicker">等待题目解析</span>
+                <h2>思维链将在生成后出现</h2>
               </div>
-              <span class="progress-ring"><strong id="reasonProgress">2</strong>/4</span>
+              <span class="progress-ring"><strong id="reasonProgress">0</strong>/4</span>
             </div>
 
             <div class="formula-spotlight">
-              <span>核心公式</span>
-              <strong>v² − v₀² = 2as</strong>
-              <p>0² − 20² = 2 × (−5) × s，得到 s = 40m</p>
+              <span>等待生成</span>
+              <strong>公式将在这里呈现</strong>
+              <p>AI 会根据题干条件选择公式，并展示代入与验证过程。</p>
             </div>
 
             <div class="reasoning-steps">
-              <button class="reason-step done" data-step="1" data-tip="已知初速度 20m/s，加速度为 −5m/s²，末速度为 0。">
+              <button class="reason-step pending-placeholder" data-step="1">
                 <span class="step-index">1</span>
-                <div><small>已完成</small><strong>提取已知条件</strong><p>v₀ = 20m/s，a = −5m/s²</p></div>
-                <i><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg></i>
+                <div><small>等待</small><strong>识别题干条件</strong><p>点击生成后开始分析</p></div>
+                <i><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></i>
               </button>
-              <button class="reason-step active" data-step="2" data-tip="题目没有给出时间，所以选择不含时间 t 的速度位移公式。">
+              <button class="reason-step pending-placeholder" data-step="2">
                 <span class="step-index">2</span>
-                <div><small>当前步骤</small><strong>选择运动学公式</strong><p class="formula">v² − v₀² = 2as</p></div>
+                <div><small>等待</small><strong>选择适用公式</strong><p>生成后展示推理路径</p></div>
                 <i><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></i>
               </button>
-              <button class="reason-step" data-step="3" data-tip="代入数据：0² − 20² = 2 × (−5) × s。">
+              <button class="reason-step pending-placeholder" data-step="3">
                 <span class="step-index">3</span>
-                <div><small>待探索</small><strong>代入数据求解</strong><p>计算刹车距离 s</p></div>
+                <div><small>等待</small><strong>代入数据求解</strong><p>生成后联动实验结果</p></div>
                 <i><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></i>
               </button>
-              <button class="reason-step" data-step="4" data-tip="结果为正且单位正确，刹车距离为 40m，符合实际。">
+              <button class="reason-step pending-placeholder" data-step="4">
                 <span class="step-index">4</span>
-                <div><small>待探索</small><strong>检验结果</strong><p>s &gt; 0，单位为 m</p></div>
+                <div><small>等待</small><strong>检验学习结论</strong><p>生成后形成总结</p></div>
                 <i><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></i>
               </button>
             </div>
@@ -315,7 +322,7 @@
               </button>
             </div>
             <div class="mentor-message" id="mentorMessage">
-              为什么这里选 <strong>v² − v₀² = 2as</strong>，而不是含时间 t 的公式？
+              生成实验后，我会根据题目给出关键追问、提示和变式迁移。
             </div>
             <div class="mentor-actions">
               <button id="hintButton">给我一点提示</button>
@@ -327,7 +334,7 @@
             <div class="history-header"><h3>最近实验</h3><button data-toast="已展开全部实验">查看全部</button></div>
             <button class="history-item" data-subject="物理" data-question="一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。">
               <span class="history-visual brake"><i></i></span>
-              <div><strong>紧急刹车距离</strong><small>物理 · 昨天 21:36</small></div>
+              <div><strong>运动学实验记录</strong><small>物理 · 昨天 21:36</small></div>
               <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
             </button>
             <button class="history-item" data-subject="化学" data-question="改变反应物浓度，观察化学反应速率的变化。">
@@ -341,6 +348,11 @@
     </main>
   </div>
 
+  <div class="demo-step-indicator" id="demoStepIndicator" aria-live="polite">
+    <span class="demo-step-number">Step 1</span>
+    <strong>输入题目，生成实验</strong>
+  </div>
+
   <div class="generation-overlay" id="generationOverlay" aria-hidden="true">
     <div class="generation-card">
       <div class="generation-orbit">
@@ -349,12 +361,12 @@
       </div>
       <span class="section-kicker">SEMANTIC INPUT</span>
       <h2>正在把题目生成实验</h2>
-      <p id="generationStatus">识别题干条件：v₀ = 20m/s，a = −5m/s²</p>
+      <p id="generationStatus">识别题干条件与问题目标</p>
       <div class="generation-progress"><i id="generationProgress"></i></div>
       <div class="generation-steps">
         <span class="active">识别条件</span>
-        <span>匹配刹车场景</span>
-        <span>生成可视化实验</span>
+        <span>匹配实验模板</span>
+        <span>生成实验场景</span>
       </div>
     </div>
   </div>
@@ -379,6 +391,6 @@
 
   <div class="toast" id="toast"><span></span><p>操作成功</p></div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=20260620-subject-sync-1"></script>
 </body>
 </html>
