@@ -5,6 +5,7 @@
 *.png
 ~$*
 outputs/
+前端网页/
 
 # 系统与编辑器
 .DS_Store

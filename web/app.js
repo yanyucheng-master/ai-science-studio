@@ -104,6 +104,7 @@ const state = {
   playbackRate: 1,
   reasonStep: 1,
   hasGenerated: false,
+  generatedQuestion: "",
   generated: 2,
   favorite: false,
   toastTimer: null,
@@ -613,6 +614,7 @@ function setRecognitionFeedback(result, isError = false) {
   if (!elements.parseFeedback) return;
   elements.parseFeedback.classList.add("show");
   elements.parseFeedback.classList.toggle("error", isError);
+  elements.parseFeedback.classList.remove("pending");
   if (isError) {
     elements.parseFeedback.innerHTML = `<span>识别提示</span><strong>${result.message}</strong>`;
     return;
@@ -621,10 +623,25 @@ function setRecognitionFeedback(result, isError = false) {
   elements.parseFeedback.innerHTML = `<span>识别结果</span><strong>${content.recognitionText}</strong>`;
 }
 
+function setRecognitionPending(message = "题目已修改，点击“生成实验”重新识别。") {
+  if (!elements.parseFeedback) return;
+  elements.parseFeedback.classList.add("show", "pending");
+  elements.parseFeedback.classList.remove("error");
+  elements.parseFeedback.innerHTML = `<span>待重新识别</span><strong>${message}</strong>`;
+}
+
 function clearRecognitionFeedback() {
   if (!elements.parseFeedback) return;
-  elements.parseFeedback.classList.remove("show", "error");
+  elements.parseFeedback.classList.remove("show", "error", "pending");
   elements.parseFeedback.innerHTML = "";
+}
+
+function syncPhysicsQuestionFromState() {
+  const question = buildPhysicsBrakeQuestionText();
+  $("#questionInput").value = question;
+  $("#problemText").textContent = question;
+  state.generatedQuestion = question;
+  return question;
 }
 
 function syncPhysicsControlsFromState() {
@@ -675,6 +692,7 @@ function applyWaitingState(subject = state.subject, options = {}) {
   clearDemoTimers();
   pauseExperiment();
   state.hasGenerated = false;
+  state.generatedQuestion = "";
   state.subject = subject;
   state.reasonStep = 0;
   if (subject === "物理" && options.presetQuestion) {
@@ -706,7 +724,7 @@ function applyWaitingState(subject = state.subject, options = {}) {
   renderWaitingReasoning();
 }
 
-function updateParameters(reset = true) {
+function updateParameters(reset = true, options = {}) {
   state.p1 = Number(elements.ranges[0].value);
   state.p2 = Number(elements.ranges[1].value);
   if (state.subject === "物理") {
@@ -724,6 +742,7 @@ function updateParameters(reset = true) {
     setPhysicsStopMarker(stop);
     updateFormulaSpotlight("物理");
     if (state.hasGenerated) {
+      if (options.syncQuestion) syncPhysicsQuestionFromState();
       renderReasoning();
       elements.mentorMessage.innerHTML = config().mentor;
       setRecognitionFeedback({ ok: true, v0: state.p1, aAbs: state.p2 });
@@ -937,7 +956,7 @@ elements.timeline.addEventListener("input", event => {
 
 elements.ranges.forEach(input => input.addEventListener("input", () => {
   clearDemoTimers();
-  updateParameters();
+  updateParameters(true, { syncQuestion: true });
 }));
 
 $$(".number-control button").forEach(button => {
@@ -946,11 +965,27 @@ $$(".number-control button").forEach(button => {
     const next = Number(input.value) + Number(button.dataset.delta) * Number(input.step);
     input.value = Math.max(Number(input.min), Math.min(Number(input.max), next));
     clearDemoTimers();
-    updateParameters();
+    updateParameters(true, { syncQuestion: true });
   });
 });
 
 $$("[data-toast]").forEach(button => button.addEventListener("click", () => showToast(button.dataset.toast)));
+
+$("#questionInput").addEventListener("input", () => {
+  if (!state.hasGenerated) {
+    clearRecognitionFeedback();
+    return;
+  }
+  const currentQuestion = $("#questionInput").value.trim();
+  if (currentQuestion && currentQuestion !== state.generatedQuestion) {
+    pauseExperiment();
+    clearDemoTimers();
+    setRecognitionPending();
+    hideMentorFeedback();
+    $("#problemText").textContent = "题目已修改，点击“生成实验”后将重新识别并更新实验。";
+    setDemoStep(2, "题目已修改，等待重新生成");
+  }
+});
 
 $$(".nav-item").forEach(button => {
   button.addEventListener("click", () => {
@@ -1008,6 +1043,7 @@ $("#generateButton").addEventListener("click", async () => {
   await showGenerationOverlay(physicsParse ? SUBJECTS["物理"].generationStages : null);
   applySubject(detected, false);
   $("#problemText").textContent = question;
+  state.generatedQuestion = question;
   if (physicsParse) setRecognitionFeedback(physicsParse);
   state.generated = Math.min(3, state.generated + 1);
   button.classList.remove("loading");
@@ -1066,6 +1102,7 @@ $("#challengeButton").addEventListener("click", () => {
 
     $("#questionInput").value = question;
     $("#problemText").textContent = question;
+    state.generatedQuestion = question;
     state.p1 = nextV;
     state.p2 = nextA;
     syncPhysicsBrakeContent(nextV, nextA);

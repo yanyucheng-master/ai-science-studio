@@ -473,6 +473,16 @@ svg {
   color: #d97706;
 }
 
+.parse-feedback.pending {
+  color: #71521a;
+  border-color: #ffe3a8;
+  background: linear-gradient(135deg, #fffaf0, #fff4d8);
+}
+
+.parse-feedback.pending span {
+  color: #d88404;
+}
+
 .prompt-foot {
   display: flex;
   margin-top: 11px;
