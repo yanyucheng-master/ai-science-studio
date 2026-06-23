@@ -3,4 +3,4 @@ services:
     name: ai-science-studio
     runtime: static
     buildCommand: echo "No build step"
-    staticPublishPath: 前端网页
+    staticPublishPath: web
