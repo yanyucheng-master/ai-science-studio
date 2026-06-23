@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231648e6'/%3E%3Cpath d='M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260620-subject-sync-1">
+  <link rel="stylesheet" href="styles.css?v=20260623-polish-1">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -89,6 +89,7 @@
               <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
             </button>
           </div>
+          <div class="parse-feedback" id="parseFeedback" aria-live="polite"></div>
           <div class="prompt-foot">
             <div class="subject-tabs" role="tablist">
               <button class="subject-tab active" data-subject="物理"><i class="physics"></i>物理</button>
@@ -96,7 +97,7 @@
               <button class="subject-tab" data-subject="数学"><i class="math"></i>数学</button>
               <button class="subject-tab" data-subject="生物"><i class="biology"></i>生物</button>
             </div>
-            <span class="free-count">今日免费生成 <strong id="freeCountCurrent">2</strong>/3 次</span>
+            <span class="free-count">内测无限次数</span>
           </div>
         </div>
       </section>
@@ -160,6 +161,7 @@
               <div class="road">
                 <div class="road-lines"></div>
                 <div class="brake-trace" id="brakeTrace"></div>
+                <div class="road-stop-line" id="roadStopLine" aria-hidden="true"></div>
                 <div class="car" id="car">
                   <div class="car-glow"></div>
                   <div class="car-body">
@@ -238,7 +240,7 @@
                 <span class="parameter-icon speed-param"><svg viewBox="0 0 24 24"><path d="M4 18a8 8 0 1 1 16 0M12 12l4-4"/></svg></span>
                 <div><strong id="paramLabel1">初速度 v₀</strong><small id="paramDesc1">调整车辆起始速度</small></div>
               </div>
-              <input id="speedRange" type="range" min="10" max="30" step="1" value="20">
+              <input id="speedRange" type="range" min="5" max="80" step="1" value="20">
               <div class="number-control">
                 <button data-target="speedRange" data-delta="-1">−</button>
                 <strong id="speedParam">20</strong><small id="paramUnit1">m/s</small>
@@ -250,7 +252,7 @@
                 <span class="parameter-icon accel-param"><svg viewBox="0 0 24 24"><path d="M5 15c2-4 4-6 7-6s5 2 7 6M5 19h14M12 9V4m-3 3 3-3 3 3"/></svg></span>
                 <div><strong id="paramLabel2">加速度 a</strong><small id="paramDesc2">调整刹车减速度</small></div>
               </div>
-              <input id="accelRange" type="range" min="2" max="10" step="1" value="5">
+              <input id="accelRange" type="range" min="1" max="20" step="1" value="5">
               <div class="number-control">
                 <button data-target="accelRange" data-delta="-1">−</button>
                 <strong id="accelParam">−5</strong><small id="paramUnit2">m/s²</small>
@@ -328,6 +330,7 @@
               <button id="hintButton">给我一点提示</button>
               <button class="primary" id="challengeButton">我想试试看</button>
             </div>
+            <div class="mentor-feedback" id="mentorFeedback" aria-live="polite"></div>
           </section>
 
           <section class="history-card card">
@@ -391,6 +394,6 @@
 
   <div class="toast" id="toast"><span></span><p>操作成功</p></div>
 
-  <script src="app.js?v=20260620-subject-sync-1"></script>
+  <script src="app.js?v=20260623-polish-1"></script>
 </body>
 </html>

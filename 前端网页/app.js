@@ -16,8 +16,8 @@ const SUBJECTS = {
     ar: "移动端扩展可继续展示汽车刹车实验。",
     metrics: [["速度 v", "m/s"], ["位移 s", "m"], ["时间 t", "s"]],
     params: [
-      { label: "初速度 v₀", desc: "调整车辆起始速度", unit: "m/s", min: 10, max: 30, step: 1, value: 20 },
-      { label: "加速度 a", desc: "调整刹车减速度", unit: "m/s²", min: 2, max: 10, step: 1, value: 5, prefix: "−" }
+      { label: "初速度 v₀", desc: "调整车辆起始速度", unit: "m/s", min: 5, max: 80, step: 1, value: 20 },
+      { label: "加速度 a", desc: "调整刹车减速度", unit: "m/s²", min: 1, max: 20, step: 1, value: 5, prefix: "−" }
     ],
     steps: [
       ["题干条件", "v₀ = 20m/s，a = −5m/s²，v = 0", "先识别初速度、刹车加速度和末速度。"],
@@ -109,9 +109,17 @@ const state = {
   toastTimer: null,
   demoTimers: [],
   generationTimers: [],
+  generationStages: null,
   autoDemoTimer: null,
   userGeneratedOnce: false,
   autoDemoStarted: false
+};
+
+const PHYSICS_BRAKE_LIMITS = {
+  speedMin: 5,
+  speedMax: 80,
+  accelMin: 1,
+  accelMax: 20
 };
 
 const elements = {
@@ -119,6 +127,8 @@ const elements = {
   car: $("#car"),
   brakeTrace: $("#brakeTrace"),
   distanceFlag: $("#distanceFlag"),
+  roadStopLine: $("#roadStopLine"),
+  ruler: $("#ruler"),
   metricValues: [$("#speedValue"), $("#distanceValue"), $("#timeValue")],
   metricLabels: [$("#metricLabel1"), $("#metricLabel2"), $("#metricLabel3")],
   metricUnits: [$("#metricUnit1"), $("#metricUnit2"), $("#metricUnit3")],
@@ -134,6 +144,8 @@ const elements = {
   stopDistanceLabel: $("#stopDistanceLabel"),
   sceneTip: $("#sceneTip"),
   mentorMessage: $("#mentorMessage"),
+  mentorFeedback: $("#mentorFeedback"),
+  parseFeedback: $("#parseFeedback"),
   toast: $("#toast"),
   generationOverlay: $("#generationOverlay"),
   generationStatus: $("#generationStatus"),
@@ -142,14 +154,240 @@ const elements = {
 };
 
 const GENERATION_STAGES = [
-  { text: "识别题干条件与问题目标", progress: 28 },
-  { text: "匹配可视化实验模板", progress: 63 },
-  { text: "生成实验场景、公式与思维链", progress: 100 }
+  { label: "识别条件", text: "识别题干条件与问题目标", progress: 28 },
+  { label: "匹配实验模板", text: "匹配可视化实验模板", progress: 63 },
+  { label: "生成实验场景", text: "生成实验场景、公式与思维链", progress: 100 }
 ];
 
 function config() {
   return SUBJECTS[state.subject];
 }
+
+function smartNumber(value, decimals = 1) {
+  const rounded = Number(Number(value).toFixed(decimals));
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(decimals);
+}
+
+function physicsBrakeModel(v0 = state.p1, aAbs = state.p2) {
+  const stopTime = v0 / aAbs;
+  const stopDistance = (v0 * v0) / (2 * aAbs);
+  return { v0, aAbs, stopTime, stopDistance };
+}
+
+function physicsVisualDistanceMax(stopDistance = physicsBrakeModel().stopDistance) {
+  const target = Math.max(40, stopDistance);
+  const scales = [40, 80, 120, 160, 240, 320, 480, 640];
+  return scales.find(scale => target <= scale) || Math.ceil(target / 160) * 160;
+}
+
+function physicsStopLeftPercent(stopDistance = physicsBrakeModel().stopDistance) {
+  const start = 8;
+  const end = 86;
+  const visualMax = physicsVisualDistanceMax(stopDistance);
+  const cappedDistance = Math.max(0, Math.min(visualMax, stopDistance));
+  return start + (cappedDistance / visualMax) * (end - start);
+}
+
+function physicsRoadWidth() {
+  const road = elements.car?.parentElement;
+  return road?.clientWidth || road?.getBoundingClientRect().width || 1;
+}
+
+function physicsStopLeftPx(stopDistance = physicsBrakeModel().stopDistance) {
+  return (physicsStopLeftPercent(stopDistance) / 100) * physicsRoadWidth();
+}
+
+function carNoseOffsetPx() {
+  const carWidth = elements.car?.offsetWidth || 88;
+  return carWidth * 1.05;
+}
+
+function updatePhysicsRuler(stopDistance = physicsBrakeModel().stopDistance) {
+  if (!elements.ruler) return;
+  const visualMax = physicsVisualDistanceMax(stopDistance);
+  elements.ruler.innerHTML = [0, 0.25, 0.5, 0.75, 1].map((ratio, index) => {
+    const value = smartNumber(visualMax * ratio);
+    return `<span>${value}${index === 4 ? " m" : ""}</span>`;
+  }).join("");
+}
+
+function setPhysicsStopMarker(stopDistance = physicsBrakeModel().stopDistance) {
+  const leftPx = physicsStopLeftPx(stopDistance);
+  if (elements.roadStopLine) {
+    elements.roadStopLine.style.left = `${leftPx}px`;
+    const lineRect = elements.roadStopLine.getBoundingClientRect();
+    const areaRect = elements.distanceFlag.parentElement.getBoundingClientRect();
+    const lineCenter = lineRect.left + lineRect.width / 2 - areaRect.left;
+    elements.distanceFlag.style.left = `${lineRect.width && areaRect.width ? lineCenter : leftPx}px`;
+  } else {
+    elements.distanceFlag.style.left = `${leftPx}px`;
+  }
+  updatePhysicsRuler(stopDistance);
+}
+
+function buildPhysicsBrakeContent(v0 = state.p1, aAbs = state.p2) {
+  const model = physicsBrakeModel(v0, aAbs);
+  const vText = smartNumber(model.v0);
+  const aText = smartNumber(model.aAbs);
+  const tText = smartNumber(model.stopTime);
+  const sText = smartNumber(model.stopDistance);
+  const challengeSpeed = smartNumber(model.v0 * 1.5);
+
+  return {
+    description: `从题目生成刹车实验：速度从 ${vText}m/s 逐步归零，停止点对应 ${sText}m。`,
+    params: [
+      { label: "初速度 v₀", desc: "调整车辆起始速度", unit: "m/s", min: PHYSICS_BRAKE_LIMITS.speedMin, max: PHYSICS_BRAKE_LIMITS.speedMax, step: 1, value: model.v0 },
+      { label: "加速度 a", desc: "调整刹车减速度", unit: "m/s²", min: PHYSICS_BRAKE_LIMITS.accelMin, max: PHYSICS_BRAKE_LIMITS.accelMax, step: 1, value: model.aAbs, prefix: "−" }
+    ],
+    steps: [
+      ["题干条件", `v₀ = ${vText}m/s，a = −${aText}m/s²，v = 0`, "先识别初速度、刹车加速度和末速度。"],
+      ["选择公式", "v² − v₀² = 2as", "题目没有给出时间，所以选择不含 t 的速度位移公式。"],
+      ["代入求解", `0² − ${vText}² = 2×(−${aText})×s`, `计算得到刹车距离 s = ${sText}m。`],
+      ["现象验证", `速度归零，停止点 ${sText}m`, "结果与实验停止点一致。"]
+    ],
+    mentor: `为什么这里选 <strong>v² − v₀² = 2as</strong>？因为题目没有给时间，却给了初速度 ${vText}m/s、末速度 0 和加速度 −${aText}m/s²。`,
+    hint: "小提示：题目给出了初速度、末速度和加速度，但没有给时间。哪条公式不含 t？",
+    challenge: `如果初速度变为 <strong>${challengeSpeed}m/s</strong>，刹车距离会怎样变化？`,
+    generationStages: [
+      { label: "识别条件", text: `识别题干条件：v₀ = ${vText}m/s，a = −${aText}m/s²`, progress: 28 },
+      { label: "匹配模板", text: "匹配刹车实验模板：速度递减至 0", progress: 63 },
+      { label: "锁定停止点", text: `生成可视化过程：停止点锁定 ${sText}m`, progress: 100 }
+    ],
+    recognitionText: `初速度 ${vText}m/s｜刹车加速度 ${aText}m/s²｜停止距离 ${sText}m`,
+    stopTimeText: tText,
+    stopDistanceText: sText
+  };
+}
+
+function buildPhysicsBrakeQuestionText(v0 = state.p1, aAbs = state.p2) {
+  return `一辆汽车以 ${smartNumber(v0)}m/s 的速度行驶，紧急刹车后加速度大小为 ${smartNumber(aAbs)}m/s²，求刹车距离。`;
+}
+
+function syncPhysicsBrakeContent(v0 = state.p1, aAbs = state.p2) {
+  const content = buildPhysicsBrakeContent(v0, aAbs);
+  const physics = SUBJECTS["物理"];
+  physics.description = content.description;
+  physics.params = content.params;
+  physics.steps = content.steps;
+  physics.mentor = content.mentor;
+  physics.hint = content.hint;
+  physics.challenge = content.challenge;
+  physics.generationStages = content.generationStages;
+  physics.recognitionText = content.recognitionText;
+  return physicsBrakeModel(v0, aAbs);
+}
+
+function hideMentorFeedback() {
+  if (!elements.mentorFeedback) return;
+  elements.mentorFeedback.className = "mentor-feedback";
+  elements.mentorFeedback.innerHTML = "";
+}
+
+function showMentorFormulaFeedback() {
+  if (!elements.mentorFeedback) return;
+  const content = buildPhysicsBrakeContent();
+  elements.mentorFeedback.className = "mentor-feedback show formula";
+  elements.mentorFeedback.innerHTML = `
+    <span>核心公式</span>
+    <strong>v² − v₀² = 2as</strong>
+    <p>题目没有给时间 t，所以先用速度—位移关系。代入后可得到停止距离 <b>${content.stopDistanceText}m</b>。</p>
+  `;
+}
+
+function showMentorChallengeFeedback(previous, next) {
+  if (!elements.mentorFeedback) return;
+  elements.mentorFeedback.className = "mentor-feedback show challenge";
+  elements.mentorFeedback.innerHTML = `
+    <span>变式题已加载</span>
+    <strong>题目参数已同步更新</strong>
+    <p>初速度 <em>${smartNumber(previous.v0)} → ${smartNumber(next.v0)}m/s</em>｜停止距离 <em>${smartNumber(previous.stopDistance)} → ${smartNumber(next.stopDistance)}m</em></p>
+  `;
+}
+
+function nextPhysicsChallengeSpeed(currentSpeed) {
+  let next = Math.round(currentSpeed * 1.5);
+  if (next > PHYSICS_BRAKE_LIMITS.speedMax || next === currentSpeed) {
+    next = Math.round(currentSpeed * 0.75);
+  }
+  if (next === currentSpeed) next += currentSpeed < PHYSICS_BRAKE_LIMITS.speedMax ? 5 : -5;
+  return Math.max(PHYSICS_BRAKE_LIMITS.speedMin, Math.min(PHYSICS_BRAKE_LIMITS.speedMax, next));
+}
+
+function normalizeQuestionText(text) {
+  return String(text || "")
+    .replace(/[０-９]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xfee0))
+    .replace(/．/g, ".")
+    .replace(/[－−–—]/g, "-")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function firstNumberByPatterns(text, patterns) {
+  for (const pattern of patterns) {
+    const match = text.match(pattern);
+    if (match) return Number(match[1]);
+  }
+  return null;
+}
+
+function parsePhysicsBrakeQuestion(text) {
+  const normalized = normalizeQuestionText(text);
+  const failMessage = "暂未识别该题型，请尝试输入含有初速度和刹车加速度的刹车距离题。";
+  if (!normalized) return { ok: false, message: failMessage };
+  if (!/刹车|制动|减速|减速度|停止|停下|停车/.test(normalized)) {
+    return { ok: false, message: failMessage };
+  }
+
+  let v0 = firstNumberByPatterns(normalized, [
+    /(?:初速度|初速|v\s*0|v₀)\s*(?:为|是|=|:|：)?\s*(-?\d+(?:\.\d+)?)\s*m\s*\/\s*s/i,
+    /以\s*(-?\d+(?:\.\d+)?)\s*m\s*\/\s*s\s*(?:的)?速度/i,
+    /(?:^|[，,。；;\s])速度(?:大小)?\s*(?:为|是|=|:|：)\s*(-?\d+(?:\.\d+)?)\s*m\s*\/\s*s/i
+  ]);
+
+  if (v0 === null) {
+    const speedMatches = [...normalized.matchAll(/(-?\d+(?:\.\d+)?)\s*m\s*\/\s*s(?!\s*(?:²|2|\^\s*2))/gi)];
+    if (speedMatches.length) v0 = Number(speedMatches[0][1]);
+  }
+
+  let aAbs = firstNumberByPatterns(normalized, [
+    /(?:刹车|制动)?\s*(?:加速度大小|加速度|减速度|减速加速度|制动加速度)\s*(?:大小)?\s*(?:为|是|=|:|：)?\s*(-?\d+(?:\.\d+)?)/i,
+    /(?:^|[，,；;\s])a\s*(?:=|为|是|:|：)\s*(-?\d+(?:\.\d+)?)/i
+  ]);
+
+  if (aAbs === null) {
+    const accelMatches = [...normalized.matchAll(/(-?\d+(?:\.\d+)?)\s*m\s*\/\s*s\s*(?:²|2|\^\s*2)/gi)];
+    if (accelMatches.length) aAbs = Number(accelMatches[0][1]);
+  }
+
+  if (!Number.isFinite(v0) || !Number.isFinite(aAbs)) {
+    return { ok: false, message: failMessage };
+  }
+
+  v0 = Math.abs(v0);
+  aAbs = Math.abs(aAbs);
+  if (v0 <= 0 || aAbs <= 0) return { ok: false, message: failMessage };
+
+  if (v0 < PHYSICS_BRAKE_LIMITS.speedMin || v0 > PHYSICS_BRAKE_LIMITS.speedMax) {
+    return { ok: false, message: `识别到初速度 ${smartNumber(v0)}m/s，但当前演示范围为 ${PHYSICS_BRAKE_LIMITS.speedMin}–${PHYSICS_BRAKE_LIMITS.speedMax}m/s。` };
+  }
+  if (aAbs < PHYSICS_BRAKE_LIMITS.accelMin || aAbs > PHYSICS_BRAKE_LIMITS.accelMax) {
+    return { ok: false, message: `识别到刹车加速度 ${smartNumber(aAbs)}m/s²，但当前演示范围为 ${PHYSICS_BRAKE_LIMITS.accelMin}–${PHYSICS_BRAKE_LIMITS.accelMax}m/s²。` };
+  }
+
+  const model = physicsBrakeModel(v0, aAbs);
+  return {
+    ok: true,
+    subject: "物理",
+    type: "braking_distance",
+    v0,
+    aAbs,
+    stopTime: model.stopTime,
+    stopDistance: model.stopDistance,
+    message: `已识别：初速度 ${smartNumber(v0)}m/s，刹车加速度 ${smartNumber(aAbs)}m/s²`
+  };
+}
+
+window.parsePhysicsBrakeQuestion = parsePhysicsBrakeQuestion;
 
 function duration() {
   if (state.subject === "物理") return state.p1 / state.p2;
@@ -164,7 +402,9 @@ function valuesAt(time) {
   if (state.subject === "物理") {
     const speed = Math.max(0, state.p1 - state.p2 * t);
     const distance = state.p1 * t - 0.5 * state.p2 * t * t;
-    return { progress: distance / ((state.p1 * state.p1) / (2 * state.p2)), timelineProgress: t / duration(), metrics: [speed, distance, t] };
+    const stopDistance = (state.p1 * state.p1) / (2 * state.p2);
+    const experimentProgress = Math.min(1, distance / stopDistance);
+    return { progress: experimentProgress, experimentProgress, timelineProgress: t / duration(), metrics: [speed, distance, t] };
   }
 
   if (state.subject === "化学") {
@@ -203,9 +443,16 @@ function updateSubjectVisuals(values) {
   elements.scene.style.setProperty("--bio-travel-mid", `${values.progress * 235}px`);
 
   if (state.subject === "物理") {
-    const trackProgress = 8 + values.progress * 78;
-    elements.car.style.left = `${trackProgress}%`;
-    elements.brakeTrace.style.width = `${Math.max(0, trackProgress - 8)}%`;
+    const roadWidth = physicsRoadWidth();
+    const startLeftPx = roadWidth * 0.08;
+    const startTracePx = roadWidth * 0.09;
+    const noseOffsetPx = carNoseOffsetPx();
+    const startNosePx = startLeftPx + noseOffsetPx;
+    const stopNosePx = Math.max(startNosePx, physicsStopLeftPx());
+    const nosePx = startNosePx + (stopNosePx - startNosePx) * (values.experimentProgress ?? values.progress);
+    const carLeftPx = nosePx - noseOffsetPx;
+    elements.car.style.left = `${carLeftPx}px`;
+    elements.brakeTrace.style.width = `${Math.max(0, nosePx - startTracePx)}px`;
     elements.car.classList.toggle("moving", state.playing && values.metrics[0] > 0);
   }
 
@@ -243,7 +490,8 @@ function updateScene() {
   elements.currentTime.textContent = formatTime(state.time);
   updateSubjectVisuals(values);
 
-  if (values.progress >= 1) {
+  const completed = (values.timelineProgress ?? values.progress) >= 1;
+  if (completed) {
     pauseExperiment();
     const conclusions = {
       "物理": `车辆在 ${duration().toFixed(1)} 秒后停止，刹车距离为 ${values.metrics[1].toFixed(1)} 米。`,
@@ -268,7 +516,7 @@ function renderReasoning() {
       <i><svg viewBox="0 0 24 24">${icon}</svg></i>
     </button>`;
   }).join("");
-  $("#reasonProgress").textContent = state.reasonStep;
+  setReasonProgress(state.reasonStep);
 }
 
 function setActiveSubjectTab(subject) {
@@ -282,12 +530,13 @@ function setActiveSubjectTab(subject) {
 function updateFormulaSpotlight(subject) {
   const spotlight = $(".formula-spotlight");
   if (!spotlight) return;
+  const physics = buildPhysicsBrakeContent();
 
   const formulas = {
     "物理": [
       "核心公式",
       "v² − v₀² = 2as",
-      "0² − 20² = 2 × (−5) × s，得到 s = 40m"
+      `0² − ${smartNumber(state.p1)}² = 2 × (−${smartNumber(state.p2)}) × s，得到 s = ${physics.stopDistanceText}m`
     ],
     "化学": [
       "速率关系",
@@ -314,6 +563,14 @@ function updateFormulaSpotlight(subject) {
   if (labelEl) labelEl.textContent = label;
   if (formulaEl) formulaEl.textContent = formula;
   if (descEl) descEl.textContent = desc;
+}
+
+function setReasonProgress(step) {
+  const progress = Math.max(0, Math.min(4, Number(step) || 0));
+  const progressEl = $("#reasonProgress");
+  if (!progressEl) return;
+  progressEl.textContent = String(progress);
+  progressEl.parentElement.style.setProperty("--reason-progress", `${(progress / 4) * 100}%`);
 }
 
 function updateGreeting() {
@@ -352,10 +609,48 @@ function formatParam(param, value) {
   return `${param.prefix || ""}${Number(value).toFixed(decimals)}`;
 }
 
+function setRecognitionFeedback(result, isError = false) {
+  if (!elements.parseFeedback) return;
+  elements.parseFeedback.classList.add("show");
+  elements.parseFeedback.classList.toggle("error", isError);
+  if (isError) {
+    elements.parseFeedback.innerHTML = `<span>识别提示</span><strong>${result.message}</strong>`;
+    return;
+  }
+  const content = buildPhysicsBrakeContent(result.v0, result.aAbs);
+  elements.parseFeedback.innerHTML = `<span>识别结果</span><strong>${content.recognitionText}</strong>`;
+}
+
+function clearRecognitionFeedback() {
+  if (!elements.parseFeedback) return;
+  elements.parseFeedback.classList.remove("show", "error");
+  elements.parseFeedback.innerHTML = "";
+}
+
+function syncPhysicsControlsFromState() {
+  pauseExperiment();
+  state.time = 0;
+  const current = SUBJECTS["物理"];
+  current.params.forEach((param, index) => {
+    elements.paramLabels[index].textContent = param.label;
+    elements.paramDescriptions[index].textContent = param.desc;
+    elements.paramUnits[index].textContent = param.unit;
+    setRange(elements.ranges[index], param);
+    elements.paramValues[index].textContent = formatParam(param, index === 0 ? state.p1 : state.p2);
+  });
+  elements.totalTime.textContent = formatTime(duration());
+  const content = buildPhysicsBrakeContent();
+  elements.stopDistanceLabel.textContent = `${content.stopDistanceText} m`;
+  setPhysicsStopMarker();
+  elements.currentTime.textContent = "00:00";
+  elements.timeline.value = 0;
+  if (state.hasGenerated) updateScene();
+}
+
 function renderWaitingReasoning() {
   $(".side-card-header .section-kicker").textContent = "等待题目解析";
   $(".side-card-header h2").textContent = "思维链将在生成后出现";
-  $("#reasonProgress").textContent = "0";
+  setReasonProgress(0);
   const spotlight = $(".formula-spotlight");
   if (spotlight) {
     $("span", spotlight).textContent = "等待生成";
@@ -373,6 +668,7 @@ function renderWaitingReasoning() {
       <i><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></i>
     </button>`).join("");
   elements.mentorMessage.innerHTML = "生成实验后，我会根据题目给出关键追问、提示和变式迁移。";
+  hideMentorFeedback();
 }
 
 function applyWaitingState(subject = state.subject, options = {}) {
@@ -381,8 +677,14 @@ function applyWaitingState(subject = state.subject, options = {}) {
   state.hasGenerated = false;
   state.subject = subject;
   state.reasonStep = 0;
+  if (subject === "物理" && options.presetQuestion) {
+    state.p1 = 20;
+    state.p2 = 5;
+    syncPhysicsBrakeContent();
+  }
   document.body.classList.add("awaiting-generation");
   setActiveSubjectTab(subject);
+  clearRecognitionFeedback();
   if (options.clearInput) $("#questionInput").value = "";
   if (options.presetQuestion) $("#questionInput").value = SUBJECTS[subject]?.question || "";
   $("#experimentTitle").textContent = "等待生成实验";
@@ -407,6 +709,9 @@ function applyWaitingState(subject = state.subject, options = {}) {
 function updateParameters(reset = true) {
   state.p1 = Number(elements.ranges[0].value);
   state.p2 = Number(elements.ranges[1].value);
+  if (state.subject === "物理") {
+    syncPhysicsBrakeContent();
+  }
   config().params.forEach((param, index) => {
     elements.paramValues[index].textContent = formatParam(param, index === 0 ? state.p1 : state.p2);
   });
@@ -414,8 +719,15 @@ function updateParameters(reset = true) {
 
   if (state.subject === "物理") {
     const stop = (state.p1 * state.p1) / (2 * state.p2);
-    elements.stopDistanceLabel.textContent = `${stop.toFixed(0)} m`;
-    elements.distanceFlag.style.left = `${Math.min(90, 46 + stop)}%`;
+    const content = buildPhysicsBrakeContent();
+    elements.stopDistanceLabel.textContent = `${content.stopDistanceText} m`;
+    setPhysicsStopMarker(stop);
+    updateFormulaSpotlight("物理");
+    if (state.hasGenerated) {
+      renderReasoning();
+      elements.mentorMessage.innerHTML = config().mentor;
+      setRecognitionFeedback({ ok: true, v0: state.p1, aAbs: state.p2 });
+    }
   }
   if (reset) resetExperiment();
 }
@@ -426,14 +738,21 @@ function applySubject(subject, updateQuestion = true) {
   document.body.classList.remove("awaiting-generation");
   state.hasGenerated = true;
   state.subject = subject;
+  if (subject === "物理" && updateQuestion) {
+    state.p1 = 20;
+    state.p2 = 5;
+    syncPhysicsBrakeContent();
+  }
   state.reasonStep = 1;
   state.favorite = false;
   updateFormulaSpotlight(subject);
+  hideMentorFeedback();
   const current = config();
   $(".side-card-header .section-kicker").textContent = "公式 × 过程联动";
   $(".side-card-header h2").textContent = "解题思维链";
 
   setActiveSubjectTab(subject);
+  if (subject !== "物理") clearRecognitionFeedback();
   if (updateQuestion) $("#questionInput").value = current.question;
   $("#experimentTitle").textContent = current.title;
   $("#problemText").textContent = current.description;
@@ -515,7 +834,8 @@ function clearGenerationTimers() {
 }
 
 function setGenerationStage(index) {
-  const stage = GENERATION_STAGES[index];
+  const stages = state.generationStages || GENERATION_STAGES;
+  const stage = stages[index];
   if (!stage) return;
   elements.generationStatus.textContent = stage.text;
   elements.generationProgress.style.width = `${stage.progress}%`;
@@ -524,11 +844,16 @@ function setGenerationStage(index) {
   });
 }
 
-function showGenerationOverlay() {
+function showGenerationOverlay(stages = null) {
   clearGenerationTimers();
+  state.generationStages = stages;
   setDemoStep(2, "识别题干并匹配实验");
   elements.generationOverlay.classList.add("show");
   elements.generationOverlay.setAttribute("aria-hidden", "false");
+  const activeStages = state.generationStages || GENERATION_STAGES;
+  $$(".generation-steps span").forEach((item, index) => {
+    item.textContent = activeStages[index]?.label || GENERATION_STAGES[index]?.label || item.textContent;
+  });
   setGenerationStage(0);
 
   return new Promise(resolve => {
@@ -542,6 +867,7 @@ function showGenerationOverlay() {
 
 function hideGenerationOverlay() {
   clearGenerationTimers();
+  state.generationStages = null;
   elements.generationOverlay.classList.remove("show");
   elements.generationOverlay.setAttribute("aria-hidden", "true");
 }
@@ -556,17 +882,26 @@ function playDemoSequence() {
   clearDemoTimers();
   resetExperiment();
   setDemoStep(3, "观察实验过程");
-  setReasoningStep(1, "<span>观察目标</span>先看速度如何从 20m/s 逐步归零。");
+  const content = buildPhysicsBrakeContent();
+  const vText = smartNumber(state.p1);
+  const aText = smartNumber(state.p2);
+  const sText = content.stopDistanceText;
+  const playStartMs = 820;
+  const experimentMs = (duration() / state.playbackRate) * 1000;
+  const solveMs = playStartMs + Math.max(1200, experimentMs * 0.38);
+  const verifyMs = playStartMs + Math.max(2400, experimentMs * 0.72);
+  const finishMs = playStartMs + experimentMs + 160;
+  setReasoningStep(1, `<span>观察目标</span>先看速度如何从 ${vText}m/s 逐步归零。`);
   state.demoTimers = [
     setTimeout(() => setReasoningStep(2, "<span>公式选择</span>没有给时间 t，直接用速度—位移关系式。"), 520),
     setTimeout(() => playExperiment(), 820),
-    setTimeout(() => setReasoningStep(3, "<span>代入求解</span>0² − 20² = 2 × (−5) × s，所以 s = 40m。"), 1900),
-    setTimeout(() => setReasoningStep(4, "<span>现象验证</span>小车速度归零时，停止点正好对应 40m。"), 3400),
+    setTimeout(() => setReasoningStep(3, `<span>代入求解</span>0² − ${vText}² = 2 × (−${aText}) × s，所以 s = ${sText}m。`), solveMs),
+    setTimeout(() => setReasoningStep(4, `<span>现象验证</span>小车速度归零时，停止点对应 ${sText}m。`), verifyMs),
     setTimeout(() => {
       state.time = duration();
       updateScene();
-      setReasoningStep(4, "<span>现象验证</span>速度归零，刹车距离稳定对应 40m。");
-    }, 5200)
+      setReasoningStep(4, `<span>现象验证</span>速度归零，刹车距离稳定对应 ${sText}m。`);
+    }, finishMs)
   ];
 }
 
@@ -574,7 +909,7 @@ function detectSubject(question) {
   if (/反应|浓度|溶液|化学/.test(question)) return "化学";
   if (/函数|抛物线|斜率|切线|数学/.test(question)) return "数学";
   if (/细胞|生物|膜|DNA/.test(question)) return "生物";
-  if (/汽车|速度|加速度|运动|受力|落下|物理/.test(question)) return "物理";
+  if (/汽车|车辆|速度|加速度|减速度|刹车|制动|停止|运动|受力|落下|物理/.test(question)) return "物理";
   return state.subject;
 }
 
@@ -644,36 +979,44 @@ $("#generateButton").addEventListener("click", async () => {
   if (button.classList.contains("loading")) return;
   state.userGeneratedOnce = true;
   if (state.autoDemoTimer) clearTimeout(state.autoDemoTimer);
-  const demoMode = document.body.classList.contains("demo-mode");
   let question = $("#questionInput").value.trim();
   if (!question) {
     showToast("请先输入一道理科题目");
     return;
   }
-  if (demoMode) {
-    question = SUBJECTS["物理"].question;
-    $("#questionInput").value = question;
+
+  const detected = getGenerationSubject(question);
+  let physicsParse = null;
+  if (detected === "物理") {
+    physicsParse = parsePhysicsBrakeQuestion(question);
+    if (!physicsParse.ok) {
+      setRecognitionFeedback(physicsParse, true);
+      showToast(physicsParse.message);
+      return;
+    }
+    state.subject = "物理";
+    state.p1 = physicsParse.v0;
+    state.p2 = physicsParse.aAbs;
+    syncPhysicsBrakeContent(physicsParse.v0, physicsParse.aAbs);
+    syncPhysicsControlsFromState();
+    setRecognitionFeedback(physicsParse);
   }
+
   clearDemoTimers();
   button.classList.add("loading");
   $("span", button).textContent = "生成中";
-  await showGenerationOverlay();
-  const detected = demoMode ? "物理" : getGenerationSubject(question);
+  await showGenerationOverlay(physicsParse ? SUBJECTS["物理"].generationStages : null);
   applySubject(detected, false);
   $("#problemText").textContent = question;
+  if (physicsParse) setRecognitionFeedback(physicsParse);
   state.generated = Math.min(3, state.generated + 1);
-  $("#freeCountCurrent").textContent = state.generated;
   button.classList.remove("loading");
   $("span", button).textContent = "生成实验";
   hideGenerationOverlay();
-  setDemoStep(3, "观察实验过程");
-  showToast(`${detected}实验已生成，正在播放可视化过程`);
-  if (detected === "物理") {
-    playDemoSequence();
-  } else {
-    resetExperiment();
-    playExperiment();
-  }
+  clearDemoTimers();
+  resetExperiment();
+  setDemoStep(3, "点击播放或请求 AI 导师提示");
+  showToast(`${detected}实验已生成，点击播放开始观察`);
 });
 
 $(".reasoning-steps").addEventListener("click", event => {
@@ -689,18 +1032,63 @@ $(".reasoning-steps").addEventListener("click", event => {
 });
 
 $("#hintButton").addEventListener("click", () => {
+  if (!state.hasGenerated) {
+    showToast("请先生成实验，再向 AI 导师提问");
+    return;
+  }
   setDemoStep(5, "AI 导师追问与迁移");
   elements.mentorMessage.innerHTML = config().hint;
+  if (state.subject === "物理") {
+    updateFormulaSpotlight("物理");
+    setReasoningStep(2, `<span>AI 提示</span>题目没有给时间 t，先找不含 t 的速度—位移公式。`);
+    showMentorFormulaFeedback();
+    showToast("核心公式已浮现");
+    return;
+  }
+  hideMentorFeedback();
   showToast("AI 导师给出了一条启发式提示");
 });
 
 $("#challengeButton").addEventListener("click", () => {
+  if (!state.hasGenerated) {
+    showToast("请先生成实验，再加载变式挑战");
+    return;
+  }
   setDemoStep(5, "AI 导师追问与迁移");
+  clearDemoTimers();
+
+  if (state.subject === "物理") {
+    const previous = physicsBrakeModel();
+    const nextV = nextPhysicsChallengeSpeed(state.p1);
+    const nextA = state.p2;
+    const question = buildPhysicsBrakeQuestionText(nextV, nextA);
+    const next = physicsBrakeModel(nextV, nextA);
+
+    $("#questionInput").value = question;
+    $("#problemText").textContent = question;
+    state.p1 = nextV;
+    state.p2 = nextA;
+    syncPhysicsBrakeContent(nextV, nextA);
+    syncPhysicsControlsFromState();
+    updateFormulaSpotlight("物理");
+    setRecognitionFeedback({ ok: true, v0: nextV, aAbs: nextA });
+    setReasoningStep(3, `<span>变式挑战</span>题目参数已更新，先预测停止距离会怎样变化。`);
+    elements.mentorMessage.innerHTML = `我已把题目改成初速度 <strong>${smartNumber(nextV)}m/s</strong>、加速度 <strong>−${smartNumber(nextA)}m/s²</strong>。先别急着播放，预测一下停止距离为什么会变成 <strong>${smartNumber(next.stopDistance)}m</strong>？`;
+    showMentorChallengeFeedback(previous, next);
+    showToast(`变式题已同步：停止距离 ${smartNumber(next.stopDistance)}m`);
+    return;
+  }
+
+  const challengeMessage = config().challenge;
   const challengeValues = { "物理": 30, "化学": 55, "数学": 2, "生物": 37 };
   const rangeIndex = state.subject === "物理" || state.subject === "生物" ? 0 : 1;
-  elements.ranges[rangeIndex].value = challengeValues[state.subject];
+  const nextValue = state.subject === "物理"
+    ? Math.min(PHYSICS_BRAKE_LIMITS.speedMax, Math.round(state.p1 * 1.5))
+    : challengeValues[state.subject];
+  elements.ranges[rangeIndex].value = nextValue;
   updateParameters();
-  elements.mentorMessage.innerHTML = config().challenge;
+  elements.mentorMessage.innerHTML = challengeMessage;
+  hideMentorFeedback();
   showToast("变式挑战已加载");
 });
 
@@ -788,6 +1176,12 @@ document.addEventListener("keydown", event => {
     state.playing ? pauseExperiment() : playExperiment();
   }
   if (event.code === "Escape") closeModal();
+});
+
+window.addEventListener("resize", () => {
+  if (state.subject !== "物理") return;
+  setPhysicsStopMarker();
+  updateScene();
 });
 
 updateGreeting();
