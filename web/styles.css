@@ -1891,6 +1891,12 @@ input[type="range"] {
   background: radial-gradient(circle at 75% 18%, rgba(100,255,218,.22), transparent 28%), linear-gradient(145deg, #eafdf9, #e9f3ff 68%, #dbe8f3);
 }
 
+.scene.subject-chemistry .metric-panel {
+  top: 52px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 24px rgba(58, 90, 143, 0.11);
+}
+
 .subject-chemistry .chemistry-stage {
   display: block;
 }
@@ -2025,29 +2031,21 @@ input[type="range"] {
 .iron-wire-wrap {
   position: absolute;
   z-index: 11;
-  top: 0;
+  top: 8px;
   left: 50%;
-  width: 90px;
+  width: 52px;
   height: 210px;
   transform: translateX(-50%) translateY(calc(var(--iron-drop, 0) * 58px));
   transition: transform 180ms linear;
 }
 
 .wire-hook {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 72px;
-  height: 30px;
-  transform: translateX(-50%);
-  border: 3px solid rgba(69, 90, 108, .56);
-  border-bottom: 0;
-  border-radius: 40px 40px 0 0;
+  display: none;
 }
 
 .iron-wire {
   position: absolute;
-  top: 22px;
+  top: 0;
   left: 50%;
   width: calc(9px * var(--iron-scale, 1));
   height: calc(126px * var(--iron-scale, 1));
@@ -2082,11 +2080,13 @@ input[type="range"] {
 }
 
 .chem-stage-note {
+  display: none;
   position: absolute;
   z-index: 12;
-  bottom: 18px;
-  left: 22px;
-  max-width: 330px;
+  right: 22px;
+  bottom: 124px;
+  left: auto;
+  max-width: 224px;
   padding: 10px 12px;
   border: 1px solid rgba(128, 175, 219, .72);
   border-radius: 14px;
@@ -2104,10 +2104,31 @@ input[type="range"] {
 }
 
 .chem-stage-note strong {
+  display: block;
   color: #253b5a;
   font-size: 12px;
   line-height: 1.45;
-  word-break: keep-all;
+  word-break: normal;
+}
+
+.scene.subject-chemistry .scene-tip {
+  right: auto;
+  bottom: 18px;
+  left: 22px;
+  z-index: 13;
+  max-width: 452px;
+  padding: 10px 12px;
+  font-size: 10px;
+  line-height: 1.45;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 14px 26px rgba(42, 79, 123, .13);
+}
+
+.scene.subject-chemistry .scene-tip span {
+  display: inline;
+  margin: 0 6px 0 0;
+  font-size: 11px;
+  font-weight: 900;
 }
 
 .lab-shelf {
@@ -2264,6 +2285,20 @@ input[type="range"] {
     linear-gradient(145deg, #eef8ff, #f3fbff 60%, #e7f2ef);
 }
 
+body.subject-biology-active:not(.awaiting-generation) .transport,
+body.subject-biology-active:not(.awaiting-generation) .parameters {
+  display: none;
+}
+
+body.subject-biology-active:not(.awaiting-generation) .scene {
+  height: 455px;
+}
+
+.scene.subject-biology .metric-panel,
+.scene.subject-biology .bio-label {
+  display: none;
+}
+
 .subject-biology .biology-stage {
   display: block;
 }
@@ -2271,10 +2306,11 @@ input[type="range"] {
 .cell-explorer {
   position: absolute;
   z-index: 4;
-  inset: 66px 24px 64px;
+  inset: 58px 22px 48px;
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(230px, .72fr);
-  gap: 18px;
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(245px, 1fr) 112px;
+  gap: 12px;
   align-items: stretch;
 }
 
@@ -2289,7 +2325,7 @@ input[type="range"] {
 
 .cell-viewer {
   position: relative;
-  min-height: 250px;
+  min-height: 100%;
   overflow: hidden;
 }
 
@@ -2356,7 +2392,7 @@ input[type="range"] {
 
 .plant-cell-viewport {
   position: absolute;
-  inset: 34px 8px 12px;
+  inset: 32px 16px 26px;
   display: grid;
   place-items: center;
   perspective: 900px;
@@ -2369,12 +2405,29 @@ input[type="range"] {
 
 .plant-cell-model {
   position: relative;
-  width: min(440px, 94%);
+  width: min(500px, 92%);
   height: 245px;
-  transform: scale(.84) rotateX(var(--cell-rotate-x, -4deg)) rotateY(var(--cell-rotate-y, -10deg));
+  transform: scale(.82) rotateX(var(--cell-rotate-x, -4deg)) rotateY(var(--cell-rotate-y, -10deg));
   transform-style: preserve-3d;
   transition: transform 180ms ease;
   animation: none;
+}
+
+.cell-organelle.unavailable,
+.cell-structure-tag.unavailable {
+  display: none;
+}
+
+.animal-only {
+  display: none;
+}
+
+.animal-cell-mode .animal-only {
+  display: block;
+}
+
+.animal-cell-mode {
+  width: min(430px, 88%);
 }
 
 .plant-cell-model.auto-rotate {
@@ -2382,8 +2435,8 @@ input[type="range"] {
 }
 
 @keyframes cell-auto-spin {
-  from { transform: scale(.84) rotateX(var(--cell-rotate-x, -4deg)) rotateY(0deg); }
-  to { transform: scale(.84) rotateX(var(--cell-rotate-x, -4deg)) rotateY(360deg); }
+  from { transform: scale(.82) rotateX(var(--cell-rotate-x, -4deg)) rotateY(0deg); }
+  to { transform: scale(.82) rotateX(var(--cell-rotate-x, -4deg)) rotateY(360deg); }
 }
 
 .cell-wall,
@@ -2391,13 +2444,14 @@ input[type="range"] {
 .cell-cytoplasm {
   position: absolute;
   inset: 0;
+  z-index: 1;
   transform-style: preserve-3d;
   border-radius: 34px 48px 36px 42px / 42px 30px 45px 32px;
   clip-path: polygon(5% 17%, 18% 5%, 82% 7%, 96% 22%, 92% 82%, 75% 94%, 14% 90%, 4% 69%);
 }
 
 .cell-wall {
-  border: 13px solid rgba(49, 174, 114, .82);
+  border: 11px solid rgba(49, 174, 114, .78);
   background:
     linear-gradient(100deg, rgba(255,255,255,.42), transparent 24%, rgba(22, 147, 103, .08) 72%),
     rgba(196, 242, 222, .38);
@@ -2407,14 +2461,34 @@ input[type="range"] {
     0 22px 36px rgba(40, 99, 79, .18);
 }
 
+.animal-cell-mode .cell-wall {
+  display: none;
+}
+
 .cell-membrane {
+  z-index: 2;
   inset: 22px 28px;
   border: 5px solid rgba(47, 111, 221, .44);
   background: rgba(255,255,255,.12);
   transform: translateZ(14px);
 }
 
+.animal-cell-mode .cell-membrane {
+  inset: 10px 22px 16px 18px;
+  border: 7px solid rgba(69, 145, 230, .58);
+  border-radius: 48% 52% 45% 55% / 45% 38% 62% 55%;
+  clip-path: none;
+  background:
+    radial-gradient(circle at 30% 26%, rgba(255,255,255,.72), transparent 18%),
+    radial-gradient(circle at 72% 64%, rgba(118, 210, 237, .2), transparent 28%),
+    rgba(219, 243, 252, .42);
+  box-shadow:
+    inset 0 0 28px rgba(255,255,255,.72),
+    0 22px 34px rgba(43, 99, 143, .16);
+}
+
 .cell-cytoplasm {
+  z-index: 3;
   inset: 34px 43px;
   border: 1px dashed rgba(88, 139, 198, .28);
   background:
@@ -2425,12 +2499,23 @@ input[type="range"] {
   pointer-events: auto;
 }
 
+.animal-cell-mode .cell-cytoplasm {
+  inset: 26px 46px 30px 42px;
+  border: 1px dashed rgba(82, 151, 200, .22);
+  border-radius: 48% 52% 45% 55% / 45% 38% 62% 55%;
+  clip-path: none;
+  background:
+    radial-gradient(circle at 40% 38%, rgba(255,255,255,.62), transparent 18%),
+    rgba(215, 240, 248, .34);
+}
+
 .cell-vacuole {
   position: absolute;
-  right: 78px;
-  top: 62px;
-  width: 188px;
-  height: 118px;
+  z-index: 8;
+  right: 66px;
+  top: 68px;
+  width: 172px;
+  height: 112px;
   border: 3px solid rgba(82, 158, 234, .54);
   border-radius: 42% 58% 49% 51%;
   background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.75), rgba(88, 180, 232, .28));
@@ -2438,12 +2523,18 @@ input[type="range"] {
   transform: translateZ(44px) rotate(-4deg);
 }
 
+.animal-cell-mode .cell-vacuole,
+.animal-cell-mode .chloroplast {
+  display: none;
+}
+
 .cell-nucleus {
   position: absolute;
-  left: 74px;
-  top: 102px;
-  width: 78px;
-  height: 68px;
+  z-index: 14;
+  left: 64px;
+  top: 106px;
+  width: 72px;
+  height: 64px;
   border: 4px solid rgba(118, 90, 216, .4);
   border-radius: 50%;
   background:
@@ -2452,9 +2543,17 @@ input[type="range"] {
   transform: translateZ(58px);
 }
 
+.animal-cell-mode .cell-nucleus {
+  left: 82px;
+  top: 92px;
+  width: 76px;
+  height: 72px;
+}
+
 .chloroplast,
 .mitochondrion {
   position: absolute;
+  z-index: 16;
   border: 0;
   color: transparent;
   font-size: 0;
@@ -2472,9 +2571,9 @@ input[type="range"] {
   box-shadow: inset 0 0 12px rgba(255,255,255,.42), 0 9px 14px rgba(22, 124, 82, .16);
 }
 
-.chloroplast-one { left: 224px; top: 38px; transform: translateZ(70px) rotate(-19deg); }
-.chloroplast-two { left: 82px; top: 54px; transform: translateZ(50px) rotate(18deg) scale(.88); }
-.chloroplast-three { left: 302px; bottom: 50px; transform: translateZ(52px) rotate(23deg) scale(.82); }
+.chloroplast-one { left: 220px; top: 44px; transform: translateZ(70px) rotate(-19deg); }
+.chloroplast-two { left: 72px; top: 62px; transform: translateZ(50px) rotate(18deg) scale(.88); }
+.chloroplast-three { left: 292px; bottom: 54px; transform: translateZ(52px) rotate(23deg) scale(.82); }
 
 .mitochondrion {
   width: 48px;
@@ -2495,19 +2594,71 @@ input[type="range"] {
   content: "";
 }
 
-.mitochondrion-one { left: 172px; top: 178px; transform: translateZ(64px) rotate(-16deg); }
-.mitochondrion-two { right: 50px; top: 112px; transform: translateZ(56px) rotate(21deg) scale(.8); }
+.mitochondrion-one { left: 162px; top: 180px; transform: translateZ(64px) rotate(-16deg); }
+.mitochondrion-two { right: 46px; top: 118px; transform: translateZ(56px) rotate(21deg) scale(.8); }
+
+.animal-cell-mode .mitochondrion-one { left: 214px; top: 166px; transform: translateZ(66px) rotate(-16deg); }
+.animal-cell-mode .mitochondrion-two { right: 76px; top: 72px; transform: translateZ(58px) rotate(21deg) scale(.82); }
+
+.endoplasmic-reticulum {
+  position: absolute;
+  z-index: 12;
+  left: 138px;
+  top: 104px;
+  width: 86px;
+  height: 54px;
+  border: 0;
+  border-radius: 42% 58% 50% 50%;
+  background:
+    repeating-linear-gradient(158deg, rgba(92, 130, 224, .72) 0 4px, transparent 4px 11px),
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,.48), transparent 22%);
+  opacity: .9;
+  transform: translateZ(50px) rotate(-13deg);
+}
+
+.golgi {
+  position: absolute;
+  z-index: 18;
+  right: 26px;
+  top: 96px;
+  width: 84px;
+  height: 56px;
+  border: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 50% 18%, transparent 0 28%, rgba(239, 151, 77, .92) 29% 37%, transparent 38%),
+    radial-gradient(ellipse at 50% 47%, transparent 0 28%, rgba(239, 151, 77, .8) 29% 37%, transparent 38%),
+    radial-gradient(ellipse at 50% 76%, transparent 0 28%, rgba(239, 151, 77, .68) 29% 37%, transparent 38%);
+  filter: drop-shadow(0 8px 12px rgba(190, 104, 48, .14));
+  transform: translateZ(62px) rotate(-8deg);
+}
+
+.ribosome {
+  position: absolute;
+  z-index: 17;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(142, 98, 210, .46);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff, #b588e8 70%);
+  box-shadow: 0 8px 12px rgba(110, 74, 170, .14);
+}
+
+.ribosome-one { left: 256px; top: 56px; transform: translateZ(74px); }
+.ribosome-two { left: 164px; bottom: 58px; transform: translateZ(74px) scale(.86); }
 
 .cell-organelle {
+  position: absolute;
   cursor: pointer;
   outline: none;
+  pointer-events: auto;
 }
 
 .cell-organelle span {
   position: absolute;
   left: 50%;
   bottom: 100%;
-  z-index: 60;
+  z-index: 260;
   transform: translateX(-50%) translateY(-3px);
   white-space: nowrap;
   border: 1px solid rgba(139, 174, 218, .58);
@@ -2518,19 +2669,117 @@ input[type="range"] {
   font-weight: 800;
   background: rgba(255,255,255,.82);
   opacity: 0;
-  pointer-events: none;
+  pointer-events: auto;
   box-shadow: 0 8px 14px rgba(50, 85, 130, .1);
   transition: opacity 160ms ease, transform 160ms ease;
   transform-style: flat;
 }
 
-.cell-organelle:hover span,
-.cell-organelle.active span {
+.cell-wall span,
+.cell-membrane span,
+.cell-cytoplasm span {
+  display: none;
+}
+
+.cell-organelle.hover span,
+.cell-organelle:hover span {
   opacity: 1;
   transform: translateX(-50%) translateY(-8px);
 }
 
+.cell-wall.hover span,
+.cell-wall:hover span,
+.cell-membrane.hover span,
+.cell-membrane:hover span,
+.cell-cytoplasm.hover span,
+.cell-cytoplasm:hover span {
+  transform: translate(0, -4px);
+}
+
+.cell-structure-tags {
+  position: absolute;
+  inset: 0;
+  z-index: 240;
+  pointer-events: none;
+}
+
+.cell-structure-tag {
+  position: absolute;
+  display: block;
+  width: 84px;
+  height: 42px;
+  padding: 0;
+  overflow: visible;
+  color: transparent;
+  font-size: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.cell-structure-tag::after {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  z-index: 320;
+  min-width: max-content;
+  transform: translateX(-50%) translateY(-4px);
+  padding: 4px 8px;
+  color: #24415f;
+  font-size: 10px;
+  font-weight: 900;
+  border: 1px solid rgba(139, 174, 218, .66);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .94);
+  box-shadow: 0 10px 18px rgba(47, 82, 128, .14);
+  opacity: 0;
+  pointer-events: none;
+  content: attr(data-label);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.cell-structure-tag.hover::after,
+.cell-structure-tag:hover::after,
+.cell-structure-tag:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-9px);
+}
+
+.wall-tag {
+  left: 19%;
+  top: 22%;
+}
+
+.membrane-tag {
+  left: 27%;
+  top: 34%;
+}
+
+.cytoplasm-tag {
+  right: 13%;
+  top: 40%;
+}
+
+.wall-tag::after {
+  color: #19724f;
+  border-color: rgba(49, 174, 114, .54);
+}
+
+.membrane-tag::after {
+  color: #225fb4;
+  border-color: rgba(47, 111, 221, .5);
+}
+
+.cytoplasm-tag::after {
+  color: #2c7890;
+  border-color: rgba(88, 139, 198, .48);
+}
+
 .cell-organelle.active {
+  z-index: 80;
   filter: drop-shadow(0 0 14px rgba(34, 98, 243, .45));
 }
 
@@ -2544,6 +2793,7 @@ input[type="range"] {
 }
 
 .cell-selection-badge {
+  display: none;
   position: absolute;
   z-index: 80;
   right: 18px;
@@ -2581,10 +2831,14 @@ input[type="range"] {
 
 .cell-detail-card {
   position: relative;
-  z-index: 8;
-  padding: 18px;
+  z-index: 120;
+  display: grid;
+  padding: 14px 16px;
   color: #4d617a;
   overflow: hidden;
+  grid-template-columns: 126px 1fr;
+  column-gap: 18px;
+  align-items: start;
 }
 
 .cell-detail-card::before {
@@ -2611,6 +2865,7 @@ input[type="range"] {
 
 .cell-detail-card strong {
   display: block;
+  grid-column: 1;
   color: #162a49;
   font-size: 24px;
   line-height: 1.1;
@@ -2618,8 +2873,11 @@ input[type="range"] {
 
 .cell-detail-card dl {
   display: grid;
-  gap: 10px;
-  margin: 16px 0 0;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  grid-template-columns: 84px 1fr;
+  gap: 6px 10px;
+  margin: 0;
 }
 
 .cell-detail-card dt {
@@ -2629,11 +2887,21 @@ input[type="range"] {
 }
 
 .cell-detail-card dd {
-  margin: 3px 0 0;
+  margin: 0;
   color: #2e4360;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
-  line-height: 1.55;
+  line-height: 1.45;
+}
+
+.scene.subject-biology .scene-tip {
+  display: none;
+}
+
+.scene.subject-biology .scene-tip span {
+  margin-right: 6px;
+  font-size: 10px;
+  font-weight: 900;
 }
 
 .bio-label strong {

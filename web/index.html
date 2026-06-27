@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231648e6'/%3E%3Cpath d='M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260626-chem-bio-3">
+  <link rel="stylesheet" href="styles.css?v=20260627-standards-audit-1">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -190,7 +190,6 @@
                   <div class="reaction-bubbles"><i></i><i></i><i></i></div>
                 </div>
                 <div class="iron-wire-wrap" id="ironWireWrap">
-                  <span class="wire-hook"></span>
                   <div class="iron-wire" id="ironWire">
                     <i class="copper-coating" id="copperCoating"></i>
                   </div>
@@ -237,6 +236,15 @@
                       <div class="chloroplast chloroplast-three cell-organelle" data-organelle="chloroplast" role="button" tabindex="0"><span>叶绿体</span></div>
                       <div class="mitochondrion mitochondrion-one cell-organelle" data-organelle="mitochondrion" role="button" tabindex="0"><span>线粒体</span></div>
                       <div class="mitochondrion mitochondrion-two cell-organelle" data-organelle="mitochondrion" role="button" tabindex="0"><span>线粒体</span></div>
+                      <div class="endoplasmic-reticulum animal-only cell-organelle" data-organelle="endoplasmicReticulum" role="button" tabindex="0"><span>内质网</span></div>
+                      <div class="golgi animal-only cell-organelle" data-organelle="golgi" role="button" tabindex="0"><span>高尔基体</span></div>
+                      <div class="ribosome ribosome-one animal-only cell-organelle" data-organelle="ribosome" role="button" tabindex="0"><span>核糖体</span></div>
+                      <div class="ribosome ribosome-two animal-only cell-organelle" data-organelle="ribosome" role="button" tabindex="0"><span>核糖体</span></div>
+                    </div>
+                    <div class="cell-structure-tags" aria-label="细胞边界结构标签">
+                      <button type="button" class="cell-structure-tag wall-tag" data-organelle="cellWall" data-label="细胞壁" aria-label="细胞壁">细胞壁</button>
+                      <button type="button" class="cell-structure-tag membrane-tag" data-organelle="cellMembrane" data-label="细胞膜" aria-label="细胞膜">细胞膜</button>
+                      <button type="button" class="cell-structure-tag cytoplasm-tag" data-organelle="cytoplasm" data-label="细胞质" aria-label="细胞质">细胞质</button>
                     </div>
                   </div>
                   <div class="cell-selection-badge" id="cellSelectionBadge">
@@ -441,6 +449,6 @@
 
   <div class="toast" id="toast"><span></span><p>操作成功</p></div>
 
-  <script src="app.js?v=20260626-chem-bio-3"></script>
+  <script src="app.js?v=20260627-standards-audit-1"></script>
 </body>
 </html>
