@@ -3,6 +3,7 @@
 *.docx
 *.pptx
 *.png
+*.mp4
 ~$*
 outputs/
 前端网页/

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231648e6'/%3E%3Cpath d='M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260623-sync-2">
+  <link rel="stylesheet" href="styles.css?v=20260626-chem-bio-3">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -178,12 +178,29 @@
             </div>
 
             <div class="subject-stage chemistry-stage">
-              <div class="lab-shelf"></div>
-              <div class="chem-flask flask-left"><span></span><i></i><i></i><i></i></div>
-              <div class="chem-flask flask-right"><span></span><i></i><i></i><i></i></div>
-              <div class="molecule molecule-one"></div>
-              <div class="molecule molecule-two"></div>
-              <div class="chem-label"><span>反应速率</span><strong id="chemRate">1.00×</strong></div>
+              <div class="chem-reaction-lab">
+                <div class="chem-beaker">
+                  <div class="beaker-rim"></div>
+                  <div class="cuso4-solution" id="cuso4Solution">
+                    <div class="solution-shine"></div>
+                    <div class="green-transition" id="greenTransition"></div>
+                  </div>
+                  <div class="beaker-wall"></div>
+                  <div class="copper-sediment" id="copperSediment"></div>
+                  <div class="reaction-bubbles"><i></i><i></i><i></i></div>
+                </div>
+                <div class="iron-wire-wrap" id="ironWireWrap">
+                  <span class="wire-hook"></span>
+                  <div class="iron-wire" id="ironWire">
+                    <i class="copper-coating" id="copperCoating"></i>
+                  </div>
+                </div>
+                <div class="chem-stage-note">
+                  <span>实验现象</span>
+                  <strong>铁表面析出红色铜，溶液由蓝色变浅绿色</strong>
+                </div>
+              </div>
+              <div class="chem-label"><span>反应进度</span><strong id="chemRate">Fe限量</strong></div>
             </div>
 
             <div class="subject-stage math-stage">
@@ -199,16 +216,46 @@
             </div>
 
             <div class="subject-stage biology-stage">
-              <div class="cell-shell">
-                <div class="cell-core"></div>
-                <div class="organelle organelle-one"></div>
-                <div class="organelle organelle-two"></div>
-                <div class="organelle organelle-three"></div>
-                <div class="transport-particle particle-one"></div>
-                <div class="transport-particle particle-two"></div>
-                <div class="transport-particle particle-three"></div>
+              <div class="cell-explorer">
+                <div class="cell-viewer">
+                  <div class="cell-viewer-head">
+                    <span>植物细胞 3D 截面</span>
+                    <div class="cell-viewer-actions">
+                      <button type="button" id="cellResetButton">重置视角</button>
+                      <button type="button" id="cellAutoButton">自动旋转</button>
+                    </div>
+                  </div>
+                  <div class="plant-cell-viewport" id="plantCellViewport">
+                    <div class="plant-cell-model" id="plantCellModel" aria-label="植物细胞 3D 截面模型">
+                      <div class="cell-wall cell-organelle" data-organelle="cellWall" role="button" tabindex="0"><span>细胞壁</span></div>
+                      <div class="cell-membrane cell-organelle" data-organelle="cellMembrane" role="button" tabindex="0"><span>细胞膜</span></div>
+                      <div class="cell-cytoplasm cell-organelle" data-organelle="cytoplasm" role="button" tabindex="0"><span>细胞质</span></div>
+                      <div class="cell-vacuole cell-organelle" data-organelle="vacuole" role="button" tabindex="0"><span>液泡</span></div>
+                      <div class="cell-nucleus cell-organelle active" data-organelle="nucleus" role="button" tabindex="0"><span>细胞核</span></div>
+                      <div class="chloroplast chloroplast-one cell-organelle" data-organelle="chloroplast" role="button" tabindex="0"><span>叶绿体</span></div>
+                      <div class="chloroplast chloroplast-two cell-organelle" data-organelle="chloroplast" role="button" tabindex="0"><span>叶绿体</span></div>
+                      <div class="chloroplast chloroplast-three cell-organelle" data-organelle="chloroplast" role="button" tabindex="0"><span>叶绿体</span></div>
+                      <div class="mitochondrion mitochondrion-one cell-organelle" data-organelle="mitochondrion" role="button" tabindex="0"><span>线粒体</span></div>
+                      <div class="mitochondrion mitochondrion-two cell-organelle" data-organelle="mitochondrion" role="button" tabindex="0"><span>线粒体</span></div>
+                    </div>
+                  </div>
+                  <div class="cell-selection-badge" id="cellSelectionBadge">
+                    <span>当前结构</span>
+                    <strong id="cellSelectionName">细胞核</strong>
+                    <p id="cellSelectionFunction">储存遗传信息，控制细胞生命活动</p>
+                  </div>
+                </div>
+                <div class="cell-detail-card" id="cellDetailCard">
+                  <span>结构解析</span>
+                  <strong id="cellDetailName">细胞核</strong>
+                  <dl>
+                    <dt>结构类型</dt><dd id="cellDetailType">遗传控制中心</dd>
+                    <dt>主要作用</dt><dd id="cellDetailFunction">储存遗传信息，控制细胞生命活动</dd>
+                    <dt>记忆点</dt><dd id="cellDetailMemory">细胞核中含有 DNA</dd>
+                  </dl>
+                </div>
               </div>
-              <div class="bio-label"><span>细胞膜流动性</span><strong id="bioFluidity">68%</strong></div>
+              <div class="bio-label"><span>当前结构</span><strong id="bioFluidity">细胞核</strong></div>
             </div>
 
             <div class="scene-tip" id="sceneTip">
@@ -340,9 +387,9 @@
               <div><strong>运动学实验记录</strong><small>物理 · 昨天 21:36</small></div>
               <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
             </button>
-            <button class="history-item" data-subject="化学" data-question="改变反应物浓度，观察化学反应速率的变化。">
+            <button class="history-item" data-subject="化学" data-question="将 5.6g 铁粉加入含有 0.20mol 硫酸铜的溶液中，充分反应。请计算最多生成多少 mol 铜？生成铜的质量是多少？并判断哪种反应物过量。">
               <span class="history-visual flask"><i></i></span>
-              <div><strong>浓度与反应速率</strong><small>化学 · 6 月 11 日</small></div>
+              <div><strong>铁与硫酸铜定量反应</strong><small>化学 · 典型题型模板</small></div>
               <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
             </button>
           </section>
@@ -394,6 +441,6 @@
 
   <div class="toast" id="toast"><span></span><p>操作成功</p></div>
 
-  <script src="app.js?v=20260623-sync-2"></script>
+  <script src="app.js?v=20260626-chem-bio-3"></script>
 </body>
 </html>

@@ -30,67 +30,72 @@ const SUBJECTS = {
     challenge: "很好！现在初速度变成了 <strong>30m/s</strong>。预测一下：刹车距离会变成原来的多少倍？"
   },
   "化学": {
-    question: "改变反应物浓度，观察化学反应速率的变化。",
-    title: "浓度对反应速率的影响",
-    description: "调节反应物浓度与温度，观察气泡生成和反应速率变化。",
-    engine: "分子动力学实时演算",
-    ar: "使用移动设备扫码，即可在 AR 中观察烧杯内的粒子碰撞与反应过程。",
-    metrics: [["当前浓度", "mol/L"], ["生成气体", "mL"], ["实验时间", "s"]],
+    question: "将 5.6g 铁粉加入含有 0.20mol 硫酸铜的溶液中，充分反应。请计算最多生成多少 mol 铜？生成铜的质量是多少？并判断哪种反应物过量。",
+    title: "铁与硫酸铜反应：定量观察铜的生成",
+    description: "Fe + CuSO₄ → FeSO₄ + Cu，铁粉逐渐溶解，溶液蓝色变浅，红色铜单质析出。",
+    engine: "典型题型模板演示",
+    ar: "移动端扩展可继续展示铁与硫酸铜反应的沉积过程。",
+    metrics: [["Fe 投入", "g"], ["生成 Cu", "mol"], ["Cu 质量", "g"]],
     params: [
-      { label: "反应物浓度 c", desc: "调整溶液初始浓度", unit: "mol/L", min: 0.5, max: 2, step: 0.1, value: 1 },
-      { label: "反应温度 T", desc: "调整反应体系温度", unit: "°C", min: 20, max: 80, step: 5, value: 25 }
+      { label: "铁粉质量 m(Fe)", desc: "调整投入铁粉质量", unit: "g", min: 2.8, max: 16.8, step: 2.8, value: 5.6 },
+      { label: "硫酸铜 n(CuSO₄)", desc: "调整硫酸铜物质的量", unit: "mol", min: 0.05, max: 0.3, step: 0.05, value: 0.2 }
     ],
     steps: [
-      ["识别实验变量", "自变量：反应物浓度", "保持其他条件相同，只改变反应物浓度。"],
-      ["建立碰撞模型", "有效碰撞频率增加", "浓度升高后，单位体积内粒子数增加。"],
-      ["观察反应现象", "气泡生成速度加快", "比较相同时间内生成气体的体积。"],
-      ["得出实验结论", "浓度越高，反应越快", "在其他条件相同时，浓度升高会加快反应速率。"]
+      ["提取条件", "Fe = 5.6g，CuSO₄ = 0.20mol", "先识别铁的质量和硫酸铜的物质的量。"],
+      ["换算物质的量", "n(Fe) = 5.6 ÷ 56 = 0.10mol", "把铁的质量换算成物质的量。"],
+      ["判断限量反应物", "1:1 反应，Fe 决定生成铜的上限", "比较 Fe 与 CuSO₄ 的物质的量，较少者限量。"],
+      ["计算生成物", "n(Cu)=0.10mol，m(Cu)=6.4g", "由 1:1 计量关系计算铜的物质的量和质量。"]
     ],
-    mentor: "浓度升高后，为什么烧杯中的<strong>气泡会产生得更快</strong>？",
-    hint: "小提示：想一想单位体积内的<strong>反应粒子数量和碰撞次数</strong>发生了什么变化。",
-    challenge: "挑战开始！温度已升高到 <strong>55°C</strong>。观察它和提高浓度产生的效果是否相同。"
+    mentor: "为什么不能直接用 <strong>0.20mol 硫酸铜</strong> 计算铜的质量？",
+    hint: "先把铁的质量换算成物质的量，再和硫酸铜按 1:1 比较，较少的一方决定生成铜的量。",
+    challenge: "如果铁粉增加到 <strong>11.2g</strong>，而硫酸铜仍为 <strong>0.20mol</strong>，生成铜的质量会变吗？为什么？"
   },
   "数学": {
-    question: "点 P 在抛物线 y = x² 上运动，观察切线斜率的变化。",
+    question: "点 P 在抛物线 y = x² 上运动，当 x = 3 时，求该点处切线斜率，并观察 x 改变时斜率如何变化。",
     title: "抛物线上的动点与切线",
-    description: "让点 P 沿抛物线运动，联动观察坐标与切线斜率。",
-    engine: "解析几何实时绘制",
+    description: "函数 y = x²，导数 y′ = 2x；当 x = 3 时，切线斜率 k = 6。",
+    engine: "典型题型模板演示",
     ar: "使用移动设备扫码，即可在真实空间中观察抛物线、动点和切线。",
     metrics: [["点 P 横坐标", "x"], ["切线斜率", "k"], ["实验时间", "s"]],
     params: [
-      { label: "起始横坐标 x₀", desc: "调整动点初始位置", unit: "", min: -3, max: 1, step: 0.1, value: -2 },
+      { label: "指定横坐标 x", desc: "调整题目给定横坐标", unit: "", min: -5, max: 5, step: 1, value: 3 },
       { label: "运动速度", desc: "调整点 P 的移动速度", unit: "×", min: 0.5, max: 2, step: 0.5, value: 1 }
     ],
     steps: [
-      ["建立函数模型", "y = x²", "识别抛物线函数及动点 P 的坐标关系。"],
-      ["观察局部变化", "割线逐渐逼近切线", "让相邻两点距离不断减小，观察斜率变化。"],
-      ["得到斜率规律", "k = 2x", "切线斜率随横坐标 x 线性变化。"],
-      ["连接导数概念", "y′ = 2x", "将动点实验结果概括为导函数。"]
+      ["提取函数", "y = x²，x = 3", "识别函数表达式和题目给定位置。"],
+      ["求导", "y′ = 2x", "用导数表示该点处切线斜率。"],
+      ["代入坐标", "k = 2 × 3 = 6", "把 x = 3 代入导函数得到斜率。"],
+      ["观察变化", "x 增大，斜率 k = 2x 增大", "通过动点观察斜率随 x 改变而变化。"]
     ],
-    mentor: "点 P 从左向右运动时，切线为什么会从<strong>向下倾斜</strong>逐渐变为向上倾斜？",
-    hint: "小提示：观察点 P 位于 y 轴左侧、原点和右侧时，<strong>切线斜率的正负</strong>。",
-    challenge: "挑战开始！运动速度调整为 <strong>2×</strong>，试着在斜率为 0 时暂停。"
+    mentor: "为什么抛物线 y = x² 在 x = 3 处的切线斜率等于 <strong>6</strong>？",
+    hint: "先求导得到 y′ = 2x，再把题目给出的 x = 3 代入。",
+    challenge: "如果 <strong>x = 5</strong>，切线斜率是多少？"
   },
   "生物": {
-    question: "观察细胞膜的流动镶嵌结构与物质运输过程。",
-    title: "细胞膜流动镶嵌模型",
-    description: "观察膜蛋白与磷脂分子的运动，以及物质跨膜运输过程。",
-    engine: "亚显微结构动态模拟",
-    ar: "使用移动设备扫码，即可放大观察细胞膜结构和物质运输过程。",
-    metrics: [["膜流动性", "%"], ["运输分子", "个"], ["实验时间", "s"]],
+    question: "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+    title: "植物细胞结构识别：3D 截面模型",
+    description: "植物细胞结构识别｜3D 截面模型｜点击查看功能。",
+    engine: "典型题型模板演示",
+    ar: "移动端扩展可继续展示植物细胞截面、结构标注与 360° 观察。",
+    metrics: [["可点结构", "个"], ["旋转视角", "°"], ["观察时间", "s"]],
     params: [
-      { label: "环境温度", desc: "调整细胞所处温度", unit: "°C", min: 15, max: 45, step: 1, value: 25 },
-      { label: "膜外浓度", desc: "调整待运输分子浓度", unit: "mmol/L", min: 1, max: 10, step: 1, value: 5 }
+      { label: "观察角度", desc: "拖拽或滑动旋转 3D 截面", unit: "°", min: -180, max: 180, step: 15, value: -10 },
+      { label: "结构数量", desc: "本题要求识别的核心结构", unit: "个", min: 1, max: 7, step: 1, value: 6 }
     ],
     steps: [
-      ["识别膜结构", "磷脂双分子层 + 膜蛋白", "观察膜的基本组成与镶嵌结构。"],
-      ["追踪分子运动", "磷脂与蛋白持续运动", "细胞膜不是静止结构，而具有流动性。"],
-      ["观察跨膜运输", "分子沿浓度梯度移动", "记录通过膜蛋白进入细胞的分子数量。"],
-      ["概括结构功能", "结构决定选择透过性", "流动镶嵌结构支持物质交换与信息传递。"]
+      ["观察截面", "先区分外层边界、内部细胞器和中央液泡", "从整体截面入手，先看边界，再看内部结构。"],
+      ["识别结构", "点击细胞壁、细胞膜、细胞核、叶绿体、线粒体等结构", "通过交互标注把图像结构和名称对应起来。"],
+      ["关联功能", "叶绿体负责光合作用，线粒体负责能量供应", "把结构名称进一步连接到生命活动中的作用。"],
+      ["对比记忆", "植物细胞常见特征：细胞壁、叶绿体和大液泡", "用植物细胞特有或常见结构形成记忆抓手。"]
     ],
-    mentor: "细胞膜为什么既能保持完整，又允许膜蛋白和磷脂分子<strong>持续运动</strong>？",
-    hint: "小提示：细胞膜不是坚硬外壳，关注<strong>磷脂分子之间的作用力</strong>。",
-    challenge: "挑战开始！环境温度调整为 <strong>37°C</strong>，观察膜流动性和运输效率的变化。"
+    mentor: "为什么植物细胞通常比动物细胞更容易观察到<strong>细胞壁、叶绿体和大液泡</strong>？",
+    hint: "可以从植物细胞的结构特点思考：细胞壁负责支持，叶绿体负责光合作用，成熟植物细胞常有明显中央液泡。",
+    challenge: "请点击模型中的 <strong>叶绿体</strong>，并说明它与光合作用有什么关系。",
+    generationStages: [
+      { label: "识别题型", text: "识别植物细胞结构识别题", progress: 28 },
+      { label: "生成截面", text: "构建植物细胞 3D 截面模型", progress: 63 },
+      { label: "绑定标注", text: "绑定可点击结构与功能解析", progress: 100 }
+    ]
   }
 };
 
@@ -105,8 +110,15 @@ const state = {
   reasonStep: 1,
   hasGenerated: false,
   generatedQuestion: "",
+  generatedSubjects: new Set(),
+  subjectSnapshots: {},
   generated: 2,
   favorite: false,
+  selectedOrganelle: "nucleus",
+  cellRotateX: -4,
+  cellRotateY: -10,
+  cellAutoRotate: false,
+  cellDrag: null,
   toastTimer: null,
   demoTimers: [],
   generationTimers: [],
@@ -122,6 +134,69 @@ const PHYSICS_BRAKE_LIMITS = {
   accelMin: 1,
   accelMax: 20
 };
+
+const CHEMISTRY_CONSTANTS = {
+  feMolarMass: 56,
+  cuMolarMass: 64,
+  feMassMin: 2.8,
+  feMassMax: 16.8,
+  cuso4MolMin: 0.05,
+  cuso4MolMax: 0.3
+};
+
+const CELL_ORGANELLES = [
+  {
+    id: "cellWall",
+    name: "细胞壁",
+    type: "植物细胞特有结构",
+    function: "支持和保护细胞，维持细胞形态",
+    memory: "植物细胞比动物细胞多细胞壁"
+  },
+  {
+    id: "cellMembrane",
+    name: "细胞膜",
+    type: "边界结构",
+    function: "控制物质进出细胞，维持细胞内环境稳定",
+    memory: "选择透过性是细胞膜的重要特征"
+  },
+  {
+    id: "nucleus",
+    name: "细胞核",
+    type: "遗传控制中心",
+    function: "储存遗传信息，控制细胞生命活动",
+    memory: "细胞核中含有 DNA"
+  },
+  {
+    id: "vacuole",
+    name: "液泡",
+    type: "植物细胞常见结构",
+    function: "储存水分、无机盐和代谢产物，维持细胞渗透压",
+    memory: "成熟植物细胞通常有较大的中央液泡"
+  },
+  {
+    id: "chloroplast",
+    name: "叶绿体",
+    type: "植物细胞特有结构",
+    function: "进行光合作用，将光能转化为有机物中的化学能",
+    memory: "叶绿体是光合作用的主要场所"
+  },
+  {
+    id: "mitochondrion",
+    name: "线粒体",
+    type: "能量转换结构",
+    function: "进行有氧呼吸，为细胞生命活动提供能量",
+    memory: "线粒体常被称为细胞的能量工厂"
+  },
+  {
+    id: "cytoplasm",
+    name: "细胞质",
+    type: "细胞内部环境",
+    function: "为多种细胞器提供存在环境，是许多代谢反应发生的场所",
+    memory: "细胞器分布在细胞质中"
+  }
+];
+
+const CELL_ORGANELLE_MAP = new Map(CELL_ORGANELLES.map(item => [item.id, item]));
 
 const elements = {
   scene: $("#scene"),
@@ -147,6 +222,17 @@ const elements = {
   mentorMessage: $("#mentorMessage"),
   mentorFeedback: $("#mentorFeedback"),
   parseFeedback: $("#parseFeedback"),
+  plantCellModel: $("#plantCellModel"),
+  plantCellViewport: $("#plantCellViewport"),
+  cellResetButton: $("#cellResetButton"),
+  cellAutoButton: $("#cellAutoButton"),
+  cellDetailName: $("#cellDetailName"),
+  cellDetailType: $("#cellDetailType"),
+  cellDetailFunction: $("#cellDetailFunction"),
+  cellDetailMemory: $("#cellDetailMemory"),
+  cellSelectionName: $("#cellSelectionName"),
+  cellSelectionFunction: $("#cellSelectionFunction"),
+  cuso4Solution: $("#cuso4Solution"),
   toast: $("#toast"),
   generationOverlay: $("#generationOverlay"),
   generationStatus: $("#generationStatus"),
@@ -164,9 +250,38 @@ function config() {
   return SUBJECTS[state.subject];
 }
 
+function saveCurrentSubjectSnapshot() {
+  if (!state.subject || !state.hasGenerated) return;
+  state.subjectSnapshots[state.subject] = {
+    p1: state.p1,
+    p2: state.p2,
+    generatedQuestion: state.generatedQuestion || $("#questionInput")?.value || SUBJECTS[state.subject]?.question || "",
+    selectedOrganelle: state.selectedOrganelle,
+    cellRotateX: state.cellRotateX,
+    cellRotateY: state.cellRotateY
+  };
+}
+
+function restoreSubjectSnapshot(subject) {
+  const snapshot = state.subjectSnapshots[subject];
+  if (!snapshot) return false;
+  state.p1 = snapshot.p1;
+  state.p2 = snapshot.p2;
+  state.generatedQuestion = snapshot.generatedQuestion || SUBJECTS[subject]?.question || "";
+  if (subject === "生物") {
+    state.selectedOrganelle = snapshot.selectedOrganelle || "nucleus";
+    setCellRotation(snapshot.cellRotateX ?? -4, snapshot.cellRotateY ?? -10);
+  }
+  return true;
+}
+
 function smartNumber(value, decimals = 1) {
   const rounded = Number(Number(value).toFixed(decimals));
   return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(decimals);
+}
+
+function clamp(value, min = 0, max = 1) {
+  return Math.max(min, Math.min(max, value));
 }
 
 function physicsBrakeModel(v0 = state.p1, aAbs = state.p2) {
@@ -264,6 +379,171 @@ function buildPhysicsBrakeQuestionText(v0 = state.p1, aAbs = state.p2) {
   return `一辆汽车以 ${smartNumber(v0)}m/s 的速度行驶，紧急刹车后加速度大小为 ${smartNumber(aAbs)}m/s²，求刹车距离。`;
 }
 
+function formatMol(value) {
+  return Number(value).toFixed(2);
+}
+
+function formatGram(value) {
+  return Number(value).toFixed(1);
+}
+
+function chemistryFeCuSO4Model(feMass = state.p1, cuso4Mol = state.p2) {
+  const feMol = feMass / CHEMISTRY_CONSTANTS.feMolarMass;
+  const reactedMol = Math.min(feMol, cuso4Mol);
+  const cuMol = reactedMol;
+  const cuMass = cuMol * CHEMISTRY_CONSTANTS.cuMolarMass;
+  const diff = feMol - cuso4Mol;
+  let limiting = "恰好完全反应";
+  if (diff < -1e-9) limiting = "Fe";
+  if (diff > 1e-9) limiting = "CuSO₄";
+  return {
+    feMass,
+    cuso4Mol,
+    feMol,
+    limiting,
+    reactedMol,
+    cuMol,
+    cuMass,
+    cuso4Left: Math.max(0, cuso4Mol - feMol),
+    feLeftMol: Math.max(0, feMol - cuso4Mol)
+  };
+}
+
+function buildChemistryQuestionText(feMass = state.p1, cuso4Mol = state.p2) {
+  return `将 ${formatGram(feMass)}g 铁粉加入含有 ${formatMol(cuso4Mol)}mol 硫酸铜的溶液中，充分反应。请计算最多生成多少 mol 铜？生成铜的质量是多少？并判断哪种反应物过量。`;
+}
+
+function buildChemistryFeCuSO4Content(feMass = state.p1, cuso4Mol = state.p2) {
+  const model = chemistryFeCuSO4Model(feMass, cuso4Mol);
+  const feMassText = formatGram(model.feMass);
+  const feMolText = formatMol(model.feMol);
+  const cuso4Text = formatMol(model.cuso4Mol);
+  const cuMolText = formatMol(model.cuMol);
+  const cuMassText = formatGram(model.cuMass);
+  const cuso4LeftText = formatMol(model.cuso4Left);
+  const feLeftText = formatMol(model.feLeftMol);
+
+  return {
+    description: `Fe + CuSO₄ → FeSO₄ + Cu；铁表面析出红色铜，溶液由蓝色变为浅绿色。最多生成 Cu ${cuMolText}mol / ${cuMassText}g。`,
+    params: [
+      { label: "铁粉质量 m(Fe)", desc: "调整投入铁粉质量", unit: "g", min: CHEMISTRY_CONSTANTS.feMassMin, max: CHEMISTRY_CONSTANTS.feMassMax, step: 2.8, value: model.feMass },
+      { label: "硫酸铜 n(CuSO₄)", desc: "调整硫酸铜物质的量", unit: "mol", min: CHEMISTRY_CONSTANTS.cuso4MolMin, max: CHEMISTRY_CONSTANTS.cuso4MolMax, step: 0.05, value: model.cuso4Mol }
+    ],
+    steps: [
+      ["提取条件", `Fe = ${feMassText}g，CuSO₄ = ${cuso4Text}mol`, "先识别铁的质量和硫酸铜的物质的量。"],
+      ["换算物质的量", `n(Fe) = ${feMassText} ÷ 56 = ${feMolText}mol`, "把铁的质量换算成物质的量。"],
+      ["判断限量反应物", `1:1 反应，${model.limiting} 决定生成铜的上限`, "比较 Fe 与 CuSO₄ 的物质的量，较少者限量。"],
+      ["现象验证", `n(Cu)=${cuMolText}mol，m(Cu)=${cuMassText}g`, "铁表面析出红色固体，溶液颜色由蓝色逐渐变为浅绿色。"]
+    ],
+    mentor: `为什么不能直接用 <strong>${cuso4Text}mol 硫酸铜</strong> 计算铜的质量？`,
+    hint: `先把铁的质量换算成 <strong>${feMolText}mol</strong>，再和硫酸铜 <strong>${cuso4Text}mol</strong> 按 1:1 比较，较少的一方决定生成铜的量。`,
+    challenge: "如果铁粉增加到 <strong>11.2g</strong>，而硫酸铜仍为 <strong>0.20mol</strong>，生成铜的质量会变吗？为什么？",
+    generationStages: [
+      { label: "识别条件", text: `识别 Fe ${feMassText}g 与 CuSO₄ ${cuso4Text}mol`, progress: 28 },
+      { label: "判断限量", text: `按 1:1 比较，${model.limiting} 决定生成上限`, progress: 63 },
+      { label: "生成结果", text: `生成 Cu ${cuMolText}mol / ${cuMassText}g`, progress: 100 }
+    ],
+    recognitionText: `Fe = ${feMassText}g｜CuSO₄ = ${cuso4Text}mol｜限量反应物：${model.limiting}｜生成 Cu = ${cuMolText}mol / ${cuMassText}g`,
+    formulaHtml: `n(Fe) = ${feMassText} ÷ 56 = ${feMolText}mol<br>n(CuSO₄) = ${cuso4Text}mol<br>n(Cu) = min(${feMolText}, ${cuso4Text}) = ${cuMolText}mol<br>m(Cu) = ${cuMolText} × 64 = ${cuMassText}g`,
+    sceneTip: `铁丝进入硫酸铜溶液后，铁表面逐渐析出红色铜；溶液由蓝色变浅绿色。生成 Cu ${cuMolText}mol / ${cuMassText}g；CuSO₄ 剩余 ${cuso4LeftText}mol，Fe 剩余 ${feLeftText}mol。`,
+    model
+  };
+}
+
+function syncChemistryFeCuSO4Content(feMass = state.p1, cuso4Mol = state.p2) {
+  const content = buildChemistryFeCuSO4Content(feMass, cuso4Mol);
+  const chemistry = SUBJECTS["化学"];
+  chemistry.description = content.description;
+  chemistry.params = content.params;
+  chemistry.steps = content.steps;
+  chemistry.mentor = content.mentor;
+  chemistry.hint = content.hint;
+  chemistry.challenge = content.challenge;
+  chemistry.generationStages = content.generationStages;
+  chemistry.recognitionText = content.recognitionText;
+  return content.model;
+}
+
+function buildMathQuestionText(x = state.p1) {
+  return `点 P 在抛物线 y = x² 上运动，当 x = ${smartNumber(x)} 时，求该点处切线斜率，并观察 x 改变时斜率如何变化。`;
+}
+
+function syncMathContent(x = state.p1) {
+  const xText = smartNumber(x);
+  const slopeText = smartNumber(2 * x);
+  const math = SUBJECTS["数学"];
+  math.question = buildMathQuestionText(x);
+  math.description = `函数 y = x²，导数 y′ = 2x；当 x = ${xText} 时，切线斜率 k = ${slopeText}。`;
+  math.params[0].value = x;
+  math.steps = [
+    ["提取函数", `y = x²，x = ${xText}`, "识别函数表达式和题目给定位置。"],
+    ["求导", "y′ = 2x", "用导数表示该点处切线斜率。"],
+    ["代入坐标", `k = 2 × ${xText} = ${slopeText}`, "把给定 x 代入导函数得到斜率。"],
+    ["观察变化", "x 增大，斜率 k = 2x 增大", "通过动点观察斜率随 x 改变而变化。"]
+  ];
+  math.mentor = `为什么抛物线 y = x² 在 x = ${xText} 处的切线斜率等于 <strong>${slopeText}</strong>？`;
+  math.hint = `先求导得到 y′ = 2x，再把题目给出的 x = ${xText} 代入。`;
+  math.challenge = "如果 <strong>x = 5</strong>，切线斜率是多少？";
+  math.recognitionText = `函数 y = x²｜导数 y′ = 2x｜x = ${xText}｜切线斜率 k = ${slopeText}`;
+}
+
+function buildBiologyQuestionText() {
+  return "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。";
+}
+
+function biologyRecognitionText() {
+  return "植物细胞结构识别题｜截面模型｜可点击结构：细胞壁、细胞膜、细胞核、液泡、叶绿体、线粒体";
+}
+
+function selectedOrganelle() {
+  return CELL_ORGANELLE_MAP.get(state.selectedOrganelle) || CELL_ORGANELLE_MAP.get("nucleus");
+}
+
+function setCellRotation(x = state.cellRotateX, y = state.cellRotateY) {
+  state.cellRotateX = Math.max(-28, Math.min(18, x));
+  state.cellRotateY = ((y + 180) % 360 + 360) % 360 - 180;
+  if (elements.plantCellModel) {
+    elements.plantCellModel.style.setProperty("--cell-rotate-x", `${state.cellRotateX}deg`);
+    elements.plantCellModel.style.setProperty("--cell-rotate-y", `${state.cellRotateY}deg`);
+  }
+}
+
+function setCellAutoRotate(enabled) {
+  state.cellAutoRotate = Boolean(enabled);
+  if (elements.plantCellModel) elements.plantCellModel.classList.toggle("auto-rotate", state.cellAutoRotate);
+  if (elements.cellAutoButton) {
+    elements.cellAutoButton.classList.toggle("active", state.cellAutoRotate);
+    elements.cellAutoButton.textContent = state.cellAutoRotate ? "停止旋转" : "自动旋转";
+  }
+}
+
+function renderCellDetail(id = state.selectedOrganelle) {
+  const organelle = CELL_ORGANELLE_MAP.get(id) || CELL_ORGANELLE_MAP.get("nucleus");
+  state.selectedOrganelle = organelle.id;
+
+  $$(".cell-organelle").forEach(node => {
+    node.classList.toggle("active", node.dataset.organelle === organelle.id);
+  });
+
+  if (elements.cellDetailName) elements.cellDetailName.textContent = organelle.name;
+  if (elements.cellDetailType) elements.cellDetailType.textContent = organelle.type;
+  if (elements.cellDetailFunction) elements.cellDetailFunction.textContent = organelle.function;
+  if (elements.cellDetailMemory) elements.cellDetailMemory.textContent = organelle.memory;
+  if (elements.cellSelectionName) elements.cellSelectionName.textContent = organelle.name;
+  if (elements.cellSelectionFunction) elements.cellSelectionFunction.textContent = organelle.function;
+  if ($("#bioFluidity")) $("#bioFluidity").textContent = organelle.name;
+
+  if (state.subject === "生物" && state.hasGenerated) {
+    elements.sceneTip.innerHTML = `<span>结构解析</span>${organelle.name}：${organelle.function}`;
+  }
+}
+
+function resetBiologyCellModel() {
+  setCellAutoRotate(false);
+  setCellRotation(-4, -10);
+  renderCellDetail(state.selectedOrganelle || "nucleus");
+}
+
 function syncPhysicsBrakeContent(v0 = state.p1, aAbs = state.p2) {
   const content = buildPhysicsBrakeContent(v0, aAbs);
   const physics = SUBJECTS["物理"];
@@ -319,6 +599,12 @@ function normalizeQuestionText(text) {
     .replace(/[０-９]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xfee0))
     .replace(/．/g, ".")
     .replace(/[－−–—]/g, "-")
+    .replace(/₀/g, "0")
+    .replace(/₁/g, "1")
+    .replace(/₂/g, "2")
+    .replace(/₃/g, "3")
+    .replace(/₄/g, "4")
+    .replace(/²/g, "2")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -390,6 +676,74 @@ function parsePhysicsBrakeQuestion(text) {
 
 window.parsePhysicsBrakeQuestion = parsePhysicsBrakeQuestion;
 
+function parseChemistryFeCuSO4Question(text) {
+  const normalized = normalizeQuestionText(text);
+  const failMessage = "当前化学演示支持铁与硫酸铜的定量反应题，请输入铁的质量和硫酸铜的物质的量。";
+  if (!normalized) return { ok: false, message: failMessage };
+  if (!/(铁|Fe)/i.test(normalized) || !/(硫酸铜|CuSO4|CuSO₄)/i.test(normalized)) {
+    return { ok: false, message: failMessage };
+  }
+
+  const feMass = firstNumberByPatterns(normalized, [
+    /(?:铁粉|铁|Fe)\s*(?:粉|的)?\s*(?:质量|质量为|为|=|:|：)?\s*(\d+(?:\.\d+)?)\s*g/i,
+    /(\d+(?:\.\d+)?)\s*g\s*(?:铁粉|铁|Fe)/i
+  ]);
+
+  const cuso4Mol = firstNumberByPatterns(normalized, [
+    /(?:硫酸铜|CuSO4)\s*(?:溶液)?\s*(?:的)?\s*(?:物质的量|为|=|:|：)?\s*(\d+(?:\.\d+)?)\s*mol/i,
+    /(?:含有|加入|与|和)?\s*(\d+(?:\.\d+)?)\s*mol\s*(?:硫酸铜|CuSO4)/i,
+    /(\d+(?:\.\d+)?)\s*mol\s*(?:CuSO4)/i
+  ]);
+
+  if (!Number.isFinite(feMass) || !Number.isFinite(cuso4Mol) || feMass <= 0 || cuso4Mol <= 0) {
+    return { ok: false, message: failMessage };
+  }
+
+  const model = chemistryFeCuSO4Model(feMass, cuso4Mol);
+  const content = buildChemistryFeCuSO4Content(feMass, cuso4Mol);
+  return {
+    ok: true,
+    subject: "化学",
+    type: "fe_cuso4_stoichiometry",
+    feMass,
+    cuso4Mol,
+    feMol: model.feMol,
+    limiting: model.limiting,
+    cuMol: model.cuMol,
+    cuMass: model.cuMass,
+    cuso4Left: model.cuso4Left,
+    feLeftMol: model.feLeftMol,
+    recognitionText: content.recognitionText,
+    message: `已识别：Fe ${formatGram(feMass)}g，CuSO₄ ${formatMol(cuso4Mol)}mol，${model.limiting} 为限量反应物`
+  };
+}
+
+function parseMathTangentQuestion(text) {
+  const normalized = normalizeQuestionText(text);
+  const match = normalized.match(/x\s*(?:=|为|是|:|：)\s*(-?\d+(?:\.\d+)?)/i);
+  const x = match ? Number(match[1]) : 3;
+  const safeX = Number.isFinite(x) ? Math.max(-5, Math.min(5, x)) : 3;
+  return {
+    ok: true,
+    subject: "数学",
+    type: "parabola_tangent_slope",
+    x: safeX,
+    slope: 2 * safeX,
+    recognitionText: `函数 y = x²｜导数 y′ = 2x｜x = ${smartNumber(safeX)}｜切线斜率 k = ${smartNumber(2 * safeX)}`
+  };
+}
+
+function biologyTemplateRecognition() {
+  return {
+    ok: true,
+    subject: "生物",
+    type: "plant_cell_structure_identification",
+    recognitionText: biologyRecognitionText()
+  };
+}
+
+window.parseChemistryFeCuSO4Question = parseChemistryFeCuSO4Question;
+
 function duration() {
   if (state.subject === "物理") return state.p1 / state.p2;
   if (state.subject === "数学") return 8 / state.p2;
@@ -409,9 +763,8 @@ function valuesAt(time) {
   }
 
   if (state.subject === "化学") {
-    const rate = state.p1 * (1 + (state.p2 - 20) / 80);
-    const gas = 100 * (1 - Math.exp(-rate * t / 3));
-    return { progress, metrics: [state.p1, gas, t], rate };
+    const chem = chemistryFeCuSO4Model(state.p1, state.p2);
+    return { progress, metrics: [chem.feMass, chem.cuMol, chem.cuMass], chem };
   }
 
   if (state.subject === "数学") {
@@ -419,13 +772,21 @@ function valuesAt(time) {
     return { progress, metrics: [x, 2 * x, t], x };
   }
 
-  const fluidity = Math.min(98, 43 + state.p1 * 1.05);
-  const transported = Math.round(progress * state.p2 * 8);
-  return { progress, metrics: [fluidity, transported, t] };
+  return { progress, metrics: [CELL_ORGANELLES.length, Math.round(state.cellRotateY), t] };
 }
 
 function formatNumber(value) {
   return Number(value).toFixed(1);
+}
+
+function formatMetricValue(value, index) {
+  if (state.subject === "化学") {
+    if (index === 1) return formatMol(value);
+    return formatGram(value);
+  }
+  if (state.subject === "数学" && index < 2) return smartNumber(value);
+  if (state.subject === "生物" && index < 2) return Number(value).toFixed(0);
+  return formatNumber(value);
 }
 
 function formatTime(seconds) {
@@ -458,34 +819,67 @@ function updateSubjectVisuals(values) {
   }
 
   if (state.subject === "化学") {
-    $("#chemRate").textContent = `${values.rate.toFixed(2)}×`;
+    const label = $(".chem-label span");
+    if (label) label.textContent = "定量反应模板";
+    const feRatio = clamp(
+      (values.chem.feMass - CHEMISTRY_CONSTANTS.feMassMin) /
+      (CHEMISTRY_CONSTANTS.feMassMax - CHEMISTRY_CONSTANTS.feMassMin)
+    );
+    const concentrationRatio = clamp(
+      (values.chem.cuso4Mol - CHEMISTRY_CONSTANTS.cuso4MolMin) /
+      (CHEMISTRY_CONSTANTS.cuso4MolMax - CHEMISTRY_CONSTANTS.cuso4MolMin)
+    );
+    const reactedFraction = values.chem.cuso4Mol > 0 ? clamp(values.chem.cuMol / values.chem.cuso4Mol) : 0;
+    const finalCopperAmount = clamp(0.18 + (values.chem.cuMol / CHEMISTRY_CONSTANTS.cuso4MolMax) * 0.82);
+    const progress = values.progress;
+    const greenAmount = clamp(progress * (0.24 + reactedFraction * 0.62));
+    const startColor = {
+      r: Math.round(83 - concentrationRatio * 48),
+      g: Math.round(180 - concentrationRatio * 76),
+      b: Math.round(240 - concentrationRatio * 34)
+    };
+    const endColor = { r: 142, g: 210, b: 170 };
+    const solutionR = Math.round(startColor.r + (endColor.r - startColor.r) * greenAmount);
+    const solutionG = Math.round(startColor.g + (endColor.g - startColor.g) * greenAmount);
+    const solutionB = Math.round(startColor.b + (endColor.b - startColor.b) * greenAmount);
+
+    elements.scene.style.setProperty("--iron-scale", String(0.78 + feRatio * 0.5));
+    elements.scene.style.setProperty("--iron-drop", String(clamp(progress * 1.2)));
+    elements.scene.style.setProperty("--chem-reaction-progress", String(progress));
+    elements.scene.style.setProperty("--copper-amount", String(clamp(progress * finalCopperAmount)));
+    elements.scene.style.setProperty("--solution-green", String(greenAmount));
+    if (elements.cuso4Solution) {
+      elements.cuso4Solution.style.setProperty("--cuso4-color", `rgb(${solutionR}, ${solutionG}, ${solutionB})`);
+      elements.cuso4Solution.style.filter = `saturate(${1 + concentrationRatio * 0.72 - greenAmount * 0.32}) brightness(${1 - concentrationRatio * 0.06 + greenAmount * 0.05})`;
+    }
+    $("#chemRate").textContent = `${Math.round(progress * finalCopperAmount * 100)}%析铜`;
   }
 
   if (state.subject === "数学") {
     const x = values.x;
     const y = x * x;
-    const cx = 300 + x * 80;
-    const cy = 225 - y * 22;
+    const xScale = 45;
+    const yScale = 8;
+    const cx = 300 + x * xScale;
+    const cy = 225 - y * yScale;
     const x1 = x - 1.4;
     const x2 = x + 1.4;
     $("#mathPoint").setAttribute("cx", cx);
     $("#mathPoint").setAttribute("cy", cy);
-    $("#tangentLine").setAttribute("x1", 300 + x1 * 80);
-    $("#tangentLine").setAttribute("y1", 225 - (y + 2 * x * (x1 - x)) * 22);
-    $("#tangentLine").setAttribute("x2", 300 + x2 * 80);
-    $("#tangentLine").setAttribute("y2", 225 - (y + 2 * x * (x2 - x)) * 22);
+    $("#tangentLine").setAttribute("x1", 300 + x1 * xScale);
+    $("#tangentLine").setAttribute("y1", 225 - (y + 2 * x * (x1 - x)) * yScale);
+    $("#tangentLine").setAttribute("x2", 300 + x2 * xScale);
+    $("#tangentLine").setAttribute("y2", 225 - (y + 2 * x * (x2 - x)) * yScale);
     $("#mathCoordinate").textContent = `(${x.toFixed(1)}, ${y.toFixed(1)})`;
   }
 
-  if (state.subject === "生物") {
-    $("#bioFluidity").textContent = `${values.metrics[0].toFixed(0)}%`;
-  }
+  if (state.subject === "生物") renderCellDetail(state.selectedOrganelle);
 }
 
 function updateScene() {
   const values = valuesAt(state.time);
   values.metrics.forEach((value, index) => {
-    elements.metricValues[index].textContent = formatNumber(value);
+    elements.metricValues[index].textContent = formatMetricValue(value, index);
   });
   elements.timeline.value = (values.timelineProgress ?? values.progress) * 100;
   elements.currentTime.textContent = formatTime(state.time);
@@ -496,9 +890,9 @@ function updateScene() {
     pauseExperiment();
     const conclusions = {
       "物理": `车辆在 ${duration().toFixed(1)} 秒后停止，刹车距离为 ${values.metrics[1].toFixed(1)} 米。`,
-      "化学": `反应结束，本组条件下共生成约 ${values.metrics[1].toFixed(1)} mL 气体。`,
-      "数学": `点 P 运动至右侧，切线斜率随横坐标增大而增大。`,
-      "生物": `本组条件下共有 ${values.metrics[1].toFixed(0)} 个分子完成跨膜运输。`
+      "化学": `铁表面析出红色铜，溶液由蓝色变为浅绿色；限量反应物为 ${values.chem.limiting}，生成 Cu ${formatMol(values.chem.cuMol)}mol / ${formatGram(values.chem.cuMass)}g。`,
+      "数学": `当 x = ${smartNumber(state.p1)} 时，切线斜率 k = ${smartNumber(2 * state.p1)}。`,
+      "生物": `已完成植物细胞截面识别，可点击结构查看名称、类型和功能。`
     };
     elements.sceneTip.innerHTML = `<span>实验结论</span>${conclusions[state.subject]}`;
   }
@@ -532,6 +926,10 @@ function updateFormulaSpotlight(subject) {
   const spotlight = $(".formula-spotlight");
   if (!spotlight) return;
   const physics = buildPhysicsBrakeContent();
+  const chemistry = buildChemistryFeCuSO4Content();
+  const mathValue = subject === "数学" ? state.p1 : SUBJECTS["数学"].params[0].value;
+  const mathSlope = smartNumber(2 * mathValue);
+  const mathX = smartNumber(mathValue);
 
   const formulas = {
     "物理": [
@@ -540,19 +938,19 @@ function updateFormulaSpotlight(subject) {
       `0² − ${smartNumber(state.p1)}² = 2 × (−${smartNumber(state.p2)}) × s，得到 s = ${physics.stopDistanceText}m`
     ],
     "化学": [
-      "速率关系",
-      "反应速率 ∝ 有效碰撞频率",
-      "浓度升高，单位体积内粒子数增加，反应更快"
+      "核心关系",
+      "Fe + CuSO₄ → FeSO₄ + Cu",
+      `计量关系：1mol Fe : 1mol CuSO₄ : 1mol Cu<br>${chemistry.formulaHtml}`
     ],
     "数学": [
       "导数关系",
       "y′ = 2x",
-      "抛物线 y = x² 上，切线斜率随横坐标 x 改变"
+      `函数 y = x²；当 x = ${mathX} 时，斜率 k = ${mathSlope}`
     ],
     "生物": [
-      "结构功能",
-      "流动镶嵌模型",
-      "膜结构的流动性支持物质运输与选择透过性"
+      "核心概念",
+      "植物细胞 = 细胞壁 + 细胞膜 + 细胞质 + 细胞核 + 多种细胞器",
+      "叶绿体：光合作用<br>线粒体：有氧呼吸<br>液泡：维持渗透压<br>细胞核：遗传控制中心"
     ]
   };
 
@@ -563,7 +961,7 @@ function updateFormulaSpotlight(subject) {
 
   if (labelEl) labelEl.textContent = label;
   if (formulaEl) formulaEl.textContent = formula;
-  if (descEl) descEl.textContent = desc;
+  if (descEl) descEl.innerHTML = desc;
 }
 
 function setReasonProgress(step) {
@@ -606,7 +1004,9 @@ function setRange(range, param) {
 }
 
 function formatParam(param, value) {
-  const decimals = String(param.step).includes(".") ? 1 : 0;
+  const decimals = String(param.step).includes(".")
+    ? String(param.step).split(".")[1].length
+    : 0;
   return `${param.prefix || ""}${Number(value).toFixed(decimals)}`;
 }
 
@@ -619,8 +1019,15 @@ function setRecognitionFeedback(result, isError = false) {
     elements.parseFeedback.innerHTML = `<span>识别提示</span><strong>${result.message}</strong>`;
     return;
   }
-  const content = buildPhysicsBrakeContent(result.v0, result.aAbs);
-  elements.parseFeedback.innerHTML = `<span>识别结果</span><strong>${content.recognitionText}</strong>`;
+  let recognitionText = result.recognitionText;
+  if (!recognitionText && result.type === "braking_distance") {
+    recognitionText = buildPhysicsBrakeContent(result.v0, result.aAbs).recognitionText;
+  }
+  if (!recognitionText && state.subject === "化学") {
+    recognitionText = buildChemistryFeCuSO4Content().recognitionText;
+  }
+  if (!recognitionText) recognitionText = result.message || "已识别典型题型模板";
+  elements.parseFeedback.innerHTML = `<span>识别结果</span><strong>${recognitionText}</strong>`;
 }
 
 function setRecognitionPending(message = "题目已修改，点击“生成实验”重新识别。") {
@@ -638,6 +1045,18 @@ function clearRecognitionFeedback() {
 
 function syncPhysicsQuestionFromState() {
   const question = buildPhysicsBrakeQuestionText();
+  $("#questionInput").value = question;
+  $("#problemText").textContent = question;
+  state.generatedQuestion = question;
+  return question;
+}
+
+function syncSubjectQuestionFromState(subject = state.subject) {
+  if (subject === "物理") return syncPhysicsQuestionFromState();
+  let question = SUBJECTS[subject]?.question || "";
+  if (subject === "化学") question = buildChemistryQuestionText();
+  if (subject === "数学") question = buildMathQuestionText();
+  if (subject === "生物") question = buildBiologyQuestionText();
   $("#questionInput").value = question;
   $("#problemText").textContent = question;
   state.generatedQuestion = question;
@@ -700,6 +1119,22 @@ function applyWaitingState(subject = state.subject, options = {}) {
     state.p2 = 5;
     syncPhysicsBrakeContent();
   }
+  if (subject === "化学" && options.presetQuestion) {
+    state.p1 = 5.6;
+    state.p2 = 0.2;
+    syncChemistryFeCuSO4Content();
+  }
+  if (subject === "数学" && options.presetQuestion) {
+    state.p1 = 3;
+    state.p2 = 1;
+    syncMathContent(3);
+  }
+  if (subject === "生物" && options.presetQuestion) {
+    state.p1 = -10;
+    state.p2 = 6;
+    state.selectedOrganelle = "nucleus";
+    resetBiologyCellModel();
+  }
   document.body.classList.add("awaiting-generation");
   setActiveSubjectTab(subject);
   clearRecognitionFeedback();
@@ -730,6 +1165,12 @@ function updateParameters(reset = true, options = {}) {
   if (state.subject === "物理") {
     syncPhysicsBrakeContent();
   }
+  if (state.subject === "化学") {
+    syncChemistryFeCuSO4Content();
+  }
+  if (state.subject === "数学") {
+    syncMathContent();
+  }
   config().params.forEach((param, index) => {
     elements.paramValues[index].textContent = formatParam(param, index === 0 ? state.p1 : state.p2);
   });
@@ -748,31 +1189,82 @@ function updateParameters(reset = true, options = {}) {
       setRecognitionFeedback({ ok: true, v0: state.p1, aAbs: state.p2 });
     }
   }
+
+  if (state.subject === "化学") {
+    const content = buildChemistryFeCuSO4Content();
+    updateFormulaSpotlight("化学");
+    elements.sceneTip.innerHTML = `<span>定量结论</span>${content.sceneTip}`;
+    if (state.hasGenerated) {
+      if (options.syncQuestion) syncSubjectQuestionFromState("化学");
+      renderReasoning();
+      elements.mentorMessage.innerHTML = config().mentor;
+      setRecognitionFeedback({ ok: true, subject: "化学", type: "fe_cuso4_stoichiometry", recognitionText: content.recognitionText });
+    }
+  }
+
+  if (state.subject === "数学") {
+    updateFormulaSpotlight("数学");
+    if (state.hasGenerated) {
+      if (options.syncQuestion) syncSubjectQuestionFromState("数学");
+      renderReasoning();
+      elements.mentorMessage.innerHTML = config().mentor;
+      setRecognitionFeedback(parseMathTangentQuestion($("#questionInput").value || buildMathQuestionText()));
+    }
+  }
+
+  if (state.subject === "生物") {
+    setCellRotation(-8, state.p1);
+    updateFormulaSpotlight("生物");
+    if (state.hasGenerated) {
+      if (options.syncQuestion) syncSubjectQuestionFromState("生物");
+      renderReasoning();
+      elements.mentorMessage.innerHTML = config().mentor;
+      setRecognitionFeedback(biologyTemplateRecognition());
+      renderCellDetail(state.selectedOrganelle);
+    }
+  }
   if (reset) resetExperiment();
 }
 
-function applySubject(subject, updateQuestion = true) {
+function applySubject(subject, updateQuestion = true, options = {}) {
   clearDemoTimers();
   pauseExperiment();
   document.body.classList.remove("awaiting-generation");
   state.hasGenerated = true;
   state.subject = subject;
-  if (subject === "物理" && updateQuestion) {
+  const restored = options.restore && restoreSubjectSnapshot(subject);
+  if (subject === "物理" && updateQuestion && !restored) {
     state.p1 = 20;
     state.p2 = 5;
     syncPhysicsBrakeContent();
+  }
+  if (subject === "化学" && updateQuestion && !restored) {
+    state.p1 = 5.6;
+    state.p2 = 0.2;
+    syncChemistryFeCuSO4Content();
+  }
+  if (subject === "数学" && updateQuestion && !restored) {
+    state.p1 = 3;
+    state.p2 = 1;
+    syncMathContent(3);
+  }
+  if (subject === "生物" && updateQuestion && !restored) {
+    state.p1 = -10;
+    state.p2 = 6;
+    state.selectedOrganelle = "nucleus";
+    resetBiologyCellModel();
   }
   state.reasonStep = 1;
   state.favorite = false;
   updateFormulaSpotlight(subject);
   hideMentorFeedback();
   const current = config();
-  $(".side-card-header .section-kicker").textContent = "公式 × 过程联动";
-  $(".side-card-header h2").textContent = "解题思维链";
+  $(".side-card-header .section-kicker").textContent = subject === "生物" ? "结构 × 功能联动" : "公式 × 过程联动";
+  $(".side-card-header h2").textContent = subject === "生物" ? "结构识别路径" : "解题思维链";
 
   setActiveSubjectTab(subject);
   if (subject !== "物理") clearRecognitionFeedback();
-  if (updateQuestion) $("#questionInput").value = current.question;
+  if (updateQuestion) $("#questionInput").value = restored ? state.generatedQuestion : current.question;
   $("#experimentTitle").textContent = current.title;
   $("#problemText").textContent = current.description;
   $("#engineBadge").textContent = current.engine;
@@ -796,6 +1288,15 @@ function applySubject(subject, updateQuestion = true) {
   $("#favoriteButton").classList.remove("selected");
   renderReasoning();
   updateParameters();
+  if (restored && state.generatedQuestion) {
+    $("#problemText").textContent = state.generatedQuestion;
+    setRecognitionFeedback(
+      subject === "物理" ? { ok: true, v0: state.p1, aAbs: state.p2 } :
+      subject === "化学" ? { ok: true, recognitionText: buildChemistryFeCuSO4Content().recognitionText } :
+      subject === "数学" ? parseMathTangentQuestion(state.generatedQuestion) :
+      biologyTemplateRecognition()
+    );
+  }
 }
 
 function playExperiment() {
@@ -818,9 +1319,9 @@ function resetExperiment() {
   state.time = 0;
   const tips = {
     "物理": `刹车开始后，速度每秒减少 ${state.p2}m/s。`,
-    "化学": "观察相同时间内两组烧瓶产生气泡的数量差异。",
-    "数学": "观察点 P 横坐标变化时，切线方向如何改变。",
-    "生物": "追踪发光分子穿过细胞膜的运动路径。"
+    "化学": buildChemistryFeCuSO4Content().sceneTip,
+    "数学": `观察 x = ${smartNumber(state.p1)} 时，导数 y′ = 2x 如何给出切线斜率。`,
+    "生物": `点击模型中的${selectedOrganelle().name}，查看结构类型、主要功能和记忆点。`
   };
   elements.sceneTip.innerHTML = `<span>观察提示</span>${tips[state.subject]}`;
   updateScene();
@@ -925,9 +1426,9 @@ function playDemoSequence() {
 }
 
 function detectSubject(question) {
-  if (/反应|浓度|溶液|化学/.test(question)) return "化学";
+  if (/反应|浓度|溶液|化学|铁粉|硫酸铜|CuSO|Fe\b|生成铜|生成 Cu/i.test(question)) return "化学";
   if (/函数|抛物线|斜率|切线|数学/.test(question)) return "数学";
-  if (/细胞|生物|膜|DNA/.test(question)) return "生物";
+  if (/细胞|生物|植物|亚显微|细胞壁|细胞膜|细胞核|液泡|叶绿体|线粒体|细胞质|DNA/.test(question)) return "生物";
   if (/汽车|车辆|速度|加速度|减速度|刹车|制动|停止|运动|受力|落下|物理/.test(question)) return "物理";
   return state.subject;
 }
@@ -999,14 +1500,87 @@ $$(".nav-item").forEach(button => {
 
 $$(".subject-tab").forEach(button => {
   button.addEventListener("click", () => {
-    if (!state.hasGenerated) {
-      applyWaitingState(button.dataset.subject, { presetQuestion: true });
-      showToast(`已切换到${button.dataset.subject}预设题，点击生成实验`);
+    const targetSubject = button.dataset.subject;
+    saveCurrentSubjectSnapshot();
+    if (state.generatedSubjects.has(targetSubject)) {
+      applySubject(targetSubject, true, { restore: true });
+      showToast(`已切换到${targetSubject}实验`);
       return;
     }
-    applySubject(button.dataset.subject);
-    showToast(`已切换到${button.dataset.subject}实验`);
+    applyWaitingState(targetSubject, { presetQuestion: true });
+    showToast(`已切换到${targetSubject}预设题，点击生成实验`);
   });
+});
+
+function syncBiologyRotationUi() {
+  if (state.subject !== "生物") return;
+  state.p1 = Math.round(state.cellRotateY);
+  if (elements.ranges[0]) elements.ranges[0].value = state.p1;
+  if (elements.paramValues[0]) elements.paramValues[0].textContent = `${state.p1}`;
+  if (state.hasGenerated) updateScene();
+}
+
+$$(".cell-organelle").forEach(node => {
+  const chooseOrganelle = event => {
+    event.stopPropagation();
+    if (state.subject !== "生物" || !state.hasGenerated) return;
+    setCellAutoRotate(false);
+    renderCellDetail(node.dataset.organelle);
+    setReasoningStep(2, `<span>结构识别</span>已选中${selectedOrganelle().name}，继续关联它的主要功能。`);
+    showToast(`已选中：${selectedOrganelle().name}`);
+  };
+  node.addEventListener("click", chooseOrganelle);
+  node.addEventListener("keydown", event => {
+    if (event.key === "Enter" || event.key === " ") chooseOrganelle(event);
+  });
+});
+
+if (elements.plantCellViewport) {
+  elements.plantCellViewport.addEventListener("pointerdown", event => {
+    if (state.subject !== "生物" || !state.hasGenerated) return;
+    setCellAutoRotate(false);
+    state.cellDrag = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      rotateX: state.cellRotateX,
+      rotateY: state.cellRotateY
+    };
+    elements.plantCellViewport.setPointerCapture(event.pointerId);
+  });
+
+  elements.plantCellViewport.addEventListener("pointermove", event => {
+    if (!state.cellDrag || state.cellDrag.pointerId !== event.pointerId) return;
+    const dx = event.clientX - state.cellDrag.startX;
+    const dy = event.clientY - state.cellDrag.startY;
+    setCellRotation(state.cellDrag.rotateX - dy * 0.12, state.cellDrag.rotateY + dx * 0.42);
+    syncBiologyRotationUi();
+  });
+
+  const endCellDrag = event => {
+    if (!state.cellDrag || state.cellDrag.pointerId !== event.pointerId) return;
+    state.cellDrag = null;
+    if (elements.plantCellViewport.hasPointerCapture(event.pointerId)) {
+      elements.plantCellViewport.releasePointerCapture(event.pointerId);
+    }
+  };
+  elements.plantCellViewport.addEventListener("pointerup", endCellDrag);
+  elements.plantCellViewport.addEventListener("pointercancel", endCellDrag);
+}
+
+elements.cellResetButton?.addEventListener("click", event => {
+  event.stopPropagation();
+  if (state.subject !== "生物") return;
+  resetBiologyCellModel();
+  syncBiologyRotationUi();
+  showToast("已重置植物细胞观察视角");
+});
+
+elements.cellAutoButton?.addEventListener("click", event => {
+  event.stopPropagation();
+  if (state.subject !== "生物") return;
+  setCellAutoRotate(!state.cellAutoRotate);
+  showToast(state.cellAutoRotate ? "植物细胞模型开始自动旋转" : "已暂停自动旋转");
 });
 
 $("#generateButton").addEventListener("click", async () => {
@@ -1022,6 +1596,9 @@ $("#generateButton").addEventListener("click", async () => {
 
   const detected = getGenerationSubject(question);
   let physicsParse = null;
+  let chemistryParse = null;
+  let mathParse = null;
+  let templateRecognition = null;
   if (detected === "物理") {
     physicsParse = parsePhysicsBrakeQuestion(question);
     if (!physicsParse.ok) {
@@ -1036,15 +1613,57 @@ $("#generateButton").addEventListener("click", async () => {
     syncPhysicsControlsFromState();
     setRecognitionFeedback(physicsParse);
   }
+  if (detected === "化学") {
+    chemistryParse = parseChemistryFeCuSO4Question(question);
+    if (!chemistryParse.ok) {
+      setRecognitionFeedback(chemistryParse, true);
+      showToast(chemistryParse.message);
+      return;
+    }
+    state.subject = "化学";
+    state.p1 = chemistryParse.feMass;
+    state.p2 = chemistryParse.cuso4Mol;
+    syncChemistryFeCuSO4Content(chemistryParse.feMass, chemistryParse.cuso4Mol);
+    setRecognitionFeedback(chemistryParse);
+  }
+  if (detected === "数学") {
+    mathParse = parseMathTangentQuestion(question);
+    state.subject = "数学";
+    state.p1 = mathParse.x;
+    state.p2 = SUBJECTS["数学"].params[1].value;
+    syncMathContent(mathParse.x);
+    setRecognitionFeedback(mathParse);
+  }
+  if (detected === "生物") {
+    templateRecognition = biologyTemplateRecognition();
+    state.subject = "生物";
+    state.p1 = -10;
+    state.p2 = 6;
+    state.selectedOrganelle = "nucleus";
+    resetBiologyCellModel();
+    setRecognitionFeedback(templateRecognition);
+  }
 
   clearDemoTimers();
   button.classList.add("loading");
   $("span", button).textContent = "生成中";
-  await showGenerationOverlay(physicsParse ? SUBJECTS["物理"].generationStages : null);
+  const generationStages = physicsParse
+    ? SUBJECTS["物理"].generationStages
+    : chemistryParse
+      ? SUBJECTS["化学"].generationStages
+      : templateRecognition
+        ? SUBJECTS["生物"].generationStages
+      : null;
+  await showGenerationOverlay(generationStages);
   applySubject(detected, false);
   $("#problemText").textContent = question;
   state.generatedQuestion = question;
   if (physicsParse) setRecognitionFeedback(physicsParse);
+  if (chemistryParse) setRecognitionFeedback(chemistryParse);
+  if (mathParse) setRecognitionFeedback(mathParse);
+  if (templateRecognition) setRecognitionFeedback(templateRecognition);
+  state.generatedSubjects.add(detected);
+  saveCurrentSubjectSnapshot();
   state.generated = Math.min(3, state.generated + 1);
   button.classList.remove("loading");
   $("span", button).textContent = "生成实验";
@@ -1081,6 +1700,12 @@ $("#hintButton").addEventListener("click", () => {
     showToast("核心公式已浮现");
     return;
   }
+  if (state.subject === "生物") {
+    setReasoningStep(4, "<span>AI 提示</span>先抓植物细胞特征：细胞壁、叶绿体和大液泡。");
+    hideMentorFeedback();
+    showToast("AI 导师已给出结构识别提示");
+    return;
+  }
   hideMentorFeedback();
   showToast("AI 导师给出了一条启发式提示");
 });
@@ -1113,6 +1738,35 @@ $("#challengeButton").addEventListener("click", () => {
     elements.mentorMessage.innerHTML = `我已把题目改成初速度 <strong>${smartNumber(nextV)}m/s</strong>、加速度 <strong>−${smartNumber(nextA)}m/s²</strong>。先别急着播放，预测一下停止距离为什么会变成 <strong>${smartNumber(next.stopDistance)}m</strong>？`;
     showMentorChallengeFeedback(previous, next);
     showToast(`变式题已同步：停止距离 ${smartNumber(next.stopDistance)}m`);
+    return;
+  }
+
+  if (state.subject === "化学") {
+    elements.ranges[0].value = 11.2;
+    elements.ranges[1].value = 0.2;
+    updateParameters(true, { syncQuestion: true });
+    const content = buildChemistryFeCuSO4Content();
+    setReasoningStep(3, `<span>变式挑战</span>铁粉增加到 11.2g，重新判断限量反应物。`);
+    elements.mentorMessage.innerHTML = `铁粉增加到 <strong>11.2g</strong> 后，n(Fe)=0.20mol，CuSO₄ 仍为 0.20mol，所以 <strong>${content.model.limiting}</strong>，生成 Cu <strong>${formatMol(content.model.cuMol)}mol / ${formatGram(content.model.cuMass)}g</strong>。`;
+    showToast("化学变式题已同步");
+    return;
+  }
+
+  if (state.subject === "数学") {
+    elements.ranges[0].value = 5;
+    updateParameters(true, { syncQuestion: true });
+    setReasoningStep(3, "<span>变式挑战</span>x = 5 时，k = 2 × 5 = 10。");
+    elements.mentorMessage.innerHTML = "如果 <strong>x = 5</strong>，代入 y′ = 2x，可得切线斜率 <strong>k = 10</strong>。";
+    showToast("数学变式题已同步：k = 10");
+    return;
+  }
+
+  if (state.subject === "生物") {
+    setCellAutoRotate(false);
+    renderCellDetail("chloroplast");
+    setReasoningStep(3, "<span>结构追问</span>已选中叶绿体：它与光合作用直接相关。");
+    elements.mentorMessage.innerHTML = "我已选中 <strong>叶绿体</strong>。请说明：为什么叶绿体被称为光合作用的主要场所？";
+    showToast("已选中叶绿体，查看光合作用功能");
     return;
   }
 
