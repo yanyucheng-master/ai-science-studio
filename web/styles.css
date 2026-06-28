@@ -2241,6 +2241,19 @@ input[type="range"] {
   display: block;
 }
 
+body.subject-math-active:not(.awaiting-generation) .transport {
+  display: none;
+}
+
+body.subject-math-active:not(.awaiting-generation) .parameters {
+  grid-template-columns: minmax(0, 1fr);
+  padding-top: 14px;
+}
+
+body.subject-math-active:not(.awaiting-generation) .parameters .parameter:nth-child(2) {
+  display: none;
+}
+
 .graph-grid {
   position: absolute;
   right: 10%;
@@ -2278,6 +2291,49 @@ input[type="range"] {
 .parabola circle { fill: #2465ef; stroke: #fff; stroke-width: 4; filter: drop-shadow(0 4px 6px rgba(47,77,183,.3)); }
 .math-label strong { color: #7056dc; font-size: 14px; }
 
+.math-axis-label,
+.math-tick,
+.math-slope-note {
+  position: absolute;
+  z-index: 4;
+  color: #65758f;
+  font-size: 9px;
+  font-weight: 800;
+  pointer-events: none;
+}
+
+.math-axis-x {
+  right: 8%;
+  bottom: 148px;
+}
+
+.math-axis-y {
+  left: 51%;
+  top: 48px;
+}
+
+.math-tick {
+  color: #8a98ad;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.tick-x-left { left: 18%; bottom: 138px; }
+.tick-x-mid { left: 49.4%; bottom: 138px; }
+.tick-x-right { right: 17%; bottom: 138px; }
+.tick-y-top { left: 52%; top: 58px; }
+
+.math-slope-note {
+  right: 22px;
+  bottom: 22px;
+  padding: 6px 9px;
+  color: #7a4ebd;
+  border: 1px solid rgba(123, 93, 227, .18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .7);
+  box-shadow: 0 8px 16px rgba(90, 80, 170, .08);
+}
+
 .scene.subject-biology {
   background:
     radial-gradient(circle at 34% 42%, rgba(54, 122, 255, .14), transparent 28%),
@@ -2288,6 +2344,43 @@ input[type="range"] {
 body.subject-biology-active:not(.awaiting-generation) .transport,
 body.subject-biology-active:not(.awaiting-generation) .parameters {
   display: none;
+}
+
+body.subject-biology-active:not(.awaiting-generation) .formula-spotlight {
+  padding: 12px 13px;
+}
+
+body.subject-biology-active:not(.awaiting-generation) .formula-spotlight strong {
+  color: #0f4cc4;
+  font-size: 17px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+body.subject-biology-active:not(.awaiting-generation) .formula-spotlight p {
+  display: grid;
+  margin-top: 8px;
+  gap: 5px;
+  font-size: 10.5px;
+  line-height: 1.35;
+}
+
+.bio-concept-line {
+  display: flex;
+  gap: 7px;
+  align-items: flex-start;
+}
+
+.bio-concept-line b {
+  flex: 0 0 auto;
+  min-width: 40px;
+  padding: 1px 6px;
+  color: #0f6cc7;
+  font-size: 9px;
+  line-height: 1.45;
+  text-align: center;
+  border-radius: 999px;
+  background: rgba(34, 98, 243, .08);
 }
 
 body.subject-biology-active:not(.awaiting-generation) .scene {
@@ -2397,6 +2490,22 @@ body.subject-biology-active:not(.awaiting-generation) .scene {
   place-items: center;
   perspective: 900px;
   cursor: grab;
+}
+
+.cell-interaction-hint {
+  position: absolute;
+  z-index: 260;
+  left: 18px;
+  bottom: 14px;
+  padding: 6px 10px;
+  color: #4f7195;
+  font-size: 10px;
+  font-weight: 800;
+  border: 1px solid rgba(135, 179, 220, .52);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .78);
+  box-shadow: 0 10px 20px rgba(56, 94, 140, .1);
+  pointer-events: none;
 }
 
 .plant-cell-viewport:active {

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231648e6'/%3E%3Cpath d='M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260627-standards-audit-1">
+  <link rel="stylesheet" href="styles.css?v=20260628-polish-audit-2">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -207,10 +207,17 @@
               <div class="graph-axis axis-x"></div>
               <div class="graph-axis axis-y"></div>
               <svg class="parabola" viewBox="0 0 600 260" preserveAspectRatio="none">
-                <path d="M40 235 Q300 -190 560 235"></path>
+                <path id="parabolaCurve" d="M75 25 L120 97 L165 153 L210 193 L255 217 L300 225 L345 217 L390 193 L435 153 L480 97 L525 25"></path>
                 <line id="tangentLine" x1="145" y1="230" x2="390" y2="35"></line>
                 <circle id="mathPoint" cx="210" cy="122" r="8"></circle>
               </svg>
+              <div class="math-axis-label math-axis-x">x</div>
+              <div class="math-axis-label math-axis-y">y</div>
+              <div class="math-tick tick-x-left">−5</div>
+              <div class="math-tick tick-x-mid">0</div>
+              <div class="math-tick tick-x-right">5</div>
+              <div class="math-tick tick-y-top">25</div>
+              <div class="math-slope-note" id="mathSlopeNote">k = 2x</div>
               <div class="math-label"><span>动点 P</span><strong id="mathCoordinate">(-1.0, 1.0)</strong></div>
             </div>
 
@@ -225,6 +232,7 @@
                     </div>
                   </div>
                   <div class="plant-cell-viewport" id="plantCellViewport">
+                    <div class="cell-interaction-hint">拖动旋转 · 悬浮显示名称 · 点击查看功能</div>
                     <div class="plant-cell-model" id="plantCellModel" aria-label="植物细胞 3D 截面模型">
                       <div class="cell-wall cell-organelle" data-organelle="cellWall" role="button" tabindex="0"><span>细胞壁</span></div>
                       <div class="cell-membrane cell-organelle" data-organelle="cellMembrane" role="button" tabindex="0"><span>细胞膜</span></div>
@@ -449,6 +457,6 @@
 
   <div class="toast" id="toast"><span></span><p>操作成功</p></div>
 
-  <script src="app.js?v=20260627-standards-audit-1"></script>
+  <script src="app.js?v=20260628-polish-audit-2"></script>
 </body>
 </html>

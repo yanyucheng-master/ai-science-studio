@@ -56,10 +56,10 @@ const SUBJECTS = {
     description: "函数 y = x²，导数 y′ = 2x；当 x = 3 时，切线斜率 k = 6。",
     engine: "典型题型模板演示",
     ar: "移动端扩展可继续展示抛物线、动点和切线的空间观察。",
-    metrics: [["点 P 横坐标", "x"], ["切线斜率", "k"], ["实验时间", "s"]],
+    metrics: [["点 P 横坐标", ""], ["切线斜率 k", ""], ["函数值 y", ""]],
     params: [
-      { label: "指定横坐标 x", desc: "调整题目给定横坐标", unit: "", min: -5, max: 5, step: 1, value: 3 },
-      { label: "运动速度", desc: "调整点 P 的移动速度", unit: "×", min: 0.5, max: 2, step: 0.5, value: 1 }
+      { label: "观察点横坐标 x", desc: "拖动观察斜率 k = 2x", unit: "", min: -5, max: 5, step: 1, value: 3 },
+      { label: "静态观察模式", desc: "本题不需要播放进度", unit: "", min: 1, max: 1, step: 1, value: 1 }
     ],
     steps: [
       ["提取函数", "y = x²，x = 3", "识别函数表达式和题目给定位置。"],
@@ -998,6 +998,8 @@ function parseMathTangentQuestion(text) {
   };
 }
 
+window.parseMathTangentQuestion = parseMathTangentQuestion;
+
 function biologyTemplateRecognition() {
   return {
     ok: true,
@@ -1033,8 +1035,8 @@ function valuesAt(time) {
   }
 
   if (state.subject === "数学") {
-    const x = state.p1 + (3 - state.p1) * progress;
-    return { progress, metrics: [x, 2 * x, t], x };
+    const x = state.p1;
+    return { progress: 0, timelineProgress: 0, metrics: [x, 2 * x, x * x], x };
   }
 
   return { progress, metrics: [currentCellOrganelles().length, Math.round(state.cellRotateY), t] };
@@ -1049,9 +1051,28 @@ function formatMetricValue(value, index) {
     if (index === 1) return formatMol(value);
     return formatGram(value);
   }
-  if (state.subject === "数学" && index < 2) return smartNumber(value);
+  if (state.subject === "数学" && index < 3) return smartNumber(value);
   if (state.subject === "生物" && index < 2) return Number(value).toFixed(0);
   return formatNumber(value);
+}
+
+function mathSvgPoint(x) {
+  const y = x * x;
+  return {
+    x,
+    y,
+    cx: 300 + x * 45,
+    cy: 225 - y * 8
+  };
+}
+
+function mathParabolaPath() {
+  const points = [];
+  for (let x = -5; x <= 5.0001; x += 0.5) {
+    const point = mathSvgPoint(Number(x.toFixed(1)));
+    points.push(`${points.length ? "L" : "M"}${smartNumber(point.cx, 1)} ${smartNumber(point.cy, 1)}`);
+  }
+  return points.join(" ");
 }
 
 function formatTime(seconds) {
@@ -1122,20 +1143,21 @@ function updateSubjectVisuals(values) {
 
   if (state.subject === "数学") {
     const x = values.x;
-    const y = x * x;
-    const xScale = 45;
-    const yScale = 8;
-    const cx = 300 + x * xScale;
-    const cy = 225 - y * yScale;
+    const point = mathSvgPoint(x);
     const x1 = x - 1.4;
     const x2 = x + 1.4;
-    $("#mathPoint").setAttribute("cx", cx);
-    $("#mathPoint").setAttribute("cy", cy);
-    $("#tangentLine").setAttribute("x1", 300 + x1 * xScale);
-    $("#tangentLine").setAttribute("y1", 225 - (y + 2 * x * (x1 - x)) * yScale);
-    $("#tangentLine").setAttribute("x2", 300 + x2 * xScale);
-    $("#tangentLine").setAttribute("y2", 225 - (y + 2 * x * (x2 - x)) * yScale);
-    $("#mathCoordinate").textContent = `(${x.toFixed(1)}, ${y.toFixed(1)})`;
+    const tangentY1 = point.y + 2 * x * (x1 - x);
+    const tangentY2 = point.y + 2 * x * (x2 - x);
+    $("#parabolaCurve")?.setAttribute("d", mathParabolaPath());
+    $("#mathPoint").setAttribute("cx", point.cx);
+    $("#mathPoint").setAttribute("cy", point.cy);
+    $("#tangentLine").setAttribute("x1", mathSvgPoint(x1).cx);
+    $("#tangentLine").setAttribute("y1", 225 - tangentY1 * 8);
+    $("#tangentLine").setAttribute("x2", mathSvgPoint(x2).cx);
+    $("#tangentLine").setAttribute("y2", 225 - tangentY2 * 8);
+    $("#mathCoordinate").textContent = `(${x.toFixed(1)}, ${point.y.toFixed(1)})`;
+    const slopeNote = $("#mathSlopeNote");
+    if (slopeNote) slopeNote.textContent = `当前斜率 k = ${smartNumber(2 * x)}`;
   }
 
   if (state.subject === "生物") renderCellDetail(state.selectedOrganelle);
@@ -1199,13 +1221,18 @@ function updateFormulaSpotlight(subject) {
   const biologyConcept = state.cellType === "animal"
     ? [
         "核心概念",
-        "动物细胞 = 细胞膜 + 细胞质 + 细胞核 + 多种细胞器",
-        "线粒体：有氧呼吸主要场所<br>内质网：合成与运输<br>高尔基体：加工、分类和包装<br>区别：通常无细胞壁、叶绿体和中央大液泡"
+        "结构定位 → 功能对应",
+        `<span class="bio-concept-line"><b>边界</b>细胞膜 + 细胞质</span>
+         <span class="bio-concept-line"><b>控制</b>细胞核</span>
+         <span class="bio-concept-line"><b>细胞器</b>线粒体、内质网、高尔基体、核糖体</span>
+         <span class="bio-concept-line"><b>区别</b>通常无细胞壁、叶绿体和中央大液泡</span>`
       ]
     : [
         "核心概念",
-        "典型植物细胞 = 细胞壁 + 细胞膜 + 细胞质 + 细胞核 + 多种细胞器",
-        "叶绿体：光合作用<br>线粒体：有氧呼吸主要场所<br>液泡：维持渗透压<br>区别：常见细胞壁、叶绿体和较大液泡"
+        "结构定位 → 功能对应",
+        `<span class="bio-concept-line"><b>边界</b>细胞壁 + 细胞膜 + 细胞质</span>
+         <span class="bio-concept-line"><b>细胞器</b>细胞核、叶绿体、线粒体、液泡</span>
+         <span class="bio-concept-line"><b>区别</b>典型植物细胞常见细胞壁、叶绿体和较大液泡</span>`
       ];
 
   const formulas = {
@@ -1578,6 +1605,14 @@ function applySubject(subject, updateQuestion = true, options = {}) {
 }
 
 function playExperiment() {
+  if (state.subject === "数学") {
+    showToast("数学题型为静态参数观察：拖动 x 滑块即可同步斜率");
+    return;
+  }
+  if (state.subject === "生物") {
+    showToast("生物模型支持拖动旋转和点击识别，无需播放进度");
+    return;
+  }
   if (state.time >= duration()) state.time = 0;
   state.playing = true;
   state.lastFrame = performance.now();
@@ -1719,8 +1754,8 @@ function getGenerationSubject(question) {
 }
 
 elements.playButton.addEventListener("click", () => {
-  if (state.subject === "生物") {
-    showToast("生物模型支持拖动旋转和点击识别，无需播放进度");
+  if (state.subject === "数学" || state.subject === "生物") {
+    playExperiment();
     return;
   }
   clearDemoTimers();
@@ -2227,7 +2262,10 @@ $("#copyLink").addEventListener("click", async () => {
 document.addEventListener("keydown", event => {
   if (event.code === "Space" && event.target.tagName !== "INPUT") {
     event.preventDefault();
-    if (state.subject === "生物") return;
+    if (state.subject === "数学" || state.subject === "生物") {
+      playExperiment();
+      return;
+    }
     state.playing ? pauseExperiment() : playExperiment();
   }
   if (event.code === "Escape") closeModal();
