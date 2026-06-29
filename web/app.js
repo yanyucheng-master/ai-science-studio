@@ -106,6 +106,16 @@ const state = {
   lastFrame: 0,
   p1: 20,
   p2: 5,
+  physicsTemplate: "brake",
+  solenoidViewEnd: "left",
+  solenoidWindingDirection: "counterclockwise",
+  solenoidHasCore: false,
+  solenoidPaused: false,
+  solenoidRotateX: 0,
+  solenoidRotateY: 0,
+  solenoidZoom: 1,
+  solenoidDrag: null,
+  solenoidCanvasReady: false,
   playbackRate: 1,
   reasonStep: 1,
   hasGenerated: false,
@@ -114,6 +124,7 @@ const state = {
   subjectSnapshots: {},
   generated: 2,
   favorite: false,
+  mathModel: null,
   cellType: "plant",
   selectedOrganelle: "nucleus",
   cellRotateX: -4,
@@ -134,6 +145,13 @@ const PHYSICS_BRAKE_LIMITS = {
   speedMax: 80,
   accelMin: 1,
   accelMax: 20
+};
+
+const SOLENOID_LIMITS = {
+  currentMin: 0.1,
+  currentMax: 2,
+  turnsMin: 100,
+  turnsMax: 500
 };
 
 const CHEMISTRY_CONSTANTS = {
@@ -298,6 +316,7 @@ const elements = {
   cellSelectionName: $("#cellSelectionName"),
   cellSelectionFunction: $("#cellSelectionFunction"),
   cuso4Solution: $("#cuso4Solution"),
+  solenoidCanvas: $("#solenoidCanvas"),
   toast: $("#toast"),
   generationOverlay: $("#generationOverlay"),
   generationStatus: $("#generationStatus"),
@@ -320,6 +339,7 @@ function updateSubjectBodyClass(subject = state.subject) {
   document.body.classList.toggle("subject-chemistry-active", subject === "化学");
   document.body.classList.toggle("subject-math-active", subject === "数学");
   document.body.classList.toggle("subject-biology-active", subject === "生物");
+  document.body.classList.toggle("subject-solenoid-active", subject === "物理" && state.physicsTemplate === "solenoid" && state.hasGenerated);
 }
 
 function saveCurrentSubjectSnapshot() {
@@ -328,8 +348,16 @@ function saveCurrentSubjectSnapshot() {
     p1: state.p1,
     p2: state.p2,
     generatedQuestion: state.generatedQuestion || $("#questionInput")?.value || SUBJECTS[state.subject]?.question || "",
+    physicsTemplate: state.physicsTemplate,
+    solenoidViewEnd: state.solenoidViewEnd,
+    solenoidWindingDirection: state.solenoidWindingDirection,
+    solenoidHasCore: state.solenoidHasCore,
+    solenoidRotateX: state.solenoidRotateX,
+    solenoidRotateY: state.solenoidRotateY,
+    solenoidZoom: state.solenoidZoom,
     selectedOrganelle: state.selectedOrganelle,
     cellType: state.cellType,
+    mathModelSpec: state.mathModel?.spec || null,
     cellRotateX: state.cellRotateX,
     cellRotateY: state.cellRotateY
   };
@@ -341,11 +369,26 @@ function restoreSubjectSnapshot(subject) {
   state.p1 = snapshot.p1;
   state.p2 = snapshot.p2;
   state.generatedQuestion = snapshot.generatedQuestion || SUBJECTS[subject]?.question || "";
+  if (subject === "物理") {
+    state.physicsTemplate = snapshot.physicsTemplate || "brake";
+    state.solenoidViewEnd = snapshot.solenoidViewEnd || "left";
+    state.solenoidWindingDirection = snapshot.solenoidWindingDirection || "counterclockwise";
+    state.solenoidHasCore = Boolean(snapshot.solenoidHasCore);
+    state.solenoidRotateX = snapshot.solenoidRotateX || 0;
+    state.solenoidRotateY = snapshot.solenoidRotateY || 0;
+    state.solenoidZoom = snapshot.solenoidZoom || 1;
+    if (state.physicsTemplate === "solenoid") syncPhysicsSolenoidContent();
+    else syncPhysicsBrakeContent();
+  }
   if (subject === "生物") {
     state.cellType = snapshot.cellType || "plant";
     state.selectedOrganelle = snapshot.selectedOrganelle || "nucleus";
     syncBiologyContent(state.cellType);
     setCellRotation(snapshot.cellRotateX ?? -4, snapshot.cellRotateY ?? -10);
+  }
+  if (subject === "数学") {
+    state.mathModel = createMathModel(snapshot.mathModelSpec || defaultMathSpec());
+    syncMathContent(state.p1, state.mathModel);
   }
   return true;
 }
@@ -452,6 +495,98 @@ function buildPhysicsBrakeContent(v0 = state.p1, aAbs = state.p2) {
 
 function buildPhysicsBrakeQuestionText(v0 = state.p1, aAbs = state.p2) {
   return `一辆汽车以 ${smartNumber(v0)}m/s 的速度行驶，紧急刹车后加速度大小为 ${smartNumber(aAbs)}m/s²，求刹车距离。`;
+}
+
+function solenoidModel(
+  current = state.p1,
+  turns = state.p2,
+  viewEnd = state.solenoidViewEnd,
+  windingDirection = state.solenoidWindingDirection,
+  hasCore = state.solenoidHasCore
+) {
+  const observedPole = windingDirection === "counterclockwise" ? "N" : "S";
+  const leftPole = viewEnd === "left" ? observedPole : (observedPole === "N" ? "S" : "N");
+  const rightPole = leftPole === "N" ? "S" : "N";
+  const base = (current / 0.5) * (turns / 200) * (hasCore ? 1.65 : 1);
+  const strengthLevel = base < 0.75 ? "较弱" : base < 1.6 ? "中等" : base < 3 ? "较强" : "很强";
+  const visualStrength = clamp((base - 0.25) / 4, 0.16, 1);
+  return {
+    current,
+    turns,
+    viewEnd,
+    windingDirection,
+    hasCore,
+    leftPole,
+    rightPole,
+    strengthLevel,
+    visualStrength,
+    observedPole,
+    isReversed: leftPole === "S"
+  };
+}
+
+function buildSolenoidQuestionText(model = solenoidModel()) {
+  const directionText = model.windingDirection === "counterclockwise" ? "逆时针" : "顺时针";
+  const viewText = model.viewEnd === "left" ? "左端" : "右端";
+  return `一个${Math.round(model.turns)}匝的通电螺线管接入${formatAmp(model.current)}A电流。从${viewText}观察，线圈中的电流沿${directionText}方向。请判断螺线管左右两端的磁极。若将电流增大到1.0A、线圈匝数增加到400匝，并在线圈中插入铁芯，磁性将如何变化？`;
+}
+
+function formatAmp(value) {
+  return Number(value).toFixed(2).replace(/0$/, "").replace(/\.0$/, ".0");
+}
+
+function solenoidDirectionText(direction = state.solenoidWindingDirection) {
+  return direction === "counterclockwise" ? "逆时针" : "顺时针";
+}
+
+function solenoidViewText(viewEnd = state.solenoidViewEnd) {
+  return viewEnd === "left" ? "左端" : "右端";
+}
+
+function buildPhysicsSolenoidContent(
+  current = state.p1,
+  turns = state.p2,
+  options = {}
+) {
+  const viewEnd = options.viewEnd || state.solenoidViewEnd || "left";
+  const windingDirection = options.windingDirection || state.solenoidWindingDirection || "counterclockwise";
+  const hasCore = options.hasCore ?? state.solenoidHasCore;
+  const model = solenoidModel(current, turns, viewEnd, windingDirection, hasCore);
+  const currentText = formatAmp(model.current);
+  const turnsText = Math.round(model.turns);
+  const directionText = solenoidDirectionText(model.windingDirection);
+  const viewText = solenoidViewText(model.viewEnd);
+  const observedText = model.viewEnd === "left" ? `左端为${model.leftPole}极` : `右端为${model.rightPole}极`;
+  const coreText = model.hasCore ? "已插入" : "未插入";
+  return {
+    title: "通电螺线管：磁场方向与电磁铁磁性",
+    description: "调节电流、匝数和铁芯，观察磁极与磁场变化。",
+    engine: "电磁学典型题模板",
+    ar: "移动端扩展可继续展示螺线管空间磁场与观察端切换。",
+    metrics: [["左端磁极", ""], ["右端磁极", ""], ["当前磁性", ""]],
+    params: [
+      { label: "电流大小 I", desc: "调整传统电流大小", unit: "A", min: SOLENOID_LIMITS.currentMin, max: SOLENOID_LIMITS.currentMax, step: 0.1, value: model.current },
+      { label: "线圈匝数 N", desc: "其他条件与长度基本相同时", unit: "匝", min: SOLENOID_LIMITS.turnsMin, max: SOLENOID_LIMITS.turnsMax, step: 50, value: model.turns }
+    ],
+    steps: [
+      ["提取条件", `从${viewText}观察，电流沿${directionText}方向。`, `电流 I = ${currentText}A，线圈匝数 N = ${turnsText}匝，铁芯：${coreText}。`],
+      ["使用安培定则", "右手四指沿传统电流方向弯曲", "大拇指所指方向为螺线管内部磁场方向，也指向 N 极。"],
+      ["判断磁极", `${observedText}，另一端相反。`, `所以左端为${model.leftPole}极，右端为${model.rightPole}极。`],
+      ["分析磁性", "电流越大、匝数越多、插入铁芯，磁性越强。", "匝数规律需限定在其他条件和线圈长度基本相同时。"]
+    ],
+    mentor: "为什么反转电流后，电磁铁的 N、S 极会交换，但磁性不一定减弱？",
+    hint: "分别考虑“电流方向”和“电流大小”影响的是磁场的哪个属性：方向改变会交换磁极，大小改变才影响强弱。",
+    challenge: "将电流由 <strong>0.5A</strong> 增大到 <strong>1.0A</strong>，同时反转电流方向。磁极和磁性分别怎样变化？",
+    generationStages: [
+      { label: "识别电磁题", text: `识别 ${turnsText}匝、${currentText}A、${viewText}${directionText}`, progress: 28 },
+      { label: "生成螺线管", text: "生成3D线圈、传统电流箭头与闭合磁感线", progress: 63 },
+      { label: "判断磁极", text: `${viewText}${directionText} → ${observedText}`, progress: 100 }
+    ],
+    recognitionText: `从${viewText}观察电流为${directionText}｜左端${model.leftPole}极｜右端${model.rightPole}极｜磁性：${model.strengthLevel}`,
+    formulaHtml: `观察端：逆时针 → N 极；顺时针 → S 极<br>磁感线闭合：外部 N → S，内部 S → N<br>强弱看电流、匝数、铁芯；不显示伪精确 B 值。`,
+    sceneTip: `当前：左端 ${model.leftPole} 极，右端 ${model.rightPole} 极；I=${currentText}A，N=${turnsText}匝，铁芯${coreText}，磁性${model.strengthLevel}。`,
+    model
+  };
 }
 
 function formatMol(value) {
@@ -561,27 +696,257 @@ function syncChemistryFeCuSO4Content(feMass = state.p1, cuso4Mol = state.p2) {
   return content.model;
 }
 
-function buildMathQuestionText(x = state.p1) {
-  return `点 P 在抛物线 y = x² 上运动，当 x = ${smartNumber(x)} 时，求该点处切线斜率，并观察 x 改变时斜率如何变化。`;
+function defaultMathSpec() {
+  return { kind: "polynomial", a: 1, b: 0, c: 0 };
 }
 
-function syncMathContent(x = state.p1) {
-  const xText = smartNumber(x);
-  const slopeText = smartNumber(2 * x);
+function formatMathNumber(value, decimals = 2) {
+  if (!Number.isFinite(value)) return "--";
+  const rounded = Number(Number(value).toFixed(decimals));
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(decimals);
+}
+
+function formatSignedTerm(value, body, isFirst = false) {
+  if (!value) return "";
+  const sign = value < 0 ? "-" : isFirst ? "" : "+";
+  const abs = Math.abs(value);
+  const coeff = abs === 1 && body ? "" : formatMathNumber(abs);
+  return `${sign}${coeff}${body}`;
+}
+
+function formatPolynomialSpec(spec) {
+  const terms = [
+    formatSignedTerm(spec.a, "x²", true),
+    formatSignedTerm(spec.b, "x", !spec.a),
+    spec.c ? `${spec.c < 0 ? "-" : (!spec.a && !spec.b ? "" : "+")}${formatMathNumber(Math.abs(spec.c))}` : ""
+  ].filter(Boolean);
+  return terms.join(" ") || "0";
+}
+
+function formatPolynomialDerivative(spec) {
+  const linear = {
+    a: 0,
+    b: 2 * (spec.a || 0),
+    c: spec.b || 0
+  };
+  const expression = formatPolynomialSpec(linear).replace(/x²/g, "x");
+  return expression === "0" ? "0" : expression;
+}
+
+function polynomialValue(spec, x) {
+  return (spec.a || 0) * x * x + (spec.b || 0) * x + (spec.c || 0);
+}
+
+function polynomialDerivativeValue(spec, x) {
+  return 2 * (spec.a || 0) * x + (spec.b || 0);
+}
+
+function parsePolynomialExpression(expression) {
+  const raw = String(expression || "")
+    .replace(/\s+/g, "")
+    .replace(/\*/g, "")
+    .replace(/²/g, "^2")
+    .replace(/x2/g, "x^2")
+    .replace(/X/g, "x");
+  if (!raw || /[^0-9x+\-.^]/i.test(raw)) return null;
+  const normalized = raw.startsWith("-") ? raw : `+${raw}`;
+  const terms = normalized.match(/[+-][^+-]+/g);
+  if (!terms) return null;
+  const spec = { kind: "polynomial", a: 0, b: 0, c: 0 };
+  for (const term of terms) {
+    let match = term.match(/^([+-])(\d*(?:\.\d+)?)?x\^2$/i);
+    if (match) {
+      const coeff = match[2] === "" || match[2] === undefined ? 1 : Number(match[2]);
+      spec.a += match[1] === "-" ? -coeff : coeff;
+      continue;
+    }
+    match = term.match(/^([+-])(\d*(?:\.\d+)?)?x$/i);
+    if (match) {
+      const coeff = match[2] === "" || match[2] === undefined ? 1 : Number(match[2]);
+      spec.b += match[1] === "-" ? -coeff : coeff;
+      continue;
+    }
+    match = term.match(/^([+-])(\d+(?:\.\d+)?)$/);
+    if (match) {
+      spec.c += match[1] === "-" ? -Number(match[2]) : Number(match[2]);
+      continue;
+    }
+    return null;
+  }
+  if (!spec.a && !spec.b && !spec.c) return null;
+  return spec;
+}
+
+function normalizeMathExpression(expression) {
+  return String(expression || "")
+    .replace(/[０-９]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xfee0))
+    .replace(/[＝]/g, "=")
+    .replace(/[（]/g, "(")
+    .replace(/[）]/g, ")")
+    .replace(/[－−–—]/g, "-")
+    .replace(/×/g, "*")
+    .replace(/²/g, "^2")
+    .replace(/\s+/g, "")
+    .toLowerCase()
+    .replace(/lnx/g, "ln(x)")
+    .replace(/sinx/g, "sin(x)")
+    .replace(/cosx/g, "cos(x)")
+    .replace(/sqrtx/g, "sqrt(x)")
+    .replace(/√x/g, "sqrt(x)")
+    .replace(/(\d)(x)/g, "$1*$2")
+    .replace(/x2/g, "x^2");
+}
+
+function createMathModel(spec = defaultMathSpec()) {
+  const safeSpec = { ...defaultMathSpec(), ...spec };
+  if (safeSpec.kind === "ln") {
+    return {
+      spec: { kind: "ln" },
+      expression: "ln x",
+      derivativeText: "1/x",
+      domainMin: 0.2,
+      domainMax: 6,
+      step: 0.1,
+      defaultX: 3,
+      challengeX: 5,
+      value: x => Math.log(x),
+      derivative: x => 1 / x
+    };
+  }
+  if (safeSpec.kind === "sin") {
+    return {
+      spec: { kind: "sin" },
+      expression: "sin x",
+      derivativeText: "cos x",
+      domainMin: -6.3,
+      domainMax: 6.3,
+      step: 0.1,
+      defaultX: 1,
+      challengeX: 2,
+      value: x => Math.sin(x),
+      derivative: x => Math.cos(x)
+    };
+  }
+  if (safeSpec.kind === "cos") {
+    return {
+      spec: { kind: "cos" },
+      expression: "cos x",
+      derivativeText: "-sin x",
+      domainMin: -6.3,
+      domainMax: 6.3,
+      step: 0.1,
+      defaultX: 1,
+      challengeX: 2,
+      value: x => Math.cos(x),
+      derivative: x => -Math.sin(x)
+    };
+  }
+  if (safeSpec.kind === "exp") {
+    return {
+      spec: { kind: "exp" },
+      expression: "e^x",
+      derivativeText: "e^x",
+      domainMin: -2,
+      domainMax: 2,
+      step: 0.1,
+      defaultX: 1,
+      challengeX: 2,
+      value: x => Math.exp(x),
+      derivative: x => Math.exp(x)
+    };
+  }
+  if (safeSpec.kind === "sqrt") {
+    return {
+      spec: { kind: "sqrt" },
+      expression: "√x",
+      derivativeText: "1/(2√x)",
+      domainMin: 0.1,
+      domainMax: 9,
+      step: 0.1,
+      defaultX: 4,
+      challengeX: 9,
+      value: x => Math.sqrt(x),
+      derivative: x => 1 / (2 * Math.sqrt(x))
+    };
+  }
+
+  const polynomialSpec = {
+    kind: "polynomial",
+    a: Number(safeSpec.a) || 0,
+    b: Number(safeSpec.b) || 0,
+    c: Number(safeSpec.c) || 0
+  };
+  return {
+    spec: polynomialSpec,
+    expression: formatPolynomialSpec(polynomialSpec),
+    derivativeText: formatPolynomialDerivative(polynomialSpec),
+    domainMin: -5,
+    domainMax: 5,
+    step: 0.1,
+    defaultX: 3,
+    challengeX: 5,
+    value: x => polynomialValue(polynomialSpec, x),
+    derivative: x => polynomialDerivativeValue(polynomialSpec, x)
+  };
+}
+
+function currentMathModel() {
+  if (!state.mathModel) state.mathModel = createMathModel(defaultMathSpec());
+  return state.mathModel;
+}
+
+function createMathModelFromExpression(expression) {
+  const normalized = normalizeMathExpression(expression);
+  if (/^(ln|log)\(x\)$/.test(normalized)) return createMathModel({ kind: "ln" });
+  if (/^sin\(x\)$/.test(normalized)) return createMathModel({ kind: "sin" });
+  if (/^cos\(x\)$/.test(normalized)) return createMathModel({ kind: "cos" });
+  if (/^(e\^x|exp\(x\))$/.test(normalized)) return createMathModel({ kind: "exp" });
+  if (/^sqrt\(x\)$/.test(normalized)) return createMathModel({ kind: "sqrt" });
+  const polynomial = parsePolynomialExpression(normalized);
+  return polynomial ? createMathModel(polynomial) : null;
+}
+
+function extractMathExpression(text) {
+  const raw = String(text || "").replace(/[；;。]/g, "，");
+  const match = raw.match(/y\s*(?:=|＝|为|是)\s*([^，,]+?)(?=(?:上|运动|，|当|求|处|$))/i);
+  return match ? match[1].trim() : "";
+}
+
+function extractMathX(text, model) {
+  const normalized = normalizeQuestionText(text);
+  const match = normalized.match(/x\s*(?:=|为|是|:|：)\s*(-?\d+(?:\.\d+)?)/i);
+  const parsed = match ? Number(match[1]) : model.defaultX;
+  return Number.isFinite(parsed) ? parsed : model.defaultX;
+}
+
+function buildMathQuestionText(x = state.p1, model = currentMathModel()) {
+  return `点 P 在函数 y = ${model.expression} 上运动，当 x = ${formatMathNumber(x)} 时，求该点处切线斜率，并观察 x 改变时斜率如何变化。`;
+}
+
+function syncMathContent(x = state.p1, model = currentMathModel()) {
+  state.mathModel = model;
+  const safeX = clamp(Number(x), model.domainMin, model.domainMax);
+  state.p1 = Number(formatMathNumber(safeX, 2));
+  const y = model.value(state.p1);
+  const slope = model.derivative(state.p1);
+  const xText = formatMathNumber(state.p1);
+  const yText = formatMathNumber(y);
+  const slopeText = formatMathNumber(slope);
   const math = SUBJECTS["数学"];
-  math.question = buildMathQuestionText(x);
-  math.description = `函数 y = x²，导数 y′ = 2x；当 x = ${xText} 时，切线斜率 k = ${slopeText}。`;
-  math.params[0].value = x;
+  math.question = buildMathQuestionText(state.p1, model);
+  math.description = `函数 y = ${model.expression}，导数 y′ = ${model.derivativeText}；当 x = ${xText} 时，切线斜率 k = ${slopeText}。`;
+  math.params[0] = { label: "自变量 x", desc: `拖动观察 y = ${model.expression}`, unit: "", min: model.domainMin, max: model.domainMax, step: model.step, value: state.p1 };
+  math.params[1] = { label: "缩放倍率", desc: "保持图像清晰展示", unit: "x", min: 1, max: 1, step: 1, value: 1 };
   math.steps = [
-    ["提取函数", `y = x²，x = ${xText}`, "识别函数表达式和题目给定位置。"],
-    ["求导", "y′ = 2x", "导函数在给定点的值表示该点处切线斜率。"],
-    ["代入坐标", `k = 2 × ${xText} = ${slopeText}`, "把给定 x 代入导函数得到斜率。"],
-    ["观察变化", "k = 2x 随 x 线性变化", "通过动点观察切线斜率随横坐标改变而变化。"]
+    ["提取函数", `y = ${model.expression}，x = ${xText}`, "识别函数表达式和题目给定位置。"],
+    ["求导", `y′ = ${model.derivativeText}`, "导函数在给定点的值表示该点处切线斜率。"],
+    ["代入坐标", `x = ${xText}，k = ${slopeText}`, `函数值 y = ${yText}，切线斜率 k = ${slopeText}。`],
+    ["观察变化", "拖动 x，图像与切线同步更新", "通过动点观察切线斜率随横坐标改变而变化。"]
   ];
-  math.mentor = `为什么抛物线 y = x² 在 x = ${xText} 处的切线斜率等于 <strong>${slopeText}</strong>？`;
-  math.hint = `先求导得到导函数 y′ = 2x，再把题目给出的 x = ${xText} 代入；导函数值就是该点切线斜率。`;
-  math.challenge = "如果 <strong>x = 5</strong>，切线斜率是多少？";
-  math.recognitionText = `函数 y = x²｜导数 y′ = 2x｜x = ${xText}｜切线斜率 k = ${slopeText}`;
+  math.mentor = `为什么函数 y = ${model.expression} 在 x = ${xText} 处的切线斜率等于 <strong>${slopeText}</strong>？`;
+  math.hint = `先求导得到 y′ = ${model.derivativeText}，再把 x = ${xText} 代入；导函数值就是该点切线斜率。`;
+  math.challenge = `如果 <strong>x = ${formatMathNumber(model.challengeX)}</strong>，切线斜率是多少？`;
+  math.recognitionText = `函数 y = ${model.expression}｜导数 y′ = ${model.derivativeText}｜x = ${xText}｜y = ${yText}｜切线斜率 k = ${slopeText}`;
 }
 
 function normalizeBiologyCellType(text = "") {
@@ -790,7 +1155,7 @@ function switchBiologyCellType(type, options = {}) {
   setRecognitionFeedback(biologyTemplateRecognition());
   $("#experimentTitle").textContent = content.title;
   $("#problemText").textContent = options.problemText || content.question;
-  $("#arDescription").textContent = content.ar;
+  if ($("#arDescription")) $("#arDescription").textContent = content.ar;
   $("#engineBadge").textContent = "典型题型模板演示";
   if (options.updateQuestion !== false) $("#questionInput").value = content.question;
   state.generatedQuestion = $("#questionInput").value || content.question;
@@ -798,9 +1163,15 @@ function switchBiologyCellType(type, options = {}) {
 }
 
 function syncPhysicsBrakeContent(v0 = state.p1, aAbs = state.p2) {
+  state.physicsTemplate = "brake";
   const content = buildPhysicsBrakeContent(v0, aAbs);
   const physics = SUBJECTS["物理"];
+  physics.question = buildPhysicsBrakeQuestionText(v0, aAbs);
+  physics.title = "刹车距离实验 · 速度如何归零";
   physics.description = content.description;
+  physics.engine = "运动过程可视化";
+  physics.ar = "移动端扩展可继续展示汽车刹车实验。";
+  physics.metrics = [["速度 v", "m/s"], ["位移 s", "m"], ["时间 t", "s"]];
   physics.params = content.params;
   physics.steps = content.steps;
   physics.mentor = content.mentor;
@@ -809,6 +1180,26 @@ function syncPhysicsBrakeContent(v0 = state.p1, aAbs = state.p2) {
   physics.generationStages = content.generationStages;
   physics.recognitionText = content.recognitionText;
   return physicsBrakeModel(v0, aAbs);
+}
+
+function syncPhysicsSolenoidContent(current = state.p1, turns = state.p2, options = {}) {
+  state.physicsTemplate = "solenoid";
+  const content = buildPhysicsSolenoidContent(current, turns, options);
+  const physics = SUBJECTS["物理"];
+  physics.question = buildSolenoidQuestionText(content.model);
+  physics.title = content.title;
+  physics.description = content.description;
+  physics.engine = content.engine;
+  physics.ar = content.ar;
+  physics.metrics = content.metrics;
+  physics.params = content.params;
+  physics.steps = content.steps;
+  physics.mentor = content.mentor;
+  physics.hint = content.hint;
+  physics.challenge = content.challenge;
+  physics.generationStages = content.generationStages;
+  physics.recognitionText = content.recognitionText;
+  return content.model;
 }
 
 function hideMentorFeedback() {
@@ -929,6 +1320,63 @@ function parsePhysicsBrakeQuestion(text) {
 
 window.parsePhysicsBrakeQuestion = parsePhysicsBrakeQuestion;
 
+function parsePhysicsSolenoidQuestion(text) {
+  const normalized = normalizeQuestionText(text);
+  const failMessage = "当前电磁学演示支持通电螺线管磁极判断题，请输入包含电流、匝数、观察端和顺/逆时针绕向的题目。";
+  if (!/螺线管|电磁铁|线圈|磁极|安培定则|铁芯/.test(normalized)) {
+    return { ok: false, message: failMessage };
+  }
+
+  let current = null;
+  const currentMatch = normalized.match(/(\d+(?:\.\d+)?)\s*(mA|毫安|A|安)/i);
+  if (currentMatch) {
+    current = Number(currentMatch[1]);
+    if (/mA|毫安/i.test(currentMatch[2])) current /= 1000;
+  }
+
+  const turns = firstNumberByPatterns(normalized, [
+    /(\d+(?:\.\d+)?)\s*匝/,
+    /匝数\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)/,
+    /(\d+(?:\.\d+)?)\s*(?:圈|组线圈)/
+  ]);
+
+  const viewEnd = /右端|从右/.test(normalized) ? "right" : "left";
+  let windingDirection = null;
+  if (/逆时针|逆时針|counterclockwise/i.test(normalized)) windingDirection = "counterclockwise";
+  if (/顺时针|順时針|clockwise/i.test(normalized)) windingDirection = "clockwise";
+  const hasFutureCoreChange = /若|如果|将/.test(normalized) && /插入铁芯|加入铁芯/.test(normalized);
+  const hasCore = !hasFutureCoreChange && /已插入铁芯|插有铁芯|装有铁芯|有铁芯/.test(normalized) && !/无铁芯|未插入|拔出/.test(normalized);
+
+  if (!Number.isFinite(current) || !Number.isFinite(turns) || !windingDirection) {
+    return { ok: false, message: failMessage };
+  }
+  if (current < SOLENOID_LIMITS.currentMin || current > SOLENOID_LIMITS.currentMax) {
+    return { ok: false, message: `识别到电流 ${formatAmp(current)}A，但当前演示范围为 ${SOLENOID_LIMITS.currentMin}–${SOLENOID_LIMITS.currentMax}A。` };
+  }
+  if (turns < SOLENOID_LIMITS.turnsMin || turns > SOLENOID_LIMITS.turnsMax) {
+    return { ok: false, message: `识别到线圈 ${Math.round(turns)}匝，但当前演示范围为 ${SOLENOID_LIMITS.turnsMin}–${SOLENOID_LIMITS.turnsMax}匝。` };
+  }
+
+  const model = solenoidModel(current, turns, viewEnd, windingDirection, hasCore);
+  return {
+    ok: true,
+    subject: "物理",
+    type: "solenoid_electromagnet",
+    current,
+    turns,
+    viewEnd,
+    windingDirection,
+    hasCore,
+    leftPole: model.leftPole,
+    rightPole: model.rightPole,
+    strengthLevel: model.strengthLevel,
+    message: `已识别：从${solenoidViewText(viewEnd)}观察电流为${solenoidDirectionText(windingDirection)}，${solenoidViewText(viewEnd)}为${model.observedPole}极`,
+    recognitionText: buildPhysicsSolenoidContent(current, turns, { viewEnd, windingDirection, hasCore }).recognitionText
+  };
+}
+
+window.parsePhysicsSolenoidQuestion = parsePhysicsSolenoidQuestion;
+
 function parseChemistryFeCuSO4Question(text) {
   const normalized = normalizeQuestionText(text);
   const failMessage = "当前化学演示支持铁与硫酸铜的定量反应题，请输入铁的质量和硫酸铜的物质的量。";
@@ -973,28 +1421,33 @@ function parseChemistryFeCuSO4Question(text) {
 }
 
 function parseMathTangentQuestion(text) {
+  const failMessage = "当前数学演示支持简单函数切线斜率题，请输入类似 y=2x^2、y=lnx，并给出或默认观察 x 值。";
+  const expression = extractMathExpression(text);
+  const model = createMathModelFromExpression(expression || "x^2");
   const normalized = normalizeQuestionText(text);
-  const failMessage = "当前数学演示支持 y = x² 的切线斜率题，请输入包含函数 y = x² 和指定 x 值的题目。";
-  if (!normalized) return { ok: false, message: failMessage };
-  const hasParabola = /抛物线/.test(normalized) || /y\s*(?:=|为|是)\s*x\s*(?:\^?\s*2|平方)/i.test(normalized);
-  const hasTangentTask = /切线|斜率|导数/.test(normalized);
-  const match = normalized.match(/x\s*(?:=|为|是|:|：)\s*(-?\d+(?:\.\d+)?)/i);
-  if (!hasParabola || !hasTangentTask || !match) {
+  const hasTangentTask = /切线|斜率|导数|变化|观察/.test(normalized);
+  if (!model || (!expression && !/抛物线/.test(normalized)) || (!hasTangentTask && !expression)) {
     return { ok: false, message: failMessage };
   }
-  const x = Number(match[1]);
-  if (!Number.isFinite(x)) return { ok: false, message: failMessage };
-  if (x < -5 || x > 5) {
-    return { ok: false, message: `识别到 x = ${smartNumber(x)}，但当前演示范围为 -5 到 5。` };
+  const x = extractMathX(text, model);
+  if (x < model.domainMin || x > model.domainMax) {
+    return { ok: false, message: `识别到 x = ${formatMathNumber(x)}，但函数 y = ${model.expression} 的当前演示范围为 ${formatMathNumber(model.domainMin)} 到 ${formatMathNumber(model.domainMax)}。` };
   }
-  const safeX = x;
+  const y = model.value(x);
+  const slope = model.derivative(x);
+  if (!Number.isFinite(y) || !Number.isFinite(slope)) return { ok: false, message: failMessage };
   return {
     ok: true,
     subject: "数学",
-    type: "parabola_tangent_slope",
-    x: safeX,
-    slope: 2 * safeX,
-    recognitionText: `函数 y = x²｜导数 y′ = 2x｜x = ${smartNumber(safeX)}｜切线斜率 k = ${smartNumber(2 * safeX)}`
+    type: "function_tangent_slope",
+    model,
+    modelSpec: model.spec,
+    expression: model.expression,
+    derivativeText: model.derivativeText,
+    x,
+    y,
+    slope,
+    recognitionText: `函数 y = ${model.expression}｜导数 y′ = ${model.derivativeText}｜x = ${formatMathNumber(x)}｜y = ${formatMathNumber(y)}｜切线斜率 k = ${formatMathNumber(slope)}`
   };
 }
 
@@ -1012,7 +1465,8 @@ function biologyTemplateRecognition() {
 window.parseChemistryFeCuSO4Question = parseChemistryFeCuSO4Question;
 
 function duration() {
-  if (state.subject === "物理") return state.p1 / state.p2;
+  if (state.subject === "物理" && state.physicsTemplate === "brake") return state.p1 / state.p2;
+  if (state.subject === "物理" && state.physicsTemplate === "solenoid") return 8;
   if (state.subject === "数学") return 8 / state.p2;
   return 8;
 }
@@ -1021,12 +1475,21 @@ function valuesAt(time) {
   const t = Math.min(time, duration());
   const progress = Math.min(1, t / duration());
 
-  if (state.subject === "物理") {
+  if (state.subject === "物理" && state.physicsTemplate === "brake") {
     const speed = Math.max(0, state.p1 - state.p2 * t);
     const distance = state.p1 * t - 0.5 * state.p2 * t * t;
     const stopDistance = (state.p1 * state.p1) / (2 * state.p2);
     const experimentProgress = Math.min(1, distance / stopDistance);
     return { progress: experimentProgress, experimentProgress, timelineProgress: t / duration(), metrics: [speed, distance, t] };
+  }
+
+  if (state.subject === "物理" && state.physicsTemplate === "solenoid") {
+    const solenoid = solenoidModel();
+    return {
+      progress,
+      metrics: [solenoid.leftPole, solenoid.rightPole, solenoid.strengthLevel],
+      solenoid
+    };
   }
 
   if (state.subject === "化学") {
@@ -1036,7 +1499,10 @@ function valuesAt(time) {
 
   if (state.subject === "数学") {
     const x = state.p1;
-    return { progress: 0, timelineProgress: 0, metrics: [x, 2 * x, x * x], x };
+    const model = currentMathModel();
+    const y = model.value(x);
+    const slope = model.derivative(x);
+    return { progress: 0, timelineProgress: 0, metrics: [x, slope, y], x, y, slope };
   }
 
   return { progress, metrics: [currentCellOrganelles().length, Math.round(state.cellRotateY), t] };
@@ -1047,6 +1513,7 @@ function formatNumber(value) {
 }
 
 function formatMetricValue(value, index) {
+  if (typeof value === "string") return value;
   if (state.subject === "化学") {
     if (index === 1) return formatMol(value);
     return formatGram(value);
@@ -1056,28 +1523,472 @@ function formatMetricValue(value, index) {
   return formatNumber(value);
 }
 
-function mathSvgPoint(x) {
-  const y = x * x;
+function mathGraphBounds(model = currentMathModel()) {
+  const values = [0];
+  const minX = model.domainMin;
+  const maxX = model.domainMax;
+  for (let i = 0; i <= 96; i += 1) {
+    const x = minX + ((maxX - minX) * i) / 96;
+    const y = model.value(x);
+    if (Number.isFinite(y)) values.push(y);
+  }
+  const currentY = model.value(state.p1);
+  if (Number.isFinite(currentY)) values.push(currentY);
+  let minY = Math.min(...values);
+  let maxY = Math.max(...values);
+  if (Math.abs(maxY - minY) < 0.1) {
+    maxY += 1;
+    minY -= 1;
+  }
+  const pad = Math.max(0.3, (maxY - minY) * 0.14);
   return {
-    x,
-    y,
-    cx: 300 + x * 45,
-    cy: 225 - y * 8
+    minX,
+    maxX,
+    minY: minY - pad,
+    maxY: maxY + pad
   };
 }
 
-function mathParabolaPath() {
+function mathSvgPoint(x, model = currentMathModel(), bounds = mathGraphBounds(model)) {
+  const y = model.value(x);
+  const safeY = Number.isFinite(y) ? y : 0;
+  const cx = 70 + ((x - bounds.minX) / (bounds.maxX - bounds.minX)) * 460;
+  const cy = 230 - ((safeY - bounds.minY) / (bounds.maxY - bounds.minY)) * 200;
+  return {
+    x,
+    y: safeY,
+    cx,
+    cy
+  };
+}
+
+function mathParabolaPath(model = currentMathModel(), bounds = mathGraphBounds(model)) {
   const points = [];
-  for (let x = -5; x <= 5.0001; x += 0.5) {
-    const point = mathSvgPoint(Number(x.toFixed(1)));
-    points.push(`${points.length ? "L" : "M"}${smartNumber(point.cx, 1)} ${smartNumber(point.cy, 1)}`);
+  let started = false;
+  for (let i = 0; i <= 120; i += 1) {
+    const x = bounds.minX + ((bounds.maxX - bounds.minX) * i) / 120;
+    const y = model.value(x);
+    if (!Number.isFinite(y)) {
+      started = false;
+      continue;
+    }
+    const point = mathSvgPoint(x, model, bounds);
+    points.push(`${started ? "L" : "M"}${smartNumber(point.cx, 1)} ${smartNumber(point.cy, 1)}`);
+    started = true;
   }
   return points.join(" ");
+}
+
+function updateMathAxis(model, bounds) {
+  const axisY = $(".axis-y");
+  const axisX = $(".axis-x");
+  const axisYLabel = $(".math-axis-y");
+  const axisXLabel = $(".math-axis-x");
+  const xRange = bounds.maxX - bounds.minX;
+  const yRange = bounds.maxY - bounds.minY;
+  const yAxisPercent = clamp((0 - bounds.minX) / xRange, 0, 1) * 80 + 10;
+  const xAxisBottom = 58 + (1 - clamp((0 - bounds.minY) / yRange, 0, 1)) * 200;
+  if (axisY) axisY.style.left = `${yAxisPercent}%`;
+  if (axisYLabel) axisYLabel.style.left = `${Math.min(90, yAxisPercent + 1)}%`;
+  if (axisX) axisX.style.bottom = `${xAxisBottom}px`;
+  if (axisXLabel) axisXLabel.style.bottom = `${xAxisBottom + 8}px`;
+
+  const midX = bounds.minX <= 0 && bounds.maxX >= 0 ? 0 : (bounds.minX + bounds.maxX) / 2;
+  const ticks = [
+    [$(".tick-x-left"), bounds.minX, 10],
+    [$(".tick-x-mid"), midX, 10 + ((midX - bounds.minX) / xRange) * 80],
+    [$(".tick-x-right"), bounds.maxX, 90]
+  ];
+  ticks.forEach(([node, value, left]) => {
+    if (!node) return;
+    node.textContent = formatMathNumber(value);
+    node.style.left = `${left}%`;
+  });
+  const topTick = $(".tick-y-top");
+  if (topTick) topTick.textContent = formatMathNumber(bounds.maxY);
 }
 
 function formatTime(seconds) {
   const rounded = Math.max(0, Math.round(seconds));
   return `${String(Math.floor(rounded / 60)).padStart(2, "0")}:${String(rounded % 60).padStart(2, "0")}`;
+}
+
+function resizeSolenoidCanvas() {
+  const canvas = elements.solenoidCanvas;
+  if (!canvas) return null;
+  const rect = canvas.getBoundingClientRect();
+  if (rect.width < 10 || rect.height < 10) return null;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const width = Math.round(rect.width * dpr);
+  const height = Math.round(rect.height * dpr);
+  if (canvas.width !== width || canvas.height !== height) {
+    canvas.width = width;
+    canvas.height = height;
+  }
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { canvas, ctx, width: rect.width, height: rect.height };
+}
+
+function solenoidRenderState(time = performance.now()) {
+  const model = solenoidModel();
+  return {
+    current: model.current,
+    turns: model.turns,
+    core: model.hasCore,
+    reversed: model.leftPole === "S",
+    leftPole: model.leftPole,
+    rightPole: model.rightPole,
+    strength: model.visualStrength,
+    yaw: (-0.18 + state.solenoidRotateY * Math.PI / 180),
+    pitch: (-0.12 + state.solenoidRotateX * Math.PI / 180),
+    zoom: state.solenoidZoom || 1,
+    time: state.solenoidPaused ? 0 : time
+  };
+}
+
+function rotateSolenoidPoint(point, renderState) {
+  const cy = Math.cos(renderState.yaw);
+  const sy = Math.sin(renderState.yaw);
+  const cp = Math.cos(renderState.pitch);
+  const sp = Math.sin(renderState.pitch);
+  const x1 = point.x * cy + point.z * sy;
+  const z1 = -point.x * sy + point.z * cy;
+  const y1 = point.y * cp - z1 * sp;
+  const z2 = point.y * sp + z1 * cp;
+  return { x: x1, y: y1, z: z2 };
+}
+
+function projectSolenoidPoint(point, renderState, bounds) {
+  const rotated = rotateSolenoidPoint(point, renderState);
+  const scale = renderState.zoom * Math.min(bounds.width / 780, bounds.height / 500) * 1.12;
+  const perspective = 820 / (820 + rotated.z);
+  return {
+    x: bounds.width * 0.5 + rotated.x * scale * perspective,
+    y: bounds.height * 0.54 + rotated.y * scale * perspective,
+    depth: rotated.z,
+    scale: scale * perspective
+  };
+}
+
+function drawSolenoidPath(ctx, points, renderState, bounds, stroke, width, alpha = 1, dash = null) {
+  if (!points.length) return;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = stroke;
+  ctx.lineWidth = width;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  if (dash) ctx.setLineDash(dash);
+  ctx.beginPath();
+  points.forEach((point, index) => {
+    const projected = projectSolenoidPoint(point, renderState, bounds);
+    if (index === 0) ctx.moveTo(projected.x, projected.y);
+    else ctx.lineTo(projected.x, projected.y);
+  });
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawSolenoidArrow(ctx, start, end, renderState, bounds, color, size = 7, alpha = 1) {
+  const p1 = projectSolenoidPoint(start, renderState, bounds);
+  const p2 = projectSolenoidPoint(end, renderState, bounds);
+  const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = color;
+  ctx.translate(p2.x, p2.y);
+  ctx.rotate(angle);
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(-size, size * 0.55);
+  ctx.lineTo(-size, -size * 0.55);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function solenoidFieldPoint(t, radius, plane) {
+  let x;
+  let radial;
+  if (t <= Math.PI) {
+    x = -270 * Math.cos(t);
+    radial = radius * Math.sin(t);
+  } else {
+    const u = (t - Math.PI) / Math.PI;
+    x = 270 - u * 540;
+    radial = 12 * Math.sin(u * Math.PI);
+  }
+  return { x, y: radial * Math.cos(plane), z: radial * Math.sin(plane) };
+}
+
+function drawSolenoidFieldLines(ctx, renderState, bounds) {
+  const relative = Math.min(2.4, (renderState.current / 0.5) * (renderState.turns / 200) * (renderState.core ? 1.65 : 1));
+  const alpha = 0.18 + Math.min(0.42, relative * 0.14);
+  const radii = relative > 1.3 ? [98, 136, 174] : [110, 158];
+  const planes = relative > 2 ? [0, Math.PI / 3, 2 * Math.PI / 3] : [0, Math.PI / 2];
+  planes.forEach((plane) => {
+    radii.forEach((radius, index) => {
+      const points = [];
+      for (let i = 0; i <= 100; i += 1) {
+        points.push(solenoidFieldPoint(i / 100 * Math.PI * 2, radius, plane));
+      }
+      drawSolenoidPath(ctx, points, renderState, bounds, "#1b71d8", 1.4 + relative * 0.18, Math.max(0.12, alpha - index * 0.035), [8, 8]);
+      const direction = renderState.reversed ? -1 : 1;
+      const t1 = direction > 0 ? 0.62 : 0.38;
+      const t2 = t1 + direction * 0.035;
+      drawSolenoidArrow(
+        ctx,
+        solenoidFieldPoint(t1 * Math.PI, radius, plane),
+        solenoidFieldPoint(t2 * Math.PI, radius, plane),
+        renderState,
+        bounds,
+        "#1f69e8",
+        7,
+        0.65
+      );
+    });
+  });
+}
+
+function roundedCanvasRect(ctx, x, y, width, height, radius) {
+  if (typeof ctx.roundRect === "function") {
+    ctx.roundRect(x, y, width, height, radius);
+    return;
+  }
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + width, y, x + width, y + height, radius);
+  ctx.arcTo(x + width, y + height, x, y + height, radius);
+  ctx.arcTo(x, y + height, x, y, radius);
+  ctx.arcTo(x, y, x + width, y, radius);
+}
+
+function drawSolenoidCore(ctx, renderState, bounds) {
+  const start = projectSolenoidPoint({ x: -215, y: 0, z: 0 }, renderState, bounds);
+  const end = projectSolenoidPoint({ x: 215, y: 0, z: 0 }, renderState, bounds);
+  const angle = Math.atan2(end.y - start.y, end.x - start.x);
+  const length = Math.hypot(end.x - start.x, end.y - start.y);
+  const radius = 32 * (start.scale + end.scale) / 2;
+  ctx.save();
+  ctx.translate(start.x, start.y);
+  ctx.rotate(angle);
+  const gradient = ctx.createLinearGradient(0, -radius, 0, radius);
+  if (renderState.core) {
+    gradient.addColorStop(0, "#687385");
+    gradient.addColorStop(0.46, "#d1d8e3");
+    gradient.addColorStop(1, "#596575");
+    ctx.globalAlpha = 0.96;
+  } else {
+    gradient.addColorStop(0, "#dce7f2");
+    gradient.addColorStop(0.5, "#fbfdff");
+    gradient.addColorStop(1, "#c9d7e8");
+    ctx.globalAlpha = 0.36;
+  }
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  roundedCanvasRect(ctx, 0, -radius, length, radius * 2, radius);
+  ctx.fill();
+  ctx.strokeStyle = renderState.core ? "#657283" : "#a9bdd4";
+  ctx.lineWidth = 1.1;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawSolenoidInternalField(ctx, renderState, bounds) {
+  [-13, 0, 13].forEach((offset) => {
+    const points = [];
+    for (let i = 0; i <= 34; i += 1) {
+      points.push({ x: -205 + i * 12, y: offset, z: 4 });
+    }
+    drawSolenoidPath(ctx, points, renderState, bounds, "#1f69e8", 1.5, renderState.core ? 0.72 : 0.48, [5, 5]);
+  });
+  const direction = renderState.reversed ? 1 : -1;
+  drawSolenoidArrow(
+    ctx,
+    { x: direction > 0 ? -28 : 28, y: 0, z: 8 },
+    { x: direction > 0 ? 28 : -28, y: 0, z: 8 },
+    renderState,
+    bounds,
+    "#1f69e8",
+    8,
+    0.9
+  );
+}
+
+function drawSolenoidCoil(ctx, renderState, bounds) {
+  const visibleTurns = Math.round(13 + (renderState.turns - 100) / 400 * 12);
+  const segments = visibleTurns * 22;
+  const points = [];
+  for (let i = 0; i <= segments; i += 1) {
+    const u = i / segments;
+    const angle = u * Math.PI * 2 * visibleTurns;
+    points.push({ x: -220 + u * 440, y: Math.cos(angle) * 56, z: Math.sin(angle) * 56 });
+  }
+
+  for (let i = 0; i < points.length - 1; i += 1) {
+    const p = projectSolenoidPoint(points[i], renderState, bounds);
+    const q = projectSolenoidPoint(points[i + 1], renderState, bounds);
+    const depth = Math.max(0, Math.min(1, (p.depth + 280) / 560));
+    ctx.save();
+    ctx.strokeStyle = depth > 0.5 ? "#f39a56" : "#9d4327";
+    ctx.globalAlpha = 0.7 + depth * 0.3;
+    ctx.lineWidth = 2.2 + depth * 1.9;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    ctx.lineTo(q.x, q.y);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  const speed = renderState.reversed ? -1 : 1;
+  const timeFactor = renderState.time * 0.00008 * speed;
+  for (let index = 0; index < 8; index += 1) {
+    let u = (index / 8 + timeFactor) % 1;
+    if (u < 0) u += 1;
+    const nextU = Math.max(0, Math.min(1, u + 0.006 * speed));
+    const angle = u * Math.PI * 2 * visibleTurns;
+    const nextAngle = nextU * Math.PI * 2 * visibleTurns;
+    const start = { x: -220 + u * 440, y: Math.cos(angle) * 56, z: Math.sin(angle) * 56 };
+    const end = { x: -220 + nextU * 440, y: Math.cos(nextAngle) * 56, z: Math.sin(nextAngle) * 56 };
+    drawSolenoidArrow(ctx, start, end, renderState, bounds, "#fff4d0", 7, 0.95);
+  }
+}
+
+function solenoidDipoleField(pos, renderState) {
+  const m = renderState.reversed ? 1 : -1;
+  const x = pos.x / 100;
+  const y = pos.y / 100;
+  const r2 = x * x + y * y + 0.45;
+  const r5 = Math.pow(r2, 2.5);
+  return {
+    x: (3 * x * (m * x) / r5) - m / Math.pow(r2, 1.5),
+    y: 3 * y * (m * x) / r5
+  };
+}
+
+function drawSolenoidCompass(ctx, pos, renderState, bounds) {
+  const center = projectSolenoidPoint({ x: pos.x, y: pos.y, z: 8 }, renderState, bounds);
+  const field = solenoidDipoleField(pos, renderState);
+  const tip = projectSolenoidPoint({ x: pos.x + field.x * 26, y: pos.y + field.y * 26, z: 8 }, renderState, bounds);
+  const angle = Math.atan2(tip.y - center.y, tip.x - center.x);
+  ctx.save();
+  ctx.translate(center.x, center.y);
+  ctx.fillStyle = "rgba(255,255,255,.88)";
+  ctx.strokeStyle = "#9fb3c8";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.arc(0, 0, 13, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.rotate(angle);
+  ctx.fillStyle = "#e34a5f";
+  ctx.beginPath();
+  ctx.moveTo(11, 0);
+  ctx.lineTo(-1, 3.4);
+  ctx.lineTo(-1, -3.4);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = "#2567e8";
+  ctx.beginPath();
+  ctx.moveTo(-11, 0);
+  ctx.lineTo(1, 3.4);
+  ctx.lineTo(1, -3.4);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+
+  ctx.save();
+  ctx.fillStyle = "#526b86";
+  ctx.font = "800 9px system-ui, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("磁针", center.x, center.y + 27);
+  ctx.restore();
+}
+
+function drawSolenoidPoleLabel(ctx, world, pole, renderState, bounds) {
+  const point = projectSolenoidPoint(world, renderState, bounds);
+  ctx.save();
+  ctx.font = "900 22px system-ui, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  const gradient = ctx.createLinearGradient(point.x - 22, point.y - 22, point.x + 22, point.y + 22);
+  if (pole === "N") {
+    gradient.addColorStop(0, "#ff6874");
+    gradient.addColorStop(1, "#d83246");
+  } else {
+    gradient.addColorStop(0, "#4b8dff");
+    gradient.addColorStop(1, "#1749c8");
+  }
+  ctx.shadowColor = "rgba(31, 72, 132, .18)";
+  ctx.shadowBlur = 12;
+  ctx.shadowOffsetY = 9;
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(point.x, point.y, 24, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowColor = "transparent";
+  ctx.strokeStyle = "rgba(255,255,255,.9)";
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  ctx.fillStyle = "#fff";
+  ctx.fillText(pole, point.x, point.y + 1);
+  ctx.restore();
+}
+
+function drawSolenoidClips(ctx, renderState, bounds) {
+  const pull = 1 + renderState.strength * 38;
+  const baseX = 300 - pull;
+  const opacity = 0.32 + renderState.strength * 0.55;
+  ctx.save();
+  ctx.globalAlpha = opacity;
+  for (let i = 0; i < 4; i += 1) {
+    const p = projectSolenoidPoint({ x: baseX + i * 18, y: 76 + (i % 2) * 9, z: 10 }, renderState, bounds);
+    ctx.strokeStyle = "rgba(74, 91, 117, .78)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y, 5, 15, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawSolenoidCanvas(time = performance.now()) {
+  const setup = resizeSolenoidCanvas();
+  if (!setup) return;
+  const { ctx, width, height } = setup;
+  const renderState = solenoidRenderState(time);
+  ctx.clearRect(0, 0, width, height);
+
+  const ground = ctx.createRadialGradient(width * 0.5, height * 0.72, 10, width * 0.5, height * 0.72, width * 0.42);
+  ground.addColorStop(0, "rgba(61, 95, 138, .18)");
+  ground.addColorStop(1, "rgba(61, 95, 138, 0)");
+  ctx.fillStyle = ground;
+  ctx.fillRect(0, 0, width, height);
+
+  const bounds = { width, height };
+  drawSolenoidFieldLines(ctx, renderState, bounds);
+  drawSolenoidCore(ctx, renderState, bounds);
+  drawSolenoidInternalField(ctx, renderState, bounds);
+  drawSolenoidCoil(ctx, renderState, bounds);
+  [
+    { x: -285, y: -145 },
+    { x: 0, y: -195 },
+    { x: 285, y: -145 },
+    { x: -285, y: 145 },
+    { x: 0, y: 195 },
+    { x: 285, y: 145 }
+  ].forEach(point => drawSolenoidCompass(ctx, point, renderState, bounds));
+  drawSolenoidPoleLabel(ctx, { x: -250, y: 0, z: 0 }, renderState.leftPole, renderState, bounds);
+  drawSolenoidPoleLabel(ctx, { x: 250, y: 0, z: 0 }, renderState.rightPole, renderState, bounds);
+  drawSolenoidClips(ctx, renderState, bounds);
+}
+
+function solenoidAnimationFrame(time) {
+  if (state.subject === "物理" && state.physicsTemplate === "solenoid" && state.hasGenerated) {
+    drawSolenoidCanvas(time);
+  }
+  requestAnimationFrame(solenoidAnimationFrame);
 }
 
 function updateSubjectVisuals(values) {
@@ -1090,7 +2001,7 @@ function updateSubjectVisuals(values) {
   elements.scene.style.setProperty("--bio-travel-short", `${values.progress * 210}px`);
   elements.scene.style.setProperty("--bio-travel-mid", `${values.progress * 235}px`);
 
-  if (state.subject === "物理") {
+  if (state.subject === "物理" && state.physicsTemplate === "brake") {
     const roadWidth = physicsRoadWidth();
     const startLeftPx = roadWidth * 0.08;
     const startTracePx = roadWidth * 0.09;
@@ -1102,6 +2013,52 @@ function updateSubjectVisuals(values) {
     elements.car.style.left = `${carLeftPx}px`;
     elements.brakeTrace.style.width = `${Math.max(0, nosePx - startTracePx)}px`;
     elements.car.classList.toggle("moving", state.playing && values.metrics[0] > 0);
+  }
+
+  if (state.subject === "物理" && state.physicsTemplate === "solenoid") {
+    const model = values.solenoid || solenoidModel();
+    const strength = model.visualStrength;
+    const density = clamp((model.turns - SOLENOID_LIMITS.turnsMin) / (SOLENOID_LIMITS.turnsMax - SOLENOID_LIMITS.turnsMin));
+    elements.scene.style.setProperty("--solenoid-strength", String(strength));
+    elements.scene.style.setProperty("--solenoid-opacity", String(0.34 + strength * 0.44));
+    elements.scene.style.setProperty("--solenoid-field-width", `${2.2 + strength * 2}px`);
+    elements.scene.style.setProperty("--solenoid-inner-field-width", `${2 + strength * 1.6}px`);
+    elements.scene.style.setProperty("--solenoid-coil-width", `${14 + density * 8}px`);
+    elements.scene.style.setProperty("--solenoid-clip-shift", `${strength * -22}px`);
+    elements.scene.style.setProperty("--solenoid-extra-clip-opacity", String(0.15 + strength * 0.85));
+    elements.scene.style.setProperty("--solenoid-rotate-x", `${state.solenoidRotateX}deg`);
+    elements.scene.style.setProperty("--solenoid-rotate-y", `${state.solenoidRotateY}deg`);
+    elements.scene.classList.toggle("solenoid-reversed", model.isReversed);
+    elements.scene.classList.toggle("solenoid-core-on", model.hasCore);
+    elements.scene.classList.toggle("solenoid-paused", state.solenoidPaused);
+    const leftPole = $("#solenoidLeftPole");
+    const rightPole = $("#solenoidRightPole");
+    if (leftPole) {
+      leftPole.textContent = model.leftPole;
+      leftPole.dataset.pole = model.leftPole;
+    }
+    if (rightPole) {
+      rightPole.textContent = model.rightPole;
+      rightPole.dataset.pole = model.rightPole;
+    }
+    const viewText = $("#solenoidViewText");
+    const coreText = $("#solenoidCoreText");
+    const ruleText = $("#solenoidRuleText");
+    const currentText = $("#solenoidCurrentText");
+    const turnsText = $("#solenoidTurnsText");
+    const coreStateText = $("#solenoidCoreStateText");
+    const strengthText = $("#solenoidStrengthText");
+    if (viewText) viewText.textContent = solenoidViewText(model.viewEnd);
+    if (coreText) coreText.textContent = model.hasCore ? "已插入" : "未插入";
+    if (ruleText) {
+      const observed = model.viewEnd === "left" ? `左端为 ${model.leftPole} 极` : `右端为 ${model.rightPole} 极`;
+      ruleText.textContent = `从${solenoidViewText(model.viewEnd)}观察${solenoidDirectionText(model.windingDirection)} → ${observed}`;
+    }
+    if (currentText) currentText.textContent = `${formatAmp(model.current)}A`;
+    if (turnsText) turnsText.textContent = `${Math.round(model.turns)}匝`;
+    if (coreStateText) coreStateText.textContent = model.hasCore ? "已插入" : "未插入";
+    if (strengthText) strengthText.textContent = model.strengthLevel;
+    drawSolenoidCanvas();
   }
 
   if (state.subject === "化学") {
@@ -1143,21 +2100,28 @@ function updateSubjectVisuals(values) {
 
   if (state.subject === "数学") {
     const x = values.x;
-    const point = mathSvgPoint(x);
-    const x1 = x - 1.4;
-    const x2 = x + 1.4;
-    const tangentY1 = point.y + 2 * x * (x1 - x);
-    const tangentY2 = point.y + 2 * x * (x2 - x);
-    $("#parabolaCurve")?.setAttribute("d", mathParabolaPath());
+    const model = currentMathModel();
+    const bounds = mathGraphBounds(model);
+    const point = mathSvgPoint(x, model, bounds);
+    const slope = model.derivative(x);
+    const dx = (bounds.maxX - bounds.minX) * 0.16;
+    const x1 = clamp(x - dx, bounds.minX, bounds.maxX);
+    const x2 = clamp(x + dx, bounds.minX, bounds.maxX);
+    const tangentY1 = point.y + slope * (x1 - x);
+    const tangentY2 = point.y + slope * (x2 - x);
+    const tangentPoint1 = mathSvgPoint(x1, { ...model, value: () => tangentY1 }, bounds);
+    const tangentPoint2 = mathSvgPoint(x2, { ...model, value: () => tangentY2 }, bounds);
+    $("#parabolaCurve")?.setAttribute("d", mathParabolaPath(model, bounds));
     $("#mathPoint").setAttribute("cx", point.cx);
     $("#mathPoint").setAttribute("cy", point.cy);
-    $("#tangentLine").setAttribute("x1", mathSvgPoint(x1).cx);
-    $("#tangentLine").setAttribute("y1", 225 - tangentY1 * 8);
-    $("#tangentLine").setAttribute("x2", mathSvgPoint(x2).cx);
-    $("#tangentLine").setAttribute("y2", 225 - tangentY2 * 8);
-    $("#mathCoordinate").textContent = `(${x.toFixed(1)}, ${point.y.toFixed(1)})`;
+    $("#tangentLine").setAttribute("x1", tangentPoint1.cx);
+    $("#tangentLine").setAttribute("y1", tangentPoint1.cy);
+    $("#tangentLine").setAttribute("x2", tangentPoint2.cx);
+    $("#tangentLine").setAttribute("y2", tangentPoint2.cy);
+    $("#mathCoordinate").textContent = `(${formatMathNumber(x)}, ${formatMathNumber(point.y)})`;
     const slopeNote = $("#mathSlopeNote");
-    if (slopeNote) slopeNote.textContent = `当前斜率 k = ${smartNumber(2 * x)}`;
+    if (slopeNote) slopeNote.textContent = `y = ${model.expression}｜k = ${formatMathNumber(slope)}`;
+    updateMathAxis(model, bounds);
   }
 
   if (state.subject === "生物") renderCellDetail(state.selectedOrganelle);
@@ -1176,9 +2140,11 @@ function updateScene() {
   if (completed) {
     pauseExperiment();
     const conclusions = {
-      "物理": `车辆在 ${duration().toFixed(1)} 秒后停止，刹车距离为 ${values.metrics[1].toFixed(1)} 米。`,
+      "物理": state.physicsTemplate === "solenoid"
+        ? `左端为 ${values.solenoid.leftPole} 极，右端为 ${values.solenoid.rightPole} 极；当前磁性${values.solenoid.strengthLevel}。`
+        : `车辆在 ${duration().toFixed(1)} 秒后停止，刹车距离为 ${values.metrics[1].toFixed(1)} 米。`,
       "化学": `铁表面析出红色铜，溶液由蓝色变为浅绿色；${chemistryReactionJudgement(values.chem).short}，生成 Cu ${formatMol(values.chem.cuMol)}mol / ${formatGram(values.chem.cuMass)}g。`,
-      "数学": `当 x = ${smartNumber(state.p1)} 时，切线斜率 k = ${smartNumber(2 * state.p1)}。`,
+      "数学": `函数 y = ${currentMathModel().expression}；当 x = ${formatMathNumber(state.p1)} 时，切线斜率 k = ${formatMathNumber(currentMathModel().derivative(state.p1))}。`,
       "生物": `已完成植物细胞截面识别，可点击结构查看名称、类型和功能。`
     };
     elements.sceneTip.innerHTML = `<span>实验结论</span>${conclusions[state.subject]}`;
@@ -1213,10 +2179,13 @@ function updateFormulaSpotlight(subject) {
   const spotlight = $(".formula-spotlight");
   if (!spotlight) return;
   const physics = buildPhysicsBrakeContent();
+  const solenoid = buildPhysicsSolenoidContent();
   const chemistry = buildChemistryFeCuSO4Content();
+  const mathModel = currentMathModel();
   const mathValue = subject === "数学" ? state.p1 : SUBJECTS["数学"].params[0].value;
-  const mathSlope = smartNumber(2 * mathValue);
-  const mathX = smartNumber(mathValue);
+  const mathSlope = formatMathNumber(mathModel.derivative(mathValue));
+  const mathX = formatMathNumber(mathValue);
+  const mathY = formatMathNumber(mathModel.value(mathValue));
 
   const biologyConcept = state.cellType === "animal"
     ? [
@@ -1236,11 +2205,17 @@ function updateFormulaSpotlight(subject) {
       ];
 
   const formulas = {
-    "物理": [
-      "核心公式",
-      "v² − v₀² = 2as",
-      `0² − ${smartNumber(state.p1)}² = 2 × (−${smartNumber(state.p2)}) × s，得到 s = ${physics.stopDistanceText}m`
-    ],
+    "物理": state.physicsTemplate === "solenoid"
+      ? [
+          "安培定则",
+          "四指沿传统电流方向，大拇指指向 N 极",
+          solenoid.formulaHtml
+        ]
+      : [
+          "核心公式",
+          "v² − v₀² = 2as",
+          `0² − ${smartNumber(state.p1)}² = 2 × (−${smartNumber(state.p2)}) × s，得到 s = ${physics.stopDistanceText}m`
+        ],
     "化学": [
       "核心关系",
       "Fe + CuSO₄ → FeSO₄ + Cu",
@@ -1248,8 +2223,8 @@ function updateFormulaSpotlight(subject) {
     ],
     "数学": [
       "导数关系",
-      "y′ = 2x",
-      `函数 y = x²；当 x = ${mathX} 时，斜率 k = ${mathSlope}`
+      `y′ = ${mathModel.derivativeText}`,
+      `函数 y = ${mathModel.expression}；当 x = ${mathX} 时，y = ${mathY}，斜率 k = ${mathSlope}`
     ],
     "生物": biologyConcept
   };
@@ -1344,7 +2319,9 @@ function clearRecognitionFeedback() {
 }
 
 function syncPhysicsQuestionFromState() {
-  const question = buildPhysicsBrakeQuestionText();
+  const question = state.physicsTemplate === "solenoid"
+    ? buildSolenoidQuestionText()
+    : buildPhysicsBrakeQuestionText();
   $("#questionInput").value = question;
   $("#problemText").textContent = question;
   state.generatedQuestion = question;
@@ -1416,6 +2393,7 @@ function applyWaitingState(subject = state.subject, options = {}) {
   updateSubjectBodyClass(subject);
   state.reasonStep = 0;
   if (subject === "物理" && options.presetQuestion) {
+    state.physicsTemplate = "brake";
     state.p1 = 20;
     state.p2 = 5;
     syncPhysicsBrakeContent();
@@ -1428,7 +2406,8 @@ function applyWaitingState(subject = state.subject, options = {}) {
   if (subject === "数学" && options.presetQuestion) {
     state.p1 = 3;
     state.p2 = 1;
-    syncMathContent(3);
+    state.mathModel = createMathModel(defaultMathSpec());
+    syncMathContent(3, state.mathModel);
   }
   if (subject === "生物" && options.presetQuestion) {
     state.cellType = "plant";
@@ -1446,10 +2425,10 @@ function applyWaitingState(subject = state.subject, options = {}) {
   $("#experimentTitle").textContent = "等待生成实验";
   $("#problemText").textContent = "输入题目并点击“生成实验”后，这里会构建对应的可视化实验。";
   $("#engineBadge").textContent = "等待题目输入";
-  $("#arDescription").textContent = "生成实验后，可继续扩展移动端空间展示。";
+  if ($("#arDescription")) $("#arDescription").textContent = "生成实验后，可继续扩展移动端空间展示。";
   elements.scene.className = "scene subject-pending";
-  $("#viewButton").classList.remove("selected");
-  $("#annotationButton").classList.remove("selected");
+  $("#viewButton")?.classList.remove("selected");
+  $("#annotationButton")?.classList.remove("selected");
   elements.metricLabels[0].textContent = "参数识别";
   elements.metricLabels[1].textContent = "过程建模";
   elements.metricLabels[2].textContent = "实验输出";
@@ -1466,7 +2445,11 @@ function updateParameters(reset = true, options = {}) {
   state.p1 = Number(elements.ranges[0].value);
   state.p2 = Number(elements.ranges[1].value);
   if (state.subject === "物理") {
-    syncPhysicsBrakeContent();
+    if (state.physicsTemplate === "solenoid") {
+      syncPhysicsSolenoidContent();
+    } else {
+      syncPhysicsBrakeContent();
+    }
   }
   if (state.subject === "化学") {
     syncChemistryFeCuSO4Content();
@@ -1479,7 +2462,7 @@ function updateParameters(reset = true, options = {}) {
   });
   elements.totalTime.textContent = formatTime(duration());
 
-  if (state.subject === "物理") {
+  if (state.subject === "物理" && state.physicsTemplate === "brake") {
     const stop = (state.p1 * state.p1) / (2 * state.p2);
     const content = buildPhysicsBrakeContent();
     elements.stopDistanceLabel.textContent = `${content.stopDistanceText} m`;
@@ -1490,6 +2473,18 @@ function updateParameters(reset = true, options = {}) {
       renderReasoning();
       elements.mentorMessage.innerHTML = config().mentor;
       setRecognitionFeedback({ ok: true, v0: state.p1, aAbs: state.p2 });
+    }
+  }
+
+  if (state.subject === "物理" && state.physicsTemplate === "solenoid") {
+    const content = buildPhysicsSolenoidContent();
+    updateFormulaSpotlight("物理");
+    elements.sceneTip.innerHTML = `<span>实时结论</span>${content.sceneTip}`;
+    if (state.hasGenerated) {
+      if (options.syncQuestion) syncPhysicsQuestionFromState();
+      renderReasoning();
+      elements.mentorMessage.innerHTML = config().mentor;
+      setRecognitionFeedback({ ok: true, subject: "物理", type: "solenoid_electromagnet", recognitionText: content.recognitionText });
     }
   }
 
@@ -1511,7 +2506,7 @@ function updateParameters(reset = true, options = {}) {
       if (options.syncQuestion) syncSubjectQuestionFromState("数学");
       renderReasoning();
       elements.mentorMessage.innerHTML = config().mentor;
-      setRecognitionFeedback(parseMathTangentQuestion($("#questionInput").value || buildMathQuestionText()));
+      setRecognitionFeedback({ ok: true, subject: "数学", type: "function_tangent_slope", recognitionText: config().recognitionText });
     }
   }
 
@@ -1538,6 +2533,7 @@ function applySubject(subject, updateQuestion = true, options = {}) {
   updateSubjectBodyClass(subject);
   const restored = options.restore && restoreSubjectSnapshot(subject);
   if (subject === "物理" && updateQuestion && !restored) {
+    state.physicsTemplate = "brake";
     state.p1 = 20;
     state.p2 = 5;
     syncPhysicsBrakeContent();
@@ -1550,7 +2546,8 @@ function applySubject(subject, updateQuestion = true, options = {}) {
   if (subject === "数学" && updateQuestion && !restored) {
     state.p1 = 3;
     state.p2 = 1;
-    syncMathContent(3);
+    state.mathModel = createMathModel(defaultMathSpec());
+    syncMathContent(3, state.mathModel);
   }
   if (subject === "生物" && updateQuestion && !restored) {
     syncBiologyContent(state.cellType || "plant");
@@ -1564,8 +2561,16 @@ function applySubject(subject, updateQuestion = true, options = {}) {
   updateFormulaSpotlight(subject);
   hideMentorFeedback();
   const current = config();
-  $(".side-card-header .section-kicker").textContent = subject === "生物" ? "结构 × 功能联动" : "公式 × 过程联动";
-  $(".side-card-header h2").textContent = subject === "生物" ? "结构识别路径" : "解题思维链";
+  $(".side-card-header .section-kicker").textContent = subject === "生物"
+    ? "结构 × 功能联动"
+    : subject === "物理" && state.physicsTemplate === "solenoid"
+      ? "安培定则 × 变量探究"
+      : "公式 × 过程联动";
+  $(".side-card-header h2").textContent = subject === "生物"
+    ? "结构识别路径"
+    : subject === "物理" && state.physicsTemplate === "solenoid"
+      ? "解题路径"
+      : "解题思维链";
 
   setActiveSubjectTab(subject);
   if (subject !== "物理") clearRecognitionFeedback();
@@ -1573,10 +2578,10 @@ function applySubject(subject, updateQuestion = true, options = {}) {
   $("#experimentTitle").textContent = current.title;
   $("#problemText").textContent = current.description;
   $("#engineBadge").textContent = current.engine;
-  $("#arDescription").textContent = current.ar;
-  elements.scene.className = `scene subject-${subject === "物理" ? "physics" : subject === "化学" ? "chemistry" : subject === "数学" ? "math" : "biology"}`;
-  $("#viewButton").classList.remove("selected");
-  $("#annotationButton").classList.remove("selected");
+  if ($("#arDescription")) $("#arDescription").textContent = current.ar;
+  elements.scene.className = `scene subject-${subject === "物理" ? (state.physicsTemplate === "solenoid" ? "solenoid" : "physics") : subject === "化学" ? "chemistry" : subject === "数学" ? "math" : "biology"}`;
+  $("#viewButton")?.classList.remove("selected");
+  $("#annotationButton")?.classList.remove("selected");
 
   current.metrics.forEach((metric, index) => {
     elements.metricLabels[index].textContent = metric[0];
@@ -1596,7 +2601,11 @@ function applySubject(subject, updateQuestion = true, options = {}) {
   if (restored && state.generatedQuestion) {
     $("#problemText").textContent = state.generatedQuestion;
     setRecognitionFeedback(
-      subject === "物理" ? { ok: true, v0: state.p1, aAbs: state.p2 } :
+      subject === "物理" ? (
+        state.physicsTemplate === "solenoid"
+          ? { ok: true, subject: "物理", type: "solenoid_electromagnet", recognitionText: buildPhysicsSolenoidContent().recognitionText }
+          : { ok: true, v0: state.p1, aAbs: state.p2 }
+      ) :
       subject === "化学" ? { ok: true, recognitionText: buildChemistryFeCuSO4Content().recognitionText } :
       subject === "数学" ? parseMathTangentQuestion(state.generatedQuestion) :
       biologyTemplateRecognition()
@@ -1605,6 +2614,10 @@ function applySubject(subject, updateQuestion = true, options = {}) {
 }
 
 function playExperiment() {
+  if (state.subject === "物理" && state.physicsTemplate === "solenoid") {
+    showToast("螺线管为交互观察：请使用反转电流、铁芯和滑块探究变化");
+    return;
+  }
   if (state.subject === "数学") {
     showToast("数学题型为静态参数观察：拖动 x 滑块即可同步斜率");
     return;
@@ -1631,9 +2644,11 @@ function resetExperiment() {
   pauseExperiment();
   state.time = 0;
   const tips = {
-    "物理": `刹车开始后，速度每秒减少 ${state.p2}m/s。`,
+    "物理": state.physicsTemplate === "solenoid"
+      ? buildPhysicsSolenoidContent().sceneTip
+      : `刹车开始后，速度每秒减少 ${state.p2}m/s。`,
     "化学": buildChemistryFeCuSO4Content().sceneTip,
-    "数学": `观察 x = ${smartNumber(state.p1)} 时，导数 y′ = 2x 如何给出切线斜率。`,
+    "数学": `观察函数 y = ${currentMathModel().expression} 在 x = ${formatMathNumber(state.p1)} 时，导数 y′ = ${currentMathModel().derivativeText} 如何给出切线斜率。`,
     "生物": `点击模型中的${selectedOrganelle().name}，查看结构类型、主要功能和记忆点。`
   };
   const tipLabel = state.subject === "化学" ? "实验现象" : "观察提示";
@@ -1741,9 +2756,9 @@ function playDemoSequence() {
 
 function detectSubject(question) {
   if (/反应|浓度|溶液|化学|铁粉|硫酸铜|CuSO|Fe\b|生成铜|生成 Cu/i.test(question)) return "化学";
-  if (/函数|抛物线|斜率|切线|数学/.test(question)) return "数学";
+  if (/函数|抛物线|斜率|切线|导数|数学|y\s*(?:=|＝)|ln\s*x|sin\s*x|cos\s*x|e\^x|exp\s*\(|sqrt|√/i.test(question)) return "数学";
   if (/细胞|生物|植物|动物|亚显微|细胞壁|细胞膜|细胞核|液泡|叶绿体|线粒体|细胞质|内质网|高尔基体|核糖体|DNA/.test(question)) return "生物";
-  if (/汽车|车辆|速度|加速度|减速度|刹车|制动|停止|运动|受力|落下|物理/.test(question)) return "物理";
+  if (/汽车|车辆|速度|加速度|减速度|刹车|制动|停止|运动|受力|落下|物理|螺线管|电磁铁|磁极|安培定则|线圈|匝|铁芯|磁感线/.test(question)) return "物理";
   return state.subject;
 }
 
@@ -1790,7 +2805,69 @@ $$(".number-control button").forEach(button => {
 
 $$("[data-toast]").forEach(button => button.addEventListener("click", () => showToast(button.dataset.toast)));
 
+function hidePhysicsPresetDropdown() {
+  const dropdown = $("#physicsPresetDropdown");
+  const toggle = $("#physicsPresetToggle");
+  dropdown?.classList.remove("show");
+  dropdown?.setAttribute("aria-hidden", "true");
+  toggle?.classList.remove("open");
+  toggle?.setAttribute("aria-expanded", "false");
+}
+
+function togglePhysicsPresetDropdown() {
+  if (state.subject !== "物理") return;
+  const dropdown = $("#physicsPresetDropdown");
+  const toggle = $("#physicsPresetToggle");
+  if (!dropdown || !toggle) return;
+  const opening = !dropdown.classList.contains("show");
+  dropdown.classList.toggle("show", opening);
+  dropdown.setAttribute("aria-hidden", String(!opening));
+  toggle.classList.toggle("open", opening);
+  toggle.setAttribute("aria-expanded", String(opening));
+}
+
+function preselectSolenoidQuestion() {
+  clearDemoTimers();
+  pauseExperiment();
+  state.subject = "物理";
+  state.physicsTemplate = "solenoid";
+  state.p1 = 0.5;
+  state.p2 = 200;
+  state.solenoidViewEnd = "left";
+  state.solenoidWindingDirection = "counterclockwise";
+  state.solenoidHasCore = false;
+  state.solenoidPaused = false;
+  state.solenoidRotateX = 0;
+  state.solenoidRotateY = 0;
+  state.solenoidZoom = 1;
+  syncPhysicsSolenoidContent(0.5, 200, {
+    viewEnd: "left",
+    windingDirection: "counterclockwise",
+    hasCore: false
+  });
+  applyWaitingState("物理", { presetQuestion: false });
+  const question = buildSolenoidQuestionText(solenoidModel(0.5, 200, "left", "counterclockwise", false));
+  $("#questionInput").value = question;
+  $("#problemText").textContent = "已预选通电螺线管题，点击“生成实验”后将生成电磁学可视化场景。";
+  setActiveSubjectTab("物理");
+  clearRecognitionFeedback();
+  showToast("已预选默认通电螺线管题目");
+}
+
+$("#physicsPresetToggle")?.addEventListener("click", event => {
+  event.stopPropagation();
+  togglePhysicsPresetDropdown();
+});
+
+$("#physicsPresetDropdown")?.addEventListener("click", event => {
+  const option = event.target.closest("[data-preset]");
+  if (!option) return;
+  if (option.dataset.preset === "solenoid") preselectSolenoidQuestion();
+  hidePhysicsPresetDropdown();
+});
+
 $("#questionInput").addEventListener("input", () => {
+  hidePhysicsPresetDropdown();
   if (!state.hasGenerated) {
     clearRecognitionFeedback();
     return;
@@ -1816,8 +2893,18 @@ $$(".nav-item").forEach(button => {
   });
 });
 
+document.addEventListener("click", event => {
+  if (event.target.closest("#physicsPresetToggle, #physicsPresetDropdown")) return;
+  hidePhysicsPresetDropdown();
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") hidePhysicsPresetDropdown();
+});
+
 $$(".subject-tab").forEach(button => {
   button.addEventListener("click", () => {
+    hidePhysicsPresetDropdown();
     const targetSubject = button.dataset.subject;
     saveCurrentSubjectSnapshot();
     if (state.generatedSubjects.has(targetSubject)) {
@@ -1980,22 +3067,47 @@ $("#generateButton").addEventListener("click", async () => {
 
   const detected = getGenerationSubject(question);
   let physicsParse = null;
+  let solenoidParse = null;
   let chemistryParse = null;
   let mathParse = null;
   let templateRecognition = null;
   if (detected === "物理") {
-    physicsParse = parsePhysicsBrakeQuestion(question);
-    if (!physicsParse.ok) {
-      setRecognitionFeedback(physicsParse, true);
-      showToast(physicsParse.message);
-      return;
+    const solenoidCandidate = /螺线管|电磁铁|磁极|安培定则|线圈|匝|铁芯|磁感线/.test(question);
+    if (solenoidCandidate) {
+      solenoidParse = parsePhysicsSolenoidQuestion(question);
+      if (!solenoidParse.ok) {
+        setRecognitionFeedback(solenoidParse, true);
+        showToast(solenoidParse.message);
+        return;
+      }
+      state.subject = "物理";
+      state.physicsTemplate = "solenoid";
+      state.p1 = solenoidParse.current;
+      state.p2 = solenoidParse.turns;
+      state.solenoidViewEnd = solenoidParse.viewEnd;
+      state.solenoidWindingDirection = solenoidParse.windingDirection;
+      state.solenoidHasCore = solenoidParse.hasCore;
+      state.solenoidPaused = false;
+      state.solenoidRotateX = 0;
+      state.solenoidRotateY = 0;
+      state.solenoidZoom = 1;
+      syncPhysicsSolenoidContent(solenoidParse.current, solenoidParse.turns, solenoidParse);
+      setRecognitionFeedback(solenoidParse);
+    } else {
+      physicsParse = parsePhysicsBrakeQuestion(question);
+      if (!physicsParse.ok) {
+        setRecognitionFeedback(physicsParse, true);
+        showToast(physicsParse.message);
+        return;
+      }
+      state.subject = "物理";
+      state.physicsTemplate = "brake";
+      state.p1 = physicsParse.v0;
+      state.p2 = physicsParse.aAbs;
+      syncPhysicsBrakeContent(physicsParse.v0, physicsParse.aAbs);
+      syncPhysicsControlsFromState();
+      setRecognitionFeedback(physicsParse);
     }
-    state.subject = "物理";
-    state.p1 = physicsParse.v0;
-    state.p2 = physicsParse.aAbs;
-    syncPhysicsBrakeContent(physicsParse.v0, physicsParse.aAbs);
-    syncPhysicsControlsFromState();
-    setRecognitionFeedback(physicsParse);
   }
   if (detected === "化学") {
     chemistryParse = parseChemistryFeCuSO4Question(question);
@@ -2018,9 +3130,10 @@ $("#generateButton").addEventListener("click", async () => {
       return;
     }
     state.subject = "数学";
+    state.mathModel = mathParse.model;
     state.p1 = mathParse.x;
-    state.p2 = SUBJECTS["数学"].params[1].value;
-    syncMathContent(mathParse.x);
+    state.p2 = 1;
+    syncMathContent(mathParse.x, mathParse.model);
     setRecognitionFeedback(mathParse);
   }
   if (detected === "生物") {
@@ -2039,17 +3152,22 @@ $("#generateButton").addEventListener("click", async () => {
   clearDemoTimers();
   button.classList.add("loading");
   $("span", button).textContent = "生成中";
-  const generationStages = physicsParse
+  const generationStages = solenoidParse
+    ? SUBJECTS["物理"].generationStages
+    : physicsParse
     ? SUBJECTS["物理"].generationStages
     : chemistryParse
       ? SUBJECTS["化学"].generationStages
-      : templateRecognition
-        ? SUBJECTS["生物"].generationStages
+      : mathParse
+        ? SUBJECTS["数学"].generationStages
+        : templateRecognition
+          ? SUBJECTS["生物"].generationStages
       : null;
   await showGenerationOverlay(generationStages);
   applySubject(detected, false);
   $("#problemText").textContent = question;
   state.generatedQuestion = question;
+  if (solenoidParse) setRecognitionFeedback(solenoidParse);
   if (physicsParse) setRecognitionFeedback(physicsParse);
   if (chemistryParse) setRecognitionFeedback(chemistryParse);
   if (mathParse) setRecognitionFeedback(mathParse);
@@ -2063,7 +3181,7 @@ $("#generateButton").addEventListener("click", async () => {
   clearDemoTimers();
   resetExperiment();
   setDemoStep(3, "点击播放或请求 AI 导师提示");
-  showToast(detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
+  showToast(solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
 });
 
 $(".reasoning-steps").addEventListener("click", event => {
@@ -2078,6 +3196,94 @@ $(".reasoning-steps").addEventListener("click", event => {
   }
 });
 
+function refreshSolenoidAfterControl(syncQuestion = true) {
+  syncPhysicsSolenoidContent();
+  updateParameters(true, { syncQuestion });
+  setRecognitionFeedback({ ok: true, subject: "物理", type: "solenoid_electromagnet", recognitionText: buildPhysicsSolenoidContent().recognitionText });
+  updateScene();
+}
+
+$("#solenoidStage")?.addEventListener("click", event => {
+  const button = event.target.closest("[data-solenoid-action]");
+  if (!button || state.subject !== "物理" || state.physicsTemplate !== "solenoid") return;
+  const action = button.dataset.solenoidAction;
+  if (action === "view") {
+    state.solenoidViewEnd = state.solenoidViewEnd === "left" ? "right" : "left";
+    refreshSolenoidAfterControl(true);
+    showToast(`已切换为从${solenoidViewText(state.solenoidViewEnd)}观察`);
+  }
+  if (action === "reverse") {
+    state.solenoidWindingDirection = state.solenoidWindingDirection === "counterclockwise" ? "clockwise" : "counterclockwise";
+    refreshSolenoidAfterControl(true);
+    setReasoningStep(3, `<span>电流反转</span>传统电流方向反向，磁感线方向与小磁针同步反转，N/S 极交换；磁性强弱不因方向反转而减弱。`);
+    showToast("电流已反转：磁极交换，强弱基本不变");
+  }
+  if (action === "core") {
+    state.solenoidHasCore = !state.solenoidHasCore;
+    refreshSolenoidAfterControl(true);
+    showToast(state.solenoidHasCore ? "已插入铁芯：磁性明显增强" : "已拔出铁芯：磁性回到线圈状态");
+  }
+  if (action === "pause") {
+    state.solenoidPaused = !state.solenoidPaused;
+    updateScene();
+    button.textContent = state.solenoidPaused ? "继续动画" : "暂停动画";
+    showToast(state.solenoidPaused ? "已暂停磁感线与电流动画" : "动画已继续");
+  }
+  if (action === "reset") {
+    state.p1 = 0.5;
+    state.p2 = 200;
+    state.solenoidViewEnd = "left";
+    state.solenoidWindingDirection = "counterclockwise";
+    state.solenoidHasCore = false;
+    state.solenoidPaused = false;
+    state.solenoidRotateX = 0;
+    state.solenoidRotateY = 0;
+    state.solenoidZoom = 1;
+    refreshSolenoidAfterControl(true);
+    const pauseButton = $("#solenoidStage")?.querySelector('[data-solenoid-action="pause"]');
+    if (pauseButton) pauseButton.textContent = "暂停动画";
+    showToast("已恢复螺线管默认实验");
+  }
+});
+
+$("#solenoidLab")?.addEventListener("pointerdown", event => {
+  if (state.subject !== "物理" || state.physicsTemplate !== "solenoid") return;
+  if (event.target.closest("button")) return;
+  state.solenoidDrag = {
+    pointerId: event.pointerId,
+    startX: event.clientX,
+    startY: event.clientY,
+    rotateX: state.solenoidRotateX,
+    rotateY: state.solenoidRotateY
+  };
+  $("#solenoidLab").setPointerCapture(event.pointerId);
+  elements.solenoidCanvas?.classList.add("dragging");
+});
+
+$("#solenoidLab")?.addEventListener("pointermove", event => {
+  if (!state.solenoidDrag || state.solenoidDrag.pointerId !== event.pointerId) return;
+  const dx = event.clientX - state.solenoidDrag.startX;
+  const dy = event.clientY - state.solenoidDrag.startY;
+  state.solenoidRotateY = clamp(state.solenoidDrag.rotateY + dx * 0.32, -62, 62);
+  state.solenoidRotateX = clamp(state.solenoidDrag.rotateX + dy * 0.16, -34, 34);
+  updateScene();
+});
+
+const endSolenoidDrag = event => {
+  if (!state.solenoidDrag || state.solenoidDrag.pointerId !== event.pointerId) return;
+  state.solenoidDrag = null;
+  elements.solenoidCanvas?.classList.remove("dragging");
+};
+
+$("#solenoidLab")?.addEventListener("pointerup", endSolenoidDrag);
+$("#solenoidLab")?.addEventListener("pointercancel", endSolenoidDrag);
+$("#solenoidLab")?.addEventListener("wheel", event => {
+  if (state.subject !== "物理" || state.physicsTemplate !== "solenoid") return;
+  event.preventDefault();
+  state.solenoidZoom = clamp((state.solenoidZoom || 1) - event.deltaY * 0.0008, 0.72, 1.45);
+  drawSolenoidCanvas();
+}, { passive: false });
+
 $("#hintButton").addEventListener("click", () => {
   if (!state.hasGenerated) {
     showToast("请先生成实验，再向 AI 导师提问");
@@ -2087,9 +3293,15 @@ $("#hintButton").addEventListener("click", () => {
   elements.mentorMessage.innerHTML = config().hint;
   if (state.subject === "物理") {
     updateFormulaSpotlight("物理");
-    setReasoningStep(2, `<span>AI 提示</span>题目没有给时间 t，先找不含 t 的速度—位移公式。`);
-    showMentorFormulaFeedback();
-    showToast("核心公式已浮现");
+    if (state.physicsTemplate === "solenoid") {
+      setReasoningStep(2, `<span>AI 提示</span>先分清：电流绕向决定磁极方向，电流大小、匝数和铁芯影响磁性强弱。`);
+      hideMentorFeedback();
+      showToast("AI 导师已给出安培定则提示");
+    } else {
+      setReasoningStep(2, `<span>AI 提示</span>题目没有给时间 t，先找不含 t 的速度—位移公式。`);
+      showMentorFormulaFeedback();
+      showToast("核心公式已浮现");
+    }
     return;
   }
   if (state.subject === "生物") {
@@ -2112,6 +3324,23 @@ $("#challengeButton").addEventListener("click", () => {
   }
   setDemoStep(5, "AI 导师追问与迁移");
   clearDemoTimers();
+
+  if (state.subject === "物理" && state.physicsTemplate === "solenoid") {
+    state.p1 = 1;
+    state.p2 = Math.max(400, state.p2);
+    state.solenoidWindingDirection = state.solenoidWindingDirection === "counterclockwise" ? "clockwise" : "counterclockwise";
+    state.solenoidHasCore = true;
+    state.solenoidPaused = false;
+    syncPhysicsSolenoidContent();
+    elements.ranges[0].value = state.p1;
+    elements.ranges[1].value = state.p2;
+    updateParameters(true, { syncQuestion: true });
+    const content = buildPhysicsSolenoidContent();
+    setReasoningStep(4, `<span>变式挑战</span>电流增大且方向反转：N/S 极交换，磁性增强。`);
+    elements.mentorMessage.innerHTML = `现在电流为 <strong>${formatAmp(state.p1)}A</strong>，方向已反转，并插入铁芯。结论：<strong>N、S 极交换</strong>，同时电流增大与铁芯使磁性<strong>${content.model.strengthLevel}</strong>。`;
+    showToast("电磁变式已同步：磁极交换，磁性增强");
+    return;
+  }
 
   if (state.subject === "物理") {
     const previous = physicsBrakeModel();
@@ -2148,11 +3377,14 @@ $("#challengeButton").addEventListener("click", () => {
   }
 
   if (state.subject === "数学") {
-    elements.ranges[0].value = 5;
+    const model = currentMathModel();
+    const nextX = clamp(model.challengeX ?? model.defaultX, model.domainMin, model.domainMax);
+    elements.ranges[0].value = nextX;
     updateParameters(true, { syncQuestion: true });
-    setReasoningStep(3, "<span>变式挑战</span>x = 5 时，k = 2 × 5 = 10。");
-    elements.mentorMessage.innerHTML = "如果 <strong>x = 5</strong>，代入 y′ = 2x，可得切线斜率 <strong>k = 10</strong>。";
-    showToast("数学变式题已同步：k = 10");
+    const slope = model.derivative(nextX);
+    setReasoningStep(3, `<span>变式挑战</span>x = ${formatMathNumber(nextX)} 时，代入 y′ = ${model.derivativeText}，得到 k = ${formatMathNumber(slope)}。`);
+    elements.mentorMessage.innerHTML = `如果 <strong>x = ${formatMathNumber(nextX)}</strong>，代入 <strong>y′ = ${model.derivativeText}</strong>，可得切线斜率 <strong>k = ${formatMathNumber(slope)}</strong>。`;
+    showToast(`数学变式题已同步：k = ${formatMathNumber(slope)}`);
     return;
   }
 
@@ -2197,18 +3429,6 @@ $("#playbackButton").addEventListener("click", event => {
   showToast(`播放速度已调整为 ${state.playbackRate}×`);
 });
 
-$("#viewButton").addEventListener("click", event => {
-  const enabled = elements.scene.classList.toggle("alternate-view");
-  event.currentTarget.classList.toggle("selected", enabled);
-  showToast(enabled ? "已切换为聚焦视角" : "已恢复全景视角");
-});
-
-$("#annotationButton").addEventListener("click", event => {
-  const hidden = elements.scene.classList.toggle("hide-annotations");
-  event.currentTarget.classList.toggle("selected", !hidden);
-  showToast(hidden ? "关键数据标注已隐藏" : "关键数据标注已开启");
-});
-
 $("#fullscreenButton").addEventListener("click", async () => {
   try {
     if (!document.fullscreenElement) await elements.scene.requestFullscreen();
@@ -2233,32 +3453,6 @@ $("#shareButton").addEventListener("click", async () => {
   }
 });
 
-const arModal = $("#arModal");
-$("#arButton").addEventListener("click", () => {
-  arModal.classList.add("show");
-  arModal.setAttribute("aria-hidden", "false");
-});
-
-function closeModal() {
-  arModal.classList.remove("show");
-  arModal.setAttribute("aria-hidden", "true");
-}
-
-$("#closeModal").addEventListener("click", closeModal);
-arModal.addEventListener("click", event => {
-  if (event.target === arModal) closeModal();
-});
-
-$("#copyLink").addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText(`${location.href}#${encodeURIComponent(state.subject)}`);
-    showToast("AR 体验链接已复制");
-  } catch {
-    showToast("复制失败，请检查浏览器权限");
-  }
-  closeModal();
-});
-
 document.addEventListener("keydown", event => {
   if (event.code === "Space" && event.target.tagName !== "INPUT") {
     event.preventDefault();
@@ -2268,18 +3462,22 @@ document.addEventListener("keydown", event => {
     }
     state.playing ? pauseExperiment() : playExperiment();
   }
-  if (event.code === "Escape") closeModal();
 });
 
 window.addEventListener("resize", () => {
-  if (state.subject !== "物理") return;
-  setPhysicsStopMarker();
-  updateScene();
+  if (state.subject === "物理") {
+    setPhysicsStopMarker();
+    updateScene();
+  }
+  if (state.subject === "物理" && state.physicsTemplate === "solenoid") {
+    drawSolenoidCanvas();
+  }
 });
 
 updateGreeting();
 applyWaitingState("物理", { presetQuestion: true });
 setDemoStep(1, "输入题目，生成实验");
+requestAnimationFrame(solenoidAnimationFrame);
 if (document.body.classList.contains("demo-mode")) {
   scheduleAutoDemo();
 }
