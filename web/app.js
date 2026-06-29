@@ -133,8 +133,6 @@ const state = {
   cellDrag: null,
   toastTimer: null,
   demoTimers: [],
-  reasoningTimers: [],
-  reasoningAutoRun: 0,
   generationTimers: [],
   generationStages: null,
   autoDemoTimer: null,
@@ -1132,7 +1130,6 @@ function renderCellDetail(id = state.selectedOrganelle) {
 function selectBioOrganelle(id) {
   if (state.subject !== "生物" || !state.hasGenerated) return;
   if (!currentCellOrganelleMap().has(id)) return;
-  clearReasoningTimers();
   setCellAutoRotate(false);
   renderCellDetail(id);
   setReasoningStep(2, `<span>结构识别</span>已选中${selectedOrganelle().name}，继续关联它的主要功能。`);
@@ -2389,7 +2386,6 @@ function renderWaitingReasoning() {
 
 function applyWaitingState(subject = state.subject, options = {}) {
   clearDemoTimers();
-  clearReasoningTimers();
   pauseExperiment();
   state.hasGenerated = false;
   state.generatedQuestion = "";
@@ -2530,7 +2526,6 @@ function updateParameters(reset = true, options = {}) {
 
 function applySubject(subject, updateQuestion = true, options = {}) {
   clearDemoTimers();
-  clearReasoningTimers();
   pauseExperiment();
   document.body.classList.remove("awaiting-generation");
   state.hasGenerated = true;
@@ -2682,12 +2677,6 @@ function clearDemoTimers() {
   state.demoTimers = [];
 }
 
-function clearReasoningTimers() {
-  state.reasoningTimers.forEach(timer => clearTimeout(timer));
-  state.reasoningTimers = [];
-  state.reasoningAutoRun += 1;
-}
-
 function clearGenerationTimers() {
   state.generationTimers.forEach(timer => clearTimeout(timer));
   state.generationTimers = [];
@@ -2736,54 +2725,6 @@ function setReasoningStep(step, message) {
   state.reasonStep = step;
   renderReasoning();
   if (message) elements.sceneTip.innerHTML = message;
-}
-
-function reasoningStepMessage(step) {
-  const item = config().steps[step - 1];
-  if (!item) return "";
-  return `<span>${item[0]}</span>${item[2] || item[1]}`;
-}
-
-function applyReasoningStepEffect(step) {
-  if (state.subject === "生物") {
-    if (step === 2) renderCellDetail(defaultOrganelleForCellType());
-    if (step === 3) {
-      const target = state.cellType === "animal" ? "mitochondrion" : "chloroplast";
-      if (currentCellOrganelleMap().has(target)) renderCellDetail(target);
-    }
-  }
-
-  if (step === 4 && state.subject === "物理" && state.physicsTemplate === "brake") {
-    state.time = duration();
-    updateScene();
-  }
-}
-
-function activateReasoningStep(step, options = {}) {
-  const maxStep = Math.max(config().steps.length, 4);
-  const nextStep = Math.max(1, Math.min(maxStep, Number(step) || 1));
-  if (options.manual) clearReasoningTimers();
-  applyReasoningStepEffect(nextStep);
-  setReasoningStep(nextStep, reasoningStepMessage(nextStep));
-}
-
-function scheduleReasoningAutoAdvance() {
-  clearReasoningTimers();
-  if (!state.hasGenerated) return;
-  const runId = state.reasoningAutoRun;
-  const subject = state.subject;
-  const question = state.generatedQuestion;
-  const steps = Math.max(config().steps.length, 4);
-  const delays = [420, 2100, 3900, 5700];
-
-  for (let step = 1; step <= steps; step += 1) {
-    const timer = setTimeout(() => {
-      if (!state.hasGenerated || state.subject !== subject || state.generatedQuestion !== question) return;
-      if (runId !== state.reasoningAutoRun) return;
-      activateReasoningStep(step);
-    }, delays[step - 1] ?? (420 + (step - 1) * 1800));
-    state.reasoningTimers.push(timer);
-  }
 }
 
 function playDemoSequence() {
@@ -2837,13 +2778,11 @@ elements.playButton.addEventListener("click", () => {
 });
 $("#resetButton").addEventListener("click", () => {
   clearDemoTimers();
-  clearReasoningTimers();
   resetExperiment();
 });
 
 elements.timeline.addEventListener("input", event => {
   clearDemoTimers();
-  clearReasoningTimers();
   pauseExperiment();
   state.time = (Number(event.target.value) / 100) * duration();
   updateScene();
@@ -2851,7 +2790,6 @@ elements.timeline.addEventListener("input", event => {
 
 elements.ranges.forEach(input => input.addEventListener("input", () => {
   clearDemoTimers();
-  clearReasoningTimers();
   updateParameters(true, { syncQuestion: true });
 }));
 
@@ -2861,7 +2799,6 @@ $$(".number-control button").forEach(button => {
     const next = Number(input.value) + Number(button.dataset.delta) * Number(input.step);
     input.value = Math.max(Number(input.min), Math.min(Number(input.max), next));
     clearDemoTimers();
-    clearReasoningTimers();
     updateParameters(true, { syncQuestion: true });
   });
 });
@@ -2939,7 +2876,6 @@ $("#questionInput").addEventListener("input", () => {
   if (currentQuestion && currentQuestion !== state.generatedQuestion) {
     pauseExperiment();
     clearDemoTimers();
-    clearReasoningTimers();
     setRecognitionPending();
     hideMentorFeedback();
     $("#problemText").textContent = "题目已修改，点击“生成实验”后将重新识别并更新实验。";
@@ -3123,7 +3059,6 @@ $("#generateButton").addEventListener("click", async () => {
   if (button.classList.contains("loading")) return;
   state.userGeneratedOnce = true;
   if (state.autoDemoTimer) clearTimeout(state.autoDemoTimer);
-  clearReasoningTimers();
   let question = $("#questionInput").value.trim();
   if (!question) {
     showToast("请先输入一道理科题目");
@@ -3245,7 +3180,6 @@ $("#generateButton").addEventListener("click", async () => {
   hideGenerationOverlay();
   clearDemoTimers();
   resetExperiment();
-  scheduleReasoningAutoAdvance();
   setDemoStep(3, "点击播放或请求 AI 导师提示");
   showToast(solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
 });
@@ -3253,7 +3187,13 @@ $("#generateButton").addEventListener("click", async () => {
 $(".reasoning-steps").addEventListener("click", event => {
   const step = event.target.closest(".reason-step");
   if (!step) return;
-  activateReasoningStep(Number(step.dataset.step), { manual: true });
+  state.reasonStep = Number(step.dataset.step);
+  renderReasoning();
+  elements.sceneTip.innerHTML = `<span>思维联动</span>${config().steps[state.reasonStep - 1][2]}`;
+  if (state.reasonStep === 4) {
+    state.time = duration();
+    updateScene();
+  }
 });
 
 function refreshSolenoidAfterControl(syncQuestion = true) {
@@ -3266,7 +3206,6 @@ function refreshSolenoidAfterControl(syncQuestion = true) {
 $("#solenoidStage")?.addEventListener("click", event => {
   const button = event.target.closest("[data-solenoid-action]");
   if (!button || state.subject !== "物理" || state.physicsTemplate !== "solenoid") return;
-  clearReasoningTimers();
   const action = button.dataset.solenoidAction;
   if (action === "view") {
     state.solenoidViewEnd = state.solenoidViewEnd === "left" ? "right" : "left";
@@ -3310,7 +3249,6 @@ $("#solenoidStage")?.addEventListener("click", event => {
 $("#solenoidLab")?.addEventListener("pointerdown", event => {
   if (state.subject !== "物理" || state.physicsTemplate !== "solenoid") return;
   if (event.target.closest("button")) return;
-  clearReasoningTimers();
   state.solenoidDrag = {
     pointerId: event.pointerId,
     startX: event.clientX,
@@ -3342,7 +3280,6 @@ $("#solenoidLab")?.addEventListener("pointercancel", endSolenoidDrag);
 $("#solenoidLab")?.addEventListener("wheel", event => {
   if (state.subject !== "物理" || state.physicsTemplate !== "solenoid") return;
   event.preventDefault();
-  clearReasoningTimers();
   state.solenoidZoom = clamp((state.solenoidZoom || 1) - event.deltaY * 0.0008, 0.72, 1.45);
   drawSolenoidCanvas();
 }, { passive: false });
@@ -3352,7 +3289,6 @@ $("#hintButton").addEventListener("click", () => {
     showToast("请先生成实验，再向 AI 导师提问");
     return;
   }
-  clearReasoningTimers();
   setDemoStep(5, "AI 导师追问与迁移");
   elements.mentorMessage.innerHTML = config().hint;
   if (state.subject === "物理") {
@@ -3388,7 +3324,6 @@ $("#challengeButton").addEventListener("click", () => {
   }
   setDemoStep(5, "AI 导师追问与迁移");
   clearDemoTimers();
-  clearReasoningTimers();
 
   if (state.subject === "物理" && state.physicsTemplate === "solenoid") {
     state.p1 = 1;
