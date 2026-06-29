@@ -2762,24 +2762,6 @@ body.subject-solenoid-active:not(.awaiting-generation) .parameters {
   display: none;
 }
 
-.reaction-bubbles i {
-  position: absolute;
-  z-index: 8;
-  bottom: 50px;
-  width: 8px;
-  height: 8px;
-  transform: translateY(calc(var(--chem-reaction-progress, 0) * -80px)) scale(calc(.35 + var(--chem-reaction-progress, 0) * .75));
-  border: 1px solid rgba(255,255,255,.8);
-  border-radius: 50%;
-  background: rgba(255,255,255,.28);
-  opacity: calc(var(--chem-reaction-progress, 0) * .9);
-  transition: opacity 120ms linear, transform 180ms linear;
-}
-
-.reaction-bubbles i:nth-child(1) { left: 102px; }
-.reaction-bubbles i:nth-child(2) { left: 143px; transition-delay: 50ms; }
-.reaction-bubbles i:nth-child(3) { right: 88px; transition-delay: 90ms; }
-
 .iron-wire-wrap {
   position: absolute;
   z-index: 11;
@@ -2991,6 +2973,17 @@ body.subject-solenoid-active:not(.awaiting-generation) .parameters {
 
 .subject-math .math-stage {
   display: block;
+}
+
+.scene.subject-math .metric-panel {
+  top: 14px;
+  left: 146px;
+}
+
+.scene.subject-math .metric-panel div {
+  min-width: 86px;
+  padding-top: 7px;
+  padding-bottom: 7px;
 }
 
 body.subject-math-active:not(.awaiting-generation) .transport {
