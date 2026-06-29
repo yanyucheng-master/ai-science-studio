@@ -6,53 +6,28 @@
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231648e6'/%3E%3Cpath d='M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260629-solenoid-canvas-1">
+  <link rel="stylesheet" href="styles.css?v=20260629-fullwidth-1">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
   <div class="ambient ambient-two"></div>
 
   <div class="app-shell">
-    <aside class="sidebar">
-      <button class="brand-mark" aria-label="大师实验室首页">
-        <svg viewBox="0 0 48 48" aria-hidden="true">
-          <path d="M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6" />
-          <path d="M17 33c5-4 9 5 16-2" />
-          <circle cx="22" cy="28" r="2" />
-          <circle cx="29" cy="35" r="2" />
-        </svg>
-      </button>
-
-      <nav class="side-nav" aria-label="主导航">
-        <button class="nav-item active" data-nav="实验台" aria-label="实验台">
-          <svg viewBox="0 0 24 24"><path d="M4 5.5 12 2l8 3.5v13L12 22l-8-3.5zM12 22V9m8-3.5L12 9 4 5.5"/></svg>
-          <span>实验台</span>
-        </button>
-        <button class="nav-item" data-nav="探索库" aria-label="探索库">
-          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4m-5-9v8m-4-4h8"/></svg>
-          <span>探索库</span>
-        </button>
-        <button class="nav-item" data-nav="学习报告" aria-label="学习报告">
-          <svg viewBox="0 0 24 24"><path d="M4 19V9m6 10V5m6 14v-7m4 7H2"/></svg>
-          <span>报告</span>
-        </button>
-        <button class="nav-item" data-nav="收藏夹" aria-label="收藏夹">
-          <svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>
-          <span>收藏</span>
-        </button>
-      </nav>
-
-      <button class="profile-button" aria-label="个人中心">
-        <span>学</span>
-        <i></i>
-      </button>
-    </aside>
-
     <main class="main">
       <header class="topbar">
         <div>
           <p class="eyebrow"><span></span> AI SCIENCE STUDIO</p>
-          <h1>早上好，同学</h1>
+          <div class="greeting-row">
+            <div class="topbar-logo" aria-hidden="true">
+              <svg viewBox="0 0 48 48">
+                <path d="M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6" />
+                <path d="M17 33c5-4 9 5 16-2" />
+                <circle cx="22" cy="28" r="2" />
+                <circle cx="29" cy="35" r="2" />
+              </svg>
+            </div>
+            <h1>早上好，同学</h1>
+          </div>
           <p class="subheading">今天想把哪一道题“动”起来？</p>
         </div>
         <div class="top-actions">
