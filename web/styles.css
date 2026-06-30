@@ -464,6 +464,8 @@ svg {
 
 .preset-dropdown {
   display: none;
+  position: relative;
+  z-index: 20;
   margin-top: 6px;
   padding: 6px;
   border: 1px solid rgba(211, 226, 247, .96);
@@ -804,6 +806,29 @@ svg {
 
 .scene-actions svg {
   width: 13px;
+}
+
+.scene-fullscreen-button {
+  display: none;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  color: #55708f;
+  border: 1px solid rgba(195, 215, 240, 0.9);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 10px 20px rgba(58, 90, 143, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.scene-fullscreen-button svg {
+  width: 14px;
+}
+
+body.subject-math-active:not(.awaiting-generation) .scene-fullscreen-button,
+body.subject-biology-active:not(.awaiting-generation) .scene-fullscreen-button,
+body.subject-solenoid-active:not(.awaiting-generation) .scene-fullscreen-button {
+  display: grid;
 }
 
 .metric-panel {
@@ -3772,10 +3797,63 @@ body.subject-biology-active:not(.awaiting-generation) .scene {
   max-width: 130px;
 }
 
-.scene:fullscreen {
+body.fullscreen-lock {
+  overflow: hidden;
+}
+
+.experiment-card:fullscreen,
+.experiment-card.immersive-mode {
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
   width: 100vw;
   height: 100vh;
+  display: flex;
+  overflow: auto;
+  padding: 22px 28px 26px;
+  flex-direction: column;
+  background:
+    radial-gradient(circle at 18% 4%, rgba(67, 130, 255, .14), transparent 28%),
+    radial-gradient(circle at 82% 8%, rgba(37, 211, 159, .12), transparent 24%),
+    linear-gradient(135deg, #f7fbff, #edf5ff 58%, #f8fbff);
+  border: 0;
   border-radius: 0;
+}
+
+.experiment-card:fullscreen .card-header,
+.experiment-card.immersive-mode .card-header {
+  flex: 0 0 auto;
+}
+
+.experiment-card:fullscreen .scene,
+.experiment-card.immersive-mode .scene {
+  height: auto !important;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.experiment-card:fullscreen .transport,
+.experiment-card.immersive-mode .transport {
+  flex: 0 0 58px;
+}
+
+.experiment-card:fullscreen .parameters,
+.experiment-card.immersive-mode .parameters {
+  flex: 0 0 auto;
+}
+
+.experiment-card:fullscreen .scene-fullscreen-button,
+.experiment-card.immersive-mode .scene-fullscreen-button {
+  display: grid;
+}
+
+.experiment-card:fullscreen .mini-control.fullscreen-active,
+.experiment-card:fullscreen .scene-fullscreen-button.fullscreen-active,
+.experiment-card.immersive-mode .mini-control.fullscreen-active,
+.experiment-card.immersive-mode .scene-fullscreen-button.fullscreen-active {
+  color: #fff;
+  border-color: var(--blue);
+  background: var(--blue);
 }
 
 .scene .road-area,

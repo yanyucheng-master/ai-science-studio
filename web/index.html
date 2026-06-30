@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231648e6'/%3E%3Cpath d='M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260629-reason-fix-4">
+  <link rel="stylesheet" href="styles.css?v=20260630-preset-switch-2">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -68,9 +68,9 @@
             </button>
           </div>
           <div class="preset-dropdown" id="physicsPresetDropdown" aria-hidden="true">
-            <button class="preset-option" type="button" data-preset="solenoid">
-              <span>通电螺线管：磁场方向与电磁铁磁性</span>
-              <small>200匝 · 0.5A · 左端逆时针</small>
+            <button class="preset-option" id="physicsPresetOption" type="button" data-preset="solenoid">
+              <span id="physicsPresetTitle">通电螺线管：磁场方向与电磁铁磁性</span>
+              <small id="physicsPresetMeta">200匝 · 0.5A · 左端逆时针</small>
             </button>
           </div>
           <div class="parse-feedback" id="parseFeedback" aria-live="polite"></div>
@@ -109,6 +109,9 @@
           <div class="scene" id="scene">
             <div class="scene-top">
               <div class="scene-badge"><span></span><b id="engineBadge">等待题目输入</b></div>
+              <button class="scene-fullscreen-button" id="sceneFullscreenButton" type="button" aria-label="全屏查看实验">
+                <svg viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M8 21H3v-5m13 5h5v-5"/></svg>
+              </button>
             </div>
 
             <div class="metric-panel">
@@ -470,6 +473,6 @@
 
   <div class="toast" id="toast"><span></span><p>操作成功</p></div>
 
-  <script src="app.js?v=20260629-reason-auto"></script>
+  <script src="app.js?v=20260630-preset-switch-8"></script>
 </body>
 </html>

@@ -284,6 +284,7 @@ const CELL_ORGANELLE_MAP = new Map(
 );
 
 const elements = {
+  experimentCard: $(".experiment-card"),
   scene: $("#scene"),
   car: $("#car"),
   brakeTrace: $("#brakeTrace"),
@@ -307,6 +308,7 @@ const elements = {
   mentorMessage: $("#mentorMessage"),
   mentorFeedback: $("#mentorFeedback"),
   parseFeedback: $("#parseFeedback"),
+  fullscreenButtons: [$("#fullscreenButton"), $("#sceneFullscreenButton")].filter(Boolean),
   plantCellModel: $("#plantCellModel"),
   plantCellViewport: $("#plantCellViewport"),
   cellResetButton: $("#cellResetButton"),
@@ -2142,15 +2144,19 @@ function updateScene() {
   const completed = (values.timelineProgress ?? values.progress) >= 1;
   if (completed) {
     pauseExperiment();
-    const conclusions = {
-      "物理": state.physicsTemplate === "solenoid"
+    let conclusion = "";
+    if (state.subject === "物理") {
+      conclusion = state.physicsTemplate === "solenoid"
         ? `左端为 ${values.solenoid.leftPole} 极，右端为 ${values.solenoid.rightPole} 极；当前磁性${values.solenoid.strengthLevel}。`
-        : `车辆在 ${duration().toFixed(1)} 秒后停止，刹车距离为 ${values.metrics[1].toFixed(1)} 米。`,
-      "化学": `铁表面析出红色铜，溶液由蓝色变为浅绿色；${chemistryReactionJudgement(values.chem).short}，生成 Cu ${formatMol(values.chem.cuMol)}mol / ${formatGram(values.chem.cuMass)}g。`,
-      "数学": `函数 y = ${currentMathModel().expression}；当 x = ${formatMathNumber(state.p1)} 时，切线斜率 k = ${formatMathNumber(currentMathModel().derivative(state.p1))}。`,
-      "生物": `已完成植物细胞截面识别，可点击结构查看名称、类型和功能。`
-    };
-    elements.sceneTip.innerHTML = `<span>实验结论</span>${conclusions[state.subject]}`;
+        : `车辆在 ${duration().toFixed(1)} 秒后停止，刹车距离为 ${values.metrics[1].toFixed(1)} 米。`;
+    } else if (state.subject === "化学" && values.chem) {
+      conclusion = `铁表面析出红色铜，溶液由蓝色变为浅绿色；${chemistryReactionJudgement(values.chem).short}，生成 Cu ${formatMol(values.chem.cuMol)}mol / ${formatGram(values.chem.cuMass)}g。`;
+    } else if (state.subject === "数学") {
+      conclusion = `函数 y = ${currentMathModel().expression}；当 x = ${formatMathNumber(state.p1)} 时，切线斜率 k = ${formatMathNumber(currentMathModel().derivative(state.p1))}。`;
+    } else if (state.subject === "生物") {
+      conclusion = `已完成植物细胞截面识别，可点击结构查看名称、类型和功能。`;
+    }
+    if (conclusion) elements.sceneTip.innerHTML = `<span>实验结论</span>${conclusion}`;
   }
 }
 
@@ -2768,7 +2774,7 @@ function scheduleReasoningAutoAdvance() {
   const subject = state.subject;
   const question = state.generatedQuestion;
   const steps = Math.max(config().steps.length, 4);
-  const delays = [420, 2100, 3900, 5700];
+  const delays = [300, 1500, 2700, 3900];
 
   for (let step = 1; step <= steps; step += 1) {
     const timer = setTimeout(() => {
@@ -2873,21 +2879,58 @@ function hidePhysicsPresetDropdown() {
   toggle?.setAttribute("aria-expanded", "false");
 }
 
+function isCurrentPhysicsSolenoidQuestion() {
+  if (state.subject !== "物理") return false;
+  if (state.physicsTemplate === "solenoid") return true;
+  const questionText = $("#questionInput")?.value || "";
+  return /螺线管|电磁铁|磁极|安培定则|线圈|匝|铁芯|磁感线/.test(questionText);
+}
+
+function updatePhysicsPresetOption() {
+  const option = $("#physicsPresetOption");
+  const title = $("#physicsPresetTitle");
+  const meta = $("#physicsPresetMeta");
+  if (!option || !title || !meta) return;
+  const switchToBrake = isCurrentPhysicsSolenoidQuestion();
+  option.dataset.preset = switchToBrake ? "brake" : "solenoid";
+  title.textContent = switchToBrake ? "刹车距离实验 · 速度如何归零" : "通电螺线管：磁场方向与电磁铁磁性";
+  meta.textContent = switchToBrake ? "20m/s · 5m/s² · 停止距离 40m" : "200匝 · 0.5A · 左端逆时针";
+}
+
 function togglePhysicsPresetDropdown() {
   if (state.subject !== "物理") return;
   const dropdown = $("#physicsPresetDropdown");
   const toggle = $("#physicsPresetToggle");
   if (!dropdown || !toggle) return;
   const opening = !dropdown.classList.contains("show");
+  if (opening) updatePhysicsPresetOption();
   dropdown.classList.toggle("show", opening);
   dropdown.setAttribute("aria-hidden", String(!opening));
   toggle.classList.toggle("open", opening);
   toggle.setAttribute("aria-expanded", String(opening));
 }
 
+function preselectBrakeQuestion() {
+  clearDemoTimers();
+  pauseExperiment();
+  applyWaitingState("物理", { presetQuestion: false });
+  state.subject = "物理";
+  state.physicsTemplate = "brake";
+  state.p1 = 20;
+  state.p2 = 5;
+  syncPhysicsBrakeContent(20, 5);
+  $("#questionInput").value = buildPhysicsBrakeQuestionText(20, 5);
+  $("#problemText").textContent = "已预选刹车距离题，点击“生成实验”后将生成运动过程可视化场景。";
+  setActiveSubjectTab("物理");
+  clearRecognitionFeedback();
+  updatePhysicsPresetOption();
+  showToast("已预选默认刹车距离题目");
+}
+
 function preselectSolenoidQuestion() {
   clearDemoTimers();
   pauseExperiment();
+  applyWaitingState("物理", { presetQuestion: false });
   state.subject = "物理";
   state.physicsTemplate = "solenoid";
   state.p1 = 0.5;
@@ -2904,12 +2947,12 @@ function preselectSolenoidQuestion() {
     windingDirection: "counterclockwise",
     hasCore: false
   });
-  applyWaitingState("物理", { presetQuestion: false });
   const question = buildSolenoidQuestionText(solenoidModel(0.5, 200, "left", "counterclockwise", false));
   $("#questionInput").value = question;
   $("#problemText").textContent = "已预选通电螺线管题，点击“生成实验”后将生成电磁学可视化场景。";
   setActiveSubjectTab("物理");
   clearRecognitionFeedback();
+  updatePhysicsPresetOption();
   showToast("已预选默认通电螺线管题目");
 }
 
@@ -2918,15 +2961,27 @@ $("#physicsPresetToggle")?.addEventListener("click", event => {
   togglePhysicsPresetDropdown();
 });
 
+function applyPhysicsPresetChoice(option) {
+  if (!option) return;
+  const preset = option.dataset.preset;
+  hidePhysicsPresetDropdown();
+  if (preset === "solenoid") preselectSolenoidQuestion();
+  else if (preset === "brake") preselectBrakeQuestion();
+}
+
 $("#physicsPresetDropdown")?.addEventListener("click", event => {
   const option = event.target.closest("[data-preset]");
   if (!option) return;
-  if (option.dataset.preset === "solenoid") preselectSolenoidQuestion();
-  hidePhysicsPresetDropdown();
+  event.preventDefault();
+  event.stopPropagation();
+  applyPhysicsPresetChoice(option);
 });
 
 $("#questionInput").addEventListener("input", () => {
   hidePhysicsPresetDropdown();
+  if (state.subject === "物理" && !state.hasGenerated) {
+    updatePhysicsPresetOption();
+  }
   if (!state.hasGenerated) {
     clearRecognitionFeedback();
     return;
@@ -3493,12 +3548,34 @@ $("#playbackButton").addEventListener("click", event => {
   showToast(`播放速度已调整为 ${state.playbackRate}×`);
 });
 
-$("#fullscreenButton").addEventListener("click", async () => {
-  try {
-    if (!document.fullscreenElement) await elements.scene.requestFullscreen();
-    else await document.exitFullscreen();
-  } catch {
-    showToast("当前浏览器暂不支持全屏实验");
+function syncFullscreenButtons() {
+  const active = elements.experimentCard?.classList.contains("immersive-mode") || document.fullscreenElement === elements.experimentCard;
+  elements.fullscreenButtons.forEach(button => {
+    button.classList.toggle("fullscreen-active", active);
+    button.setAttribute("aria-label", active ? "退出全屏" : "全屏查看实验");
+    button.setAttribute("aria-pressed", String(active));
+  });
+}
+
+function setExperimentFullscreen(active) {
+  elements.experimentCard?.classList.toggle("immersive-mode", active);
+  document.body.classList.toggle("fullscreen-lock", active);
+  syncFullscreenButtons();
+}
+
+function toggleExperimentFullscreen() {
+  setExperimentFullscreen(!elements.experimentCard?.classList.contains("immersive-mode"));
+}
+
+elements.fullscreenButtons.forEach(button => {
+  button.addEventListener("click", toggleExperimentFullscreen);
+});
+
+document.addEventListener("fullscreenchange", syncFullscreenButtons);
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && elements.experimentCard?.classList.contains("immersive-mode")) {
+    setExperimentFullscreen(false);
   }
 });
 
@@ -3540,6 +3617,7 @@ window.addEventListener("resize", () => {
 
 updateGreeting();
 applyWaitingState("物理", { presetQuestion: true });
+updatePhysicsPresetOption();
 setDemoStep(1, "输入题目，生成实验");
 requestAnimationFrame(solenoidAnimationFrame);
 if (document.body.classList.contains("demo-mode")) {
