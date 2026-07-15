@@ -1,6 +1,63 @@
 const $ = (selector, scope = document) => scope.querySelector(selector);
 const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
 
+function fractionHtml(numerator, denominator) {
+  return `<span class="vfrac"><span class="vfrac-num">${numerator}</span><span class="vfrac-den">${denominator}</span></span>`;
+}
+
+function sqrtHtml(content) {
+  return `<span class="sqrt-formula"><span class="sqrt-sign">√</span><span class="sqrt-radicand">${content}</span></span>`;
+}
+
+function verticalizeFormulaHtml(value) {
+  let html = String(value ?? "");
+  const replacements = [
+    [/√\(2h\/g\)/g, sqrtHtml(fractionHtml("2h", "g"))],
+    [/1\/\(2√x\)/g, fractionHtml("1", "2√x")],
+    [/1\/f/g, fractionHtml("1", "f")],
+    [/1\/u/g, fractionHtml("1", "u")],
+    [/1\/v/g, fractionHtml("1", "v")],
+    [/1\/x/g, fractionHtml("1", "x")],
+    [/uf\/\(u−f\)/g, fractionHtml("uf", "u−f")],
+    [/2h\/g/g, fractionHtml("2h", "g")],
+    [/1\/2(?=g?t²|gt²|g)/g, fractionHtml("1", "2")],
+    [/U\s*\/\s*\(R₁\s*\+\s*R₂\)/g, fractionHtml("U", "R₁ + R₂")],
+    [/U\s*\/\s*R(?![₁₂A-Za-z0-9])/g, fractionHtml("U", "R")],
+    [/W有\s*\/\s*W总/g, fractionHtml("W有", "W总")],
+    [/Gh\s*\/\s*Fs/g, fractionHtml("Gh", "Fs")],
+    [/G\/\(nF\)/g, fractionHtml("G", "nF")],
+    [/v₀²\/\(2μg\)/g, fractionHtml("v₀²", "2μg")],
+    [/m\s*v₀\/k/g, fractionHtml("mv₀", "k")],
+    [/dv\/dt/g, fractionHtml("dv", "dt")],
+    [/kt\/m/g, fractionHtml("kt", "m")],
+    [/k\/m/g, fractionHtml("k", "m")],
+    [/m\/k/g, fractionHtml("m", "k")],
+    [/f\/m/g, fractionHtml("f", "m")]
+  ];
+  replacements.forEach(([pattern, replacement]) => {
+    html = html.replace(pattern, replacement);
+  });
+  return html;
+}
+
+function setFormulaHtml(element, html) {
+  if (!element) return;
+  element.innerHTML = verticalizeFormulaHtml(html);
+}
+
+function observeFormulaContainer(element) {
+  if (!element) return;
+  const observer = new MutationObserver(() => {
+    if (element.dataset.formulaFormatting === "1") return;
+    const formatted = verticalizeFormulaHtml(element.innerHTML);
+    if (formatted === element.innerHTML) return;
+    element.dataset.formulaFormatting = "1";
+    element.innerHTML = formatted;
+    delete element.dataset.formulaFormatting;
+  });
+  observer.observe(element, { childList: true, subtree: true, characterData: true });
+}
+
 const params = new URLSearchParams(window.location.search);
 const isDemoMode = params.get("demo") === "1" || params.get("mode") === "demo";
 if (isDemoMode) {
@@ -107,6 +164,18 @@ const state = {
   p1: 20,
   p2: 5,
   physicsTemplate: "brake",
+  brakeMode: "constant",
+  brakeGravity: 9.8,
+  brakeMass: 1000,
+  boardSliderParams: {
+    blockMass: 1,
+    boardMass: 1,
+    boardLength: 2,
+    frictionCoefficient: 0.2,
+    initialSpeed: 4,
+    gravity: 10,
+    gravityWasDefaulted: false
+  },
   solenoidViewEnd: "left",
   solenoidWindingDirection: "counterclockwise",
   solenoidHasCore: false,
@@ -155,6 +224,73 @@ const SOLENOID_LIMITS = {
   turnsMin: 100,
   turnsMax: 500
 };
+
+const PHYSICS_FRICTION_BRAKE_LIMITS = {
+  muMin: 0.05,
+  muMax: 1.2,
+  gravityMin: 9.8,
+  gravityMax: 10
+};
+
+const PHYSICS_LINEAR_DRAG_LIMITS = {
+  kMin: 20,
+  kMax: 2000,
+  massMin: 100,
+  massMax: 5000,
+  durationMin: 1,
+  durationMax: 60,
+  endSpeedRatio: 0.01
+};
+
+const BOARD_SLIDER_DEFAULTS = Object.freeze({
+  blockMass: 1,
+  boardMass: 1,
+  boardLength: 2,
+  frictionCoefficient: 0.2,
+  initialSpeed: 4,
+  gravity: 10,
+  gravityWasDefaulted: false
+});
+
+const BOARD_SLIDER_LIMITS = Object.freeze({
+  blockMassMin: 0.1,
+  blockMassMax: 10,
+  boardMassMin: 0.1,
+  boardMassMax: 20,
+  boardLengthMin: 1,
+  boardLengthMax: 5,
+  frictionMin: 0.05,
+  frictionMax: 0.8,
+  speedMin: 1,
+  speedMax: 8,
+  gravityMin: 9.8,
+  gravityMax: 10,
+  epsilon: 1e-6
+});
+
+const BOARD_SLIDER_DEFAULT_QUESTION = "光滑水平地面上放有一块质量为1.0kg、长度为2.0m的木板B。质量为1.0kg的滑块A可视为质点，最初位于木板左端，以4.0m/s的初速度沿木板向右滑动。滑块与木板间的动摩擦因数为0.20，取g=10m/s²。求滑块和木板的加速度、达到共同速度所需时间，并判断滑块是否会从木板右端滑落。";
+
+const PROJECTILE_LIMITS = {
+  speedMin: 2,
+  speedMax: 30,
+  heightMin: 1,
+  heightMax: 80,
+  gravity: 9.8
+};
+
+const CIRCUIT_LIMITS = {
+  voltageMin: 1,
+  voltageMax: 24,
+  resistanceMin: 1,
+  resistanceMax: 20
+};
+
+const EXTRA_PHYSICS_TEMPLATES = window.EXTRA_PHYSICS_TEMPLATES || {};
+const EXTRA_PHYSICS_IDS = Object.keys(EXTRA_PHYSICS_TEMPLATES);
+
+function isExtraPhysicsTemplate(id = state.physicsTemplate) {
+  return Boolean(EXTRA_PHYSICS_TEMPLATES[id]);
+}
 
 const CHEMISTRY_CONSTANTS = {
   feMolarMass: 56,
@@ -304,6 +440,25 @@ const elements = {
   paramDescriptions: [$("#paramDesc1"), $("#paramDesc2")],
   paramUnits: [$("#paramUnit1"), $("#paramUnit2")],
   stopDistanceLabel: $("#stopDistanceLabel"),
+  stopDistanceCaption: $("#distanceFlag span"),
+  brakeModelIndicator: $("#brakeModelIndicator"),
+  brakeModelLabel: $("#brakeModelLabel"),
+  brakeModelFormula: $("#brakeModelFormula"),
+  boardSliderStage: $("#boardSliderStage"),
+  boardSliderWorld: $("#boardSliderWorld"),
+  boardSliderBoard: $("#boardSliderBoard"),
+  boardSliderBlock: $("#boardSliderBlock"),
+  boardSliderTrace: $("#boardSliderTrace"),
+  boardSliderStatus: $("#boardSliderStatus"),
+  boardSliderRelation: $("#boardSliderRelation"),
+  boardSliderFrictionText: $("#boardSliderFrictionText"),
+  boardSliderRelativeText: $("#boardSliderRelativeText"),
+  boardSliderBlockSpeed: $("#boardSliderBlockSpeed"),
+  boardSliderBoardSpeed: $("#boardSliderBoardSpeed"),
+  boardSliderBlockMass: $("#boardSliderBlockMass"),
+  boardSliderBoardMass: $("#boardSliderBoardMass"),
+  boardSliderMu: $("#boardSliderMu"),
+  boardSliderGravity: $("#boardSliderGravity"),
   sceneTip: $("#sceneTip"),
   mentorMessage: $("#mentorMessage"),
   mentorFeedback: $("#mentorFeedback"),
@@ -321,12 +476,42 @@ const elements = {
   cellSelectionFunction: $("#cellSelectionFunction"),
   cuso4Solution: $("#cuso4Solution"),
   solenoidCanvas: $("#solenoidCanvas"),
+  projectileBall: $("#projectileBall"),
+  projectileShadow: $("#projectileShadow"),
+  projectileHeightText: $("#projectileHeightText"),
+  projectileResultText: $("#projectileResultText"),
+  projectileTimeText: $("#projectileTimeText"),
+  projectileRangeText: $("#projectileRangeText"),
+  projectileVyText: $("#projectileVyText"),
+  circuitVoltageText: $("#circuitVoltageText"),
+  circuitResistanceText: $("#circuitResistanceText"),
+  circuitCurrentText: $("#circuitCurrentText"),
+  circuitResultText: $("#circuitResultText"),
+  circuitReadoutVoltage: $("#circuitReadoutVoltage"),
+  circuitReadoutResistance: $("#circuitReadoutResistance"),
+  circuitReadoutCurrent: $("#circuitReadoutCurrent"),
+  circuitPowerText: $("#circuitPowerText"),
+  circuitResistor: $("#circuitResistor"),
+  genericPhysicsVisual: $("#genericPhysicsVisual"),
+  genericPhysicsMeta: $("#genericPhysicsMeta"),
+  genericPhysicsResult: $("#genericPhysicsResult"),
+  genericPhysicsDescription: $("#genericPhysicsDescription"),
+  genericPhysicsFacts: $("#genericPhysicsFacts"),
   toast: $("#toast"),
   generationOverlay: $("#generationOverlay"),
   generationStatus: $("#generationStatus"),
   generationProgress: $("#generationProgress"),
   demoStepIndicator: $("#demoStepIndicator")
 };
+
+[
+  elements.sceneTip,
+  elements.mentorMessage,
+  elements.mentorFeedback,
+  elements.parseFeedback,
+  $("#problemText"),
+  elements.generationStatus
+].forEach(observeFormulaContainer);
 
 const GENERATION_STAGES = [
   { label: "识别条件", text: "识别题干条件与问题目标", progress: 28 },
@@ -344,6 +529,9 @@ function updateSubjectBodyClass(subject = state.subject) {
   document.body.classList.toggle("subject-math-active", subject === "数学");
   document.body.classList.toggle("subject-biology-active", subject === "生物");
   document.body.classList.toggle("subject-solenoid-active", subject === "物理" && state.physicsTemplate === "solenoid" && state.hasGenerated);
+  document.body.classList.toggle("subject-circuit-active", subject === "物理" && state.physicsTemplate === "circuit" && state.hasGenerated);
+  document.body.classList.toggle("subject-board-slider-active", subject === "物理" && state.physicsTemplate === "boardSlider" && state.hasGenerated);
+  document.body.classList.toggle("subject-extra-physics-active", subject === "物理" && isExtraPhysicsTemplate() && state.hasGenerated);
 }
 
 function saveCurrentSubjectSnapshot() {
@@ -352,7 +540,12 @@ function saveCurrentSubjectSnapshot() {
     p1: state.p1,
     p2: state.p2,
     generatedQuestion: state.generatedQuestion || $("#questionInput")?.value || SUBJECTS[state.subject]?.question || "",
+    time: state.time,
     physicsTemplate: state.physicsTemplate,
+    brakeMode: state.brakeMode,
+    brakeGravity: state.brakeGravity,
+    brakeMass: state.brakeMass,
+    boardSliderParams: { ...state.boardSliderParams },
     solenoidViewEnd: state.solenoidViewEnd,
     solenoidWindingDirection: state.solenoidWindingDirection,
     solenoidHasCore: state.solenoidHasCore,
@@ -373,15 +566,24 @@ function restoreSubjectSnapshot(subject) {
   state.p1 = snapshot.p1;
   state.p2 = snapshot.p2;
   state.generatedQuestion = snapshot.generatedQuestion || SUBJECTS[subject]?.question || "";
+  state.time = Number.isFinite(snapshot.time) ? snapshot.time : 0;
   if (subject === "物理") {
     state.physicsTemplate = snapshot.physicsTemplate || "brake";
+    state.brakeMode = snapshot.brakeMode || "constant";
+    state.brakeGravity = snapshot.brakeGravity || 9.8;
+    state.brakeMass = snapshot.brakeMass || 1000;
+    state.boardSliderParams = { ...BOARD_SLIDER_DEFAULTS, ...(snapshot.boardSliderParams || {}) };
     state.solenoidViewEnd = snapshot.solenoidViewEnd || "left";
     state.solenoidWindingDirection = snapshot.solenoidWindingDirection || "counterclockwise";
     state.solenoidHasCore = Boolean(snapshot.solenoidHasCore);
     state.solenoidRotateX = snapshot.solenoidRotateX || 0;
     state.solenoidRotateY = snapshot.solenoidRotateY || 0;
     state.solenoidZoom = snapshot.solenoidZoom || 1;
-    if (state.physicsTemplate === "solenoid") syncPhysicsSolenoidContent();
+    if (state.physicsTemplate === "boardSlider") syncPhysicsBoardSliderContent(state.boardSliderParams);
+    else if (state.physicsTemplate === "solenoid") syncPhysicsSolenoidContent();
+    else if (state.physicsTemplate === "projectile") syncPhysicsProjectileContent();
+    else if (state.physicsTemplate === "circuit") syncPhysicsCircuitContent();
+    else if (isExtraPhysicsTemplate(state.physicsTemplate)) syncExtraPhysicsContent(state.physicsTemplate);
     else syncPhysicsBrakeContent();
   }
   if (subject === "生物") {
@@ -406,10 +608,79 @@ function clamp(value, min = 0, max = 1) {
   return Math.max(min, Math.min(max, value));
 }
 
-function physicsBrakeModel(v0 = state.p1, aAbs = state.p2) {
+function linearDragKBounds(mass = state.brakeMass || 1000) {
+  const scale = Number(mass) * Math.log(1 / PHYSICS_LINEAR_DRAG_LIMITS.endSpeedRatio);
+  const min = Math.max(
+    PHYSICS_LINEAR_DRAG_LIMITS.kMin,
+    Math.ceil(scale / PHYSICS_LINEAR_DRAG_LIMITS.durationMax / 10) * 10
+  );
+  const max = Math.min(
+    PHYSICS_LINEAR_DRAG_LIMITS.kMax,
+    Math.floor(scale / PHYSICS_LINEAR_DRAG_LIMITS.durationMin / 10) * 10
+  );
+  return { min, max: Math.max(min, max) };
+}
+
+function physicsBrakeModel(v0 = state.p1, parameter = state.p2, options = {}) {
+  const mode = options.mode || state.brakeMode || "constant";
+  if (mode === "friction") {
+    const mu = Number(parameter);
+    const gravity = Number(options.gravity ?? state.brakeGravity ?? 9.8);
+    const aAbs = mu * gravity;
+    const stopTime = v0 / aAbs;
+    const stopDistance = (v0 * v0) / (2 * aAbs);
+    return {
+      mode,
+      v0,
+      parameter: mu,
+      mu,
+      gravity,
+      aAbs,
+      stopTime,
+      duration: stopTime,
+      stopDistance,
+      markerLabel: "停止点"
+    };
+  }
+
+  if (mode === "linear_drag") {
+    const k = Number(parameter);
+    const mass = Number(options.mass ?? state.brakeMass ?? 1000);
+    const endSpeedRatio = PHYSICS_LINEAR_DRAG_LIMITS.endSpeedRatio;
+    const tau = mass / k;
+    const duration = tau * Math.log(1 / endSpeedRatio);
+    const stopDistance = (mass * v0) / k;
+    return {
+      mode,
+      v0,
+      parameter: k,
+      k,
+      mass,
+      tau,
+      aAbs: (k * v0) / mass,
+      stopTime: Infinity,
+      duration,
+      stopDistance,
+      practicalDistance: stopDistance * (1 - endSpeedRatio),
+      practicalSpeed: v0 * endSpeedRatio,
+      endSpeedRatio,
+      markerLabel: "极限位置"
+    };
+  }
+
+  const aAbs = Number(parameter);
   const stopTime = v0 / aAbs;
   const stopDistance = (v0 * v0) / (2 * aAbs);
-  return { v0, aAbs, stopTime, stopDistance };
+  return {
+    mode: "constant",
+    v0,
+    parameter: aAbs,
+    aAbs,
+    stopTime,
+    duration: stopTime,
+    stopDistance,
+    markerLabel: "停止点"
+  };
 }
 
 function physicsVisualDistanceMax(stopDistance = physicsBrakeModel().stopDistance) {
@@ -419,7 +690,8 @@ function physicsVisualDistanceMax(stopDistance = physicsBrakeModel().stopDistanc
 }
 
 function physicsStopLeftPercent(stopDistance = physicsBrakeModel().stopDistance) {
-  const start = 8;
+  const roadWidth = physicsRoadWidth();
+  const start = clamp(8 + (carNoseOffsetPx() / roadWidth) * 100, 16, 28);
   const end = 86;
   const visualMax = physicsVisualDistanceMax(stopDistance);
   const cappedDistance = Math.max(0, Math.min(visualMax, stopDistance));
@@ -463,16 +735,104 @@ function setPhysicsStopMarker(stopDistance = physicsBrakeModel().stopDistance) {
   updatePhysicsRuler(stopDistance);
 }
 
-function buildPhysicsBrakeContent(v0 = state.p1, aAbs = state.p2) {
-  const model = physicsBrakeModel(v0, aAbs);
+function buildPhysicsBrakeContent(v0 = state.p1, parameter = state.p2, options = {}) {
+  const model = physicsBrakeModel(v0, parameter, options);
   const vText = smartNumber(model.v0);
   const aText = smartNumber(model.aAbs);
-  const tText = smartNumber(model.stopTime);
+  const tText = smartNumber(model.duration, 2);
   const sText = smartNumber(model.stopDistance);
   const challengeSpeed = smartNumber(model.v0 * 1.5);
 
+  if (model.mode === "friction") {
+    const muText = smartNumber(model.mu, 2);
+    const gText = smartNumber(model.gravity);
+    const frictionAText = String(Number(model.aAbs.toFixed(2)));
+    const nextMu = clamp(model.mu + 0.1, PHYSICS_FRICTION_BRAKE_LIMITS.muMin, PHYSICS_FRICTION_BRAKE_LIMITS.muMax);
+    return {
+      title: "摩擦制动：路面摩擦如何决定刹车距离",
+      description: `按水平路面、车轮滑动且摩擦力为主要制动力建模：μ = ${muText}，减速度 μg = ${frictionAText}m/s²，停止距离 ${sText}m。`,
+      engine: "摩擦制动典型题模板",
+      ar: "网页端展示滑动摩擦、减速度与停止距离的定量关系。",
+      params: [
+        { label: "初速度 v₀", desc: "调整车辆开始制动时的速度", unit: "m/s", min: PHYSICS_BRAKE_LIMITS.speedMin, max: PHYSICS_BRAKE_LIMITS.speedMax, step: 1, value: model.v0 },
+        { label: "动摩擦因数 μ", desc: "水平路面且车轮发生滑动", unit: "", min: PHYSICS_FRICTION_BRAKE_LIMITS.muMin, max: PHYSICS_FRICTION_BRAKE_LIMITS.muMax, step: 0.05, value: model.mu }
+      ],
+      steps: [
+        ["提取条件", `v₀ = ${vText}m/s，μ = ${muText}，g = ${gText}m/s²`, "明确水平路面、滑动摩擦为主要制动力。"],
+        ["受力求加速度", `f = μN = μmg，a = −f/m = −μg = −${frictionAText}m/s²`, "质量在求加速度时约去，减速度由 μ 和 g 决定。"],
+        ["代入运动学", `0² − ${vText}² = 2×(−${frictionAText})×s`, `计算得到停止距离 s = ${sText}m。`],
+        ["现象验证", `速度归零，停止点 ${sText}m`, "路面越粗糙，μ 越大，停止距离越短。"]
+      ],
+      mentor: `为什么汽车质量没有出现在最终刹车距离中？因为 <strong>f = μmg</strong>，再由 <strong>a = f/m</strong> 得到 <strong>a = μg</strong>。`,
+      hint: "先画水平路面受力图：竖直方向 N = mg，水平方向只有与运动方向相反的滑动摩擦力。",
+      challenge: `如果动摩擦因数增大到 <strong>${smartNumber(nextMu, 2)}</strong>，停止距离会怎样变化？`,
+      generationStages: [
+        { label: "识别条件", text: `识别 v₀ = ${vText}m/s，μ = ${muText}，g = ${gText}m/s²`, progress: 28 },
+        { label: "建立受力模型", text: `由 f = μN 与 F = ma 得 a = −${aText}m/s²`, progress: 63 },
+        { label: "生成制动过程", text: `速度匀减至 0，停止点锁定 ${sText}m`, progress: 100 }
+      ],
+      recognitionText: `摩擦制动｜v₀ = ${vText}m/s｜μ = ${muText}｜g = ${gText}m/s²｜a = −${frictionAText}m/s²｜停止距离 ${sText}m`,
+      formulaLabel: "摩擦制动",
+      formula: "f = μN，a = −μg",
+      formulaHtml: `N = mg，f = μN = μmg<br>a = −f/m = −μg = −${frictionAText}m/s²<br>s = v₀²/(2μg) = ${sText}m`,
+      sceneTip: `水平路面上按滑动摩擦制动建模：μ = ${muText}，速度每秒约减少 ${frictionAText}m/s。`,
+      indicatorLabel: "滑动摩擦制动",
+      indicatorFormula: `a = −μg = −${frictionAText}m/s²`,
+      stopTimeText: tText,
+      stopDistanceText: sText,
+      model
+    };
+  }
+
+  if (model.mode === "linear_drag") {
+    const kText = smartNumber(model.k);
+    const massText = smartNumber(model.mass);
+    const tauText = smartNumber(model.tau, 2);
+    const practicalSpeedText = smartNumber(model.practicalSpeed, 2);
+    const practicalDistanceText = smartNumber(model.practicalDistance, 1);
+    const kBounds = linearDragKBounds(model.mass);
+    const nextK = clamp(model.k * 1.5, kBounds.min, kBounds.max);
+    return {
+      title: "线性阻力制动：f = kv 时速度如何衰减",
+      description: `高中拓展模型：阻力大小 f = kv、方向与速度相反。速度按指数规律衰减，极限位移为 ${sText}m。`,
+      engine: "高中拓展 · 线性阻力模型",
+      ar: "网页端展示速度相关阻力下的指数衰减与极限位移。",
+      params: [
+        { label: "初速度 v₀", desc: "调整物体进入线性阻力区的速度", unit: "m/s", min: PHYSICS_BRAKE_LIMITS.speedMin, max: PHYSICS_BRAKE_LIMITS.speedMax, step: 1, value: model.v0 },
+        { label: "阻力系数 k", desc: `质量 m = ${massText}kg；k 的单位为 kg/s`, unit: "kg/s", min: kBounds.min, max: kBounds.max, step: 10, value: model.k }
+      ],
+      steps: [
+        ["提取条件", `v₀ = ${vText}m/s，m = ${massText}kg，k = ${kText}kg/s`, "阻力大小与速率成正比，方向始终与速度相反。"],
+        ["建立动力学方程", "m dv/dt = −kv", "取运动方向为正，阻力在方程中带负号。"],
+        ["求速度与位移", `v(t) = v₀e<sup>−kt/m</sup>，x(t) = mv₀/k(1−e<sup>−kt/m</sup>)`, "速度和位移都按指数函数变化。"],
+        ["判断极限", `τ = m/k = ${tauText}s，x∞ = mv₀/k = ${sText}m`, `动画在 v = 1%v₀ 时结束：t ≈ ${tText}s，x ≈ ${practicalDistanceText}m。`]
+      ],
+      mentor: "为什么这里不能使用匀变速公式？因为 <strong>f = kv</strong> 随速度减小，因而加速度 <strong>a = −kv/m</strong> 也不断变化。",
+      hint: "先由牛顿第二定律写出 m·dv/dt = −kv，再分离变量求解指数函数。",
+      challenge: `如果 k 增大到 <strong>${smartNumber(nextK)}kg/s</strong>，时间常数和极限位移会怎样变化？`,
+      generationStages: [
+        { label: "识别条件", text: `识别 v₀、m 与线性阻力系数 k = ${kText}kg/s`, progress: 28 },
+        { label: "建立变力模型", text: "建立 m·dv/dt = −kv，求指数衰减解", progress: 63 },
+        { label: "生成衰减过程", text: `演示至 v = 1%v₀；极限位置 ${sText}m`, progress: 100 }
+      ],
+      recognitionText: `高中拓展｜线性阻力 f = kv｜v₀ = ${vText}m/s｜m = ${massText}kg｜k = ${kText}kg/s｜τ = ${tauText}s｜极限位移 ${sText}m`,
+      formulaLabel: "线性阻力",
+      formula: "m dv/dt = −kv",
+      formulaHtml: `v(t) = v₀e<sup>−kt/m</sup><br>x(t) = mv₀/k(1−e<sup>−kt/m</sup>)<br>x∞ = mv₀/k = ${sText}m`,
+      sceneTip: `线性阻力适用于题设模型或低速黏性介质近似；动画终点为 v = ${practicalSpeedText}m/s（初速度的 1%），理论速度只会渐近于 0。`,
+      indicatorLabel: "线性阻力模型",
+      indicatorFormula: `f = −kv｜τ = ${tauText}s`,
+      stopTimeText: tText,
+      stopDistanceText: sText,
+      model
+    };
+  }
+
   return {
+    title: "刹车距离实验 · 速度如何归零",
     description: `从题目生成刹车实验：速度从 ${vText}m/s 逐步归零，停止点对应 ${sText}m。`,
+    engine: "运动过程可视化",
+    ar: "移动端扩展可继续展示汽车刹车实验。",
     params: [
       { label: "初速度 v₀", desc: "调整车辆起始速度", unit: "m/s", min: PHYSICS_BRAKE_LIMITS.speedMin, max: PHYSICS_BRAKE_LIMITS.speedMax, step: 1, value: model.v0 },
       { label: "加速度 a", desc: "调整刹车减速度", unit: "m/s²", min: PHYSICS_BRAKE_LIMITS.accelMin, max: PHYSICS_BRAKE_LIMITS.accelMax, step: 1, value: model.aAbs, prefix: "−" }
@@ -492,13 +852,292 @@ function buildPhysicsBrakeContent(v0 = state.p1, aAbs = state.p2) {
       { label: "锁定停止点", text: `生成可视化过程：停止点锁定 ${sText}m`, progress: 100 }
     ],
     recognitionText: `初速度 ${vText}m/s｜刹车加速度 ${aText}m/s²｜停止距离 ${sText}m`,
+    formulaLabel: "核心公式",
+    formula: "v² − v₀² = 2as",
+    formulaHtml: `0² − ${vText}² = 2 × (−${aText}) × s，得到 s = ${sText}m`,
+    sceneTip: `刹车开始后，速度每秒减少 ${aText}m/s。`,
+    indicatorLabel: "恒定减速度",
+    indicatorFormula: `a = −${aText}m/s²`,
     stopTimeText: tText,
-    stopDistanceText: sText
+    stopDistanceText: sText,
+    model
   };
 }
 
-function buildPhysicsBrakeQuestionText(v0 = state.p1, aAbs = state.p2) {
-  return `一辆汽车以 ${smartNumber(v0)}m/s 的速度行驶，紧急刹车后加速度大小为 ${smartNumber(aAbs)}m/s²，求刹车距离。`;
+function buildPhysicsBrakeQuestionText(v0 = state.p1, parameter = state.p2, options = {}) {
+  const model = physicsBrakeModel(v0, parameter, options);
+  if (model.mode === "friction") {
+    return `一辆汽车以 ${smartNumber(v0)}m/s 的速度在水平路面行驶，紧急刹车后车轮发生滑动，轮胎与路面的动摩擦因数为 ${smartNumber(model.mu, 2)}，取 g = ${smartNumber(model.gravity)}m/s²。求刹车距离。`;
+  }
+  if (model.mode === "linear_drag") {
+    return `质量为 ${smartNumber(model.mass)}kg 的小车以 ${smartNumber(v0)}m/s 行驶，随后只受大小满足 f = kv、方向与速度相反的阻力，k = ${smartNumber(model.k)}kg/s。求速度随时间的关系和极限位移。`;
+  }
+  return `一辆汽车以 ${smartNumber(v0)}m/s 的速度行驶，紧急刹车后加速度大小为 ${smartNumber(model.aAbs)}m/s²，求刹车距离。`;
+}
+
+function boardSliderNumber(value, decimals = 3) {
+  return String(Number(Number(value).toFixed(decimals)));
+}
+
+function boardSliderModel(params = state.boardSliderParams) {
+  const blockMass = Number(params.blockMass);
+  const boardMass = Number(params.boardMass);
+  const boardLength = Number(params.boardLength);
+  const frictionCoefficient = Number(params.frictionCoefficient);
+  const initialSpeed = Number(params.initialSpeed);
+  const gravity = Number(params.gravity);
+  const friction = frictionCoefficient * blockMass * gravity;
+  const blockAcceleration = -frictionCoefficient * gravity;
+  const boardAcceleration = friction / boardMass;
+  const relativeDeceleration = frictionCoefficient * gravity * (1 + blockMass / boardMass);
+  const syncTime = initialSpeed / relativeDeceleration;
+  const relativeStopDistance = (initialSpeed * initialSpeed) / (2 * relativeDeceleration);
+  const commonSpeed = (blockMass * initialSpeed) / (blockMass + boardMass);
+  const criticalSpeed = Math.sqrt(2 * relativeDeceleration * boardLength);
+  const difference = relativeStopDistance - boardLength;
+  const outcome = Math.abs(difference) <= BOARD_SLIDER_LIMITS.epsilon
+    ? "critical"
+    : difference < 0
+      ? "safe"
+      : "fall";
+  const discriminant = Math.max(0, initialSpeed * initialSpeed - 2 * relativeDeceleration * boardLength);
+  const exitTime = outcome === "fall"
+    ? (initialSpeed - Math.sqrt(discriminant)) / relativeDeceleration
+    : null;
+  const endTime = outcome === "fall"
+    ? exitTime
+    : outcome === "safe"
+      ? syncTime + 1
+      : syncTime;
+  const remainingDistance = Math.max(0, boardLength - relativeStopDistance);
+  const outcomeLabel = outcome === "safe" ? "未滑落" : outcome === "critical" ? "临界" : "已滑落";
+  const relationSymbol = outcome === "safe" ? "<" : outcome === "critical" ? "=" : ">";
+  const conclusion = outcome === "safe"
+    ? `滑块先与木板达到共同速度，最大相对位移 ${boardSliderNumber(relativeStopDistance)}m，小于木板长度；随后二者共同匀速运动。`
+    : outcome === "critical"
+      ? "临界：滑块恰好到达木板右端时与木板相对静止。"
+      : `最大相对位移 ${boardSliderNumber(relativeStopDistance)}m 大于木板长度，滑块在 ${boardSliderNumber(exitTime)}s 时从右端滑出。`;
+  const recognitionText = `木板—滑块｜m=${boardSliderNumber(blockMass)}kg｜M=${boardSliderNumber(boardMass)}kg｜L=${boardSliderNumber(boardLength)}m｜μ=${boardSliderNumber(frictionCoefficient, 2)}｜v₀=${boardSliderNumber(initialSpeed)}m/s｜${outcomeLabel}`;
+
+  return {
+    blockMass,
+    boardMass,
+    boardLength,
+    frictionCoefficient,
+    initialSpeed,
+    gravity,
+    gravityWasDefaulted: Boolean(params.gravityWasDefaulted),
+    friction,
+    blockAcceleration,
+    boardAcceleration,
+    relativeDeceleration,
+    syncTime,
+    relativeStopDistance,
+    commonSpeed,
+    criticalSpeed,
+    outcome,
+    outcomeLabel,
+    relationSymbol,
+    exitTime,
+    endTime,
+    remainingDistance,
+    conclusion,
+    recognitionText
+  };
+}
+
+function buildPhysicsBoardSliderQuestionText(params = state.boardSliderParams) {
+  const model = boardSliderModel(params);
+  const isDefault = ["blockMass", "boardMass", "boardLength", "frictionCoefficient", "initialSpeed", "gravity"]
+    .every(key => Math.abs(model[key] - BOARD_SLIDER_DEFAULTS[key]) <= BOARD_SLIDER_LIMITS.epsilon);
+  if (isDefault && !model.gravityWasDefaulted) return BOARD_SLIDER_DEFAULT_QUESTION;
+  return `光滑水平地面上有一块质量为${boardSliderNumber(model.boardMass)}kg、长度为${boardSliderNumber(model.boardLength)}m且初始静止的木板B。质量为${boardSliderNumber(model.blockMass)}kg的滑块A从木板左端以${boardSliderNumber(model.initialSpeed)}m/s向右滑动，二者间动摩擦因数μ=${boardSliderNumber(model.frictionCoefficient, 2)}，取g=${boardSliderNumber(model.gravity)}m/s²。求两者加速度、共同速度时间，并判断滑块是否从右端滑落。`;
+}
+
+function buildPhysicsBoardSliderContent(params = state.boardSliderParams) {
+  const model = boardSliderModel(params);
+  const m = boardSliderNumber(model.blockMass);
+  const M = boardSliderNumber(model.boardMass);
+  const L = boardSliderNumber(model.boardLength);
+  const mu = boardSliderNumber(model.frictionCoefficient, 2);
+  const v0 = boardSliderNumber(model.initialSpeed);
+  const g = boardSliderNumber(model.gravity);
+  const f = boardSliderNumber(model.friction);
+  const aA = boardSliderNumber(Math.abs(model.blockAcceleration));
+  const aB = boardSliderNumber(model.boardAcceleration);
+  const aRel = boardSliderNumber(model.relativeDeceleration);
+  const tSync = boardSliderNumber(model.syncTime);
+  const sRel = boardSliderNumber(model.relativeStopDistance);
+  const vCommon = boardSliderNumber(model.commonSpeed);
+  const relation = `${sRel}m ${model.relationSymbol} ${L}m`;
+  const gravityNote = model.gravityWasDefaulted ? "｜未识别到g，当前按10m/s²计算" : "";
+  const blockAccelerationSymbol = "a<sub>A</sub>";
+  const boardAccelerationSymbol = "a<sub>B</sub>";
+  const relativeAccelerationSymbol = "a<sub>相</sub>";
+  const relativeDisplacementSymbol = "Δx<sub>相</sub>";
+  const boardAccelerationFormula = fractionHtml("μmg", "M");
+  const massRatioFormula = fractionHtml("m", "M");
+  const relativeDistanceFormula = fractionHtml("v₀²", `2${relativeAccelerationSymbol}`);
+
+  return {
+    title: "木板—滑块：相对运动与临界滑落",
+    description: `光滑地面上的双物体相对运动：分别追踪滑块A和木板B，再用相对位移判断是否滑落。当前结论：${model.outcomeLabel}。`,
+    engine: "高中拓展 · 双物体相对运动",
+    ar: "网页端展示滑块与木板分别运动、摩擦力方向和相对位移判定。",
+    metrics: [["滑块速度", "m/s"], ["木板速度", "m/s"], ["相对位移 Δx", "m"]],
+    params: [
+      { label: "滑块初速度 v₀", desc: "调整滑块相对地面的初速度", unit: "m/s", min: BOARD_SLIDER_LIMITS.speedMin, max: BOARD_SLIDER_LIMITS.speedMax, step: 0.5, value: model.initialSpeed },
+      { label: "木板长度 L", desc: "调整可供滑块相对运动的有效长度", unit: "m", min: BOARD_SLIDER_LIMITS.boardLengthMin, max: BOARD_SLIDER_LIMITS.boardLengthMax, step: 0.25, value: model.boardLength }
+    ],
+    steps: [
+      ["判断摩擦方向", `滑块相对木板向右：A受摩擦力向左，B受摩擦力向右；f = μmg = ${f}N`, "两个摩擦力大小相等、方向相反，但作用在不同物体上。"],
+      ["分别使用牛顿第二定律", `${blockAccelerationSymbol} = −μg = −${aA}m/s²；${boardAccelerationSymbol} = ${boardAccelerationFormula} = ${aB}m/s²`, "木板质量不同，二者加速度大小不一定相同。"],
+      ["转化为相对运动", `相对加速度大小 ${relativeAccelerationSymbol} = μg(1 + ${massRatioFormula}) = ${aRel}m/s²；最大相对位移 ${relativeDisplacementSymbol} = ${relativeDistanceFormula} = ${sRel}m`, `达到共同速度需 ${tSync}s，共同速度为 ${vCommon}m/s。`],
+      ["与木板长度比较", `${relation}，结论：${model.outcomeLabel}`, model.conclusion]
+    ],
+    mentor: "为什么这里不能直接把滑块对地面的位移与木板长度比较？",
+    hint: "木板本身也在运动。判断滑块是否滑落，应该观察滑块相对木板移动了多远。",
+    challenge: "保持其他条件不变，如果滑块初速度改为 5m/s，它会不会从木板右端滑落？",
+    generationStages: [
+      { label: "识别双物体", text: `识别滑块m=${m}kg、木板M=${M}kg、长度L=${L}m与μ=${mu}`, progress: 28 },
+      { label: "建立相对运动模型", text: `分别求滑块加速度−${aA}m/s²、木板加速度${aB}m/s²与相对加速度大小${aRel}m/s²`, progress: 63 },
+      { label: "判断临界状态", text: `比较最大相对位移 ${sRel}m 与木板长度 ${L}m：${model.outcomeLabel}`, progress: 100 }
+    ],
+    recognitionText: `${model.recognitionText}｜相对加速度大小=${aRel}m/s²｜最大相对位移=${sRel}m${gravityNote}`,
+    formulaLabel: "相对运动判定",
+    formula: "比较最大相对位移与 L",
+    formulaHtml: `f = μmg = ${f}N<br>${blockAccelerationSymbol} = −μg = −${aA}m/s²；${boardAccelerationSymbol} = ${boardAccelerationFormula} = ${aB}m/s²<br>相对加速度大小 ${relativeAccelerationSymbol} = μg(1 + ${massRatioFormula}) = ${aRel}m/s²<br>最大相对位移 ${relativeDisplacementSymbol} = ${relativeDistanceFormula} = ${sRel}m<br><b>${relation}｜${model.outcomeLabel}</b>`,
+    sceneTip: model.outcome === "critical"
+      ? `最大相对位移 ${Number(model.relativeStopDistance).toFixed(1)}m，等于木板长度 ${Number(model.boardLength).toFixed(1)}m，当前为临界状态。`
+      : model.conclusion,
+    model
+  };
+}
+
+function syncPhysicsBoardSliderContent(params = state.boardSliderParams) {
+  const merged = { ...BOARD_SLIDER_DEFAULTS, ...params };
+  state.physicsTemplate = "boardSlider";
+  state.boardSliderParams = merged;
+  state.p1 = Number(merged.initialSpeed);
+  state.p2 = Number(merged.boardLength);
+  const content = buildPhysicsBoardSliderContent(merged);
+  const physics = SUBJECTS["物理"];
+  physics.question = buildPhysicsBoardSliderQuestionText(merged);
+  physics.title = content.title;
+  physics.description = content.description;
+  physics.engine = content.engine;
+  physics.ar = content.ar;
+  physics.metrics = content.metrics;
+  physics.params = content.params;
+  physics.steps = content.steps;
+  physics.mentor = content.mentor;
+  physics.hint = content.hint;
+  physics.challenge = content.challenge;
+  physics.generationStages = content.generationStages;
+  physics.recognitionText = content.recognitionText;
+  return content.model;
+}
+
+function boardSliderValuesAt(time, sourceModel = boardSliderModel()) {
+  const model = sourceModel;
+  const t = clamp(time, 0, model.endTime);
+  const slidingEnd = model.outcome === "fall" ? model.exitTime : model.syncTime;
+  const slidingTime = Math.min(t, slidingEnd);
+  let blockSpeed = Math.max(0, model.initialSpeed + model.blockAcceleration * slidingTime);
+  let boardSpeed = model.boardAcceleration * slidingTime;
+  let blockPosition = model.initialSpeed * slidingTime + 0.5 * model.blockAcceleration * slidingTime * slidingTime;
+  let boardPosition = 0.5 * model.boardAcceleration * slidingTime * slidingTime;
+  let relativePosition = blockPosition - boardPosition;
+
+  if (model.outcome !== "fall" && t > model.syncTime) {
+    const sharedTime = t - model.syncTime;
+    blockSpeed = model.commonSpeed;
+    boardSpeed = model.commonSpeed;
+    blockPosition += model.commonSpeed * sharedTime;
+    boardPosition += model.commonSpeed * sharedTime;
+    relativePosition = model.relativeStopDistance;
+  }
+
+  const frictionActive = t < slidingEnd - BOARD_SLIDER_LIMITS.epsilon;
+  const reachedEnd = t >= model.endTime - BOARD_SLIDER_LIMITS.epsilon;
+  return {
+    progress: model.endTime > 0 ? t / model.endTime : 1,
+    timelineProgress: model.endTime > 0 ? t / model.endTime : 1,
+    metrics: [blockSpeed, boardSpeed, relativePosition],
+    boardSlider: {
+      ...model,
+      t,
+      blockSpeed,
+      boardSpeed,
+      blockPosition,
+      boardPosition,
+      relativePosition,
+      frictionActive,
+      reachedEnd
+    }
+  };
+}
+
+function renderBoardSliderScene(values = boardSliderValuesAt(state.time)) {
+  const data = values.boardSlider || boardSliderValuesAt(state.time).boardSlider;
+  const world = elements.boardSliderWorld;
+  if (!world || !elements.boardSliderBoard || !elements.boardSliderBlock) return;
+  const endData = boardSliderValuesAt(data.endTime, data).boardSlider;
+  const worldWidth = world.clientWidth || 760;
+  const blockWidth = elements.boardSliderBlock.offsetWidth || 68;
+  const liveCard = world.querySelector(".board-slider-live-card");
+  const liveCardWidth = liveCard?.offsetWidth || 0;
+  const origin = Math.max(blockWidth / 2 + 88, worldWidth * 0.14);
+  const rightReserve = liveCardWidth + 150;
+  const availableTrackWidth = Math.max(24, worldWidth - origin - rightReserve);
+  const maxGroundPosition = Math.max(endData.blockPosition, endData.boardPosition + data.boardLength, data.boardLength);
+  const scale = Math.min(150, availableTrackWidth / Math.max(1, maxGroundPosition));
+  const boardLeft = origin + data.boardPosition * scale;
+  const blockLeft = origin + data.blockPosition * scale;
+  const boardWidth = data.boardLength * scale;
+  const relativeRatio = clamp(data.relativePosition / data.boardLength, 0, 1);
+
+  world.style.setProperty("--board-origin-x", `${origin}px`);
+  elements.boardSliderBoard.style.left = `${boardLeft}px`;
+  elements.boardSliderBoard.style.width = `${boardWidth}px`;
+  elements.boardSliderBlock.style.left = `${blockLeft}px`;
+  if (elements.boardSliderTrace) elements.boardSliderTrace.style.width = `${relativeRatio * 100}%`;
+  elements.boardSliderStage?.classList.toggle("friction-off", !data.frictionActive);
+  elements.boardSliderStage?.classList.toggle("motion-complete", data.reachedEnd);
+  elements.boardSliderStage?.setAttribute("data-outcome", data.outcome);
+  elements.boardSliderBlock.classList.toggle("exited", data.outcome === "fall" && data.reachedEnd);
+  world.style.setProperty("--board-block-speed", String(clamp(data.blockSpeed / Math.max(1, data.initialSpeed), 0.08, 1)));
+  world.style.setProperty("--board-board-speed", String(clamp(data.boardSpeed / Math.max(1, data.initialSpeed), 0.08, 1)));
+
+  if (elements.boardSliderStatus) {
+    const statusText = data.outcome === "fall"
+      ? data.reachedEnd ? "已从右端滑出" : "将从右端滑出"
+      : data.outcome === "safe" && data.t >= data.syncTime - BOARD_SLIDER_LIMITS.epsilon
+        ? "共同运动"
+        : data.outcome === "critical" && data.reachedEnd
+          ? "临界到达"
+          : data.outcomeLabel;
+    elements.boardSliderStatus.textContent = statusText;
+    elements.boardSliderStatus.dataset.status = data.outcome;
+  }
+  if (elements.boardSliderRelation) {
+    elements.boardSliderRelation.textContent = `${boardSliderNumber(data.relativeStopDistance)}m ${data.relationSymbol} ${boardSliderNumber(data.boardLength)}m`;
+  }
+  if (elements.boardSliderFrictionText) {
+    elements.boardSliderFrictionText.textContent = data.frictionActive ? `f = μmg = ${boardSliderNumber(data.friction)}N` : "共同运动：f = 0";
+  }
+  if (elements.boardSliderRelativeText) elements.boardSliderRelativeText.textContent = `Δx = ${boardSliderNumber(data.relativePosition)}m`;
+  if (elements.boardSliderBlockSpeed) elements.boardSliderBlockSpeed.textContent = `滑块 ${boardSliderNumber(data.blockSpeed)}m/s`;
+  if (elements.boardSliderBoardSpeed) elements.boardSliderBoardSpeed.textContent = `木板 ${boardSliderNumber(data.boardSpeed)}m/s`;
+  if (elements.boardSliderBlockMass) elements.boardSliderBlockMass.textContent = `${boardSliderNumber(data.blockMass)}kg`;
+  if (elements.boardSliderBoardMass) elements.boardSliderBoardMass.textContent = `${boardSliderNumber(data.boardMass)}kg`;
+  if (elements.boardSliderMu) elements.boardSliderMu.textContent = boardSliderNumber(data.frictionCoefficient, 2);
+  if (elements.boardSliderGravity) elements.boardSliderGravity.textContent = `${boardSliderNumber(data.gravity)}m/s²`;
+}
+
+function resetBoardSliderAnimation() {
+  state.time = 0;
+  renderBoardSliderScene(boardSliderValuesAt(0));
 }
 
 function solenoidModel(
@@ -1167,15 +1806,26 @@ function switchBiologyCellType(type, options = {}) {
   if (state.hasGenerated) saveCurrentSubjectSnapshot();
 }
 
-function syncPhysicsBrakeContent(v0 = state.p1, aAbs = state.p2) {
+function syncPhysicsBrakeContent(v0 = state.p1, parameter = state.p2, options = {}) {
   state.physicsTemplate = "brake";
-  const content = buildPhysicsBrakeContent(v0, aAbs);
+  state.brakeMode = options.mode || state.brakeMode || "constant";
+  if (Number.isFinite(options.gravity)) state.brakeGravity = options.gravity;
+  if (Number.isFinite(options.mass)) state.brakeMass = options.mass;
+  const content = buildPhysicsBrakeContent(v0, parameter, {
+    mode: state.brakeMode,
+    gravity: state.brakeGravity,
+    mass: state.brakeMass
+  });
   const physics = SUBJECTS["物理"];
-  physics.question = buildPhysicsBrakeQuestionText(v0, aAbs);
-  physics.title = "刹车距离实验 · 速度如何归零";
+  physics.question = buildPhysicsBrakeQuestionText(v0, parameter, {
+    mode: state.brakeMode,
+    gravity: state.brakeGravity,
+    mass: state.brakeMass
+  });
+  physics.title = content.title;
   physics.description = content.description;
-  physics.engine = "运动过程可视化";
-  physics.ar = "移动端扩展可继续展示汽车刹车实验。";
+  physics.engine = content.engine;
+  physics.ar = content.ar;
   physics.metrics = [["速度 v", "m/s"], ["位移 s", "m"], ["时间 t", "s"]];
   physics.params = content.params;
   physics.steps = content.steps;
@@ -1184,7 +1834,7 @@ function syncPhysicsBrakeContent(v0 = state.p1, aAbs = state.p2) {
   physics.challenge = content.challenge;
   physics.generationStages = content.generationStages;
   physics.recognitionText = content.recognitionText;
-  return physicsBrakeModel(v0, aAbs);
+  return content.model;
 }
 
 function syncPhysicsSolenoidContent(current = state.p1, turns = state.p2, options = {}) {
@@ -1207,6 +1857,215 @@ function syncPhysicsSolenoidContent(current = state.p1, turns = state.p2, option
   return content.model;
 }
 
+function projectileModel(speed = state.p1, height = state.p2) {
+  const g = PROJECTILE_LIMITS.gravity;
+  const fallTime = Math.sqrt((2 * height) / g);
+  const range = speed * fallTime;
+  const verticalSpeed = g * fallTime;
+  return { speed, height, gravity: g, fallTime, range, verticalSpeed };
+}
+
+function buildPhysicsProjectileQuestionText(speed = state.p1, height = state.p2) {
+  return `小球以 ${smartNumber(speed)}m/s 的水平速度从 ${smartNumber(height)}m 高的平台水平抛出，不计空气阻力。求落地时间和水平位移，并观察运动轨迹。`;
+}
+
+function buildPhysicsProjectileContent(speed = state.p1, height = state.p2) {
+  const model = projectileModel(speed, height);
+  const vText = smartNumber(model.speed);
+  const hText = smartNumber(model.height);
+  const tText = smartNumber(model.fallTime, 2);
+  const xText = smartNumber(model.range, 1);
+  const vyText = smartNumber(model.verticalSpeed, 1);
+  return {
+    title: "平抛运动：水平位移与落地时间",
+    description: `把平抛运动拆成水平匀速和竖直自由落体：落地时间 ${tText}s，水平位移 ${xText}m。`,
+    engine: "运动合成模板演示",
+    ar: "移动端扩展可继续展示平抛轨迹与速度分解。",
+    metrics: [["水平速度 v₀", "m/s"], ["落地时间 t", "s"], ["水平位移 x", "m"]],
+    params: [
+      { label: "水平速度 v₀", desc: "调整小球抛出时的水平速度", unit: "m/s", min: PROJECTILE_LIMITS.speedMin, max: PROJECTILE_LIMITS.speedMax, step: 1, value: model.speed },
+      { label: "释放高度 h", desc: "调整平台到地面的高度", unit: "m", min: PROJECTILE_LIMITS.heightMin, max: PROJECTILE_LIMITS.heightMax, step: 1, value: model.height }
+    ],
+    steps: [
+      ["提取条件", `v₀ = ${vText}m/s，h = ${hText}m`, "识别水平初速度、释放高度和不计空气阻力。"],
+      ["拆分运动", "水平方向匀速，竖直方向自由落体", "平抛运动可以看作两个方向的独立运动。"],
+      ["计算时间", `h = 1/2gt²，t = ${tText}s`, "落地时间只由竖直高度决定。"],
+      ["计算位移", `x = v₀t = ${xText}m`, "水平位移由水平速度和落地时间共同决定。"]
+    ],
+    mentor: `为什么平抛的落地时间只由 <strong>高度 ${hText}m</strong> 决定？因为竖直方向初速度为 0，只受重力加速度影响。`,
+    hint: "小提示：先不要把曲线当成一个整体算，把水平方向和竖直方向分开看。",
+    challenge: `如果水平速度变为 <strong>${smartNumber(model.speed * 1.5)}m/s</strong>，落地时间会变吗？水平位移会怎样变化？`,
+    generationStages: [
+      { label: "识别条件", text: `识别平抛条件：v₀ = ${vText}m/s，h = ${hText}m`, progress: 28 },
+      { label: "拆分运动", text: "建立水平匀速 + 竖直自由落体模型", progress: 63 },
+      { label: "生成轨迹", text: `生成平抛轨迹：落地点约 ${xText}m`, progress: 100 }
+    ],
+    recognitionText: `水平速度 ${vText}m/s｜高度 ${hText}m｜落地时间 ${tText}s｜水平位移 ${xText}m`,
+    formulaHtml: `由竖直运动得 t = √(2h/g) = ${tText}s<br>水平方向：x = v₀t = ${vText} × ${tText} = ${xText}m<br>落地瞬间竖直速度约 ${vyText}m/s`,
+    sceneTip: `小球从 ${hText}m 高处水平抛出，约 ${tText}s 后落地，水平位移约 ${xText}m。`,
+    model
+  };
+}
+
+function syncPhysicsProjectileContent(speed = state.p1, height = state.p2) {
+  state.physicsTemplate = "projectile";
+  const content = buildPhysicsProjectileContent(speed, height);
+  const physics = SUBJECTS["物理"];
+  physics.question = buildPhysicsProjectileQuestionText(speed, height);
+  physics.title = content.title;
+  physics.description = content.description;
+  physics.engine = content.engine;
+  physics.ar = content.ar;
+  physics.metrics = content.metrics;
+  physics.params = content.params;
+  physics.steps = content.steps;
+  physics.mentor = content.mentor;
+  physics.hint = content.hint;
+  physics.challenge = content.challenge;
+  physics.generationStages = content.generationStages;
+  physics.recognitionText = content.recognitionText;
+  return content.model;
+}
+
+function circuitModel(voltage = state.p1, resistance = state.p2) {
+  const current = voltage / resistance;
+  const power = voltage * current;
+  const brightness = clamp(power / 24, 0.12, 1);
+  return { voltage, resistance, current, power, brightness };
+}
+
+function buildPhysicsCircuitQuestionText(voltage = state.p1, resistance = state.p2) {
+  return `某纯电阻电路两端电压为 ${smartNumber(voltage)}V，电阻为 ${smartNumber(resistance)}Ω。求电路中的电流，并观察电压或电阻改变时电流如何变化。`;
+}
+
+function buildPhysicsCircuitContent(voltage = state.p1, resistance = state.p2) {
+  const model = circuitModel(voltage, resistance);
+  const uText = smartNumber(model.voltage);
+  const rText = smartNumber(model.resistance);
+  const iText = smartNumber(model.current, 2);
+  const pText = smartNumber(model.power, 1);
+  return {
+    title: "欧姆定律电路：电压、电阻与电流",
+    description: `纯电阻电路中 I = U / R：电压 ${uText}V，电阻 ${rText}Ω，电流 ${iText}A。电流粒子仅表示传统电流方向与相对快慢。`,
+    engine: "电路定量模板演示",
+    ar: "移动端扩展可继续展示电路连接与电流变化。",
+    metrics: [["电压 U", "V"], ["电阻 R", "Ω"], ["电流 I", "A"]],
+    params: [
+      { label: "电压 U", desc: "调整电源两端电压", unit: "V", min: CIRCUIT_LIMITS.voltageMin, max: CIRCUIT_LIMITS.voltageMax, step: 1, value: model.voltage },
+      { label: "电阻 R", desc: "调整纯电阻阻值", unit: "Ω", min: CIRCUIT_LIMITS.resistanceMin, max: CIRCUIT_LIMITS.resistanceMax, step: 1, value: model.resistance }
+    ],
+    steps: [
+      ["提取条件", `U = ${uText}V，R = ${rText}Ω`, "识别电路两端电压和电阻。"],
+      ["选择公式", "I = U / R", "纯电阻电路中电流与电压成正比，与电阻成反比。"],
+      ["代入计算", `I = ${uText} ÷ ${rText} = ${iText}A`, "用欧姆定律求出电流。"],
+      ["现象验证", `电流 ${iText}A，电阻功率 P = ${pText}W`, "电压增大或电阻改变时，电流与电阻消耗的功率同步变化。"]
+    ],
+    mentor: `为什么电阻变大后电流会变小？因为在电压 ${uText}V 不变时，<strong>I = U / R</strong> 中分母变大。`,
+    hint: "小提示：先确认这是纯电阻电路，再直接使用欧姆定律 I = U / R。",
+    challenge: `如果电压变为 <strong>${smartNumber(model.voltage * 2)}V</strong>，电阻不变，电流会怎样变化？`,
+    generationStages: [
+      { label: "识别电路条件", text: `识别 U = ${uText}V，R = ${rText}Ω`, progress: 28 },
+      { label: "匹配欧姆定律", text: "匹配纯电阻电路模板：I = U / R", progress: 63 },
+      { label: "生成电路反馈", text: `生成电流 ${iText}A 与电阻功率 ${pText}W`, progress: 100 }
+    ],
+    recognitionText: `电压 ${uText}V｜电阻 ${rText}Ω｜电流 ${iText}A｜功率约 ${pText}W`,
+    formulaHtml: `代入：I = ${uText} ÷ ${rText} = ${iText}A<br>电阻功率：P = UI = ${pText}W`,
+    sceneTip: `电压 ${uText}V、电阻 ${rText}Ω 时，电流为 ${iText}A；运动粒子表示传统电流方向与相对快慢，不表示电子运动方向或真实漂移速度。`,
+    model
+  };
+}
+
+function syncPhysicsCircuitContent(voltage = state.p1, resistance = state.p2) {
+  state.physicsTemplate = "circuit";
+  const content = buildPhysicsCircuitContent(voltage, resistance);
+  const physics = SUBJECTS["物理"];
+  physics.question = buildPhysicsCircuitQuestionText(voltage, resistance);
+  physics.title = content.title;
+  physics.description = content.description;
+  physics.engine = content.engine;
+  physics.ar = content.ar;
+  physics.metrics = content.metrics;
+  physics.params = content.params;
+  physics.steps = content.steps;
+  physics.mentor = content.mentor;
+  physics.hint = content.hint;
+  physics.challenge = content.challenge;
+  physics.generationStages = content.generationStages;
+  physics.recognitionText = content.recognitionText;
+  return content.model;
+}
+
+function extraPhysicsTemplate(id = state.physicsTemplate) {
+  return EXTRA_PHYSICS_TEMPLATES[id] || null;
+}
+
+function buildExtraPhysicsContent(id = state.physicsTemplate, p1 = state.p1, p2 = state.p2) {
+  const template = extraPhysicsTemplate(id);
+  if (!template) return null;
+  return template.content(p1, p2);
+}
+
+function buildExtraPhysicsQuestionText(id = state.physicsTemplate, p1 = state.p1, p2 = state.p2) {
+  const template = extraPhysicsTemplate(id);
+  if (!template) return buildPhysicsBrakeQuestionText();
+  return template.question(p1, p2);
+}
+
+function syncExtraPhysicsContent(id = state.physicsTemplate, p1 = state.p1, p2 = state.p2) {
+  const template = extraPhysicsTemplate(id);
+  if (!template) return syncPhysicsBrakeContent();
+  state.physicsTemplate = id;
+  const content = buildExtraPhysicsContent(id, p1, p2);
+  const physics = SUBJECTS["物理"];
+  physics.question = buildExtraPhysicsQuestionText(id, p1, p2);
+  physics.title = content.title;
+  physics.description = content.description;
+  physics.engine = content.engine;
+  physics.ar = content.ar;
+  physics.metrics = content.metrics;
+  physics.params = content.params;
+  physics.steps = content.steps;
+  physics.mentor = content.mentor;
+  physics.hint = content.hint;
+  physics.challenge = content.challenge;
+  physics.generationStages = content.generationStages;
+  physics.recognitionText = content.recognitionText;
+  return content.model;
+}
+
+function identifyExtraPhysicsTemplate(text) {
+  const source = normalizeQuestionText(text);
+  return EXTRA_PHYSICS_IDS.find(id => EXTRA_PHYSICS_TEMPLATES[id].keywords?.test(source)) || "";
+}
+
+function parseExtraPhysicsQuestion(text, preferredId = "") {
+  const id = preferredId && isExtraPhysicsTemplate(preferredId) ? preferredId : identifyExtraPhysicsTemplate(text);
+  const template = extraPhysicsTemplate(id);
+  if (!template) {
+    return { ok: false, message: "暂未识别该物理题型，请尝试选择一个物理预设模板。" };
+  }
+  const result = template.parseQuestion(text);
+  if (!result.ok) return result;
+  return {
+    ...result,
+    templateId: id,
+    message: result.message || `已识别：${result.recognitionText}`
+  };
+}
+
+function renderExtraPhysicsVisual(content = buildExtraPhysicsContent()) {
+  if (!content || !elements.genericPhysicsVisual) return;
+  elements.genericPhysicsVisual.innerHTML = content.visualHtml || "";
+  if (elements.genericPhysicsMeta) elements.genericPhysicsMeta.textContent = `${content.stage} · ${content.block}`;
+  setFormulaHtml(elements.genericPhysicsResult, content.resultTitle);
+  setFormulaHtml(elements.genericPhysicsDescription, content.resultDescription);
+  if (elements.genericPhysicsFacts) {
+    elements.genericPhysicsFacts.innerHTML = content.facts
+      .map(item => `<div><dt>${item.label}</dt><dd>${verticalizeFormulaHtml(item.value)}</dd></div>`)
+      .join("");
+  }
+}
+
 function hideMentorFeedback() {
   if (!elements.mentorFeedback) return;
   elements.mentorFeedback.className = "mentor-feedback";
@@ -1219,8 +2078,8 @@ function showMentorFormulaFeedback() {
   elements.mentorFeedback.className = "mentor-feedback show formula";
   elements.mentorFeedback.innerHTML = `
     <span>核心公式</span>
-    <strong>v² − v₀² = 2as</strong>
-    <p>题目没有给时间 t，所以先用速度—位移关系。代入后可得到停止距离 <b>${content.stopDistanceText}m</b>。</p>
+    <strong>${verticalizeFormulaHtml(content.formula)}</strong>
+    <p>${verticalizeFormulaHtml(content.formulaHtml)}</p>
   `;
 }
 
@@ -1268,9 +2127,12 @@ function firstNumberByPatterns(text, patterns) {
 
 function parsePhysicsBrakeQuestion(text) {
   const normalized = normalizeQuestionText(text);
-  const failMessage = "暂未识别该题型，请尝试输入含有初速度和刹车加速度的刹车距离题。";
+  const failMessage = "暂未识别该刹车题，请输入初速度，并给出刹车加速度、动摩擦因数，或线性阻力模型中的质量 m 与系数 k。";
   if (!normalized) return { ok: false, message: failMessage };
-  if (!/刹车|制动|减速|减速度|停止|停下|停车/.test(normalized)) {
+  const linearDragCandidate = /(?:f|F)(?:阻)?\s*(?:=|＝)\s*-?\s*k\s*v/i.test(normalized)
+    || /线性阻力|阻力[^。；]{0,28}(?:与速度成正比|正比于速度)/.test(normalized);
+  const frictionCandidate = /动摩擦因数|滑动摩擦系数|摩擦系数|μ/.test(normalized) && !linearDragCandidate;
+  if (!/刹车|制动|减速|减速度|停止|停下|停车|阻力|极限位移/.test(normalized) && !linearDragCandidate) {
     return { ok: false, message: failMessage };
   }
 
@@ -1285,6 +2147,89 @@ function parsePhysicsBrakeQuestion(text) {
     if (speedMatches.length) v0 = Number(speedMatches[0][1]);
   }
 
+  if (!Number.isFinite(v0)) {
+    return { ok: false, message: "未识别到初速度，请使用“初速度为20m/s”或“以20m/s行驶”等写法。" };
+  }
+
+  v0 = Math.abs(v0);
+  if (v0 < PHYSICS_BRAKE_LIMITS.speedMin || v0 > PHYSICS_BRAKE_LIMITS.speedMax) {
+    return { ok: false, message: `识别到初速度 ${smartNumber(v0)}m/s，但当前演示范围为 ${PHYSICS_BRAKE_LIMITS.speedMin}–${PHYSICS_BRAKE_LIMITS.speedMax}m/s。` };
+  }
+
+  if (linearDragCandidate) {
+    const massMatch = normalized.match(/(?:质量|m)\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*(kg|千克|t|吨)/i);
+    const kMatch = normalized.match(/(?:阻力系数|比例系数|系数|k)\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*(?:kg\s*\/\s*s|N\s*[·・*]?\s*s\s*\/\s*m|牛\s*[·・*]?\s*秒\s*\/\s*米)?/i);
+    if (!massMatch || !kMatch) {
+      return { ok: false, message: "线性阻力题需要同时给出质量 m 和阻力系数 k，例如：m=1000kg，f=kv，k=250kg/s。" };
+    }
+    let mass = Number(massMatch[1]);
+    if (/t|吨/i.test(massMatch[2])) mass *= 1000;
+    const k = Math.abs(Number(kMatch[1]));
+    if (mass < PHYSICS_LINEAR_DRAG_LIMITS.massMin || mass > PHYSICS_LINEAR_DRAG_LIMITS.massMax) {
+      return { ok: false, message: `识别到质量 ${smartNumber(mass)}kg，但当前线性阻力演示范围为 ${PHYSICS_LINEAR_DRAG_LIMITS.massMin}–${PHYSICS_LINEAR_DRAG_LIMITS.massMax}kg。` };
+    }
+    if (k < PHYSICS_LINEAR_DRAG_LIMITS.kMin || k > PHYSICS_LINEAR_DRAG_LIMITS.kMax) {
+      return { ok: false, message: `识别到 k = ${smartNumber(k)}kg/s，但当前演示范围为 ${PHYSICS_LINEAR_DRAG_LIMITS.kMin}–${PHYSICS_LINEAR_DRAG_LIMITS.kMax}kg/s。` };
+    }
+    const model = physicsBrakeModel(v0, k, { mode: "linear_drag", mass });
+    if (model.duration < PHYSICS_LINEAR_DRAG_LIMITS.durationMin || model.duration > PHYSICS_LINEAR_DRAG_LIMITS.durationMax) {
+      return {
+        ok: false,
+        message: `该参数组合使“速度降至初速度1%”的时间为 ${smartNumber(model.duration, 2)}s，超出当前 1–60s 演示范围；请适当调整质量 m 或阻力系数 k。`
+      };
+    }
+    const recognitionText = `高中拓展｜线性阻力 f = kv｜v₀ = ${smartNumber(v0)}m/s｜m = ${smartNumber(mass)}kg｜k = ${smartNumber(k)}kg/s｜τ = ${smartNumber(model.tau, 2)}s｜极限位移 ${smartNumber(model.stopDistance)}m`;
+    return {
+      ok: true,
+      subject: "物理",
+      type: "linear_drag_braking",
+      mode: "linear_drag",
+      v0,
+      k,
+      parameter: k,
+      mass,
+      tau: model.tau,
+      stopTime: Infinity,
+      practicalTime: model.duration,
+      stopDistance: model.stopDistance,
+      recognitionText,
+      message: `已识别：线性阻力 f = kv，m = ${smartNumber(mass)}kg，k = ${smartNumber(k)}kg/s`
+    };
+  }
+
+  if (frictionCandidate) {
+    const mu = firstNumberByPatterns(normalized, [
+      /(?:动摩擦因数|滑动摩擦系数|摩擦系数|μ)\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)/i
+    ]);
+    const gravity = firstNumberByPatterns(normalized, [
+      /(?:重力加速度|g)\s*(?:取|为|是|=|:|：)?\s*(9\.8|10)(?:\s*m\s*\/\s*s\s*(?:2|\^\s*2))?/i
+    ]) ?? 9.8;
+    if (!Number.isFinite(mu)) {
+      return { ok: false, message: "摩擦制动题需要给出动摩擦因数 μ，例如：μ=0.5。" };
+    }
+    if (mu < PHYSICS_FRICTION_BRAKE_LIMITS.muMin || mu > PHYSICS_FRICTION_BRAKE_LIMITS.muMax) {
+      return { ok: false, message: `识别到 μ = ${smartNumber(mu, 2)}，但当前演示范围为 ${PHYSICS_FRICTION_BRAKE_LIMITS.muMin}–${PHYSICS_FRICTION_BRAKE_LIMITS.muMax}。` };
+    }
+    const model = physicsBrakeModel(v0, mu, { mode: "friction", gravity });
+    const preciseAcceleration = String(Number(model.aAbs.toFixed(2)));
+    const recognitionText = `摩擦制动｜v₀ = ${smartNumber(v0)}m/s｜μ = ${smartNumber(mu, 2)}｜g = ${smartNumber(gravity)}m/s²｜a = −${preciseAcceleration}m/s²｜停止距离 ${smartNumber(model.stopDistance)}m`;
+    return {
+      ok: true,
+      subject: "物理",
+      type: "friction_braking",
+      mode: "friction",
+      v0,
+      mu,
+      parameter: mu,
+      gravity,
+      aAbs: model.aAbs,
+      stopTime: model.stopTime,
+      stopDistance: model.stopDistance,
+      recognitionText,
+      message: `已识别：初速度 ${smartNumber(v0)}m/s，动摩擦因数 ${smartNumber(mu, 2)}，减速度 ${preciseAcceleration}m/s²`
+    };
+  }
+
   let aAbs = firstNumberByPatterns(normalized, [
     /(?:刹车|制动)?\s*(?:加速度大小|加速度|减速度|减速加速度|制动加速度)\s*(?:大小)?\s*(?:为|是|=|:|：)?\s*(-?\d+(?:\.\d+)?)/i,
     /(?:^|[，,；;\s])a\s*(?:=|为|是|:|：)\s*(-?\d+(?:\.\d+)?)/i
@@ -1295,27 +2240,25 @@ function parsePhysicsBrakeQuestion(text) {
     if (accelMatches.length) aAbs = Number(accelMatches[0][1]);
   }
 
-  if (!Number.isFinite(v0) || !Number.isFinite(aAbs)) {
+  if (!Number.isFinite(aAbs)) {
     return { ok: false, message: failMessage };
   }
 
-  v0 = Math.abs(v0);
   aAbs = Math.abs(aAbs);
-  if (v0 <= 0 || aAbs <= 0) return { ok: false, message: failMessage };
+  if (aAbs <= 0) return { ok: false, message: failMessage };
 
-  if (v0 < PHYSICS_BRAKE_LIMITS.speedMin || v0 > PHYSICS_BRAKE_LIMITS.speedMax) {
-    return { ok: false, message: `识别到初速度 ${smartNumber(v0)}m/s，但当前演示范围为 ${PHYSICS_BRAKE_LIMITS.speedMin}–${PHYSICS_BRAKE_LIMITS.speedMax}m/s。` };
-  }
   if (aAbs < PHYSICS_BRAKE_LIMITS.accelMin || aAbs > PHYSICS_BRAKE_LIMITS.accelMax) {
     return { ok: false, message: `识别到刹车加速度 ${smartNumber(aAbs)}m/s²，但当前演示范围为 ${PHYSICS_BRAKE_LIMITS.accelMin}–${PHYSICS_BRAKE_LIMITS.accelMax}m/s²。` };
   }
 
-  const model = physicsBrakeModel(v0, aAbs);
+  const model = physicsBrakeModel(v0, aAbs, { mode: "constant" });
   return {
     ok: true,
     subject: "物理",
     type: "braking_distance",
+    mode: "constant",
     v0,
+    parameter: aAbs,
     aAbs,
     stopTime: model.stopTime,
     stopDistance: model.stopDistance,
@@ -1324,6 +2267,115 @@ function parsePhysicsBrakeQuestion(text) {
 }
 
 window.parsePhysicsBrakeQuestion = parsePhysicsBrakeQuestion;
+
+function isPhysicsBoardSliderQuestion(text) {
+  const source = normalizeQuestionText(text);
+  return /木板|长木板/.test(source)
+    && /滑块|物块|小物块/.test(source)
+    && /摩擦|动摩擦因数|相对滑动|相对运动|滑落|μ/.test(source);
+}
+
+function parsePhysicsBoardSliderQuestion(text) {
+  const source = normalizeQuestionText(text);
+  const scopeMessage = "当前演示支持光滑地面上，滑块以初速度滑上静止木板的典型模型。";
+  const missingMessage = "当前木板—滑块模板需要滑块质量、木板质量、木板长度、初速度和动摩擦因数。";
+  if (!isPhysicsBoardSliderQuestion(source)) return { ok: false, message: missingMessage };
+
+  const unsupported = [
+    /粗糙(?:的)?(?:水平)?地面|地面[^。；]{0,10}(?:粗糙|有摩擦)/,
+    /斜面|斜板|倾斜木板/,
+    /弹簧|碰撞|木板固定|固定木板/,
+    /多个滑块|多个物块|两(?:个|块|只)(?:滑块|物块)|静摩擦临界|临界启动/,
+    /(?:受到|施加|作用|用)[^。；]{0,12}(?:水平)?(?:外力|恒力|拉力)|(?:水平)?(?:外力|恒力|拉力)[^。；]{0,12}(?:作用|拉动)/
+  ];
+  if (unsupported.some(pattern => pattern.test(source))) return { ok: false, message: scopeMessage };
+  if (/(?:最初|初始|开始)[^。；]{0,12}右端|从右端|向左(?:滑动|运动)/.test(source)) {
+    return { ok: false, message: scopeMessage };
+  }
+
+  const boardInitialSpeedMatch = source.match(/(?:木板|木板B|B板)[^。；]{0,18}(?:初速度|速度)\s*(?:为|是|=|:|：)?\s*(-?\d+(?:\.\d+)?)\s*m\s*\/\s*s/i);
+  if (boardInitialSpeedMatch && Math.abs(Number(boardInitialSpeedMatch[1])) > BOARD_SLIDER_LIMITS.epsilon) {
+    return { ok: false, message: scopeMessage };
+  }
+
+  const equalMass = firstNumberByPatterns(source, [
+    /(?:二者|两者|滑块与木板|木板与滑块)\s*(?:的)?质量\s*均\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*kg/i,
+    /质量\s*均\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*kg/i
+  ]);
+
+  const blockMass = equalMass ?? firstNumberByPatterns(source, [
+    /(?:滑块|小物块|物块)\s*A?[^。；，,]{0,18}?质量\s*(?:m\s*)?(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*kg/i,
+    /质量\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*kg[^。；]{0,22}?(?:滑块|小物块|物块)\s*A/i,
+    /(?:^|[，,；;\s])m\s*(?:=|:|：)\s*(\d+(?:\.\d+)?)\s*kg/
+  ]);
+  const boardMass = equalMass ?? firstNumberByPatterns(source, [
+    /(?:长木板|木板)\s*B?[^。；，,]{0,20}?质量\s*(?:M\s*)?(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*kg/,
+    /质量\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*kg[^。；]{0,24}?(?:长木板|木板)\s*B/,
+    /(?:^|[，,；;\s])M\s*(?:=|:|：)\s*(\d+(?:\.\d+)?)\s*kg/
+  ]);
+  const boardLength = firstNumberByPatterns(source, [
+    /(?:长木板|木板)\s*B?[^。；]{0,42}?(?:长度|长|L)\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*m(?!\s*\/)/i,
+    /(?:长度|板长|L)\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*m(?!\s*\/)/i,
+    /(?:长度|长)\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*m[^。；]{0,20}?(?:长木板|木板)\s*B/i
+  ]);
+  const initialSpeed = firstNumberByPatterns(source, [
+    /(?:初速度|初速|v\s*0)\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*m\s*\/\s*s/i,
+    /以\s*(\d+(?:\.\d+)?)\s*m\s*\/\s*s\s*(?:的)?初速度/i,
+    /(?:滑块|物块|小物块)[^。；]{0,30}?以\s*(\d+(?:\.\d+)?)\s*m\s*\/\s*s/i
+  ]);
+  const frictionCoefficient = firstNumberByPatterns(source, [
+    /(?:动摩擦因数|滑动摩擦因数|动摩擦系数|摩擦因数|μ)\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)/i
+  ]);
+  const gravityParsed = firstNumberByPatterns(source, [
+    /(?:重力加速度|g)\s*(?:取|为|是|=|:|：)?\s*(\d+(?:\.\d+)?)(?:\s*m\s*\/\s*s\s*(?:2|\^\s*2))?/i
+  ]);
+  const gravity = gravityParsed ?? 10;
+  const gravityWasDefaulted = gravityParsed === null;
+
+  if (![blockMass, boardMass, boardLength, initialSpeed, frictionCoefficient].every(Number.isFinite)) {
+    return { ok: false, message: missingMessage };
+  }
+
+  const ranges = [
+    ["滑块质量", blockMass, BOARD_SLIDER_LIMITS.blockMassMin, BOARD_SLIDER_LIMITS.blockMassMax, "kg"],
+    ["木板质量", boardMass, BOARD_SLIDER_LIMITS.boardMassMin, BOARD_SLIDER_LIMITS.boardMassMax, "kg"],
+    ["木板长度", boardLength, BOARD_SLIDER_LIMITS.boardLengthMin, BOARD_SLIDER_LIMITS.boardLengthMax, "m"],
+    ["初速度", initialSpeed, BOARD_SLIDER_LIMITS.speedMin, BOARD_SLIDER_LIMITS.speedMax, "m/s"],
+    ["动摩擦因数", frictionCoefficient, BOARD_SLIDER_LIMITS.frictionMin, BOARD_SLIDER_LIMITS.frictionMax, ""],
+    ["重力加速度", gravity, BOARD_SLIDER_LIMITS.gravityMin, BOARD_SLIDER_LIMITS.gravityMax, "m/s²"]
+  ];
+  const invalid = ranges.find(([, value, min, max]) => value < min || value > max);
+  if (invalid) {
+    const [label, value, min, max, unit] = invalid;
+    return { ok: false, message: `识别到${label} ${boardSliderNumber(value)}${unit}，当前演示范围为 ${min}–${max}${unit}。` };
+  }
+
+  const params = {
+    blockMass,
+    boardMass,
+    boardLength,
+    frictionCoefficient,
+    initialSpeed,
+    gravity,
+    gravityWasDefaulted
+  };
+  const model = boardSliderModel(params);
+  const gravityNote = gravityWasDefaulted ? "｜未识别到g，当前按10m/s²计算" : "";
+  const recognitionText = `${model.recognitionText}｜相对加速度大小=${boardSliderNumber(model.relativeDeceleration)}m/s²｜最大相对位移=${boardSliderNumber(model.relativeStopDistance)}m${gravityNote}`;
+  return {
+    ok: true,
+    subject: "物理",
+    type: "board_slider",
+    direction: "right",
+    ...params,
+    params,
+    model,
+    recognitionText,
+    message: `已识别木板—滑块相对运动题：${model.outcomeLabel}`
+  };
+}
+
+window.parsePhysicsBoardSliderQuestion = parsePhysicsBoardSliderQuestion;
 
 function parsePhysicsSolenoidQuestion(text) {
   const normalized = normalizeQuestionText(text);
@@ -1381,6 +2433,100 @@ function parsePhysicsSolenoidQuestion(text) {
 }
 
 window.parsePhysicsSolenoidQuestion = parsePhysicsSolenoidQuestion;
+
+function parsePhysicsProjectileQuestion(text) {
+  const normalized = normalizeQuestionText(text);
+  const failMessage = "当前物理演示支持平抛运动模板，请输入含有水平速度和高度的平抛题。";
+  if (!/平抛|水平抛|水平速度|水平位移|落地|抛出|平台/.test(normalized)) {
+    return { ok: false, message: failMessage };
+  }
+
+  let speed = firstNumberByPatterns(normalized, [
+    /(?:水平速度|水平初速度|v\s*0|v₀)\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*m\s*\/\s*s/i,
+    /以\s*(\d+(?:\.\d+)?)\s*m\s*\/\s*s\s*(?:的)?水平速度/i,
+    /(\d+(?:\.\d+)?)\s*m\s*\/\s*s\s*(?:的)?水平速度/i
+  ]);
+
+  if (speed === null) {
+    const speedMatches = [...normalized.matchAll(/(\d+(?:\.\d+)?)\s*m\s*\/\s*s(?!\s*(?:²|2|\^\s*2))/gi)];
+    if (speedMatches.length) speed = Number(speedMatches[0][1]);
+  }
+
+  let height = firstNumberByPatterns(normalized, [
+    /(?:高度|高|距地面|离地面|平台高|平台高度)\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*m/i,
+    /从\s*(\d+(?:\.\d+)?)\s*m\s*(?:高|高度)?(?:的)?(?:平台|处)/i,
+    /(\d+(?:\.\d+)?)\s*m\s*高/i
+  ]);
+
+  if (!Number.isFinite(speed) || !Number.isFinite(height)) {
+    return { ok: false, message: failMessage };
+  }
+  if (speed < PROJECTILE_LIMITS.speedMin || speed > PROJECTILE_LIMITS.speedMax) {
+    return { ok: false, message: `识别到水平速度 ${smartNumber(speed)}m/s，但当前演示范围为 ${PROJECTILE_LIMITS.speedMin}–${PROJECTILE_LIMITS.speedMax}m/s。` };
+  }
+  if (height < PROJECTILE_LIMITS.heightMin || height > PROJECTILE_LIMITS.heightMax) {
+    return { ok: false, message: `识别到高度 ${smartNumber(height)}m，但当前演示范围为 ${PROJECTILE_LIMITS.heightMin}–${PROJECTILE_LIMITS.heightMax}m。` };
+  }
+
+  const model = projectileModel(speed, height);
+  return {
+    ok: true,
+    subject: "物理",
+    type: "projectile_motion",
+    speed,
+    height,
+    fallTime: model.fallTime,
+    range: model.range,
+    message: `已识别：水平速度 ${smartNumber(speed)}m/s，高度 ${smartNumber(height)}m`,
+    recognitionText: buildPhysicsProjectileContent(speed, height).recognitionText
+  };
+}
+
+window.parsePhysicsProjectileQuestion = parsePhysicsProjectileQuestion;
+
+function parsePhysicsCircuitQuestion(text) {
+  const normalized = normalizeQuestionText(text).replace(/Ω/g, "欧");
+  const failMessage = "当前物理演示支持欧姆定律纯电阻电路题，请输入电压和电阻。";
+  if (!/欧姆|电压|电阻|电流|纯电阻|电路|欧/.test(normalized)) {
+    return { ok: false, message: failMessage };
+  }
+
+  let voltage = firstNumberByPatterns(normalized, [
+    /(?:电压|U)\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*V/i,
+    /两端(?:电压)?\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*V/i,
+    /(\d+(?:\.\d+)?)\s*V\s*(?:电压|电源)?/i
+  ]);
+
+  let resistance = firstNumberByPatterns(normalized, [
+    /(?:电阻|R|阻值)\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)\s*(?:欧|ohm|Ω)/i,
+    /(\d+(?:\.\d+)?)\s*(?:欧|ohm|Ω)\s*(?:电阻|阻值)?/i
+  ]);
+
+  if (!Number.isFinite(voltage) || !Number.isFinite(resistance)) {
+    return { ok: false, message: failMessage };
+  }
+  if (voltage < CIRCUIT_LIMITS.voltageMin || voltage > CIRCUIT_LIMITS.voltageMax) {
+    return { ok: false, message: `识别到电压 ${smartNumber(voltage)}V，但当前演示范围为 ${CIRCUIT_LIMITS.voltageMin}–${CIRCUIT_LIMITS.voltageMax}V。` };
+  }
+  if (resistance < CIRCUIT_LIMITS.resistanceMin || resistance > CIRCUIT_LIMITS.resistanceMax) {
+    return { ok: false, message: `识别到电阻 ${smartNumber(resistance)}Ω，但当前演示范围为 ${CIRCUIT_LIMITS.resistanceMin}–${CIRCUIT_LIMITS.resistanceMax}Ω。` };
+  }
+
+  const model = circuitModel(voltage, resistance);
+  return {
+    ok: true,
+    subject: "物理",
+    type: "ohms_law_circuit",
+    voltage,
+    resistance,
+    current: model.current,
+    power: model.power,
+    message: `已识别：电压 ${smartNumber(voltage)}V，电阻 ${smartNumber(resistance)}Ω`,
+    recognitionText: buildPhysicsCircuitContent(voltage, resistance).recognitionText
+  };
+}
+
+window.parsePhysicsCircuitQuestion = parsePhysicsCircuitQuestion;
 
 function parseChemistryFeCuSO4Question(text) {
   const normalized = normalizeQuestionText(text);
@@ -1470,8 +2616,12 @@ function biologyTemplateRecognition() {
 window.parseChemistryFeCuSO4Question = parseChemistryFeCuSO4Question;
 
 function duration() {
-  if (state.subject === "物理" && state.physicsTemplate === "brake") return state.p1 / state.p2;
+  if (state.subject === "物理" && state.physicsTemplate === "brake") return physicsBrakeModel().duration;
+  if (state.subject === "物理" && state.physicsTemplate === "boardSlider") return boardSliderModel().endTime;
   if (state.subject === "物理" && state.physicsTemplate === "solenoid") return 8;
+  if (state.subject === "物理" && state.physicsTemplate === "projectile") return projectileModel().fallTime;
+  if (state.subject === "物理" && state.physicsTemplate === "circuit") return 6;
+  if (state.subject === "物理" && isExtraPhysicsTemplate()) return 6;
   if (state.subject === "数学") return 8 / state.p2;
   return 8;
 }
@@ -1481,11 +2631,34 @@ function valuesAt(time) {
   const progress = Math.min(1, t / duration());
 
   if (state.subject === "物理" && state.physicsTemplate === "brake") {
-    const speed = Math.max(0, state.p1 - state.p2 * t);
-    const distance = state.p1 * t - 0.5 * state.p2 * t * t;
-    const stopDistance = (state.p1 * state.p1) / (2 * state.p2);
-    const experimentProgress = Math.min(1, distance / stopDistance);
-    return { progress: experimentProgress, experimentProgress, timelineProgress: t / duration(), metrics: [speed, distance, t] };
+    const model = physicsBrakeModel();
+    if (model.mode === "linear_drag") {
+      const decay = Math.exp(-(model.k / model.mass) * t);
+      const speed = model.v0 * decay;
+      const distance = model.stopDistance * (1 - decay);
+      const experimentProgress = Math.min(1, distance / model.stopDistance);
+      return {
+        progress: experimentProgress,
+        experimentProgress,
+        timelineProgress: t / model.duration,
+        metrics: [speed, distance, t],
+        brake: model
+      };
+    }
+    const speed = Math.max(0, model.v0 - model.aAbs * t);
+    const distance = model.v0 * t - 0.5 * model.aAbs * t * t;
+    const experimentProgress = Math.min(1, distance / model.stopDistance);
+    return {
+      progress: experimentProgress,
+      experimentProgress,
+      timelineProgress: t / model.duration,
+      metrics: [speed, distance, t],
+      brake: model
+    };
+  }
+
+  if (state.subject === "物理" && state.physicsTemplate === "boardSlider") {
+    return boardSliderValuesAt(t);
   }
 
   if (state.subject === "物理" && state.physicsTemplate === "solenoid") {
@@ -1494,6 +2667,39 @@ function valuesAt(time) {
       progress,
       metrics: [solenoid.leftPole, solenoid.rightPole, solenoid.strengthLevel],
       solenoid
+    };
+  }
+
+  if (state.subject === "物理" && state.physicsTemplate === "projectile") {
+    const projectile = projectileModel();
+    const localT = Math.min(t, projectile.fallTime);
+    const x = projectile.speed * localT;
+    const yDrop = 0.5 * projectile.gravity * localT * localT;
+    return {
+      progress,
+      timelineProgress: progress,
+      metrics: [projectile.speed, localT, x],
+      projectile: { ...projectile, t: localT, x, yDrop }
+    };
+  }
+
+  if (state.subject === "物理" && state.physicsTemplate === "circuit") {
+    const circuit = circuitModel();
+    return {
+      progress,
+      timelineProgress: progress,
+      metrics: [circuit.voltage, circuit.resistance, circuit.current],
+      circuit
+    };
+  }
+
+  if (state.subject === "物理" && isExtraPhysicsTemplate()) {
+    const content = buildExtraPhysicsContent();
+    return {
+      progress,
+      timelineProgress: progress,
+      metrics: content.model.metrics,
+      extraPhysics: content
     };
   }
 
@@ -1525,6 +2731,16 @@ function formatMetricValue(value, index) {
   }
   if (state.subject === "数学" && index < 3) return smartNumber(value);
   if (state.subject === "生物" && index < 2) return Number(value).toFixed(0);
+  if (state.subject === "物理" && state.physicsTemplate === "projectile") {
+    if (index === 1) return smartNumber(value, 2);
+    return smartNumber(value, 1);
+  }
+  if (state.subject === "物理" && state.physicsTemplate === "circuit") {
+    if (index === 2) return smartNumber(value, 2);
+    return smartNumber(value, 1);
+  }
+  if (state.subject === "物理" && state.physicsTemplate === "boardSlider") return smartNumber(value, index === 2 ? 3 : 2);
+  if (state.subject === "物理" && isExtraPhysicsTemplate()) return smartNumber(value, index === 2 ? 2 : 1);
   return formatNumber(value);
 }
 
@@ -1616,6 +2832,32 @@ function updateMathAxis(model, bounds) {
 function formatTime(seconds) {
   const rounded = Math.max(0, Math.round(seconds));
   return `${String(Math.floor(rounded / 60)).padStart(2, "0")}:${String(rounded % 60).padStart(2, "0")}`;
+}
+
+function formatTimelineTime(seconds) {
+  if (
+    state.subject === "物理" &&
+    ["brake", "boardSlider", "projectile"].includes(state.physicsTemplate)
+  ) {
+    return `${Math.max(0, Number(seconds) || 0).toFixed(2)}s`;
+  }
+  return formatTime(seconds);
+}
+
+function experimentPlaybackTimeScale() {
+  if (state.subject !== "物理") return 1;
+  const physicalDuration = Math.max(0.01, duration());
+  let presentationDuration = physicalDuration;
+  if (state.physicsTemplate === "boardSlider") {
+    presentationDuration = clamp(physicalDuration * 2 + 1, 2.8, 4.5);
+  } else if (state.physicsTemplate === "projectile") {
+    presentationDuration = clamp(physicalDuration * 1.25 + 2.2, 3.2, 5.5);
+  } else if (state.physicsTemplate === "brake") {
+    presentationDuration = state.brakeMode === "linear_drag"
+      ? clamp(physicalDuration * 0.7 + 2, 4, 8)
+      : clamp(physicalDuration, 3.2, 8);
+  }
+  return physicalDuration / presentationDuration;
 }
 
 function resizeSolenoidCanvas() {
@@ -1905,7 +3147,7 @@ function drawSolenoidCompass(ctx, pos, renderState, bounds) {
 
   ctx.save();
   ctx.fillStyle = "#526b86";
-  ctx.font = "800 9px system-ui, sans-serif";
+  ctx.font = "800 10px system-ui, sans-serif";
   ctx.textAlign = "center";
   ctx.fillText("磁针", center.x, center.y + 27);
   ctx.restore();
@@ -2007,6 +3249,19 @@ function updateSubjectVisuals(values) {
   elements.scene.style.setProperty("--bio-travel-mid", `${values.progress * 235}px`);
 
   if (state.subject === "物理" && state.physicsTemplate === "brake") {
+    const model = values.brake || physicsBrakeModel();
+    const content = buildPhysicsBrakeContent();
+    elements.scene.classList.toggle("brake-friction", model.mode === "friction");
+    elements.scene.classList.toggle("brake-linear", model.mode === "linear_drag");
+    const forceLevel = model.mode === "linear_drag"
+      ? clamp(values.metrics[0] / model.v0, 0.08, 1)
+      : model.mode === "friction"
+        ? clamp(model.mu / PHYSICS_FRICTION_BRAKE_LIMITS.muMax, 0.08, 1)
+        : clamp(model.aAbs / PHYSICS_BRAKE_LIMITS.accelMax, 0.08, 1);
+    elements.scene.style.setProperty("--brake-force-level", String(forceLevel));
+    if (elements.stopDistanceCaption) elements.stopDistanceCaption.textContent = model.markerLabel;
+    if (elements.brakeModelLabel) elements.brakeModelLabel.textContent = content.indicatorLabel;
+    if (elements.brakeModelFormula) setFormulaHtml(elements.brakeModelFormula, content.indicatorFormula);
     const roadWidth = physicsRoadWidth();
     const startLeftPx = roadWidth * 0.08;
     const startTracePx = roadWidth * 0.09;
@@ -2018,6 +3273,10 @@ function updateSubjectVisuals(values) {
     elements.car.style.left = `${carLeftPx}px`;
     elements.brakeTrace.style.width = `${Math.max(0, nosePx - startTracePx)}px`;
     elements.car.classList.toggle("moving", state.playing && values.metrics[0] > 0);
+  }
+
+  if (state.subject === "物理" && state.physicsTemplate === "boardSlider") {
+    renderBoardSliderScene(values);
   }
 
   if (state.subject === "物理" && state.physicsTemplate === "solenoid") {
@@ -2064,6 +3323,58 @@ function updateSubjectVisuals(values) {
     if (coreStateText) coreStateText.textContent = model.hasCore ? "已插入" : "未插入";
     if (strengthText) strengthText.textContent = model.strengthLevel;
     drawSolenoidCanvas();
+  }
+
+  if (state.subject === "物理" && state.physicsTemplate === "projectile") {
+    const model = values.projectile || projectileModel();
+    const progress = values.progress ?? 0;
+    const xPct = 18 + progress * 66;
+    const worldHeight = elements.projectileBall?.parentElement?.clientHeight || 300;
+    const ballRadius = (elements.projectileBall?.offsetHeight || 30) / 2;
+    const groundTop = worldHeight - 68;
+    const startYPct = 34;
+    const landingYPct = clamp(((groundTop - ballRadius) / worldHeight) * 100, 58, 74);
+    const yPct = startYPct + progress * progress * (landingYPct - startYPct);
+    elements.scene.style.setProperty("--projectile-progress", String(progress));
+    elements.scene.style.setProperty("--projectile-x", `${xPct}%`);
+    elements.scene.style.setProperty("--projectile-y", `${yPct}%`);
+    if (elements.projectileBall) {
+      elements.projectileBall.style.left = `${xPct}%`;
+      elements.projectileBall.style.top = `${yPct}%`;
+    }
+    if (elements.projectileShadow) {
+      elements.projectileShadow.style.left = `${xPct}%`;
+      elements.projectileShadow.style.opacity = String(0.16 + progress * 0.42);
+      elements.projectileShadow.style.transform = `translateX(-50%) scale(${0.6 + progress * 0.55})`;
+    }
+    if (elements.projectileHeightText) elements.projectileHeightText.textContent = `${smartNumber(model.height)} m`;
+    if (elements.projectileResultText) {
+      elements.projectileResultText.textContent = `t = ${smartNumber(model.fallTime, 2)}s，x = ${smartNumber(model.range, 1)}m`;
+    }
+    if (elements.projectileTimeText) elements.projectileTimeText.textContent = `${smartNumber(model.fallTime, 2)}s`;
+    if (elements.projectileRangeText) elements.projectileRangeText.textContent = `${smartNumber(model.range, 1)}m`;
+    if (elements.projectileVyText) elements.projectileVyText.textContent = `${smartNumber(model.verticalSpeed, 1)}m/s`;
+  }
+
+  if (state.subject === "物理" && state.physicsTemplate === "circuit") {
+    const model = values.circuit || circuitModel();
+    elements.scene.style.setProperty("--circuit-current", String(clamp(model.current / 4, 0.12, 1)));
+    elements.scene.style.setProperty("--circuit-speed", `${3.8 - clamp(model.current / 4, 0.12, 1) * 1.9}s`);
+    if (elements.circuitVoltageText) elements.circuitVoltageText.textContent = `${smartNumber(model.voltage)}V`;
+    if (elements.circuitResistanceText) elements.circuitResistanceText.textContent = `${smartNumber(model.resistance)}Ω`;
+    if (elements.circuitCurrentText) elements.circuitCurrentText.textContent = `${smartNumber(model.current, 2)}A`;
+    if (elements.circuitResultText) elements.circuitResultText.textContent = `I = ${smartNumber(model.voltage)} ÷ ${smartNumber(model.resistance)} = ${smartNumber(model.current, 2)}A`;
+    if (elements.circuitReadoutVoltage) elements.circuitReadoutVoltage.textContent = `${smartNumber(model.voltage)}V`;
+    if (elements.circuitReadoutResistance) elements.circuitReadoutResistance.textContent = `${smartNumber(model.resistance)}Ω`;
+    if (elements.circuitReadoutCurrent) elements.circuitReadoutCurrent.textContent = `${smartNumber(model.current, 2)}A`;
+    if (elements.circuitPowerText) elements.circuitPowerText.textContent = `${smartNumber(model.power, 1)}W`;
+    if (elements.circuitResistor) {
+      elements.circuitResistor.style.setProperty("--resistor-heat", String(model.brightness));
+    }
+  }
+
+  if (state.subject === "物理" && isExtraPhysicsTemplate()) {
+    renderExtraPhysicsVisual(values.extraPhysics || buildExtraPhysicsContent());
   }
 
   if (state.subject === "化学") {
@@ -2133,12 +3444,13 @@ function updateSubjectVisuals(values) {
 }
 
 function updateScene() {
+  state.time = clamp(state.time, 0, duration());
   const values = valuesAt(state.time);
   values.metrics.forEach((value, index) => {
     elements.metricValues[index].textContent = formatMetricValue(value, index);
   });
   elements.timeline.value = (values.timelineProgress ?? values.progress) * 100;
-  elements.currentTime.textContent = formatTime(state.time);
+  elements.currentTime.textContent = formatTimelineTime(state.time);
   updateSubjectVisuals(values);
 
   const completed = (values.timelineProgress ?? values.progress) >= 1;
@@ -2146,9 +3458,27 @@ function updateScene() {
     pauseExperiment();
     let conclusion = "";
     if (state.subject === "物理") {
-      conclusion = state.physicsTemplate === "solenoid"
-        ? `左端为 ${values.solenoid.leftPole} 极，右端为 ${values.solenoid.rightPole} 极；当前磁性${values.solenoid.strengthLevel}。`
-        : `车辆在 ${duration().toFixed(1)} 秒后停止，刹车距离为 ${values.metrics[1].toFixed(1)} 米。`;
+      if (state.physicsTemplate === "boardSlider") {
+        const model = values.boardSlider || boardSliderValuesAt(state.time).boardSlider;
+        conclusion = model.conclusion;
+      } else if (state.physicsTemplate === "solenoid") {
+        conclusion = `左端为 ${values.solenoid.leftPole} 极，右端为 ${values.solenoid.rightPole} 极；当前磁性${values.solenoid.strengthLevel}。`;
+      } else if (state.physicsTemplate === "projectile") {
+        conclusion = `小球约 ${smartNumber(values.projectile.fallTime, 2)} 秒落地，水平位移约 ${smartNumber(values.projectile.range, 1)} 米。`;
+      } else if (state.physicsTemplate === "circuit") {
+        conclusion = `电路电流 I = ${smartNumber(values.circuit.current, 2)}A，纯电阻消耗功率 P = ${smartNumber(values.circuit.power, 2)}W。`;
+      } else if (isExtraPhysicsTemplate() && values.extraPhysics) {
+        conclusion = values.extraPhysics.model.conclusion;
+      } else {
+        const brake = values.brake || physicsBrakeModel();
+        if (brake.mode === "linear_drag") {
+          conclusion = `经过 ${smartNumber(brake.duration, 2)} 秒，速度衰减到初速度的 1%，位移约 ${smartNumber(values.metrics[1], 1)} 米；理论极限位移为 ${smartNumber(brake.stopDistance)} 米，速度只会渐近于 0。`;
+        } else if (brake.mode === "friction") {
+          conclusion = `由滑动摩擦产生 ${smartNumber(brake.aAbs)}m/s² 的减速度，车辆在 ${smartNumber(brake.duration, 2)} 秒后停止，刹车距离为 ${smartNumber(values.metrics[1], 1)} 米。`;
+        } else {
+          conclusion = `车辆在 ${smartNumber(brake.duration, 2)} 秒后停止，刹车距离为 ${smartNumber(values.metrics[1], 1)} 米。`;
+        }
+      }
     } else if (state.subject === "化学" && values.chem) {
       conclusion = `铁表面析出红色铜，溶液由蓝色变为浅绿色；${chemistryReactionJudgement(values.chem).short}，生成 Cu ${formatMol(values.chem.cuMol)}mol / ${formatGram(values.chem.cuMass)}g。`;
     } else if (state.subject === "数学") {
@@ -2167,9 +3497,10 @@ function renderReasoning() {
     const status = number < state.reasonStep ? "done" : number === state.reasonStep ? "active" : "";
     const statusText = number < state.reasonStep ? "已完成" : number === state.reasonStep ? "当前步骤" : "待探索";
     const icon = number < state.reasonStep ? '<path d="m5 12 4 4L19 6"/>' : '<path d="m9 18 6-6-6-6"/>';
+    const formulaClass = index === 1 || /[=≈<>]|<sub>|vfrac/.test(String(step[1])) ? "formula" : "";
     return `<button class="reason-step ${status}" data-step="${number}">
       <span class="step-index">${number}</span>
-      <div><small>${statusText}</small><strong>${step[0]}</strong><p class="${index === 1 ? "formula" : ""}">${step[1]}</p></div>
+      <div><small>${statusText}</small><strong>${step[0]}</strong><p class="${formulaClass}">${verticalizeFormulaHtml(step[1])}</p></div>
       <i><svg viewBox="0 0 24 24">${icon}</svg></i>
     </button>`;
   }).join("");
@@ -2189,6 +3520,10 @@ function updateFormulaSpotlight(subject) {
   if (!spotlight) return;
   const physics = buildPhysicsBrakeContent();
   const solenoid = buildPhysicsSolenoidContent();
+  const projectile = buildPhysicsProjectileContent();
+  const circuit = buildPhysicsCircuitContent();
+  const boardSlider = buildPhysicsBoardSliderContent();
+  const extraPhysics = isExtraPhysicsTemplate() ? buildExtraPhysicsContent() : null;
   const chemistry = buildChemistryFeCuSO4Content();
   const mathModel = currentMathModel();
   const mathValue = subject === "数学" ? state.p1 : SUBJECTS["数学"].params[0].value;
@@ -2213,18 +3548,44 @@ function updateFormulaSpotlight(subject) {
          <span class="bio-concept-line"><b>区别</b>典型植物细胞常见细胞壁、叶绿体和较大液泡</span>`
       ];
 
-  const formulas = {
-    "物理": state.physicsTemplate === "solenoid"
+  const physicsFormula = state.physicsTemplate === "boardSlider"
+    ? [
+        boardSlider.formulaLabel,
+        boardSlider.formula,
+        boardSlider.formulaHtml
+      ]
+    : extraPhysics
+    ? [
+        extraPhysics.model.badge,
+        extraPhysics.model.formula,
+        extraPhysics.formulaHtml
+      ]
+    : state.physicsTemplate === "solenoid"
+    ? [
+        "安培定则",
+        "四指沿传统电流方向，大拇指指向 N 极",
+        solenoid.formulaHtml
+      ]
+    : state.physicsTemplate === "projectile"
       ? [
-          "安培定则",
-          "四指沿传统电流方向，大拇指指向 N 极",
-          solenoid.formulaHtml
+          "运动合成",
+          "h = 1/2gt²，x = v₀t",
+          projectile.formulaHtml
         ]
-      : [
-          "核心公式",
-          "v² − v₀² = 2as",
-          `0² − ${smartNumber(state.p1)}² = 2 × (−${smartNumber(state.p2)}) × s，得到 s = ${physics.stopDistanceText}m`
-        ],
+        : state.physicsTemplate === "circuit"
+        ? [
+            "欧姆定律",
+            "I = U / R",
+            circuit.formulaHtml
+          ]
+        : [
+            physics.formulaLabel,
+            physics.formula,
+            physics.formulaHtml
+          ];
+
+  const formulas = {
+    "物理": physicsFormula,
     "化学": [
       "核心关系",
       "Fe + CuSO₄ → FeSO₄ + Cu",
@@ -2244,8 +3605,8 @@ function updateFormulaSpotlight(subject) {
   const descEl = $("p", spotlight);
 
   if (labelEl) labelEl.textContent = label;
-  if (formulaEl) formulaEl.textContent = formula;
-  if (descEl) descEl.innerHTML = desc;
+  setFormulaHtml(formulaEl, formula);
+  setFormulaHtml(descEl, desc);
 }
 
 function setReasonProgress(step) {
@@ -2311,7 +3672,7 @@ function setRecognitionFeedback(result, isError = false) {
     recognitionText = buildChemistryFeCuSO4Content().recognitionText;
   }
   if (!recognitionText) recognitionText = result.message || "已识别典型题型模板";
-  elements.parseFeedback.innerHTML = `<span>识别结果</span><strong>${recognitionText}</strong>`;
+  elements.parseFeedback.innerHTML = `<span>识别结果</span><strong>${verticalizeFormulaHtml(recognitionText)}</strong>`;
 }
 
 function setRecognitionPending(message = "题目已修改，点击“生成实验”重新识别。") {
@@ -2330,7 +3691,15 @@ function clearRecognitionFeedback() {
 function syncPhysicsQuestionFromState() {
   const question = state.physicsTemplate === "solenoid"
     ? buildSolenoidQuestionText()
-    : buildPhysicsBrakeQuestionText();
+    : state.physicsTemplate === "boardSlider"
+      ? buildPhysicsBoardSliderQuestionText()
+    : state.physicsTemplate === "projectile"
+      ? buildPhysicsProjectileQuestionText()
+      : state.physicsTemplate === "circuit"
+        ? buildPhysicsCircuitQuestionText()
+        : isExtraPhysicsTemplate()
+          ? buildExtraPhysicsQuestionText()
+          : buildPhysicsBrakeQuestionText();
   $("#questionInput").value = question;
   $("#problemText").textContent = question;
   state.generatedQuestion = question;
@@ -2360,11 +3729,26 @@ function syncPhysicsControlsFromState() {
     setRange(elements.ranges[index], param);
     elements.paramValues[index].textContent = formatParam(param, index === 0 ? state.p1 : state.p2);
   });
-  elements.totalTime.textContent = formatTime(duration());
-  const content = buildPhysicsBrakeContent();
-  elements.stopDistanceLabel.textContent = `${content.stopDistanceText} m`;
-  setPhysicsStopMarker();
-  elements.currentTime.textContent = "00:00";
+  elements.totalTime.textContent = formatTimelineTime(duration());
+  if (state.physicsTemplate === "brake") {
+    const content = buildPhysicsBrakeContent();
+    elements.stopDistanceLabel.textContent = `${content.stopDistanceText} m`;
+    setPhysicsStopMarker();
+  } else if (state.physicsTemplate === "boardSlider") {
+    const content = buildPhysicsBoardSliderContent();
+    elements.stopDistanceLabel.textContent = `${boardSliderNumber(content.model.relativeStopDistance)} m`;
+  } else if (state.physicsTemplate === "projectile") {
+    elements.stopDistanceLabel.textContent = `${smartNumber(projectileModel().range, 1)} m`;
+  } else if (state.physicsTemplate === "circuit") {
+    elements.stopDistanceLabel.textContent = `${smartNumber(circuitModel().current, 2)} A`;
+  } else if (isExtraPhysicsTemplate()) {
+    const content = buildExtraPhysicsContent();
+    elements.stopDistanceLabel.textContent = content.model.readout;
+  } else {
+    const solenoid = solenoidModel();
+    elements.stopDistanceLabel.textContent = `${solenoid.leftPole}/${solenoid.rightPole}`;
+  }
+  elements.currentTime.textContent = formatTimelineTime(0);
   elements.timeline.value = 0;
   if (state.hasGenerated) updateScene();
 }
@@ -2455,8 +3839,21 @@ function updateParameters(reset = true, options = {}) {
   state.p1 = Number(elements.ranges[0].value);
   state.p2 = Number(elements.ranges[1].value);
   if (state.subject === "物理") {
-    if (state.physicsTemplate === "solenoid") {
+    if (state.physicsTemplate === "boardSlider") {
+      state.boardSliderParams = {
+        ...state.boardSliderParams,
+        initialSpeed: state.p1,
+        boardLength: state.p2
+      };
+      syncPhysicsBoardSliderContent(state.boardSliderParams);
+    } else if (state.physicsTemplate === "solenoid") {
       syncPhysicsSolenoidContent();
+    } else if (state.physicsTemplate === "projectile") {
+      syncPhysicsProjectileContent();
+    } else if (state.physicsTemplate === "circuit") {
+      syncPhysicsCircuitContent();
+    } else if (isExtraPhysicsTemplate()) {
+      syncExtraPhysicsContent(state.physicsTemplate);
     } else {
       syncPhysicsBrakeContent();
     }
@@ -2470,19 +3867,42 @@ function updateParameters(reset = true, options = {}) {
   config().params.forEach((param, index) => {
     elements.paramValues[index].textContent = formatParam(param, index === 0 ? state.p1 : state.p2);
   });
-  elements.totalTime.textContent = formatTime(duration());
+  elements.totalTime.textContent = formatTimelineTime(duration());
 
   if (state.subject === "物理" && state.physicsTemplate === "brake") {
-    const stop = (state.p1 * state.p1) / (2 * state.p2);
     const content = buildPhysicsBrakeContent();
+    const model = content.model;
     elements.stopDistanceLabel.textContent = `${content.stopDistanceText} m`;
-    setPhysicsStopMarker(stop);
+    if (elements.stopDistanceCaption) elements.stopDistanceCaption.textContent = model.markerLabel;
+    if (elements.brakeModelLabel) elements.brakeModelLabel.textContent = content.indicatorLabel;
+    if (elements.brakeModelFormula) setFormulaHtml(elements.brakeModelFormula, content.indicatorFormula);
+    setPhysicsStopMarker(model.stopDistance);
     updateFormulaSpotlight("物理");
     if (state.hasGenerated) {
       if (options.syncQuestion) syncPhysicsQuestionFromState();
       renderReasoning();
       elements.mentorMessage.innerHTML = config().mentor;
-      setRecognitionFeedback({ ok: true, v0: state.p1, aAbs: state.p2 });
+      setRecognitionFeedback({
+        ok: true,
+        subject: "物理",
+        type: model.mode === "linear_drag" ? "linear_drag_braking" : model.mode === "friction" ? "friction_braking" : "braking_distance",
+        recognitionText: content.recognitionText
+      });
+    }
+  }
+
+  if (state.subject === "物理" && state.physicsTemplate === "boardSlider") {
+    const content = buildPhysicsBoardSliderContent();
+    elements.stopDistanceLabel.textContent = `${boardSliderNumber(content.model.relativeStopDistance)} m`;
+    if (elements.stopDistanceCaption) elements.stopDistanceCaption.textContent = "最大相对位移";
+    updateFormulaSpotlight("物理");
+    elements.sceneTip.innerHTML = `<span>相对运动判定</span>${content.sceneTip}`;
+    renderBoardSliderScene(boardSliderValuesAt(state.time));
+    if (state.hasGenerated) {
+      if (options.syncQuestion) syncPhysicsQuestionFromState();
+      renderReasoning();
+      elements.mentorMessage.innerHTML = config().mentor;
+      setRecognitionFeedback({ ok: true, subject: "物理", type: "board_slider", recognitionText: content.recognitionText });
     }
   }
 
@@ -2495,6 +3915,46 @@ function updateParameters(reset = true, options = {}) {
       renderReasoning();
       elements.mentorMessage.innerHTML = config().mentor;
       setRecognitionFeedback({ ok: true, subject: "物理", type: "solenoid_electromagnet", recognitionText: content.recognitionText });
+    }
+  }
+
+  if (state.subject === "物理" && state.physicsTemplate === "projectile") {
+    const content = buildPhysicsProjectileContent();
+    elements.stopDistanceLabel.textContent = `${smartNumber(content.model.range, 1)} m`;
+    updateFormulaSpotlight("物理");
+    elements.sceneTip.innerHTML = `<span>实时结论</span>${content.sceneTip}`;
+    if (state.hasGenerated) {
+      if (options.syncQuestion) syncPhysicsQuestionFromState();
+      renderReasoning();
+      elements.mentorMessage.innerHTML = config().mentor;
+      setRecognitionFeedback({ ok: true, subject: "物理", type: "projectile_motion", recognitionText: content.recognitionText });
+    }
+  }
+
+  if (state.subject === "物理" && state.physicsTemplate === "circuit") {
+    const content = buildPhysicsCircuitContent();
+    elements.stopDistanceLabel.textContent = `${smartNumber(content.model.current, 2)} A`;
+    updateFormulaSpotlight("物理");
+    elements.sceneTip.innerHTML = `<span>实时结论</span>${content.sceneTip}`;
+    if (state.hasGenerated) {
+      if (options.syncQuestion) syncPhysicsQuestionFromState();
+      renderReasoning();
+      elements.mentorMessage.innerHTML = config().mentor;
+      setRecognitionFeedback({ ok: true, subject: "物理", type: "ohms_law_circuit", recognitionText: content.recognitionText });
+    }
+  }
+
+  if (state.subject === "物理" && isExtraPhysicsTemplate()) {
+    const content = buildExtraPhysicsContent();
+    elements.stopDistanceLabel.textContent = content.model.readout;
+    updateFormulaSpotlight("物理");
+    elements.sceneTip.innerHTML = `<span>实时结论</span>${content.sceneTip}`;
+    renderExtraPhysicsVisual(content);
+    if (state.hasGenerated) {
+      if (options.syncQuestion) syncPhysicsQuestionFromState();
+      renderReasoning();
+      elements.mentorMessage.innerHTML = config().mentor;
+      setRecognitionFeedback({ ok: true, subject: "物理", type: state.physicsTemplate, recognitionText: content.recognitionText });
     }
   }
 
@@ -2534,6 +3994,90 @@ function updateParameters(reset = true, options = {}) {
   if (reset) resetExperiment();
 }
 
+function physicsSceneClassName() {
+  if (state.physicsTemplate === "boardSlider") return "board-slider";
+  if (state.physicsTemplate === "solenoid") return "solenoid";
+  if (state.physicsTemplate === "projectile") return "projectile";
+  if (state.physicsTemplate === "circuit") return "circuit";
+  if (isExtraPhysicsTemplate()) return "generic-physics";
+  return "physics";
+}
+
+function physicsSideKicker() {
+  if (state.physicsTemplate === "boardSlider") return "高中拓展 × 相对运动";
+  if (state.physicsTemplate === "solenoid") return "安培定则 × 变量探究";
+  if (state.physicsTemplate === "projectile") return "运动合成 × 轨迹验证";
+  if (state.physicsTemplate === "circuit") return "欧姆定律 × 变量探究";
+  if (isExtraPhysicsTemplate()) {
+    const content = buildExtraPhysicsContent();
+    return `${content.block} × 典型题型模板`;
+  }
+  if (state.brakeMode === "friction") return "受力分析 × 摩擦制动";
+  if (state.brakeMode === "linear_drag") return "高中拓展 × 变力模型";
+  return "公式 × 过程联动";
+}
+
+function physicsRecognitionResult() {
+  if (state.physicsTemplate === "boardSlider") {
+    return { ok: true, subject: "物理", type: "board_slider", recognitionText: buildPhysicsBoardSliderContent().recognitionText };
+  }
+  if (state.physicsTemplate === "solenoid") {
+    return { ok: true, subject: "物理", type: "solenoid_electromagnet", recognitionText: buildPhysicsSolenoidContent().recognitionText };
+  }
+  if (state.physicsTemplate === "projectile") {
+    return { ok: true, subject: "物理", type: "projectile_motion", recognitionText: buildPhysicsProjectileContent().recognitionText };
+  }
+  if (state.physicsTemplate === "circuit") {
+    return { ok: true, subject: "物理", type: "ohms_law_circuit", recognitionText: buildPhysicsCircuitContent().recognitionText };
+  }
+  if (isExtraPhysicsTemplate()) {
+    return { ok: true, subject: "物理", type: state.physicsTemplate, recognitionText: buildExtraPhysicsContent().recognitionText };
+  }
+  const content = buildPhysicsBrakeContent();
+  return {
+    ok: true,
+    subject: "物理",
+    type: content.model.mode === "linear_drag" ? "linear_drag_braking" : content.model.mode === "friction" ? "friction_braking" : "braking_distance",
+    recognitionText: content.recognitionText
+  };
+}
+
+function refreshGeneratedSubjectSurface(subject = state.subject, options = {}) {
+  const current = config();
+  $(".side-card-header .section-kicker").textContent = subject === "生物"
+    ? "结构 × 功能联动"
+    : subject === "物理"
+      ? physicsSideKicker()
+      : "公式 × 过程联动";
+  $(".side-card-header h2").textContent = subject === "生物"
+    ? "结构识别路径"
+    : subject === "物理" && state.physicsTemplate !== "brake"
+      ? "解题路径"
+      : "解题思维链";
+
+  setActiveSubjectTab(subject);
+  if (!options.preserveProblemText) $("#problemText").textContent = current.description;
+  $("#experimentTitle").textContent = current.title;
+  $("#engineBadge").textContent = current.engine;
+  if ($("#arDescription")) $("#arDescription").textContent = current.ar;
+  elements.scene.className = `scene subject-${subject === "物理" ? physicsSceneClassName() : subject === "化学" ? "chemistry" : subject === "数学" ? "math" : "biology"}`;
+  current.metrics.forEach((metric, index) => {
+    elements.metricLabels[index].textContent = metric[0];
+    elements.metricUnits[index].textContent = metric[1];
+  });
+  current.params.forEach((param, index) => {
+    elements.paramLabels[index].textContent = param.label;
+    elements.paramDescriptions[index].textContent = param.desc;
+    elements.paramUnits[index].textContent = param.unit;
+    setRange(elements.ranges[index], param);
+    elements.paramValues[index].textContent = formatParam(param, index === 0 ? state.p1 : state.p2);
+  });
+  elements.mentorMessage.innerHTML = current.mentor;
+  renderReasoning();
+  updateFormulaSpotlight(subject);
+  updateSubjectBodyClass(subject);
+}
+
 function applySubject(subject, updateQuestion = true, options = {}) {
   clearDemoTimers();
   clearReasoningTimers();
@@ -2543,8 +4087,12 @@ function applySubject(subject, updateQuestion = true, options = {}) {
   state.subject = subject;
   updateSubjectBodyClass(subject);
   const restored = options.restore && restoreSubjectSnapshot(subject);
+  const restoredTime = restored ? state.time : 0;
   if (subject === "物理" && updateQuestion && !restored) {
     state.physicsTemplate = "brake";
+    state.brakeMode = "constant";
+    state.brakeGravity = 9.8;
+    state.brakeMass = 1000;
     state.p1 = 20;
     state.p2 = 5;
     syncPhysicsBrakeContent();
@@ -2574,12 +4122,12 @@ function applySubject(subject, updateQuestion = true, options = {}) {
   const current = config();
   $(".side-card-header .section-kicker").textContent = subject === "生物"
     ? "结构 × 功能联动"
-    : subject === "物理" && state.physicsTemplate === "solenoid"
-      ? "安培定则 × 变量探究"
+    : subject === "物理"
+      ? physicsSideKicker()
       : "公式 × 过程联动";
   $(".side-card-header h2").textContent = subject === "生物"
     ? "结构识别路径"
-    : subject === "物理" && state.physicsTemplate === "solenoid"
+    : subject === "物理" && state.physicsTemplate !== "brake"
       ? "解题路径"
       : "解题思维链";
 
@@ -2590,7 +4138,7 @@ function applySubject(subject, updateQuestion = true, options = {}) {
   $("#problemText").textContent = current.description;
   $("#engineBadge").textContent = current.engine;
   if ($("#arDescription")) $("#arDescription").textContent = current.ar;
-  elements.scene.className = `scene subject-${subject === "物理" ? (state.physicsTemplate === "solenoid" ? "solenoid" : "physics") : subject === "化学" ? "chemistry" : subject === "数学" ? "math" : "biology"}`;
+  elements.scene.className = `scene subject-${subject === "物理" ? physicsSceneClassName() : subject === "化学" ? "chemistry" : subject === "数学" ? "math" : "biology"}`;
   $("#viewButton")?.classList.remove("selected");
   $("#annotationButton")?.classList.remove("selected");
 
@@ -2609,14 +4157,16 @@ function applySubject(subject, updateQuestion = true, options = {}) {
   $("#favoriteButton").classList.remove("selected");
   renderReasoning();
   updateParameters();
+  refreshGeneratedSubjectSurface(subject);
+  updateSubjectBodyClass(subject);
+  if (restored) {
+    state.time = clamp(restoredTime, 0, duration());
+    updateScene();
+  }
   if (restored && state.generatedQuestion) {
     $("#problemText").textContent = state.generatedQuestion;
     setRecognitionFeedback(
-      subject === "物理" ? (
-        state.physicsTemplate === "solenoid"
-          ? { ok: true, subject: "物理", type: "solenoid_electromagnet", recognitionText: buildPhysicsSolenoidContent().recognitionText }
-          : { ok: true, v0: state.p1, aAbs: state.p2 }
-      ) :
+      subject === "物理" ? physicsRecognitionResult() :
       subject === "化学" ? { ok: true, recognitionText: buildChemistryFeCuSO4Content().recognitionText } :
       subject === "数学" ? parseMathTangentQuestion(state.generatedQuestion) :
       biologyTemplateRecognition()
@@ -2627,6 +4177,14 @@ function applySubject(subject, updateQuestion = true, options = {}) {
 function playExperiment() {
   if (state.subject === "物理" && state.physicsTemplate === "solenoid") {
     showToast("螺线管为交互观察：请使用反转电流、铁芯和滑块探究变化");
+    return;
+  }
+  if (state.subject === "物理" && state.physicsTemplate === "circuit") {
+    showToast("欧姆定律为稳态变量探究：拖动电压或电阻即可同步电流");
+    return;
+  }
+  if (state.subject === "物理" && isExtraPhysicsTemplate()) {
+    showToast("该题型为参数即时探究：拖动下方滑块即可同步公式和结论");
     return;
   }
   if (state.subject === "数学") {
@@ -2654,10 +4212,19 @@ function pauseExperiment() {
 function resetExperiment() {
   pauseExperiment();
   state.time = 0;
+  const physicsTip = state.physicsTemplate === "boardSlider"
+    ? buildPhysicsBoardSliderContent().sceneTip
+    : state.physicsTemplate === "solenoid"
+    ? buildPhysicsSolenoidContent().sceneTip
+    : state.physicsTemplate === "projectile"
+      ? buildPhysicsProjectileContent().sceneTip
+      : state.physicsTemplate === "circuit"
+        ? buildPhysicsCircuitContent().sceneTip
+        : isExtraPhysicsTemplate()
+          ? buildExtraPhysicsContent().sceneTip
+          : buildPhysicsBrakeContent().sceneTip;
   const tips = {
-    "物理": state.physicsTemplate === "solenoid"
-      ? buildPhysicsSolenoidContent().sceneTip
-      : `刹车开始后，速度每秒减少 ${state.p2}m/s。`,
+    "物理": physicsTip,
     "化学": buildChemistryFeCuSO4Content().sceneTip,
     "数学": `观察函数 y = ${currentMathModel().expression} 在 x = ${formatMathNumber(state.p1)} 时，导数 y′ = ${currentMathModel().derivativeText} 如何给出切线斜率。`,
     "生物": `点击模型中的${selectedOrganelle().name}，查看结构类型、主要功能和记忆点。`
@@ -2671,7 +4238,10 @@ function animationFrame(timestamp) {
   if (!state.playing) return;
   const delta = Math.min(0.06, (timestamp - state.lastFrame) / 1000);
   state.lastFrame = timestamp;
-  state.time += delta * state.playbackRate;
+  state.time = Math.min(
+    duration(),
+    state.time + delta * state.playbackRate * experimentPlaybackTimeScale()
+  );
   updateScene();
   if (state.playing) requestAnimationFrame(animationFrame);
 }
@@ -2730,6 +4300,16 @@ function hideGenerationOverlay() {
   state.generationStages = null;
   elements.generationOverlay.classList.remove("show");
   elements.generationOverlay.setAttribute("aria-hidden", "true");
+}
+
+function focusExperimentCard() {
+  if (!elements.experimentCard) return;
+  const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  const top = elements.experimentCard.getBoundingClientRect().top + window.scrollY - 18;
+  window.scrollTo({
+    top: Math.max(0, top),
+    behavior: reducedMotion ? "auto" : "smooth"
+  });
 }
 
 function setReasoningStep(step, message) {
@@ -2815,9 +4395,12 @@ function playDemoSequence() {
 
 function detectSubject(question) {
   if (/反应|浓度|溶液|化学|铁粉|硫酸铜|CuSO|Fe\b|生成铜|生成 Cu/i.test(question)) return "化学";
+  if (isPhysicsBoardSliderQuestion(question)) return "物理";
+  if (/(?:f|F)(?:阻)?\s*(?:=|＝)\s*-?\s*k\s*v|阻力.{0,12}(?:速度|速率).{0,8}成正比|(?:质量|m\s*(?:=|＝)).{0,12}(?:kg|千克|吨).{0,24}(?:初速度|速度)|(?:动摩擦因数|摩擦系数|车轮抱死)/i.test(question)) return "物理";
   if (/函数|抛物线|斜率|切线|导数|数学|y\s*(?:=|＝)|ln\s*x|sin\s*x|cos\s*x|e\^x|exp\s*\(|sqrt|√/i.test(question)) return "数学";
+  if (identifyExtraPhysicsTemplate(question)) return "物理";
+  if (/汽车|车辆|速度|加速度|减速度|刹车|制动|停止|运动|受力|落下|物理|螺线管|电磁铁|磁极|安培定则|线圈|匝|铁芯|磁感线|平抛|水平抛|水平速度|落地|水平位移|欧姆|电压|电阻|电流|纯电阻|电路|Ω/.test(question)) return "物理";
   if (/细胞|生物|植物|动物|亚显微|细胞壁|细胞膜|细胞核|液泡|叶绿体|线粒体|细胞质|内质网|高尔基体|核糖体|DNA/.test(question)) return "生物";
-  if (/汽车|车辆|速度|加速度|减速度|刹车|制动|停止|运动|受力|落下|物理|螺线管|电磁铁|磁极|安培定则|线圈|匝|铁芯|磁感线/.test(question)) return "物理";
   return state.subject;
 }
 
@@ -2879,22 +4462,24 @@ function hidePhysicsPresetDropdown() {
   toggle?.setAttribute("aria-expanded", "false");
 }
 
-function isCurrentPhysicsSolenoidQuestion() {
-  if (state.subject !== "物理") return false;
-  if (state.physicsTemplate === "solenoid") return true;
+function currentPhysicsPresetKey() {
+  if (state.subject !== "物理") return "";
   const questionText = $("#questionInput")?.value || "";
-  return /螺线管|电磁铁|磁极|安培定则|线圈|匝|铁芯|磁感线/.test(questionText);
+  if (state.physicsTemplate === "solenoid" || /螺线管|电磁铁|磁极|安培定则|线圈|匝|铁芯|磁感线/.test(questionText)) return "solenoid";
+  if (state.physicsTemplate === "boardSlider" || isPhysicsBoardSliderQuestion(questionText)) return "boardSlider";
+  if (state.physicsTemplate === "projectile" || /平抛|水平抛|水平速度|水平位移|落地|抛出|平台/.test(questionText)) return "projectile";
+  if (isExtraPhysicsTemplate()) return state.physicsTemplate;
+  const extra = identifyExtraPhysicsTemplate(questionText);
+  if (extra) return extra;
+  if (state.physicsTemplate === "circuit" || /欧姆|电压|电阻|电流|纯电阻|电路|Ω|V\b/.test(questionText)) return "circuit";
+  return "brake";
 }
 
 function updatePhysicsPresetOption() {
-  const option = $("#physicsPresetOption");
-  const title = $("#physicsPresetTitle");
-  const meta = $("#physicsPresetMeta");
-  if (!option || !title || !meta) return;
-  const switchToBrake = isCurrentPhysicsSolenoidQuestion();
-  option.dataset.preset = switchToBrake ? "brake" : "solenoid";
-  title.textContent = switchToBrake ? "刹车距离实验 · 速度如何归零" : "通电螺线管：磁场方向与电磁铁磁性";
-  meta.textContent = switchToBrake ? "20m/s · 5m/s² · 停止距离 40m" : "200匝 · 0.5A · 左端逆时针";
+  const currentPreset = currentPhysicsPresetKey();
+  $$("#physicsPresetDropdown [data-preset]").forEach(option => {
+    option.hidden = option.dataset.preset === currentPreset;
+  });
 }
 
 function togglePhysicsPresetDropdown() {
@@ -2916,6 +4501,9 @@ function preselectBrakeQuestion() {
   applyWaitingState("物理", { presetQuestion: false });
   state.subject = "物理";
   state.physicsTemplate = "brake";
+  state.brakeMode = "constant";
+  state.brakeGravity = 9.8;
+  state.brakeMass = 1000;
   state.p1 = 20;
   state.p2 = 5;
   syncPhysicsBrakeContent(20, 5);
@@ -2956,6 +4544,77 @@ function preselectSolenoidQuestion() {
   showToast("已预选默认通电螺线管题目");
 }
 
+function preselectBoardSliderQuestion() {
+  clearDemoTimers();
+  pauseExperiment();
+  applyWaitingState("物理", { presetQuestion: false });
+  state.subject = "物理";
+  state.physicsTemplate = "boardSlider";
+  state.boardSliderParams = { ...BOARD_SLIDER_DEFAULTS };
+  state.p1 = BOARD_SLIDER_DEFAULTS.initialSpeed;
+  state.p2 = BOARD_SLIDER_DEFAULTS.boardLength;
+  syncPhysicsBoardSliderContent(state.boardSliderParams);
+  $("#questionInput").value = BOARD_SLIDER_DEFAULT_QUESTION;
+  $("#problemText").textContent = "已预选木板—滑块相对运动题，点击“生成实验”后将生成双物体运动与临界判定场景。";
+  setActiveSubjectTab("物理");
+  clearRecognitionFeedback();
+  updatePhysicsPresetOption();
+  showToast("已预选木板—滑块相对运动题目");
+}
+
+function preselectProjectileQuestion() {
+  clearDemoTimers();
+  pauseExperiment();
+  applyWaitingState("物理", { presetQuestion: false });
+  state.subject = "物理";
+  state.physicsTemplate = "projectile";
+  state.p1 = 12;
+  state.p2 = 20;
+  syncPhysicsProjectileContent(12, 20);
+  $("#questionInput").value = buildPhysicsProjectileQuestionText(12, 20);
+  $("#problemText").textContent = "已预选平抛运动题，点击“生成实验”后将生成轨迹与分运动可视化。";
+  setActiveSubjectTab("物理");
+  clearRecognitionFeedback();
+  updatePhysicsPresetOption();
+  showToast("已预选默认平抛运动题目");
+}
+
+function preselectCircuitQuestion() {
+  clearDemoTimers();
+  pauseExperiment();
+  applyWaitingState("物理", { presetQuestion: false });
+  state.subject = "物理";
+  state.physicsTemplate = "circuit";
+  state.p1 = 6;
+  state.p2 = 3;
+  syncPhysicsCircuitContent(6, 3);
+  $("#questionInput").value = buildPhysicsCircuitQuestionText(6, 3);
+  $("#problemText").textContent = "已预选欧姆定律电路题，点击“生成实验”后将生成电路变量可视化。";
+  setActiveSubjectTab("物理");
+  clearRecognitionFeedback();
+  updatePhysicsPresetOption();
+  showToast("已预选默认欧姆定律题目");
+}
+
+function preselectExtraPhysicsQuestion(id) {
+  const template = extraPhysicsTemplate(id);
+  if (!template) return;
+  clearDemoTimers();
+  pauseExperiment();
+  applyWaitingState("物理", { presetQuestion: false });
+  state.subject = "物理";
+  state.physicsTemplate = id;
+  state.p1 = template.defaults[0];
+  state.p2 = template.defaults[1];
+  syncExtraPhysicsContent(id, state.p1, state.p2);
+  $("#questionInput").value = buildExtraPhysicsQuestionText(id, state.p1, state.p2);
+  $("#problemText").textContent = `已预选${template.menuTitle}，点击“生成实验”后将生成${template.block}可视化场景。`;
+  setActiveSubjectTab("物理");
+  clearRecognitionFeedback();
+  updatePhysicsPresetOption();
+  showToast(`已预选${template.menuTitle}`);
+}
+
 $("#physicsPresetToggle")?.addEventListener("click", event => {
   event.stopPropagation();
   togglePhysicsPresetDropdown();
@@ -2966,7 +4625,11 @@ function applyPhysicsPresetChoice(option) {
   const preset = option.dataset.preset;
   hidePhysicsPresetDropdown();
   if (preset === "solenoid") preselectSolenoidQuestion();
+  else if (preset === "boardSlider") preselectBoardSliderQuestion();
+  else if (preset === "projectile") preselectProjectileQuestion();
+  else if (preset === "circuit") preselectCircuitQuestion();
   else if (preset === "brake") preselectBrakeQuestion();
+  else if (isExtraPhysicsTemplate(preset)) preselectExtraPhysicsQuestion(preset);
 }
 
 $("#physicsPresetDropdown")?.addEventListener("click", event => {
@@ -3186,13 +4849,39 @@ $("#generateButton").addEventListener("click", async () => {
 
   const detected = getGenerationSubject(question);
   let physicsParse = null;
+  let boardSliderParse = null;
   let solenoidParse = null;
+  let projectileParse = null;
+  let circuitParse = null;
+  let extraPhysicsParse = null;
   let chemistryParse = null;
   let mathParse = null;
   let templateRecognition = null;
   if (detected === "物理") {
+    const boardSliderCandidate = isPhysicsBoardSliderQuestion(question);
     const solenoidCandidate = /螺线管|电磁铁|磁极|安培定则|线圈|匝|铁芯|磁感线/.test(question);
-    if (solenoidCandidate) {
+    const projectileCandidate = /平抛|水平抛|水平速度|水平位移|落地|抛出|平台/.test(question);
+    const circuitCandidate = /欧姆|电压|电阻|电流|纯电阻|电路|Ω|V\b/.test(question);
+    const brakeCandidate = /刹车|制动|停车|停下|停止距离|极限位移|(?:f|F)(?:阻)?\s*(?:=|＝)\s*-?\s*k\s*v/i.test(question);
+    const currentExtraCandidate = !boardSliderCandidate && !brakeCandidate && isExtraPhysicsTemplate() && extraPhysicsTemplate()?.keywords?.test(normalizeQuestionText(question))
+      ? state.physicsTemplate
+      : "";
+    const extraPhysicsCandidate = boardSliderCandidate || brakeCandidate ? "" : currentExtraCandidate || identifyExtraPhysicsTemplate(question);
+    if (boardSliderCandidate) {
+      boardSliderParse = parsePhysicsBoardSliderQuestion(question);
+      if (!boardSliderParse.ok) {
+        setRecognitionFeedback(boardSliderParse, true);
+        showToast(boardSliderParse.message);
+        return;
+      }
+      state.subject = "物理";
+      state.physicsTemplate = "boardSlider";
+      state.boardSliderParams = { ...boardSliderParse.params };
+      state.p1 = boardSliderParse.initialSpeed;
+      state.p2 = boardSliderParse.boardLength;
+      syncPhysicsBoardSliderContent(state.boardSliderParams);
+      setRecognitionFeedback(boardSliderParse);
+    } else if (solenoidCandidate) {
       solenoidParse = parsePhysicsSolenoidQuestion(question);
       if (!solenoidParse.ok) {
         setRecognitionFeedback(solenoidParse, true);
@@ -3212,6 +4901,48 @@ $("#generateButton").addEventListener("click", async () => {
       state.solenoidZoom = 1;
       syncPhysicsSolenoidContent(solenoidParse.current, solenoidParse.turns, solenoidParse);
       setRecognitionFeedback(solenoidParse);
+    } else if (projectileCandidate) {
+      projectileParse = parsePhysicsProjectileQuestion(question);
+      if (!projectileParse.ok) {
+        setRecognitionFeedback(projectileParse, true);
+        showToast(projectileParse.message);
+        return;
+      }
+      state.subject = "物理";
+      state.physicsTemplate = "projectile";
+      state.p1 = projectileParse.speed;
+      state.p2 = projectileParse.height;
+      syncPhysicsProjectileContent(projectileParse.speed, projectileParse.height);
+      syncPhysicsControlsFromState();
+      setRecognitionFeedback(projectileParse);
+    } else if (extraPhysicsCandidate) {
+      extraPhysicsParse = parseExtraPhysicsQuestion(question, extraPhysicsCandidate);
+      if (!extraPhysicsParse.ok) {
+        setRecognitionFeedback(extraPhysicsParse, true);
+        showToast(extraPhysicsParse.message);
+        return;
+      }
+      state.subject = "物理";
+      state.physicsTemplate = extraPhysicsParse.templateId;
+      state.p1 = extraPhysicsParse.p1;
+      state.p2 = extraPhysicsParse.p2;
+      syncExtraPhysicsContent(extraPhysicsParse.templateId, extraPhysicsParse.p1, extraPhysicsParse.p2);
+      syncPhysicsControlsFromState();
+      setRecognitionFeedback(extraPhysicsParse);
+    } else if (circuitCandidate) {
+      circuitParse = parsePhysicsCircuitQuestion(question);
+      if (!circuitParse.ok) {
+        setRecognitionFeedback(circuitParse, true);
+        showToast(circuitParse.message);
+        return;
+      }
+      state.subject = "物理";
+      state.physicsTemplate = "circuit";
+      state.p1 = circuitParse.voltage;
+      state.p2 = circuitParse.resistance;
+      syncPhysicsCircuitContent(circuitParse.voltage, circuitParse.resistance);
+      syncPhysicsControlsFromState();
+      setRecognitionFeedback(circuitParse);
     } else {
       physicsParse = parsePhysicsBrakeQuestion(question);
       if (!physicsParse.ok) {
@@ -3221,9 +4952,16 @@ $("#generateButton").addEventListener("click", async () => {
       }
       state.subject = "物理";
       state.physicsTemplate = "brake";
+      state.brakeMode = physicsParse.mode || "constant";
+      state.brakeGravity = physicsParse.gravity || 9.8;
+      state.brakeMass = physicsParse.mass || state.brakeMass || 1000;
       state.p1 = physicsParse.v0;
-      state.p2 = physicsParse.aAbs;
-      syncPhysicsBrakeContent(physicsParse.v0, physicsParse.aAbs);
+      state.p2 = physicsParse.parameter ?? physicsParse.aAbs;
+      syncPhysicsBrakeContent(state.p1, state.p2, {
+        mode: state.brakeMode,
+        gravity: state.brakeGravity,
+        mass: state.brakeMass
+      });
       syncPhysicsControlsFromState();
       setRecognitionFeedback(physicsParse);
     }
@@ -3273,6 +5011,14 @@ $("#generateButton").addEventListener("click", async () => {
   $("span", button).textContent = "生成中";
   const generationStages = solenoidParse
     ? SUBJECTS["物理"].generationStages
+    : boardSliderParse
+    ? SUBJECTS["物理"].generationStages
+    : projectileParse
+    ? SUBJECTS["物理"].generationStages
+    : circuitParse
+    ? SUBJECTS["物理"].generationStages
+    : extraPhysicsParse
+    ? SUBJECTS["物理"].generationStages
     : physicsParse
     ? SUBJECTS["物理"].generationStages
     : chemistryParse
@@ -3284,9 +5030,18 @@ $("#generateButton").addEventListener("click", async () => {
       : null;
   await showGenerationOverlay(generationStages);
   applySubject(detected, false);
+  if (extraPhysicsParse) {
+    syncExtraPhysicsContent(extraPhysicsParse.templateId, extraPhysicsParse.p1, extraPhysicsParse.p2);
+    syncPhysicsControlsFromState();
+    refreshGeneratedSubjectSurface("物理", { preserveProblemText: true });
+  }
   $("#problemText").textContent = question;
   state.generatedQuestion = question;
   if (solenoidParse) setRecognitionFeedback(solenoidParse);
+  if (boardSliderParse) setRecognitionFeedback(boardSliderParse);
+  if (projectileParse) setRecognitionFeedback(projectileParse);
+  if (circuitParse) setRecognitionFeedback(circuitParse);
+  if (extraPhysicsParse) setRecognitionFeedback(extraPhysicsParse);
   if (physicsParse) setRecognitionFeedback(physicsParse);
   if (chemistryParse) setRecognitionFeedback(chemistryParse);
   if (mathParse) setRecognitionFeedback(mathParse);
@@ -3299,9 +5054,10 @@ $("#generateButton").addEventListener("click", async () => {
   hideGenerationOverlay();
   clearDemoTimers();
   resetExperiment();
+  setTimeout(focusExperimentCard, 80);
   scheduleReasoningAutoAdvance();
   setDemoStep(3, "点击播放或请求 AI 导师提示");
-  showToast(solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
+  showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : extraPhysicsParse ? "物理典型题模板已生成，可拖动参数观察变化" : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
 });
 
 $(".reasoning-steps").addEventListener("click", event => {
@@ -3411,10 +5167,28 @@ $("#hintButton").addEventListener("click", () => {
   elements.mentorMessage.innerHTML = config().hint;
   if (state.subject === "物理") {
     updateFormulaSpotlight("物理");
-    if (state.physicsTemplate === "solenoid") {
+    if (state.physicsTemplate === "boardSlider") {
+      setReasoningStep(1, `<span>AI 提示</span>木板本身也在运动，先把观察量改成 xA − xB，而不是滑块对地位移。`);
+      elements.mentorFeedback.className = "mentor-feedback show challenge";
+      elements.mentorFeedback.innerHTML = `<span>进一步追问</span><strong>两个摩擦力大小相等，为什么滑块和木板的加速度不一定相等？</strong>`;
+      showToast("AI 导师已提示关注相对位移");
+    } else if (state.physicsTemplate === "solenoid") {
       setReasoningStep(2, `<span>AI 提示</span>先分清：电流绕向决定磁极方向，电流大小、匝数和铁芯影响磁性强弱。`);
       hideMentorFeedback();
       showToast("AI 导师已给出安培定则提示");
+    } else if (state.physicsTemplate === "projectile") {
+      setReasoningStep(2, `<span>AI 提示</span>把平抛拆成两个方向：水平匀速，竖直自由落体。先由高度求时间，再求水平位移。`);
+      hideMentorFeedback();
+      showToast("AI 导师已给出平抛分解提示");
+    } else if (state.physicsTemplate === "circuit") {
+      setReasoningStep(2, `<span>AI 提示</span>确认是纯电阻电路后，直接用 I = U / R；注意电压、电阻和电流单位。`);
+      hideMentorFeedback();
+      showToast("AI 导师已给出欧姆定律提示");
+    } else if (isExtraPhysicsTemplate()) {
+      const content = buildExtraPhysicsContent();
+      setReasoningStep(2, `<span>AI 提示</span>${content.hint.replace(/<[^>]+>/g, "")}`);
+      hideMentorFeedback();
+      showToast("AI 导师已给出当前题型公式提示");
     } else {
       setReasoningStep(2, `<span>AI 提示</span>题目没有给时间 t，先找不含 t 的速度—位移公式。`);
       showMentorFormulaFeedback();
@@ -3444,6 +5218,26 @@ $("#challengeButton").addEventListener("click", () => {
   setDemoStep(5, "AI 导师追问与迁移");
   clearDemoTimers();
 
+  if (state.subject === "物理" && state.physicsTemplate === "boardSlider") {
+    state.boardSliderParams = { ...state.boardSliderParams, initialSpeed: 5 };
+    state.p1 = 5;
+    state.p2 = state.boardSliderParams.boardLength;
+    syncPhysicsBoardSliderContent(state.boardSliderParams);
+    syncPhysicsControlsFromState();
+    updateParameters(true, { syncQuestion: true });
+    const model = boardSliderModel();
+    const exitValues = boardSliderValuesAt(model.exitTime ?? model.syncTime, model).boardSlider;
+    setReasoningStep(4, `<span>变式挑战</span>最大相对位移 = ${boardSliderNumber(model.relativeStopDistance)}m ${model.relationSymbol} L = ${boardSliderNumber(model.boardLength)}m，结论：${model.outcomeLabel}。`);
+    elements.mentorMessage.innerHTML = model.outcome === "fall"
+      ? `初速度改为 <strong>5m/s</strong> 后，相对加速度大小为 <strong>${boardSliderNumber(model.relativeDeceleration)}m/s²</strong>，最大相对位移为 <strong>${boardSliderNumber(model.relativeStopDistance)}m</strong>，大于木板长度。滑块在 <strong>${boardSliderNumber(model.exitTime)}s</strong> 从右端滑出；此时 v<sub>A</sub> = <strong>${boardSliderNumber(exitValues.blockSpeed)}m/s</strong>，v<sub>B</sub> = <strong>${boardSliderNumber(exitValues.boardSpeed)}m/s</strong>。`
+      : model.outcome === "critical"
+        ? `初速度改为 <strong>5m/s</strong> 后，最大相对位移恰好等于木板长度 <strong>${boardSliderNumber(model.boardLength)}m</strong>；滑块到达右端时与木板达到共同速度 <strong>${boardSliderNumber(model.commonSpeed)}m/s</strong>。`
+        : `初速度改为 <strong>5m/s</strong> 后，最大相对位移为 <strong>${boardSliderNumber(model.relativeStopDistance)}m</strong>，仍小于木板长度；二者在 <strong>${boardSliderNumber(model.syncTime)}s</strong> 后以 <strong>${boardSliderNumber(model.commonSpeed)}m/s</strong> 共同匀速运动。`;
+    hideMentorFeedback();
+    showToast(model.outcome === "fall" ? `木板—滑块变式已同步：${boardSliderNumber(model.exitTime)}s 从右端滑出` : `木板—滑块变式已同步：${model.outcomeLabel}`);
+    return;
+  }
+
   if (state.subject === "物理" && state.physicsTemplate === "solenoid") {
     state.p1 = 1;
     state.p2 = Math.max(400, state.p2);
@@ -3458,6 +5252,83 @@ $("#challengeButton").addEventListener("click", () => {
     setReasoningStep(4, `<span>变式挑战</span>电流增大且方向反转：N/S 极交换，磁性增强。`);
     elements.mentorMessage.innerHTML = `现在电流为 <strong>${formatAmp(state.p1)}A</strong>，方向已反转，并插入铁芯。结论：<strong>N、S 极交换</strong>，同时电流增大与铁芯使磁性<strong>${content.model.strengthLevel}</strong>。`;
     showToast("电磁变式已同步：磁极交换，磁性增强");
+    return;
+  }
+
+  if (state.subject === "物理" && state.physicsTemplate === "projectile") {
+    const previous = projectileModel();
+    const nextSpeed = clamp(Math.round(state.p1 * 1.5), PROJECTILE_LIMITS.speedMin, PROJECTILE_LIMITS.speedMax);
+    state.p1 = nextSpeed;
+    syncPhysicsProjectileContent(nextSpeed, state.p2);
+    syncPhysicsControlsFromState();
+    updateParameters(true, { syncQuestion: true });
+    const next = projectileModel();
+    setReasoningStep(4, `<span>变式挑战</span>水平速度增大，落地时间不变，水平位移随 v₀ 增大。`);
+    elements.mentorMessage.innerHTML = `我已把水平速度从 <strong>${smartNumber(previous.speed)}m/s</strong> 改为 <strong>${smartNumber(next.speed)}m/s</strong>。高度不变，所以落地时间仍约 <strong>${smartNumber(next.fallTime, 2)}s</strong>，水平位移变为 <strong>${smartNumber(next.range, 1)}m</strong>。`;
+    hideMentorFeedback();
+    showToast("平抛变式题已同步");
+    return;
+  }
+
+  if (state.subject === "物理" && state.physicsTemplate === "circuit") {
+    const nextVoltage = clamp(state.p1 * 2, CIRCUIT_LIMITS.voltageMin, CIRCUIT_LIMITS.voltageMax);
+    state.p1 = nextVoltage;
+    syncPhysicsCircuitContent(nextVoltage, state.p2);
+    syncPhysicsControlsFromState();
+    updateParameters(true, { syncQuestion: true });
+    const next = circuitModel();
+    setReasoningStep(3, `<span>变式挑战</span>电阻不变时，电压增大，电流按比例增大。`);
+    elements.mentorMessage.innerHTML = `电阻保持 <strong>${smartNumber(next.resistance)}Ω</strong>，电压变为 <strong>${smartNumber(next.voltage)}V</strong>，所以电流变为 <strong>${smartNumber(next.current, 2)}A</strong>。`;
+    hideMentorFeedback();
+    showToast("欧姆定律变式题已同步");
+    return;
+  }
+
+  if (state.subject === "物理" && isExtraPhysicsTemplate()) {
+    const template = extraPhysicsTemplate();
+    const nextP1 = clamp(state.p1 + Number(template.params[0].step) * 2, template.params[0].min, template.params[0].max);
+    const nextP2 = clamp(state.p2 + Number(template.params[1].step) * 2, template.params[1].min, template.params[1].max);
+    state.p1 = nextP1 === state.p1 ? template.defaults[0] : nextP1;
+    state.p2 = nextP2 === state.p2 ? template.defaults[1] : nextP2;
+    syncExtraPhysicsContent(state.physicsTemplate, state.p1, state.p2);
+    syncPhysicsControlsFromState();
+    updateParameters(true, { syncQuestion: true });
+    const content = buildExtraPhysicsContent();
+    setReasoningStep(4, `<span>变式挑战</span>${content.model.conclusion}`);
+    elements.mentorMessage.innerHTML = `我已生成同类型变式：<strong>${content.recognitionText}</strong>。请用 <strong>${content.model.formula}</strong> 解释变化。`;
+    hideMentorFeedback();
+    showToast("物理模板变式题已同步");
+    return;
+  }
+
+  if (state.subject === "物理" && state.physicsTemplate === "brake" && state.brakeMode === "friction") {
+    const previous = physicsBrakeModel();
+    const nextMu = clamp(state.p2 + 0.1, PHYSICS_FRICTION_BRAKE_LIMITS.muMin, PHYSICS_FRICTION_BRAKE_LIMITS.muMax);
+    state.p2 = nextMu === state.p2 ? Math.max(PHYSICS_FRICTION_BRAKE_LIMITS.muMin, state.p2 - 0.1) : nextMu;
+    syncPhysicsBrakeContent(state.p1, state.p2, { mode: "friction", gravity: state.brakeGravity });
+    syncPhysicsControlsFromState();
+    updateParameters(true, { syncQuestion: true });
+    const next = physicsBrakeModel();
+    setReasoningStep(4, `<span>变式挑战</span>μ 增大使减速度增大，停止距离缩短。`);
+    elements.mentorMessage.innerHTML = `动摩擦因数从 <strong>${smartNumber(previous.mu, 2)}</strong> 变为 <strong>${smartNumber(next.mu, 2)}</strong>，减速度由 <strong>${smartNumber(previous.aAbs)}m/s²</strong> 增至 <strong>${smartNumber(next.aAbs)}m/s²</strong>，停止距离缩短为 <strong>${smartNumber(next.stopDistance)}m</strong>。`;
+    hideMentorFeedback();
+    showToast(`摩擦制动变式已同步：停止距离 ${smartNumber(next.stopDistance)}m`);
+    return;
+  }
+
+  if (state.subject === "物理" && state.physicsTemplate === "brake" && state.brakeMode === "linear_drag") {
+    const previous = physicsBrakeModel();
+    const kBounds = linearDragKBounds(state.brakeMass);
+    const nextK = clamp(state.p2 * 1.5, kBounds.min, kBounds.max);
+    state.p2 = nextK === state.p2 ? Math.max(kBounds.min, state.p2 * 0.75) : nextK;
+    syncPhysicsBrakeContent(state.p1, state.p2, { mode: "linear_drag", mass: state.brakeMass });
+    syncPhysicsControlsFromState();
+    updateParameters(true, { syncQuestion: true });
+    const next = physicsBrakeModel();
+    setReasoningStep(4, `<span>变式挑战</span>k 增大，时间常数 τ=m/k 与极限位移 mv₀/k 同时减小。`);
+    elements.mentorMessage.innerHTML = `阻力系数从 <strong>${smartNumber(previous.k)}kg/s</strong> 增至 <strong>${smartNumber(next.k)}kg/s</strong>，时间常数由 <strong>${smartNumber(previous.tau, 2)}s</strong> 减至 <strong>${smartNumber(next.tau, 2)}s</strong>，极限位移变为 <strong>${smartNumber(next.stopDistance)}m</strong>。`;
+    hideMentorFeedback();
+    showToast(`线性阻力变式已同步：极限位移 ${smartNumber(next.stopDistance)}m`);
     return;
   }
 
@@ -3612,6 +5483,9 @@ window.addEventListener("resize", () => {
   }
   if (state.subject === "物理" && state.physicsTemplate === "solenoid") {
     drawSolenoidCanvas();
+  }
+  if (state.subject === "物理" && state.physicsTemplate === "boardSlider") {
+    renderBoardSliderScene(valuesAt(state.time));
   }
 });
 

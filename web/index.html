@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231648e6'/%3E%3Cpath d='M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260630-preset-switch-2">
+  <link rel="stylesheet" href="styles.css?v=20260712-physics-audit-4">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -68,9 +68,65 @@
             </button>
           </div>
           <div class="preset-dropdown" id="physicsPresetDropdown" aria-hidden="true">
-            <button class="preset-option" id="physicsPresetOption" type="button" data-preset="solenoid">
-              <span id="physicsPresetTitle">通电螺线管：磁场方向与电磁铁磁性</span>
-              <small id="physicsPresetMeta">200匝 · 0.5A · 左端逆时针</small>
+            <button class="preset-option" type="button" data-preset="brake">
+              <span>刹车距离实验 · 速度如何归零</span>
+              <small>20m/s · 5m/s² · 停止距离 40m</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="solenoid">
+              <span>通电螺线管：磁场方向与电磁铁磁性</span>
+              <small>200匝 · 0.5A · 左端逆时针</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="boardSlider">
+              <span>木板—滑块：相对运动与临界滑落</span>
+              <small>光滑地面 · 摩擦力 · 相对位移</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="projectile">
+              <span>平抛运动：水平位移与落地时间</span>
+              <small>12m/s · 20m 高 · 不计空气阻力</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="circuit">
+              <span>欧姆定律电路：电压、电阻与电流</span>
+              <small>6V · 3Ω · I = 2A</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="lever">
+              <span>杠杆平衡条件探究</span>
+              <small>力 × 力臂 · 判断是否平衡</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="lens">
+              <span>凸透镜成像规律判断</span>
+              <small>物距 · 焦距 · 像距与性质</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="buoyancy">
+              <span>浮力与阿基米德原理验证</span>
+              <small>F浮 = ρgV排 · 称重法</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="friction">
+              <span>滑动摩擦力影响因素</span>
+              <small>f = μN · 压力与粗糙程度</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="lampPower">
+              <span>测量小灯泡电功率</span>
+              <small>P = UI · 额定电压与亮度</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="seriesCircuit">
+              <span>串联电路动态分析</span>
+              <small>滑动变阻器 · 电流与电压变化</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="heatBalance">
+              <span>比热容与热平衡计算</span>
+              <small>Q = cmΔt · 热量守恒</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="liquidPressure">
+              <span>液体压强与深度关系</span>
+              <small>p = ρgh · 深度越大压强越大</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="efficiency">
+              <span>机械效率实验</span>
+              <small>η = <span class="vfrac"><span class="vfrac-num">W有</span><span class="vfrac-den">W总</span></span> · 滑轮组</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="sound">
+              <span>声音的传播与音调响度</span>
+              <small>频率定音调 · 振幅定响度</small>
             </button>
           </div>
           <div class="parse-feedback" id="parseFeedback" aria-live="polite"></div>
@@ -118,6 +174,11 @@
               <div><span id="metricLabel1">参数识别</span><strong id="speedValue">--</strong><small id="metricUnit1"></small></div>
               <div><span id="metricLabel2">过程建模</span><strong id="distanceValue">--</strong><small id="metricUnit2"></small></div>
               <div><span id="metricLabel3">实验输出</span><strong id="timeValue">--</strong><small id="metricUnit3"></small></div>
+            </div>
+
+            <div class="brake-model-indicator physics-visual" id="brakeModelIndicator">
+              <span id="brakeModelLabel">恒定减速度</span>
+              <strong id="brakeModelFormula">a = −5m/s²</strong>
             </div>
 
             <div class="scene-empty-state" id="sceneEmptyState">
@@ -209,6 +270,128 @@
                 <button type="button" data-solenoid-action="core">铁芯：<b id="solenoidCoreText">未插入</b></button>
                 <button type="button" data-solenoid-action="pause">暂停动画</button>
                 <button type="button" data-solenoid-action="reset">恢复默认</button>
+              </div>
+            </div>
+
+            <div class="subject-stage projectile-stage" id="projectileStage">
+              <div class="projectile-lab">
+                <div class="projectile-world">
+                  <div class="projectile-skyline"></div>
+                  <div class="projectile-platform">
+                    <span>释放高度</span>
+                    <strong id="projectileHeightText">20 m</strong>
+                  </div>
+                  <svg class="projectile-path" viewBox="0 0 640 300" preserveAspectRatio="none" aria-label="平抛运动轨迹">
+                    <path id="projectilePath" d="M120 112 C250 118 400 175 548 250"></path>
+                  </svg>
+                  <div class="projectile-ball" id="projectileBall"></div>
+                  <div class="projectile-shadow" id="projectileShadow"></div>
+                  <div class="projectile-ground"></div>
+                  <div class="projectile-vector vx"><span>v₀ 水平不变</span></div>
+                  <div class="projectile-vector vy"><span>竖直速度增大</span></div>
+                </div>
+                <aside class="projectile-readout">
+                  <span>实时结论</span>
+                  <strong id="projectileResultText">t = 2.0s，x = 24.2m</strong>
+                  <p>水平匀速运动与竖直自由落体同时发生。</p>
+                  <dl class="stage-facts">
+                    <div><dt>落地时间</dt><dd id="projectileTimeText">2.02s</dd></div>
+                    <div><dt>水平位移</dt><dd id="projectileRangeText">24.2m</dd></div>
+                    <div><dt>竖直末速</dt><dd id="projectileVyText">19.8m/s</dd></div>
+                  </dl>
+                </aside>
+              </div>
+            </div>
+
+            <div class="subject-stage circuit-stage" id="circuitStage">
+              <div class="circuit-lab">
+                <div class="circuit-board">
+                  <div class="battery">
+                    <span>电源</span>
+                    <strong id="circuitVoltageText">6V</strong>
+                    <small><b>+</b><b>−</b></small>
+                  </div>
+                  <div class="wire wire-top"></div>
+                  <div class="wire wire-right"></div>
+                  <div class="wire wire-bottom"></div>
+                  <div class="wire wire-left"></div>
+                  <div class="electron electron-one"></div>
+                  <div class="electron electron-two"></div>
+                  <div class="electron electron-three"></div>
+                  <div class="resistor" id="circuitResistor">
+                    <span>纯电阻 R</span>
+                    <strong id="circuitResistanceText">3Ω</strong>
+                  </div>
+                  <div class="ammeter">
+                    <span>A</span>
+                    <strong id="circuitCurrentText">2.00A</strong>
+                  </div>
+                  <div class="circuit-current-note">传统电流示意</div>
+                </div>
+                <div class="circuit-readout">
+                  <span>实时结论</span>
+                  <strong id="circuitResultText">I = <span class="vfrac"><span class="vfrac-num">U</span><span class="vfrac-den">R</span></span> = 2.00A</strong>
+                  <p>电阻一定时，电压越大电流越大；电压一定时，电阻越大电流越小。</p>
+                  <dl class="stage-facts">
+                    <div><dt>电压 U</dt><dd id="circuitReadoutVoltage">6V</dd></div>
+                    <div><dt>电阻 R</dt><dd id="circuitReadoutResistance">3Ω</dd></div>
+                    <div><dt>电流 I</dt><dd id="circuitReadoutCurrent">2.00A</dd></div>
+                    <div><dt>相对功率</dt><dd id="circuitPowerText">12W</dd></div>
+                  </dl>
+                </div>
+              </div>
+            </div>
+
+            <div class="subject-stage board-slider-stage" id="boardSliderStage" data-outcome="critical">
+              <div class="board-slider-constants" aria-label="木板滑块题目参数">
+                <div><span>滑块质量 m</span><strong id="boardSliderBlockMass">1kg</strong></div>
+                <div><span>木板质量 M</span><strong id="boardSliderBoardMass">1kg</strong></div>
+                <div><span>动摩擦因数 μ</span><strong id="boardSliderMu">0.2</strong></div>
+                <div><span>重力加速度 g</span><strong id="boardSliderGravity">10m/s²</strong></div>
+              </div>
+
+              <div class="board-slider-world" id="boardSliderWorld" aria-label="木板与滑块相对运动动画">
+                <div class="board-slider-ground">
+                  <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+                <div class="board-slider-origin"><span>初始左端</span></div>
+                <div class="board-slider-board" id="boardSliderBoard">
+                  <div class="board-slider-trace" id="boardSliderTrace"></div>
+                  <span class="board-end board-end-left">左端</span>
+                  <span class="board-end board-end-right">右端</span>
+                  <strong class="board-name">木板 B</strong>
+                  <div class="board-vector board-friction-vector" aria-label="木板受到的滑动摩擦力方向向右">
+                    <span>f = μmg</span><i></i>
+                  </div>
+                  <div class="board-vector board-speed-vector"><i></i><span id="boardSliderBoardSpeed">木板 0m/s</span></div>
+                </div>
+
+                <div class="board-slider-block" id="boardSliderBlock">
+                  <strong>滑块 A</strong>
+                  <small>视为质点</small>
+                  <div class="block-vector block-friction-vector"><i></i><span>f = μmg</span></div>
+                  <div class="block-vector block-speed-vector"><i></i><span id="boardSliderBlockSpeed">滑块 4m/s</span></div>
+                </div>
+
+                <aside class="board-slider-live-card">
+                  <span>相对运动判定</span>
+                  <strong id="boardSliderRelation">2m = 2m</strong>
+                  <p id="boardSliderFrictionText">f = μmg = 2N</p>
+                  <p id="boardSliderRelativeText">Δx = 0m</p>
+                  <em id="boardSliderStatus" data-status="critical">临界</em>
+                </aside>
+              </div>
+            </div>
+
+            <div class="subject-stage generic-physics-stage" id="genericPhysicsStage">
+              <div class="generic-physics-lab">
+                <div class="generic-physics-visual" id="genericPhysicsVisual"></div>
+                <aside class="generic-physics-readout">
+                  <span id="genericPhysicsMeta">初中核心 · 物理模板</span>
+                  <strong id="genericPhysicsResult">等待生成</strong>
+                  <p id="genericPhysicsDescription">参数变化后，这里会同步显示公式计算和实验结论。</p>
+                  <dl class="stage-facts" id="genericPhysicsFacts"></dl>
+                </aside>
               </div>
             </div>
 
@@ -397,11 +580,6 @@
                 <i><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></i>
               </button>
             </div>
-
-            <button class="compare-button" data-toast="已开启实验与思维链联动模式">
-              <svg viewBox="0 0 24 24"><path d="M8 7h12m-4-4 4 4-4 4M16 17H4m4-4-4 4 4 4"/></svg>
-              对比我的解题思路
-            </button>
           </section>
 
           <section class="mentor-card card">
@@ -473,6 +651,7 @@
 
   <div class="toast" id="toast"><span></span><p>操作成功</p></div>
 
-  <script src="app.js?v=20260630-preset-switch-8"></script>
+  <script src="physics-extra.js?v=20260712-physics-audit-4"></script>
+  <script src="app.js?v=20260712-physics-audit-4"></script>
 </body>
 </html>
