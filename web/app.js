@@ -484,6 +484,7 @@ const elements = {
   projectileRangeText: $("#projectileRangeText"),
   projectileVyText: $("#projectileVyText"),
   circuitVoltageText: $("#circuitVoltageText"),
+  circuitVoltmeterText: $("#circuitVoltmeterText"),
   circuitResistanceText: $("#circuitResistanceText"),
   circuitCurrentText: $("#circuitCurrentText"),
   circuitResultText: $("#circuitResultText"),
@@ -3361,6 +3362,7 @@ function updateSubjectVisuals(values) {
     elements.scene.style.setProperty("--circuit-current", String(clamp(model.current / 4, 0.12, 1)));
     elements.scene.style.setProperty("--circuit-speed", `${3.8 - clamp(model.current / 4, 0.12, 1) * 1.9}s`);
     if (elements.circuitVoltageText) elements.circuitVoltageText.textContent = `${smartNumber(model.voltage)}V`;
+    if (elements.circuitVoltmeterText) elements.circuitVoltmeterText.textContent = `${smartNumber(model.voltage)}V`;
     if (elements.circuitResistanceText) elements.circuitResistanceText.textContent = `${smartNumber(model.resistance)}Ω`;
     if (elements.circuitCurrentText) elements.circuitCurrentText.textContent = `${smartNumber(model.current, 2)}A`;
     if (elements.circuitResultText) elements.circuitResultText.textContent = `I = ${smartNumber(model.voltage)} ÷ ${smartNumber(model.resistance)} = ${smartNumber(model.current, 2)}A`;

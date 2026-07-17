@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231648e6'/%3E%3Cpath d='M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260712-physics-audit-4">
+  <link rel="stylesheet" href="styles.css?v=20260718-electrical-symbols-2">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -306,27 +306,74 @@
             <div class="subject-stage circuit-stage" id="circuitStage">
               <div class="circuit-lab">
                 <div class="circuit-board">
-                  <div class="battery">
-                    <span>电源</span>
-                    <strong id="circuitVoltageText">6V</strong>
-                    <small><b>+</b><b>−</b></small>
-                  </div>
-                  <div class="wire wire-top"></div>
-                  <div class="wire wire-right"></div>
-                  <div class="wire wire-bottom"></div>
-                  <div class="wire wire-left"></div>
-                  <div class="electron electron-one"></div>
-                  <div class="electron electron-two"></div>
-                  <div class="electron electron-three"></div>
-                  <div class="resistor" id="circuitResistor">
-                    <span>纯电阻 R</span>
-                    <strong id="circuitResistanceText">3Ω</strong>
-                  </div>
-                  <div class="ammeter">
-                    <span>A</span>
-                    <strong id="circuitCurrentText">2.00A</strong>
-                  </div>
-                  <div class="circuit-current-note">传统电流示意</div>
+                  <div class="circuit-standard-badge">教材电路图符号 · 开关闭合</div>
+                  <div class="circuit-current-note">箭头表示传统电流方向</div>
+                  <svg class="edu-circuit-svg core-ohm-schematic" viewBox="0 0 720 340" role="img" aria-label="欧姆定律实验电路：电源、开关、电流表和定值电阻串联，电压表并联在电阻两端">
+                    <defs>
+                      <marker id="ohmCurrentArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                      </marker>
+                    </defs>
+
+                    <g class="edu-wire">
+                      <path d="M110 125V60H233"></path>
+                      <path d="M287 60H444"></path>
+                      <path d="M516 60H610V220H430"></path>
+                      <path d="M290 220H110V155"></path>
+                    </g>
+                    <g class="current-flow-tracks" aria-hidden="true">
+                      <path class="current-flow-track" d="M110 125V60H233"></path>
+                      <path class="current-flow-track" d="M287 60H444"></path>
+                      <path class="current-flow-track" d="M516 60H610V220H430"></path>
+                      <path class="current-flow-track" d="M290 220H110V155"></path>
+                    </g>
+
+                    <g class="edu-source" aria-label="电源">
+                      <line class="source-long" x1="78" y1="125" x2="142" y2="125"></line>
+                      <line class="source-short" x1="91" y1="155" x2="129" y2="155"></line>
+                      <text class="polarity positive" x="68" y="130">+</text>
+                      <text class="polarity negative" x="76" y="164">−</text>
+                      <text class="component-label" x="110" y="190" text-anchor="middle">电源</text>
+                      <text class="component-value" id="circuitVoltageText" x="110" y="210" text-anchor="middle">6V</text>
+                    </g>
+
+                    <g class="edu-switch edu-switch-closed" aria-label="闭合开关">
+                      <circle cx="238" cy="60" r="5"></circle>
+                      <circle cx="282" cy="60" r="5"></circle>
+                      <line x1="243" y1="60" x2="277" y2="60"></line>
+                      <text class="component-label" x="260" y="36" text-anchor="middle">开关 S（闭合）</text>
+                    </g>
+
+                    <g class="edu-meter" aria-label="电流表">
+                      <circle cx="480" cy="60" r="36"></circle>
+                      <text class="meter-letter" x="480" y="69" text-anchor="middle">A</text>
+                      <text class="component-value" id="circuitCurrentText" x="480" y="113" text-anchor="middle">2.00A</text>
+                    </g>
+
+                    <g class="edu-resistor" id="circuitResistor" aria-label="定值电阻">
+                      <rect class="resistor-glow" x="286" y="197" width="148" height="46" rx="9"></rect>
+                      <rect class="resistor-body" x="290" y="202" width="140" height="36"></rect>
+                      <text class="component-symbol" x="360" y="226" text-anchor="middle">R</text>
+                      <text class="component-label" x="360" y="185" text-anchor="middle">定值电阻</text>
+                      <text class="component-value" id="circuitResistanceText" x="360" y="265" text-anchor="middle">3Ω</text>
+                    </g>
+
+                    <g class="edu-voltmeter-branch" aria-label="电压表并联在定值电阻两端">
+                      <path class="edu-wire" d="M270 220V300H324M396 300H450V220"></path>
+                      <circle class="junction" cx="270" cy="220" r="5"></circle>
+                      <circle class="junction" cx="450" cy="220" r="5"></circle>
+                      <g class="edu-meter">
+                        <circle cx="360" cy="300" r="36"></circle>
+                        <text class="meter-letter" x="360" y="309" text-anchor="middle">V</text>
+                      </g>
+                      <text class="component-value" id="circuitVoltmeterText" x="410" y="308">6V</text>
+                    </g>
+
+                    <g class="conventional-current" marker-end="url(#ohmCurrentArrow)">
+                      <path d="M155 60H205"></path>
+                      <path d="M565 220H505"></path>
+                    </g>
+                  </svg>
                 </div>
                 <div class="circuit-readout">
                   <span>实时结论</span>
@@ -336,7 +383,7 @@
                     <div><dt>电压 U</dt><dd id="circuitReadoutVoltage">6V</dd></div>
                     <div><dt>电阻 R</dt><dd id="circuitReadoutResistance">3Ω</dd></div>
                     <div><dt>电流 I</dt><dd id="circuitReadoutCurrent">2.00A</dd></div>
-                    <div><dt>相对功率</dt><dd id="circuitPowerText">12W</dd></div>
+                    <div><dt>电阻功率</dt><dd id="circuitPowerText">12W</dd></div>
                   </dl>
                 </div>
               </div>
@@ -651,7 +698,7 @@
 
   <div class="toast" id="toast"><span></span><p>操作成功</p></div>
 
-  <script src="physics-extra.js?v=20260712-physics-audit-4"></script>
-  <script src="app.js?v=20260712-physics-audit-4"></script>
+  <script src="physics-extra.js?v=20260718-electrical-symbols-2"></script>
+  <script src="app.js?v=20260718-electrical-symbols-2"></script>
 </body>
 </html>
