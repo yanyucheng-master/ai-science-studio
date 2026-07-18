@@ -2533,19 +2533,6 @@ input[type="range"] {
   color: #ef765d;
 }
 
-.circuit-current-note {
-  position: absolute;
-  z-index: 5;
-  right: 116px;
-  top: 16px;
-  padding: 5px 8px;
-  color: #526c8d;
-  font-size: 9px;
-  font-weight: 850;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, .8);
-}
-
 .electron {
   position: absolute;
   z-index: 6;
@@ -2586,23 +2573,13 @@ input[type="range"] {
   padding: 7px 11px;
   color: #285488;
   font-size: 10px;
-  font-weight: 900;
+  font-weight: 600;
   letter-spacing: .01em;
   border: 1px solid rgba(116, 164, 224, .55);
   border-radius: 999px;
   background: rgba(255, 255, 255, .9);
   box-shadow: 0 8px 18px rgba(42, 83, 137, .09);
   backdrop-filter: blur(8px);
-}
-
-.circuit-board .circuit-current-note {
-  top: 14px;
-  right: 16px;
-  padding: 7px 11px;
-  color: #536c8d;
-  font-size: 10px;
-  background: rgba(255, 255, 255, .9);
-  border: 1px solid rgba(151, 190, 235, .52);
 }
 
 .edu-circuit-svg {
@@ -2676,71 +2653,43 @@ input[type="range"] {
 
 .edu-circuit-svg .slider-arrow,
 .edu-circuit-svg .slider-arrow-head {
-  stroke: #286cf2;
-  stroke-width: 3;
+  stroke: #17365f;
+  stroke-width: 2.5;
 }
 
 .edu-circuit-svg .meter-letter {
   fill: #153663;
   font-size: 30px;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .edu-circuit-svg .component-symbol {
   fill: #154fca;
   font-size: 18px;
-  font-weight: 950;
+  font-weight: 700;
 }
 
 .edu-circuit-svg .component-label,
 .edu-circuit-svg .current-direction-label {
-  fill: #657a96;
-  font-size: 12px;
-  font-weight: 800;
+  fill: #506783;
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .edu-circuit-svg .component-value {
   fill: #1f5de0;
   font-size: 15px;
-  font-weight: 950;
+  font-weight: 700;
 }
 
 .edu-circuit-svg .polarity {
   fill: #194eaf;
   font-size: 20px;
-  font-weight: 950;
+  font-weight: 700;
 }
 
 .edu-circuit-svg .polarity.negative {
   fill: #e45e52;
-}
-
-.edu-circuit-svg .conventional-current path {
-  fill: none;
-  stroke: #2878f5;
-  stroke-width: 3;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-}
-
-.edu-circuit-svg marker path {
-  fill: #2878f5;
-}
-
-.edu-circuit-svg .current-flow-track {
-  fill: none;
-  stroke: #54c7f2;
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-dasharray: 3 34;
-  opacity: calc(.18 + var(--circuit-current, .35) * .28);
-  animation: textbook-current-flow var(--flow-duration, var(--circuit-speed, 2.8s)) linear infinite;
-  pointer-events: none;
-  vector-effect: non-scaling-stroke;
-}
-
-@keyframes textbook-current-flow {
-  to { stroke-dashoffset: -74; }
 }
 
 .edu-circuit-svg .lamp-halo {
@@ -2779,8 +2728,7 @@ input[type="range"] {
     overflow: hidden;
   }
 
-  .circuit-standard-badge,
-  .circuit-board .circuit-current-note {
+  .circuit-standard-badge {
     padding: 5px 8px;
     font-size: 8px;
   }

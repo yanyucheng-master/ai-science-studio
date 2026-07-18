@@ -485,29 +485,15 @@
         const current = model.metrics[1];
         const power = model.metrics[2];
         const lampLevel = clamp(power / 2, .15, 1);
-        const flowDuration = fmt(3.6 - clamp(current / 1, .08, 1) * 1.9, 2);
         return genericShell(model, `
           <div class="circuit-standard-badge generic-circuit-badge">教材电路图 · 电流表串联 · 电压表并联</div>
-          <svg class="edu-circuit-svg generic-edu-circuit lamp-power-schematic" viewBox="0 0 760 400" role="img" aria-label="测量小灯泡电功率电路：电源、开关、电流表、滑动变阻器和小灯泡串联，电压表并联在小灯泡两端" style="--lamp-level:${lampLevel};--flow-duration:${flowDuration}s">
-            <defs>
-              <marker id="lampCurrentArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-                <path d="M0 0L10 5L0 10z"></path>
-              </marker>
-            </defs>
-
+          <svg class="edu-circuit-svg generic-edu-circuit lamp-power-schematic" viewBox="0 0 760 400" role="img" aria-label="测量小灯泡电功率电路：电源、开关、电流表、滑动变阻器和小灯泡串联，电压表并联在小灯泡两端" style="--lamp-level:${lampLevel}">
             <g class="edu-wire">
               <path d="M110 145V78H215"></path>
               <path d="M280 78H396"></path>
               <path d="M464 78H650V260H588"></path>
               <path d="M512 260H350"></path>
               <path d="M230 260H110V175"></path>
-            </g>
-            <g class="current-flow-tracks" aria-hidden="true">
-              <path class="current-flow-track" d="M110 145V78H215"></path>
-              <path class="current-flow-track" d="M280 78H396"></path>
-              <path class="current-flow-track" d="M464 78H650V260H588"></path>
-              <path class="current-flow-track" d="M512 260H350"></path>
-              <path class="current-flow-track" d="M230 260H110V175"></path>
             </g>
 
             <g class="edu-source" aria-label="电源">
@@ -548,21 +534,15 @@
             </g>
 
             <g class="edu-voltmeter-branch" aria-label="电压表并联在小灯泡两端">
-              <path class="edu-wire" d="M512 260V354H520M580 354H588V260"></path>
-              <circle class="junction" cx="512" cy="260" r="5"></circle>
-              <circle class="junction" cx="588" cy="260" r="5"></circle>
+              <path class="edu-wire" d="M490 260V354H520M580 354H610V260"></path>
+              <circle class="junction" cx="490" cy="260" r="5"></circle>
+              <circle class="junction" cx="610" cy="260" r="5"></circle>
               <g class="edu-meter">
                 <circle cx="550" cy="354" r="30"></circle>
                 <text class="meter-letter" x="550" y="363" text-anchor="middle">V</text>
               </g>
               <text class="component-value" x="626" y="361">${fmt(voltage, 1)}V</text>
             </g>
-
-            <g class="conventional-current" marker-end="url(#lampCurrentArrow)">
-              <path d="M315 78H365"></path>
-              <path d="M470 260H410"></path>
-            </g>
-            <text class="current-direction-label" x="650" y="118" text-anchor="end">传统电流方向</text>
           </svg>`);
       },
       recognition: model => `小灯泡功率｜${model.formulaDetail}｜${model.facts[1].value}`
@@ -607,33 +587,18 @@
         const voltage = model.metrics[0];
         const r2 = model.metrics[1];
         const current = model.metrics[2];
-        const speed = clamp(current / 1.6, 0.18, 1);
         const slider = clamp((r2 - 2) / 18, 0, 1);
-        const duration = fmt(3.2 - speed * 1.8, 2);
         const sliderX = 444 + slider * 92;
         const v2 = current * r2;
         return genericShell(model, `
           <div class="circuit-standard-badge generic-circuit-badge">教材电路图 · R₁、R₂ 串联 · 电压表测 R₂</div>
-          <svg class="edu-circuit-svg generic-edu-circuit series-circuit-schematic" viewBox="0 0 760 400" role="img" aria-label="串联动态电路：电源、开关、电流表、定值电阻和滑动变阻器串联，电压表并联在滑动变阻器两端" style="--flow-duration:${duration}s">
-            <defs>
-              <marker id="seriesCurrentArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-                <path d="M0 0L10 5L0 10z"></path>
-              </marker>
-            </defs>
-
+          <svg class="edu-circuit-svg generic-edu-circuit series-circuit-schematic" viewBox="0 0 760 400" role="img" aria-label="串联动态电路：电源、开关、电流表、定值电阻和滑动变阻器串联，电压表并联在滑动变阻器两端">
             <g class="edu-wire">
               <path d="M105 145V76H205"></path>
               <path d="M270 76H431"></path>
               <path d="M499 76H650V270H560"></path>
               <path d="M420 270H320"></path>
               <path d="M200 270H105V175"></path>
-            </g>
-            <g class="current-flow-tracks" aria-hidden="true">
-              <path class="current-flow-track" d="M105 145V76H205"></path>
-              <path class="current-flow-track" d="M270 76H431"></path>
-              <path class="current-flow-track" d="M499 76H650V270H560"></path>
-              <path class="current-flow-track" d="M420 270H320"></path>
-              <path class="current-flow-track" d="M200 270H105V175"></path>
             </g>
 
             <g class="edu-source" aria-label="电源">
@@ -672,21 +637,15 @@
             </g>
 
             <g class="edu-voltmeter-branch" aria-label="电压表并联在 R2 两端">
-              <path class="edu-wire" d="M420 270V360H456M524 360H560V270"></path>
-              <circle class="junction" cx="420" cy="270" r="5"></circle>
-              <circle class="junction" cx="560" cy="270" r="5"></circle>
+              <path class="edu-wire" d="M390 270V360H456M524 360H590V270"></path>
+              <circle class="junction" cx="390" cy="270" r="5"></circle>
+              <circle class="junction" cx="590" cy="270" r="5"></circle>
               <g class="edu-meter">
                 <circle cx="490" cy="360" r="34"></circle>
                 <text class="meter-letter" x="490" y="369" text-anchor="middle">V</text>
               </g>
               <text class="component-value" x="545" y="368">${fmt(v2, 2)}V</text>
             </g>
-
-            <g class="conventional-current" marker-end="url(#seriesCurrentArrow)">
-              <path d="M310 76H375"></path>
-              <path d="M380 270H340"></path>
-            </g>
-            <text class="current-direction-label" x="650" y="116" text-anchor="end">传统电流方向</text>
           </svg>`);
       },
       recognition: model => `串联电路｜${model.formulaDetail}｜${model.facts[2].value}`

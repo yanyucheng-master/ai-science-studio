@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231648e6'/%3E%3Cpath d='M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260718-electrical-symbols-2">
+  <link rel="stylesheet" href="styles.css?v=20260718-electrical-symbols-3">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -307,25 +307,12 @@
               <div class="circuit-lab">
                 <div class="circuit-board">
                   <div class="circuit-standard-badge">教材电路图符号 · 开关闭合</div>
-                  <div class="circuit-current-note">箭头表示传统电流方向</div>
                   <svg class="edu-circuit-svg core-ohm-schematic" viewBox="0 0 720 340" role="img" aria-label="欧姆定律实验电路：电源、开关、电流表和定值电阻串联，电压表并联在电阻两端">
-                    <defs>
-                      <marker id="ohmCurrentArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-                        <path d="M 0 0 L 10 5 L 0 10 z"></path>
-                      </marker>
-                    </defs>
-
                     <g class="edu-wire">
                       <path d="M110 125V60H233"></path>
                       <path d="M287 60H444"></path>
                       <path d="M516 60H610V220H430"></path>
                       <path d="M290 220H110V155"></path>
-                    </g>
-                    <g class="current-flow-tracks" aria-hidden="true">
-                      <path class="current-flow-track" d="M110 125V60H233"></path>
-                      <path class="current-flow-track" d="M287 60H444"></path>
-                      <path class="current-flow-track" d="M516 60H610V220H430"></path>
-                      <path class="current-flow-track" d="M290 220H110V155"></path>
                     </g>
 
                     <g class="edu-source" aria-label="电源">
@@ -359,19 +346,14 @@
                     </g>
 
                     <g class="edu-voltmeter-branch" aria-label="电压表并联在定值电阻两端">
-                      <path class="edu-wire" d="M270 220V300H324M396 300H450V220"></path>
-                      <circle class="junction" cx="270" cy="220" r="5"></circle>
-                      <circle class="junction" cx="450" cy="220" r="5"></circle>
+                      <path class="edu-wire" d="M250 220V300H324M396 300H470V220"></path>
+                      <circle class="junction" cx="250" cy="220" r="5"></circle>
+                      <circle class="junction" cx="470" cy="220" r="5"></circle>
                       <g class="edu-meter">
                         <circle cx="360" cy="300" r="36"></circle>
                         <text class="meter-letter" x="360" y="309" text-anchor="middle">V</text>
                       </g>
                       <text class="component-value" id="circuitVoltmeterText" x="410" y="308">6V</text>
-                    </g>
-
-                    <g class="conventional-current" marker-end="url(#ohmCurrentArrow)">
-                      <path d="M155 60H205"></path>
-                      <path d="M565 220H505"></path>
                     </g>
                   </svg>
                 </div>
@@ -698,7 +680,7 @@
 
   <div class="toast" id="toast"><span></span><p>操作成功</p></div>
 
-  <script src="physics-extra.js?v=20260718-electrical-symbols-2"></script>
-  <script src="app.js?v=20260718-electrical-symbols-2"></script>
+  <script src="physics-extra.js?v=20260718-electrical-symbols-3"></script>
+  <script src="app.js?v=20260718-electrical-symbols-3"></script>
 </body>
 </html>
