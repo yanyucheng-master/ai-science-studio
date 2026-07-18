@@ -2572,13 +2572,14 @@ input[type="range"] {
   left: 16px;
   padding: 7px 11px;
   color: #285488;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .01em;
+  font-family: "Noto Sans SC Light", "DengXian Light", "Microsoft YaHei UI Light", sans-serif;
+  font-size: 10.5px;
+  font-weight: 300;
+  letter-spacing: 0;
   border: 1px solid rgba(116, 164, 224, .55);
   border-radius: 999px;
   background: rgba(255, 255, 255, .9);
-  box-shadow: 0 8px 18px rgba(42, 83, 137, .09);
+  box-shadow: 0 5px 12px rgba(42, 83, 137, .05);
   backdrop-filter: blur(8px);
 }
 
@@ -2589,7 +2590,17 @@ input[type="range"] {
   height: calc(100% - 16px);
   overflow: visible;
   color: #17365f;
-  font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+  font-family: "Noto Sans SC Light", "DengXian Light", "Microsoft YaHei UI Light", "Microsoft YaHei Light", sans-serif;
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+}
+
+.edu-circuit-svg text {
+  font-family: inherit;
+  font-weight: 300;
+  letter-spacing: 0;
+  text-shadow: none;
 }
 
 .edu-circuit-svg .edu-wire path,
@@ -2601,6 +2612,8 @@ input[type="range"] {
 .edu-circuit-svg .edu-meter circle,
 .edu-circuit-svg .resistor-body,
 .edu-circuit-svg .edu-variable-resistor rect,
+.edu-circuit-svg .rheostat-wiper-lead,
+.edu-circuit-svg .rheostat-terminal-lead,
 .edu-circuit-svg .slider-arrow,
 .edu-circuit-svg .slider-arrow-head,
 .edu-circuit-svg .lamp-circle,
@@ -2626,6 +2639,14 @@ input[type="range"] {
   fill: rgba(255, 255, 255, .96);
 }
 
+.edu-circuit-svg .edu-switch .switch-blade {
+  stroke-width: 3.5;
+}
+
+.edu-circuit-svg .edu-switch .switch-terminal-lead {
+  stroke-width: 3;
+}
+
 .edu-circuit-svg .edu-switch circle,
 .edu-circuit-svg .junction {
   fill: #17365f;
@@ -2637,7 +2658,7 @@ input[type="range"] {
 }
 
 .edu-circuit-svg .edu-meter circle {
-  filter: drop-shadow(0 8px 10px rgba(38, 77, 125, .12));
+  filter: drop-shadow(0 4px 7px rgba(38, 77, 125, .09));
 }
 
 .edu-circuit-svg .resistor-body,
@@ -2654,38 +2675,108 @@ input[type="range"] {
 .edu-circuit-svg .slider-arrow,
 .edu-circuit-svg .slider-arrow-head {
   stroke: #17365f;
+  stroke-width: 2.8;
+}
+
+.edu-circuit-svg .rheostat-terminal {
+  fill: #fff;
+  stroke: #17365f;
   stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.edu-circuit-svg .rheostat-terminal.connected {
+  fill: #17365f;
+}
+
+.edu-circuit-svg .rheostat-active-track {
+  stroke: #4b86e8;
+  stroke-width: 3;
+  stroke-linecap: round;
+  opacity: .75;
+  vector-effect: non-scaling-stroke;
+}
+
+.edu-circuit-svg .rheostat-contact {
+  fill: #fff;
+  stroke: #17365f;
+  stroke-width: 2.2;
+  vector-effect: non-scaling-stroke;
 }
 
 .edu-circuit-svg .meter-letter {
   fill: #153663;
-  font-size: 30px;
-  font-weight: 700;
+  font-size: 29px;
+  font-weight: 300;
 }
 
 .edu-circuit-svg .component-symbol {
-  fill: #154fca;
-  font-size: 18px;
-  font-weight: 700;
+  fill: #315d96;
+  font-size: 16.5px;
+  font-weight: 300;
 }
 
 .edu-circuit-svg .component-label,
 .edu-circuit-svg .current-direction-label {
-  fill: #506783;
-  font-size: 13px;
-  font-weight: 500;
+  fill: #697e98;
+  font-family: "Noto Sans SC Thin", "DengXian Light", "Microsoft YaHei UI Light", sans-serif;
+  font-size: 12.5px;
+  font-weight: 100;
 }
 
 .edu-circuit-svg .component-value {
-  fill: #1f5de0;
-  font-size: 15px;
-  font-weight: 700;
+  fill: #315d96;
+  font-size: 14.5px;
+  font-weight: 300;
+}
+
+.edu-circuit-svg .component-body-value,
+.edu-circuit-svg .circuit-reading-text {
+  fill: #294866;
+  font-size: 14.5px;
+  font-weight: 300;
+}
+
+.edu-circuit-svg .svg-reading-badge text {
+  fill: #294866;
+  font-size: 14.5px;
+  font-weight: 300;
+}
+
+.edu-circuit-svg .rheostat-connection-label,
+.edu-circuit-svg .rheostat-state-label {
+  fill: #71859d;
+  font-family: "Noto Sans SC Thin", "DengXian Light", "Microsoft YaHei UI Light", sans-serif;
+  font-size: 14px;
+  font-weight: 100;
+}
+
+.edu-circuit-svg .rheostat-state-label {
+  fill: #4f6f93;
+  font-family: "Noto Sans SC Light", "DengXian Light", "Microsoft YaHei UI Light", sans-serif;
+  font-weight: 300;
+}
+
+.edu-circuit-svg .svg-reading-badge rect {
+  fill: rgba(250, 253, 255, .97);
+  stroke: rgba(133, 173, 225, .72);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.edu-circuit-svg .circuit-current-pulse {
+  fill: #20c6aa;
+  stroke: rgba(255, 255, 255, .96);
+  stroke-width: 2;
+  opacity: .95;
+  filter: drop-shadow(0 0 5px rgba(24, 174, 153, .6));
+  pointer-events: none;
 }
 
 .edu-circuit-svg .polarity {
-  fill: #194eaf;
-  font-size: 20px;
-  font-weight: 700;
+  fill: #41699a;
+  font-size: 14px;
+  font-weight: 300;
 }
 
 .edu-circuit-svg .polarity.negative {
@@ -2704,7 +2795,7 @@ input[type="range"] {
 }
 
 .edu-circuit-svg .lamp-filament {
-  stroke-width: 4.5;
+  stroke-width: 4;
 }
 
 .generic-circuit-badge {

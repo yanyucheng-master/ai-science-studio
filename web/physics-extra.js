@@ -485,52 +485,70 @@
         const current = model.metrics[1];
         const power = model.metrics[2];
         const lampLevel = clamp(power / 2, .15, 1);
+        const pulseDuration = fmt(4.1 - clamp(current / 1, .08, 1) * 2, 2);
+        const rheostatSliderX = 310;
         return genericShell(model, `
           <div class="circuit-standard-badge generic-circuit-badge">教材电路图 · 电流表串联 · 电压表并联</div>
           <svg class="edu-circuit-svg generic-edu-circuit lamp-power-schematic" viewBox="0 0 760 400" role="img" aria-label="测量小灯泡电功率电路：电源、开关、电流表、滑动变阻器和小灯泡串联，电压表并联在小灯泡两端" style="--lamp-level:${lampLevel}">
             <g class="edu-wire">
-              <path d="M110 145V78H215"></path>
-              <path d="M280 78H396"></path>
-              <path d="M464 78H650V260H588"></path>
-              <path d="M512 260H350"></path>
+              <path d="M110 145V78H220"></path>
+              <path d="M287 78H396"></path>
+              <path d="M464 78H650V260H582"></path>
+              <path d="M518 260H390V210"></path>
               <path d="M230 260H110V175"></path>
+            </g>
+            <g class="circuit-current-pulses" aria-hidden="true">
+              <circle class="circuit-current-pulse" r="5"><animateMotion dur="${pulseDuration}s" repeatCount="indefinite" path="M110 145V78H220L275 68L287 78H396"></animateMotion></circle>
+              <circle class="circuit-current-pulse" r="5"><animateMotion dur="${pulseDuration}s" begin=".55s" repeatCount="indefinite" path="M464 78H650V260H582"></animateMotion></circle>
+              <circle class="circuit-current-pulse" r="5"><animateMotion dur="${pulseDuration}s" begin="1.1s" repeatCount="indefinite" path="M518 260H390V210L${rheostatSliderX} 242L230 260"></animateMotion></circle>
+              <circle class="circuit-current-pulse" r="5"><animateMotion dur="${pulseDuration}s" begin="1.65s" repeatCount="indefinite" path="M230 260H110V175"></animateMotion></circle>
             </g>
 
             <g class="edu-source" aria-label="电源">
               <line class="source-long" x1="78" y1="145" x2="142" y2="145"></line>
               <line class="source-short" x1="91" y1="175" x2="129" y2="175"></line>
-              <text class="polarity positive" x="68" y="150">+</text>
-              <text class="polarity negative" x="76" y="184">−</text>
-              <text class="component-label" x="110" y="211" text-anchor="middle">电源 ${fmt(voltage, 1)}V</text>
+              <text class="polarity positive" x="154" y="151">+</text>
+              <text class="polarity negative" x="142" y="181">−</text>
+              <text class="circuit-reading-text" x="28" y="211">U = ${fmt(voltage, 1)}&#8239;V</text>
             </g>
 
             <g class="edu-switch edu-switch-closed" aria-label="闭合开关">
               <circle cx="220" cy="78" r="5"></circle>
-              <circle cx="275" cy="78" r="5"></circle>
-              <line x1="225" y1="78" x2="270" y2="78"></line>
-              <text class="component-label" x="248" y="50" text-anchor="middle">开关 S</text>
+              <circle cx="275" cy="68" r="5"></circle>
+              <line class="switch-blade" x1="225" y1="78" x2="270" y2="69"></line>
+              <line class="switch-terminal-lead" x1="280" y1="68" x2="287" y2="78"></line>
+              <text class="component-label switch-label" x="248" y="44" text-anchor="middle">开关 S · 闭合</text>
             </g>
 
             <g class="edu-meter" aria-label="电流表串联">
               <circle cx="430" cy="78" r="34"></circle>
               <text class="meter-letter" x="430" y="87" text-anchor="middle">A</text>
-              <text class="component-value" x="430" y="132" text-anchor="middle">${fmt(current, 2)}A</text>
+              <g class="svg-reading-badge" transform="translate(472 106)">
+                <rect width="90" height="32" rx="10"></rect>
+                <text x="45" y="21" text-anchor="middle">${fmt(current, 2)}&#8239;A</text>
+              </g>
             </g>
 
-            <g class="edu-variable-resistor" aria-label="滑动变阻器串联">
-              <rect x="230" y="242" width="120" height="36"></rect>
-              <line class="slider-arrow" x1="270" y1="215" x2="318" y2="248"></line>
-              <path class="slider-arrow-head" d="M318 248L305 245M318 248L313 236"></path>
-              <text class="component-symbol" x="290" y="266" text-anchor="middle">Rₚ</text>
-              <text class="component-label" x="290" y="306" text-anchor="middle">滑动变阻器</text>
+            <g class="edu-variable-resistor" aria-label="滑动变阻器使用滑片接线柱与左固定接线柱串联接入">
+              <rect class="resistor-body" x="230" y="242" width="120" height="36"></rect>
+              <line class="rheostat-active-track" x1="230" y1="271" x2="${rheostatSliderX}" y2="271"></line>
+              <circle class="rheostat-terminal connected" cx="230" cy="260" r="4.5"></circle>
+              <circle class="rheostat-terminal" cx="350" cy="260" r="4.5"></circle>
+              <path class="rheostat-terminal-lead" d="M390 260V210"></path>
+              <circle class="rheostat-terminal connected" cx="390" cy="210" r="4.5"></circle>
+              <line class="slider-arrow" x1="390" y1="210" x2="${rheostatSliderX}" y2="242"></line>
+              <path class="slider-arrow-head" d="M${rheostatSliderX} 242L${rheostatSliderX + 12} 234M${rheostatSliderX} 242L${rheostatSliderX + 13} 244"></path>
+              <circle class="rheostat-contact" cx="${rheostatSliderX}" cy="242" r="3.5"></circle>
+              <text class="component-symbol" x="290" y="265" text-anchor="middle">Rₚ</text>
+              <text class="rheostat-connection-label" x="290" y="307" text-anchor="middle">接线：滑片端接左固定端</text>
             </g>
 
             <g class="edu-lamp" aria-label="小灯泡，符号为圆圈内交叉线">
-              <circle class="lamp-halo" cx="550" cy="260" r="52"></circle>
-              <circle class="lamp-circle" cx="550" cy="260" r="38"></circle>
-              <line class="lamp-filament" x1="526" y1="236" x2="574" y2="284"></line>
-              <line class="lamp-filament" x1="574" y1="236" x2="526" y2="284"></line>
-              <text class="component-label" x="550" y="319" text-anchor="middle">小灯泡 · P=${fmt(power, 2)}W</text>
+              <circle class="lamp-halo" cx="550" cy="260" r="44"></circle>
+              <circle class="lamp-circle" cx="550" cy="260" r="32"></circle>
+              <line class="lamp-filament" x1="530" y1="240" x2="570" y2="280"></line>
+              <line class="lamp-filament" x1="570" y1="240" x2="530" y2="280"></line>
+              <text class="component-label" x="550" y="307" text-anchor="middle">小灯泡</text>
             </g>
 
             <g class="edu-voltmeter-branch" aria-label="电压表并联在小灯泡两端">
@@ -541,7 +559,10 @@
                 <circle cx="550" cy="354" r="30"></circle>
                 <text class="meter-letter" x="550" y="363" text-anchor="middle">V</text>
               </g>
-              <text class="component-value" x="626" y="361">${fmt(voltage, 1)}V</text>
+              <g class="svg-reading-badge" transform="translate(620 320)">
+                <rect width="92" height="32" rx="10"></rect>
+                <text x="46" y="21" text-anchor="middle">${fmt(voltage, 1)}&#8239;V</text>
+              </g>
             </g>
           </svg>`);
       },
@@ -559,24 +580,29 @@
       keywords: /串联|滑动变阻器|动态电路|电压表|电流表|电阻变大|电阻变小|R1|R2|R₁|R₂|总电阻/,
       params: [
         { label: "电源电压 U", desc: "调整电源电压", unit: "V", min: 3, max: 12, step: 1, value: 6 },
-        { label: "滑变电阻 R₂", desc: "调整滑动变阻器阻值", unit: "Ω", min: 2, max: 20, step: 1, value: 8 }
+        { label: "滑变接入阻值 R₂", desc: "移动滑片，改变接入电阻丝长度", unit: "Ω", min: 2, max: 20, step: 1, value: 8 }
       ],
       parse: {
         p1: [/(?:电源电压|电压|U)\D{0,8}(\d+(?:\.\d+)?)\s*V/i],
         p2: [/(?:滑动变阻器|滑变|R2|R₂|电阻)\D{0,8}(\d+(?:\.\d+)?)\s*(?:欧|Ω)/i]
       },
       failMessage: "当前串联动态模板需要识别电源电压和滑动变阻器阻值，例如：电源6V，滑变8Ω。",
-      question: (p1, p2) => `R₁=4Ω 与滑动变阻器 R₂ 串联，电源电压为 ${fmt(p1)}V，R₂=${fmt(p2)}Ω。求电路电流和 R₂ 两端电压。`,
+      question: (p1, p2) => `R₁=4Ω 与滑动变阻器 R₂ 串联，电源电压为 ${fmt(p1)}V，R₂ 接入电路的阻值为 ${fmt(p2)}Ω。求电路电流和 R₂ 两端电压。`,
       model: (u, r2) => {
         const r1 = 4;
         const current = u / (r1 + r2);
+        const v1 = current * r1;
         const v2 = current * r2;
         return {
           visual: "visual-series",
           metrics: [u, r2, current],
           metricUnit: "A",
-          facts: [fact("总电阻", `${fmt(r1 + r2)} Ω`), fact("电流", `${fmt(current, 2)} A`), fact("U₂", `${fmt(v2, 2)} V`)],
-          conclusion: `串联电路总电阻为 ${fmt(r1 + r2)}Ω，电流为 ${fmt(current, 2)}A，R₂ 分得 ${fmt(v2, 2)}V。`,
+          facts: [
+            fact("总电阻", `${fmt(r1 + r2)} Ω`),
+            fact("电流", `${fmt(current, 2)} A`),
+            fact("电压分配", `U₁ ${fmt(v1, 2)} V · U₂ ${fmt(v2, 2)} V`)
+          ],
+          conclusion: `串联总电阻 ${fmt(r1 + r2)}Ω，电流 ${fmt(current, 2)}A；R₁ 两端 ${fmt(v1, 2)}V，R₂ 两端 ${fmt(v2, 2)}V。`,
           formula: "I = U / (R₁ + R₂)",
           formulaDetail: `${fmt(u)} ÷ (4 + ${fmt(r2)}) = ${fmt(current, 2)}A`,
           readout: `I = ${fmt(current, 2)}A`,
@@ -588,63 +614,83 @@
         const r2 = model.metrics[1];
         const current = model.metrics[2];
         const slider = clamp((r2 - 2) / 18, 0, 1);
-        const sliderX = 444 + slider * 92;
+        const sliderX = 432 + slider * 116;
         const v2 = current * r2;
+        const pulseDuration = fmt(4.1 - clamp(current / 1.5, .08, 1) * 2, 2);
         return genericShell(model, `
           <div class="circuit-standard-badge generic-circuit-badge">教材电路图 · R₁、R₂ 串联 · 电压表测 R₂</div>
           <svg class="edu-circuit-svg generic-edu-circuit series-circuit-schematic" viewBox="0 0 760 400" role="img" aria-label="串联动态电路：电源、开关、电流表、定值电阻和滑动变阻器串联，电压表并联在滑动变阻器两端">
             <g class="edu-wire">
-              <path d="M105 145V76H205"></path>
-              <path d="M270 76H431"></path>
-              <path d="M499 76H650V270H560"></path>
+              <path d="M105 145V76H210"></path>
+              <path d="M277 76H431"></path>
+              <path d="M499 76H650V220H590"></path>
               <path d="M420 270H320"></path>
               <path d="M200 270H105V175"></path>
+            </g>
+            <g class="circuit-current-pulses" aria-hidden="true">
+              <circle class="circuit-current-pulse" r="5"><animateMotion dur="${pulseDuration}s" repeatCount="indefinite" path="M105 145V76H210L265 66L277 76H431"></animateMotion></circle>
+              <circle class="circuit-current-pulse" r="5"><animateMotion dur="${pulseDuration}s" begin=".55s" repeatCount="indefinite" path="M499 76H650V220H590"></animateMotion></circle>
+              <circle class="circuit-current-pulse" r="5"><animateMotion dur="${pulseDuration}s" begin="1.1s" repeatCount="indefinite" path="M590 220L${sliderX} 252L420 270"></animateMotion></circle>
+              <circle class="circuit-current-pulse" r="5"><animateMotion dur="${pulseDuration}s" begin="1.65s" repeatCount="indefinite" path="M420 270H200H105V175"></animateMotion></circle>
             </g>
 
             <g class="edu-source" aria-label="电源">
               <line class="source-long" x1="73" y1="145" x2="137" y2="145"></line>
               <line class="source-short" x1="86" y1="175" x2="124" y2="175"></line>
-              <text class="polarity positive" x="63" y="150">+</text>
-              <text class="polarity negative" x="71" y="184">−</text>
-              <text class="component-label" x="105" y="211" text-anchor="middle">电源 ${fmt(voltage)}V</text>
+              <text class="polarity positive" x="149" y="151">+</text>
+              <text class="polarity negative" x="137" y="181">−</text>
+              <text class="circuit-reading-text" x="28" y="211">U = ${fmt(voltage)}V</text>
             </g>
 
             <g class="edu-switch edu-switch-closed" aria-label="闭合开关">
               <circle cx="210" cy="76" r="5"></circle>
-              <circle cx="265" cy="76" r="5"></circle>
-              <line x1="215" y1="76" x2="260" y2="76"></line>
-              <text class="component-label" x="238" y="48" text-anchor="middle">开关 S</text>
+              <circle cx="265" cy="66" r="5"></circle>
+              <line class="switch-blade" x1="215" y1="76" x2="260" y2="67"></line>
+              <line class="switch-terminal-lead" x1="270" y1="66" x2="277" y2="76"></line>
+              <text class="component-label switch-label" x="238" y="42" text-anchor="middle">开关 S · 闭合</text>
             </g>
 
             <g class="edu-meter" aria-label="电流表串联">
               <circle cx="465" cy="76" r="34"></circle>
               <text class="meter-letter" x="465" y="85" text-anchor="middle">A</text>
-              <text class="component-value" x="465" y="130" text-anchor="middle">${fmt(current, 2)}A</text>
+              <g class="svg-reading-badge" transform="translate(505 104)">
+                <rect width="92" height="32" rx="10"></rect>
+                <text x="46" y="21" text-anchor="middle">${fmt(current, 2)}A</text>
+              </g>
             </g>
 
             <g class="edu-resistor" aria-label="定值电阻 R1">
               <rect class="resistor-body" x="200" y="252" width="120" height="36"></rect>
-              <text class="component-symbol" x="260" y="276" text-anchor="middle">R₁</text>
-              <text class="component-value" x="260" y="316" text-anchor="middle">4Ω</text>
+              <text class="component-body-value" x="260" y="276" text-anchor="middle">R₁ = 4Ω</text>
             </g>
 
-            <g class="edu-variable-resistor" aria-label="滑动变阻器 R2">
-              <rect x="420" y="252" width="140" height="36"></rect>
-              <line class="slider-arrow" x1="${sliderX - 35}" y1="216" x2="${sliderX}" y2="252"></line>
-              <path class="slider-arrow-head" d="M${sliderX} 252L${sliderX - 14} 247M${sliderX} 252L${sliderX - 5} 238"></path>
-              <text class="component-symbol" x="490" y="276" text-anchor="middle">R₂</text>
-              <text class="component-value" x="490" y="316" text-anchor="middle">${fmt(r2)}Ω</text>
+            <g class="edu-variable-resistor" aria-label="滑动变阻器 R2 使用滑片接线柱与左固定接线柱接入，当前接入阻值 ${fmt(r2)} 欧姆">
+              <rect class="resistor-body" x="420" y="252" width="140" height="36"></rect>
+              <line class="rheostat-active-track" x1="420" y1="282" x2="${sliderX}" y2="282"></line>
+              <circle class="rheostat-terminal connected" cx="420" cy="270" r="4.5"></circle>
+              <circle class="rheostat-terminal" cx="560" cy="270" r="4.5"></circle>
+              <path class="rheostat-terminal-lead" d="M650 220H590"></path>
+              <circle class="rheostat-terminal connected" cx="590" cy="220" r="4.5"></circle>
+              <line class="slider-arrow" x1="590" y1="220" x2="${sliderX}" y2="252"></line>
+              <path class="slider-arrow-head" d="M${sliderX} 252L${sliderX + 13} 244M${sliderX} 252L${sliderX + 14} 254"></path>
+              <circle class="rheostat-contact" cx="${sliderX}" cy="252" r="3.5"></circle>
+              <text class="component-body-value" x="490" y="275" text-anchor="middle">R₂</text>
+              <text class="rheostat-connection-label" x="505" y="197" text-anchor="middle">接线：滑片端接左固定端</text>
+              <text class="rheostat-state-label" x="490" y="310" text-anchor="middle">当前接入：${fmt(r2)}Ω</text>
             </g>
 
             <g class="edu-voltmeter-branch" aria-label="电压表并联在 R2 两端">
-              <path class="edu-wire" d="M390 270V360H456M524 360H590V270"></path>
+              <path class="edu-wire" d="M390 270V360H456M524 360H620V220"></path>
               <circle class="junction" cx="390" cy="270" r="5"></circle>
-              <circle class="junction" cx="590" cy="270" r="5"></circle>
+              <circle class="junction" cx="620" cy="220" r="5"></circle>
               <g class="edu-meter">
                 <circle cx="490" cy="360" r="34"></circle>
                 <text class="meter-letter" x="490" y="369" text-anchor="middle">V</text>
               </g>
-              <text class="component-value" x="545" y="368">${fmt(v2, 2)}V</text>
+              <g class="svg-reading-badge" transform="translate(606 328)">
+                <rect width="112" height="32" rx="10"></rect>
+                <text x="56" y="21" text-anchor="middle">U₂ = ${fmt(v2, 2)}V</text>
+              </g>
             </g>
           </svg>`);
       },

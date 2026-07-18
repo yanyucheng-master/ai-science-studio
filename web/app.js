@@ -3361,15 +3361,19 @@ function updateSubjectVisuals(values) {
     const model = values.circuit || circuitModel();
     elements.scene.style.setProperty("--circuit-current", String(clamp(model.current / 4, 0.12, 1)));
     elements.scene.style.setProperty("--circuit-speed", `${3.8 - clamp(model.current / 4, 0.12, 1) * 1.9}s`);
-    if (elements.circuitVoltageText) elements.circuitVoltageText.textContent = `${smartNumber(model.voltage)}V`;
+    if (elements.circuitVoltageText) elements.circuitVoltageText.textContent = `U = ${smartNumber(model.voltage)}V`;
     if (elements.circuitVoltmeterText) elements.circuitVoltmeterText.textContent = `${smartNumber(model.voltage)}V`;
-    if (elements.circuitResistanceText) elements.circuitResistanceText.textContent = `${smartNumber(model.resistance)}Ω`;
+    if (elements.circuitResistanceText) elements.circuitResistanceText.textContent = `R = ${smartNumber(model.resistance)}Ω`;
     if (elements.circuitCurrentText) elements.circuitCurrentText.textContent = `${smartNumber(model.current, 2)}A`;
     if (elements.circuitResultText) elements.circuitResultText.textContent = `I = ${smartNumber(model.voltage)} ÷ ${smartNumber(model.resistance)} = ${smartNumber(model.current, 2)}A`;
     if (elements.circuitReadoutVoltage) elements.circuitReadoutVoltage.textContent = `${smartNumber(model.voltage)}V`;
     if (elements.circuitReadoutResistance) elements.circuitReadoutResistance.textContent = `${smartNumber(model.resistance)}Ω`;
     if (elements.circuitReadoutCurrent) elements.circuitReadoutCurrent.textContent = `${smartNumber(model.current, 2)}A`;
     if (elements.circuitPowerText) elements.circuitPowerText.textContent = `${smartNumber(model.power, 1)}W`;
+    const pulseDuration = 3.8 - clamp(model.current / 4, 0.12, 1) * 1.9;
+    document.querySelectorAll("#circuitStage .current-pulse-motion").forEach((motion) => {
+      motion.setAttribute("dur", `${smartNumber(pulseDuration, 2)}s`);
+    });
     if (elements.circuitResistor) {
       elements.circuitResistor.style.setProperty("--resistor-heat", String(model.brightness));
     }
