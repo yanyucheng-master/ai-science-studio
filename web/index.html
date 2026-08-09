@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231648e6'/%3E%3Cpath d='M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260808-ai-tutor-1">
+  <link rel="stylesheet" href="styles.css?v=20260810-ai-visual-1">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -43,9 +43,9 @@
       </header>
 
       <section class="prompt-panel">
-        <div class="prompt-icon">
+        <button class="prompt-icon prompt-favorite-button" id="promptFavoriteButton" type="button" aria-label="收藏当前实验" aria-pressed="false" title="收藏当前实验">
           <svg viewBox="0 0 24 24"><path d="m12 3 1.8 4.8L19 9.5l-4.2 3.1 1.5 5-4.3-3-4.3 3 1.5-5L5 9.5l5.2-1.7z"/></svg>
-        </div>
+        </button>
         <div class="prompt-main">
           <div class="prompt-label">
             <span>AI 习题即时建模</span>
@@ -153,7 +153,7 @@
               <p id="problemText">输入题目并点击“生成实验”后，这里会构建对应的可视化实验。</p>
             </div>
             <div class="header-tools">
-              <button class="square-button" id="favoriteButton" aria-label="收藏实验">
+              <button class="square-button" id="favoriteButton" aria-label="收藏当前实验" aria-pressed="false">
                 <svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>
               </button>
               <button class="square-button" id="shareButton" aria-label="分享实验">
@@ -624,11 +624,19 @@
 
           <section class="mentor-card card">
             <div class="mentor-head">
-              <div class="mascot">
-                <div class="ear left"></div><div class="ear right"></div>
-                <div class="mane"></div>
-                <div class="face"><i></i><i></i><b></b><span></span></div>
-                <em>AI</em>
+              <div class="mentor-prism mentor-prism-compact" role="img" aria-label="大师实验室 AI 导师标志" tabindex="0">
+                <span class="mentor-prism-aura" aria-hidden="true"></span>
+                <svg class="mentor-prism-glyph" viewBox="0 0 48 48" aria-hidden="true">
+                  <path class="mentor-prism-input" d="M5 24h12" />
+                  <path class="mentor-prism-shell" d="m18 9 17 15-17 15Z" />
+                  <path class="mentor-prism-output output-one" d="M34 24 44 14" />
+                  <path class="mentor-prism-output output-two" d="M34 24h11" />
+                  <path class="mentor-prism-output output-three" d="m34 24 10 10" />
+                  <circle class="mentor-prism-node" cx="8" cy="24" r="2" />
+                  <path class="mentor-prism-glint" d="M36 7v6M33 10h6" />
+                </svg>
+                <span class="mentor-prism-orbit" aria-hidden="true"><i></i><i></i></span>
+                <span class="mentor-prism-badge" aria-hidden="true">AI</span>
               </div>
               <div>
                 <span class="online"><i></i> AI 导师在线</span>
@@ -649,26 +657,36 @@
             <div class="mentor-feedback" id="mentorFeedback" aria-live="polite"></div>
           </section>
 
-          <section class="history-card card">
-            <div class="history-header"><h3>最近实验</h3><button data-toast="已展开全部实验">查看全部</button></div>
-            <button class="history-item" data-subject="物理" data-question="一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。">
-              <span class="history-visual brake"><i></i></span>
-              <div><strong>运动学实验记录</strong><small>物理 · 昨天 21:36</small></div>
-              <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-            <button class="history-item" data-subject="化学" data-question="将 5.6g 铁粉加入含有 0.20mol 硫酸铜的溶液中，充分反应。请计算最多生成多少 mol 铜？生成铜的质量是多少？并判断哪种反应物过量。">
-              <span class="history-visual flask"><i></i></span>
-              <div><strong>铁与硫酸铜定量反应</strong><small>化学 · 典型题型模板</small></div>
-              <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
+          <section class="history-card favorites-card card" aria-labelledby="favoritesTitle">
+            <div class="history-header">
+              <h3 id="favoritesTitle">已收藏的实验</h3>
+              <span class="favorite-count" id="favoriteCount">2 个</span>
+            </div>
+            <div class="favorite-list" id="favoriteList" aria-live="polite"></div>
+            <div class="favorite-empty" id="favoriteEmpty" hidden>
+              <span>☆</span>
+              <strong>还没有收藏实验</strong>
+              <small>生成实验后，点击上方星标即可收藏。</small>
+            </div>
           </section>
         </aside>
 
         <section class="ai-tutor-workspace card" id="aiTutorWorkspace" aria-hidden="true">
           <header class="ai-tutor-header">
             <div class="ai-tutor-identity">
-              <div class="ai-tutor-avatar" aria-hidden="true">
-                <span>大狮</span><i>AI</i>
+              <div class="mentor-prism mentor-prism-large ai-tutor-avatar" role="img" aria-label="大师实验室 AI 导师标志" tabindex="0">
+                <span class="mentor-prism-aura" aria-hidden="true"></span>
+                <svg class="mentor-prism-glyph" viewBox="0 0 48 48" aria-hidden="true">
+                  <path class="mentor-prism-input" d="M5 24h12" />
+                  <path class="mentor-prism-shell" d="m18 9 17 15-17 15Z" />
+                  <path class="mentor-prism-output output-one" d="M34 24 44 14" />
+                  <path class="mentor-prism-output output-two" d="M34 24h11" />
+                  <path class="mentor-prism-output output-three" d="m34 24 10 10" />
+                  <circle class="mentor-prism-node" cx="8" cy="24" r="2" />
+                  <path class="mentor-prism-glint" d="M36 7v6M33 10h6" />
+                </svg>
+                <span class="mentor-prism-orbit" aria-hidden="true"><i></i><i></i></span>
+                <span class="mentor-prism-badge" aria-hidden="true">AI</span>
               </div>
               <div>
                 <span class="online"><i></i> AI 导师在线</span>
@@ -707,7 +725,7 @@
           </div>
 
           <form class="ai-tutor-composer" id="aiTutorForm">
-            <label for="aiTutorInput">向大狮提问</label>
+            <label for="aiTutorInput">向大师 AI 导师提问</label>
             <div>
               <textarea id="aiTutorInput" rows="2" maxlength="2000" placeholder="例如：为什么这里不能直接代入？"></textarea>
               <button class="ai-tutor-stop" id="aiTutorStopButton" type="button">停止</button>
@@ -751,7 +769,7 @@
   <div class="toast" id="toast"><span></span><p>操作成功</p></div>
 
   <script src="physics-extra.js?v=20260808-ai-tutor-1"></script>
-  <script src="app.js?v=20260808-ai-tutor-1"></script>
-  <script src="ai-tutor.js?v=20260808-ai-tutor-1"></script>
+  <script src="app.js?v=20260809-favorites-1"></script>
+  <script src="ai-tutor.js?v=20260810-ai-visual-1"></script>
 </body>
 </html>

@@ -297,9 +297,9 @@
     return {
       title: titles[responseLevel] || "正在理解你的问题",
       stages: [
-        "读取当前题目与实验上下文",
-        "等待 AI 返回结构化教学内容",
-        "返回后将校验公式字段与输出格式"
+        "正在读取题目条件与实验上下文",
+        "正在组织公式、概念与讲解顺序",
+        "正在核对单位、表达与结论"
       ]
     };
   }
@@ -311,9 +311,16 @@
     const stage = state.pendingNode.querySelector(".ai-thinking-stage");
     const elapsed = state.pendingNode.querySelector(".ai-thinking-elapsed");
     const longWait = state.pendingNode.querySelector(".ai-thinking-long-wait");
+    const card = state.pendingNode.querySelector(".ai-thinking-card");
+    const phases = state.pendingNode.querySelectorAll(".ai-thinking-phase");
     if (stage) stage.textContent = copy.stages[stageIndex];
     if (elapsed) elapsed.textContent = elapsedSeconds < 1 ? "刚刚开始" : `已等待 ${elapsedSeconds} 秒`;
     if (longWait) longWait.hidden = elapsedSeconds < 12;
+    if (card) card.dataset.stage = String(stageIndex);
+    phases.forEach((phase, index) => {
+      phase.classList.toggle("is-active", index === stageIndex);
+      phase.classList.toggle("is-complete", index < stageIndex);
+    });
   }
 
   function addPendingMessage(responseLevel = "hint") {
@@ -327,24 +334,26 @@
 
     const bubble = createElement("div", "ai-message-bubble ai-thinking-card");
     const header = createElement("div", "ai-thinking-header");
-    header.append(createElement("span", "ai-message-source", "大狮 · AI 导师"));
-    const badge = createElement("span", "ai-thinking-badge", "思考中");
+    header.append(createElement("span", "ai-message-source", "大师 · AI 导师"));
+    const badge = createElement("span", "ai-thinking-badge", "正在思考");
     badge.prepend(createElement("i"));
     header.append(badge);
 
     const body = createElement("div", "ai-thinking-body");
     const visual = createElement("div", "ai-thinking-visual");
     visual.setAttribute("aria-hidden", "true");
-    const orbit = createElement("div", "ai-thinking-orbit");
-    orbit.append(
-      createElement("span", "ai-thinking-ring ring-one"),
-      createElement("span", "ai-thinking-ring ring-two"),
-      createElement("span", "ai-thinking-node node-one"),
-      createElement("span", "ai-thinking-node node-two"),
-      createElement("span", "ai-thinking-node node-three"),
-      createElement("span", "ai-thinking-core", "AI")
+    const field = createElement("div", "ai-thinking-field");
+    field.append(
+      createElement("span", "ai-thinking-halo halo-one"),
+      createElement("span", "ai-thinking-halo halo-two"),
+      createElement("span", "ai-thinking-beam beam-input"),
+      createElement("span", "ai-thinking-prism-shape"),
+      createElement("span", "ai-thinking-beam beam-output output-one"),
+      createElement("span", "ai-thinking-beam beam-output output-two"),
+      createElement("span", "ai-thinking-beam beam-output output-three"),
+      createElement("span", "ai-thinking-glint")
     );
-    visual.append(orbit);
+    visual.append(field);
 
     const copyNode = createElement("div", "ai-thinking-copy");
     copyNode.append(createElement("strong", "", copy.title));
@@ -360,10 +369,15 @@
     copyNode.append(longWait);
     body.append(visual, copyNode);
 
-    const track = createElement("div", "ai-thinking-track");
-    track.setAttribute("aria-hidden", "true");
-    track.append(createElement("span"));
-    bubble.append(header, body, track);
+    const phases = createElement("div", "ai-thinking-phases");
+    phases.setAttribute("aria-hidden", "true");
+    ["理解题意", "组织推理", "校验表达"].forEach((label, index) => {
+      const phase = createElement("span", "ai-thinking-phase", label);
+      phase.dataset.phase = String(index);
+      phase.prepend(createElement("i"));
+      phases.append(phase);
+    });
+    bubble.append(header, body, phases);
     row.append(bubble);
     elements.messages.append(row);
     state.pendingNode = row;
@@ -465,7 +479,7 @@
     elements.empty.hidden = true;
     const row = createElement("div", `ai-message ${role}${options.error ? " error" : ""}`);
     const bubble = createElement("div", "ai-message-bubble");
-    bubble.append(createElement("span", "ai-message-source", role === "user" ? "你" : options.source === "local_fallback" ? "大狮 · 本地提示" : "大狮 · AI 导师"));
+    bubble.append(createElement("span", "ai-message-source", role === "user" ? "你" : options.source === "local_fallback" ? "大师 · 本地提示" : "大师 · AI 导师"));
     if (role === "user") {
       bubble.append(createElement("p", "", text(payload)));
       state.messages.push({ role, content: text(payload) });

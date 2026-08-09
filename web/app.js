@@ -156,6 +156,26 @@ const SUBJECTS = {
   }
 };
 
+const FAVORITES_STORAGE_KEY = "master-lab-favorites-v1";
+const FAVORITE_LIMIT = 8;
+const FAVORITE_VISUALS = new Set(["brake", "gravity", "solenoid", "circuit", "flask", "math", "cell", "physics"]);
+const DEFAULT_FAVORITES = Object.freeze([
+  {
+    subject: "物理",
+    question: SUBJECTS["物理"].question,
+    title: "刹车距离实验 · 速度如何归零",
+    detail: "物理 · 运动学模板",
+    visual: "brake"
+  },
+  {
+    subject: "化学",
+    question: SUBJECTS["化学"].question,
+    title: "铁与硫酸铜定量反应",
+    detail: "化学 · 定量反应模板",
+    visual: "flask"
+  }
+]);
+
 const state = {
   subject: "物理",
   playing: false,
@@ -524,6 +544,150 @@ function config() {
   return SUBJECTS[state.subject];
 }
 
+function normalizeFavoriteQuestion(question) {
+  return String(question || "").replace(/\s+/g, " ").trim().slice(0, 1200);
+}
+
+function favoriteRecordId(subject, question) {
+  return `${subject}::${encodeURIComponent(normalizeFavoriteQuestion(question))}`;
+}
+
+function sanitizeFavoriteRecord(record) {
+  const subject = typeof record?.subject === "string" && SUBJECTS[record.subject] ? record.subject : "";
+  const question = normalizeFavoriteQuestion(record?.question);
+  if (!subject || !question) return null;
+  const title = String(record?.title || SUBJECTS[subject].title || "已收藏实验").trim().slice(0, 80);
+  const detail = String(record?.detail || `${subject} · 典型题型模板`).trim().slice(0, 80);
+  const visual = FAVORITE_VISUALS.has(record?.visual) ? record.visual : subject === "化学" ? "flask" : subject === "数学" ? "math" : subject === "生物" ? "cell" : "physics";
+  return { id: favoriteRecordId(subject, question), subject, question, title, detail, visual };
+}
+
+function loadFavoriteRecords() {
+  try {
+    const stored = window.localStorage.getItem(FAVORITES_STORAGE_KEY);
+    const source = stored === null ? DEFAULT_FAVORITES : JSON.parse(stored);
+    if (!Array.isArray(source)) return DEFAULT_FAVORITES.map(sanitizeFavoriteRecord).filter(Boolean);
+    return source.map(sanitizeFavoriteRecord).filter(Boolean).slice(0, FAVORITE_LIMIT);
+  } catch {
+    return DEFAULT_FAVORITES.map(sanitizeFavoriteRecord).filter(Boolean);
+  }
+}
+
+function persistFavoriteRecords() {
+  try {
+    window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteRecords));
+  } catch {
+    showToast("收藏已更新，但当前浏览器无法长期保存");
+  }
+}
+
+function favoriteVisualForCurrentExperiment() {
+  if (state.subject === "化学") return "flask";
+  if (state.subject === "数学") return "math";
+  if (state.subject === "生物") return "cell";
+  if (state.physicsTemplate === "solenoid") return "solenoid";
+  if (state.physicsTemplate === "circuit") return "circuit";
+  if (state.physicsTemplate === "projectile") return "gravity";
+  if (state.physicsTemplate === "brake" || state.physicsTemplate === "boardSlider") return "brake";
+  return "physics";
+}
+
+function currentFavoriteRecord() {
+  const question = normalizeFavoriteQuestion(state.generatedQuestion);
+  if (!state.hasGenerated || !question) return null;
+  const subject = state.subject;
+  const title = String($("#experimentTitle")?.textContent || config()?.title || "实验记录").trim();
+  const engine = String($("#engineBadge")?.textContent || "典型题型模板").trim();
+  return sanitizeFavoriteRecord({
+    subject,
+    question,
+    title,
+    detail: `${subject} · ${engine}`,
+    visual: favoriteVisualForCurrentExperiment()
+  });
+}
+
+function createFavoriteChevron() {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("aria-hidden", "true");
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", "m9 18 6-6-6-6");
+  svg.append(path);
+  return svg;
+}
+
+function renderFavoriteList() {
+  const list = $("#favoriteList");
+  const empty = $("#favoriteEmpty");
+  const count = $("#favoriteCount");
+  if (!list || !empty || !count) return;
+
+  count.textContent = `${favoriteRecords.length} 个`;
+  empty.hidden = favoriteRecords.length > 0;
+  list.replaceChildren();
+
+  favoriteRecords.forEach(record => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "history-item favorite-item";
+    button.dataset.favoriteId = record.id;
+    button.dataset.subject = record.subject;
+    button.dataset.question = record.question;
+    button.setAttribute("aria-label", `载入收藏实验：${record.title}`);
+
+    const visual = document.createElement("span");
+    visual.className = `history-visual ${record.visual}`;
+    visual.setAttribute("aria-hidden", "true");
+
+    const copy = document.createElement("div");
+    const title = document.createElement("strong");
+    const detail = document.createElement("small");
+    title.textContent = record.title;
+    detail.textContent = record.detail;
+    copy.append(title, detail);
+
+    button.append(visual, copy, createFavoriteChevron());
+    list.append(button);
+  });
+}
+
+function syncFavoriteState() {
+  const current = currentFavoriteRecord();
+  state.favorite = Boolean(current && favoriteRecords.some(record => record.id === current.id));
+  $$(".favorite-item").forEach(item => {
+    item.classList.toggle("current", Boolean(current && item.dataset.favoriteId === current.id));
+  });
+  [$("#promptFavoriteButton"), $("#favoriteButton")].filter(Boolean).forEach(button => {
+    button.classList.toggle("selected", state.favorite);
+    button.setAttribute("aria-pressed", String(state.favorite));
+    const label = !state.hasGenerated ? "生成实验后可收藏" : state.favorite ? "取消收藏当前实验" : "收藏当前实验";
+    button.setAttribute("aria-label", label);
+    button.title = label;
+  });
+}
+
+function toggleCurrentFavorite() {
+  const current = currentFavoriteRecord();
+  if (!current) {
+    showToast("请先生成实验，再收藏当前实验");
+    return;
+  }
+  const index = favoriteRecords.findIndex(record => record.id === current.id);
+  if (index >= 0) {
+    favoriteRecords.splice(index, 1);
+  } else {
+    favoriteRecords.unshift(current);
+    favoriteRecords = favoriteRecords.slice(0, FAVORITE_LIMIT);
+  }
+  persistFavoriteRecords();
+  renderFavoriteList();
+  syncFavoriteState();
+  showToast(state.favorite ? "已收藏到右侧实验列表" : "已取消收藏");
+}
+
+let favoriteRecords = loadFavoriteRecords();
+
 function updateSubjectBodyClass(subject = state.subject) {
   document.body.classList.toggle("subject-physics-active", subject === "物理");
   document.body.classList.toggle("subject-chemistry-active", subject === "化学");
@@ -559,6 +723,7 @@ function saveCurrentSubjectSnapshot() {
     cellRotateX: state.cellRotateX,
     cellRotateY: state.cellRotateY
   };
+  syncFavoriteState();
 }
 
 function restoreSubjectSnapshot(subject) {
@@ -3709,6 +3874,7 @@ function syncPhysicsQuestionFromState() {
   $("#questionInput").value = question;
   $("#problemText").textContent = question;
   state.generatedQuestion = question;
+  syncFavoriteState();
   return question;
 }
 
@@ -3721,6 +3887,7 @@ function syncSubjectQuestionFromState(subject = state.subject) {
   $("#questionInput").value = question;
   $("#problemText").textContent = question;
   state.generatedQuestion = question;
+  syncFavoriteState();
   return question;
 }
 
@@ -3839,6 +4006,7 @@ function applyWaitingState(subject = state.subject, options = {}) {
   elements.currentTime.textContent = "00:00";
   elements.timeline.value = 0;
   renderWaitingReasoning();
+  syncFavoriteState();
 }
 
 function updateParameters(reset = true, options = {}) {
@@ -4272,7 +4440,6 @@ function applySubject(subject, updateQuestion = true, options = {}) {
     resetBiologyCellModel();
   }
   state.reasonStep = 1;
-  state.favorite = false;
   updateFormulaSpotlight(subject);
   hideMentorFeedback();
   const current = config();
@@ -4310,7 +4477,6 @@ function applySubject(subject, updateQuestion = true, options = {}) {
   });
 
   elements.mentorMessage.innerHTML = current.mentor;
-  $("#favoriteButton").classList.remove("selected");
   renderReasoning();
   updateParameters();
   refreshGeneratedSubjectSurface(subject);
@@ -4328,6 +4494,7 @@ function applySubject(subject, updateQuestion = true, options = {}) {
       biologyTemplateRecognition()
     );
   }
+  syncFavoriteState();
   dispatchAIContextChanged();
 }
 
@@ -5571,6 +5738,7 @@ $("#challengeButton").addEventListener("click", () => {
     setReasoningStep(3, `<span>变式挑战</span>题目参数已更新，先预测停止距离会怎样变化。`);
     elements.mentorMessage.innerHTML = `我已把题目改成初速度 <strong>${smartNumber(nextV)}m/s</strong>、加速度 <strong>−${smartNumber(nextA)}m/s²</strong>。先别急着播放，预测一下停止距离为什么会变成 <strong>${smartNumber(next.stopDistance)}m</strong>？`;
     showMentorChallengeFeedback(previous, next);
+    syncFavoriteState();
     showToast(`变式题已同步：停止距离 ${smartNumber(next.stopDistance)}m`);
     return;
   }
@@ -5623,13 +5791,13 @@ $("#challengeButton").addEventListener("click", () => {
   showToast("变式挑战已加载");
 });
 
-$$(".history-item").forEach(item => {
-  item.addEventListener("click", () => {
-    applyWaitingState(item.dataset.subject);
-    $("#questionInput").value = item.dataset.question;
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    showToast(`${item.dataset.subject}历史题目已载入，点击生成实验开始建模`);
-  });
+$("#favoriteList")?.addEventListener("click", event => {
+  const item = event.target.closest(".favorite-item");
+  if (!item) return;
+  applyWaitingState(item.dataset.subject);
+  $("#questionInput").value = item.dataset.question;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  showToast(`${item.dataset.subject}收藏实验已载入，点击生成实验开始建模`);
 });
 
 $("#playbackButton").addEventListener("click", event => {
@@ -5670,10 +5838,8 @@ document.addEventListener("keydown", event => {
   }
 });
 
-$("#favoriteButton").addEventListener("click", event => {
-  state.favorite = !state.favorite;
-  event.currentTarget.classList.toggle("selected", state.favorite);
-  showToast(state.favorite ? "实验已收藏" : "已取消收藏");
+[$("#promptFavoriteButton"), $("#favoriteButton")].filter(Boolean).forEach(button => {
+  button.addEventListener("click", toggleCurrentFavorite);
 });
 
 $("#shareButton").addEventListener("click", async () => {
@@ -5709,6 +5875,8 @@ window.addEventListener("resize", () => {
   }
 });
 
+renderFavoriteList();
+syncFavoriteState();
 updateGreeting();
 applyWaitingState("物理", { presetQuestion: true });
 updatePhysicsPresetOption();
