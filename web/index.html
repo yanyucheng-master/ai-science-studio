@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231648e6'/%3E%3Cpath d='M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260718-electrical-font-13">
+  <link rel="stylesheet" href="styles.css?v=20260808-ai-tutor-1">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -634,7 +634,7 @@
                 <span class="online"><i></i> AI 导师在线</span>
                 <h3>关键追问</h3>
               </div>
-              <button data-toast="已展开导师对话" aria-label="展开对话">
+              <button id="mentorExpandButton" type="button" aria-label="展开 AI 导师对话">
                 <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
               </button>
             </div>
@@ -644,6 +644,7 @@
             <div class="mentor-actions">
               <button id="hintButton">给我一点提示</button>
               <button class="primary" id="challengeButton">我想试试看</button>
+              <button class="mentor-open-page" id="mentorOpenPageButton" type="button">进入 AI 问答页</button>
             </div>
             <div class="mentor-feedback" id="mentorFeedback" aria-live="polite"></div>
           </section>
@@ -662,6 +663,64 @@
             </button>
           </section>
         </aside>
+
+        <section class="ai-tutor-workspace card" id="aiTutorWorkspace" aria-hidden="true">
+          <header class="ai-tutor-header">
+            <div class="ai-tutor-identity">
+              <div class="ai-tutor-avatar" aria-hidden="true">
+                <span>大狮</span><i>AI</i>
+              </div>
+              <div>
+                <span class="online"><i></i> AI 导师在线</span>
+                <h2>把疑问拆成下一步</h2>
+                <p id="aiTutorStatus">结合当前题目给提示、追问与分步讲解</p>
+              </div>
+            </div>
+            <div class="ai-tutor-header-actions">
+              <button class="ai-tutor-back" id="aiTutorBackButton" type="button">返回实验</button>
+              <button id="aiTutorPageButton" type="button">独立问答</button>
+              <button class="icon-button" id="aiTutorCloseButton" type="button" aria-label="收起 AI 导师">
+                <svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+              </button>
+            </div>
+          </header>
+
+          <div class="ai-tutor-context" id="aiTutorContext">
+            <span>当前上下文</span>
+            <strong id="aiTutorContextTitle">等待选择题目</strong>
+            <p id="aiTutorContextText">生成实验后，我会读取题目、参数、公式和当前解题步骤；不会读取页面中的其他信息。</p>
+          </div>
+
+          <div class="ai-tutor-messages" id="aiTutorMessages" aria-live="polite">
+            <div class="ai-tutor-empty" id="aiTutorEmpty">
+              <strong>先说说你卡在哪里</strong>
+              <p>我会先给线索，再根据你的需要展开步骤，不会用一整屏答案把思考淹没。</p>
+            </div>
+          </div>
+
+          <div class="ai-tutor-quick-actions" aria-label="AI 导师快捷操作">
+            <button type="button" data-ai-action="hint">给我一点提示</button>
+            <button type="button" data-ai-action="explain">解释当前步骤</button>
+            <button type="button" data-ai-action="check">检查我的思路</button>
+            <button type="button" data-ai-action="variant">生成一道变式</button>
+            <button type="button" data-ai-action="steps">查看完整步骤</button>
+          </div>
+
+          <form class="ai-tutor-composer" id="aiTutorForm">
+            <label for="aiTutorInput">向大狮提问</label>
+            <div>
+              <textarea id="aiTutorInput" rows="2" maxlength="2000" placeholder="例如：为什么这里不能直接代入？"></textarea>
+              <button class="ai-tutor-stop" id="aiTutorStopButton" type="button">停止</button>
+              <button class="ai-tutor-send" id="aiTutorSendButton" type="submit">发送</button>
+            </div>
+          </form>
+
+          <footer class="ai-tutor-footer">
+            <span>AI 讲解可能存在误差，请结合教材与教师要求核对。</span>
+            <button id="aiTutorRetryButton" type="button">重试上一问</button>
+            <button id="aiTutorClearButton" type="button">清空对话</button>
+          </footer>
+        </section>
       </div>
     </main>
   </div>
@@ -691,7 +750,8 @@
 
   <div class="toast" id="toast"><span></span><p>操作成功</p></div>
 
-  <script src="physics-extra.js?v=20260718-electrical-font-13"></script>
-  <script src="app.js?v=20260718-electrical-font-13"></script>
+  <script src="physics-extra.js?v=20260808-ai-tutor-1"></script>
+  <script src="app.js?v=20260808-ai-tutor-1"></script>
+  <script src="ai-tutor.js?v=20260808-ai-tutor-1"></script>
 </body>
 </html>

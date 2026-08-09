@@ -2,5 +2,33 @@ services:
   - type: web
     name: ai-science-studio
     runtime: static
+    plan: free
     buildCommand: echo "No build step"
     staticPublishPath: web
+
+  - type: web
+    name: master-lab-api
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeployTrigger: off
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
+      - key: DEEPSEEK_API_KEY
+        sync: false
+      - key: DEEPSEEK_BASE_URL
+        value: https://api.deepseek.com
+      - key: ALLOWED_ORIGINS
+        value: https://ai-science-studio.onrender.com
+      - key: REQUEST_TIMEOUT_MS
+        value: 20000
+      - key: THINKING_TIMEOUT_MS
+        value: 75000
+      - key: RATE_LIMIT_MAX
+        value: 30
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 600000

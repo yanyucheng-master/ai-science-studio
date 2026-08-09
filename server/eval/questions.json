@@ -1,0 +1,35 @@
+[
+  {"id":"phy-01","subject":"物理","question":"一小球从20m高处自由落下，不计空气阻力，取g=10m/s²，求落地时间。","mustInclude":["2s"]},
+  {"id":"phy-02","subject":"物理","question":"汽车初速度20m/s，以5m/s²的加速度大小匀减速刹车，求停止距离。","mustInclude":["40m"]},
+  {"id":"phy-03","subject":"物理","question":"一个纯电阻两端电压为6V，电阻为3Ω，求电流。","mustInclude":["2A"]},
+  {"id":"phy-04","subject":"物理","question":"4Ω和8Ω电阻串联接在6V电源上，求电路电流和8Ω电阻两端电压。","mustInclude":["0.5A","4V"]},
+  {"id":"phy-05","subject":"物理","question":"物体浸没在水中排开2×10^-4m³的水，取ρ水=1000kg/m³、g=10N/kg，求浮力。","mustInclude":["2N"]},
+  {"id":"phy-06","subject":"物理","question":"凸透镜焦距10cm，物距30cm，求像距并判断像的性质。","mustInclude":["15cm","倒立","缩小","实像"]},
+  {"id":"phy-07","subject":"物理","question":"水中某点深度为0.20m，取ρ水=1000kg/m³、g=10N/kg，求该点由水产生的压强。","mustInclude":["2000Pa"]},
+  {"id":"phy-08","subject":"物理","question":"小灯泡两端电压2.5V，通过电流0.30A，求实际功率。","mustInclude":["0.75W"]},
+
+  {"id":"chem-01","subject":"化学","question":"将5.6g铁加入含0.20mol硫酸铜的溶液中充分反应，Fe=56g/mol、Cu=64g/mol，判断限量反应物并求铜的物质的量和质量。","mustInclude":["铁","0.10mol","6.4g"]},
+  {"id":"chem-02","subject":"化学","question":"将11.2g铁加入含0.10mol硫酸铜的溶液中充分反应，Fe=56g/mol、Cu=64g/mol，判断限量反应物并求铜的质量。","mustInclude":["硫酸铜","6.4g"]},
+  {"id":"chem-03","subject":"化学","question":"配平氢气在氧气中燃烧生成水的化学方程式，并写出各物质计量数之比。","mustInclude":["2H2","O2","2H2O","2:1:2"]},
+  {"id":"chem-04","subject":"化学","question":"4g氢气与32g氧气恰好完全反应，只生成水。根据质量守恒定律求水的质量。","mustInclude":["36g"]},
+  {"id":"chem-05","subject":"化学","question":"某溶液pH=3，判断其酸碱性，并说明pH与7的关系。","mustInclude":["酸性","小于7"]},
+  {"id":"chem-06","subject":"化学","question":"0.50mol溶质配成2.0L溶液，求物质的量浓度。","mustInclude":["0.25mol/L"]},
+  {"id":"chem-07","subject":"化学","question":"0.10mol碳酸钙与足量盐酸反应，写出方程式并求生成二氧化碳的物质的量。","mustInclude":["CaCO3","2HCl","CO2","0.10mol"]},
+  {"id":"chem-08","subject":"化学","question":"4.8g镁在足量氧气中完全燃烧，M(Mg)=24g/mol、M(MgO)=40g/mol，求氧化镁质量。","mustInclude":["8g"]},
+
+  {"id":"math-01","subject":"数学","question":"函数y=2x²在x=3处的切线斜率是多少？","mustInclude":["12"]},
+  {"id":"math-02","subject":"数学","question":"函数y=lnx在x=1处的导数值是多少？","mustInclude":["1"]},
+  {"id":"math-03","subject":"数学","question":"解方程x²-5x+6=0。","mustInclude":["2","3"]},
+  {"id":"math-04","subject":"数学","question":"一次函数y=-2x+3的斜率是多少？函数随x增大如何变化？","mustInclude":["-2","减小"]},
+  {"id":"math-05","subject":"数学","question":"直角三角形两条直角边分别为3和4，求斜边。","mustInclude":["5"]},
+  {"id":"math-06","subject":"数学","question":"圆的半径为3，求面积，用π表示。","mustInclude":["9π"]},
+  {"id":"math-07","subject":"数学","question":"掷一枚均匀六面骰子一次，点数大于4的概率是多少？","mustInclude":["1/3"]},
+
+  {"id":"bio-01","subject":"生物","question":"典型植物细胞与动物细胞相比，常见的特有或显著结构有哪些？","mustInclude":["细胞壁","叶绿体","液泡"]},
+  {"id":"bio-02","subject":"生物","question":"线粒体的主要功能是什么？","mustInclude":["有氧呼吸","能量"]},
+  {"id":"bio-03","subject":"生物","question":"叶绿体与植物的哪一项重要生理过程直接相关？","mustInclude":["光合作用"]},
+  {"id":"bio-04","subject":"生物","question":"细胞膜控制物质进出体现了什么重要特性？","mustInclude":["选择透过性"]},
+  {"id":"bio-05","subject":"生物","question":"温度降低时，磷脂分子运动和细胞膜流动性通常怎样变化？","mustInclude":["运动减慢","流动性下降"]},
+  {"id":"bio-06","subject":"生物","question":"真核细胞的遗传物质主要储存在哪里，细胞核的核心作用是什么？","mustInclude":["细胞核","遗传信息","控制"]},
+  {"id":"bio-07","subject":"生物","question":"成熟植物细胞放入高浓度外界溶液后，细胞失水时可能出现什么现象？","mustInclude":["质壁分离"]}
+]

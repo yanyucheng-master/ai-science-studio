@@ -1,0 +1,20 @@
+{
+  "name": "master-lab-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared stateless DeepSeek gateway for Master Lab web and HarmonyOS clients",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "start:local": "node --env-file=.env src/server.js",
+    "dev": "node --watch src/server.js",
+    "dev:local": "node --env-file=.env --watch src/server.js",
+    "test": "node --test",
+    "check": "node --check src/server.js && node --check src/config.js && node --check src/deepseek-client.js && node --check src/local-fallback.js && node --check src/protocol.js && node --check scripts/run-eval.js && node --check scripts/run-hard-eval.js",
+    "eval": "node scripts/run-eval.js",
+    "eval:hard": "node scripts/run-hard-eval.js"
+  }
+}

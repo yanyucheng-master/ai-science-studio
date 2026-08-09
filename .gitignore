@@ -13,3 +13,10 @@ outputs/
 Thumbs.db
 desktop.ini
 .netlify/
+
+# AI service secrets and local runtime files
+.env
+server/.env
+server/node_modules/
+server/*.log
+server/eval-results-*.json

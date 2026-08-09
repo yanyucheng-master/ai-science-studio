@@ -3998,7 +3998,157 @@ function updateParameters(reset = true, options = {}) {
     }
   }
   if (reset) resetExperiment();
+  if (state.hasGenerated) dispatchAIContextChanged();
 }
+
+const AI_TEMPLATE_ID_MAP = Object.freeze({
+  brake: "brake",
+  solenoid: "solenoid",
+  boardSlider: "board_slider",
+  projectile: "projectile",
+  circuit: "ohm_circuit",
+  lever: "lever",
+  lens: "lens",
+  buoyancy: "buoyancy",
+  friction: "friction",
+  lampPower: "lamp_power",
+  seriesCircuit: "series_circuit",
+  heatBalance: "heat_balance",
+  liquidPressure: "liquid_pressure",
+  efficiency: "efficiency",
+  sound: "sound"
+});
+
+const AI_PARAMETER_NAMES = Object.freeze({
+  lever: ["leftForce", "leftArm"],
+  lens: ["objectDistance", "focalLength"],
+  buoyancy: ["displacedVolume", "density"],
+  friction: ["normalForce", "frictionCoefficient"],
+  lamp_power: ["voltage", "current"],
+  series_circuit: ["voltage", "resistance"],
+  heat_balance: ["hotWaterMass", "hotTemperature"],
+  liquid_pressure: ["depthCm", "density"],
+  efficiency: ["loadForce", "pullForce"],
+  sound: ["frequency", "amplitudePercent"]
+});
+
+function currentAITemplateId() {
+  if (state.subject === "化学") return "fe_cuso4";
+  if (state.subject === "数学") return "tangent";
+  if (state.subject === "生物") return "cell";
+  return AI_TEMPLATE_ID_MAP[state.physicsTemplate] || "";
+}
+
+function currentAIParameters(templateId = currentAITemplateId()) {
+  if (templateId === "brake") {
+    const model = physicsBrakeModel();
+    return { initialSpeed: model.v0, deceleration: model.aAbs };
+  }
+  if (templateId === "solenoid") return { current: state.p1, turns: state.p2 };
+  if (templateId === "board_slider") return { initialSpeed: state.p1, boardLength: state.p2 };
+  if (templateId === "projectile") return { horizontalSpeed: state.p1, height: state.p2 };
+  if (templateId === "ohm_circuit") return { voltage: state.p1, resistance: state.p2 };
+  if (templateId === "fe_cuso4") return { ironMass: state.p1, copperSulfateMass: state.p2 * 160 };
+  if (templateId === "tangent") return { coefficient: 1, pointX: state.p1 };
+  if (templateId === "cell") return { cellType: state.cellType === "animal" ? 0 : 1 };
+  const parameterNames = AI_PARAMETER_NAMES[templateId];
+  return parameterNames ? { [parameterNames[0]]: state.p1, [parameterNames[1]]: state.p2 } : {};
+}
+
+function dispatchAIContextChanged() {
+  window.dispatchEvent(new CustomEvent("masterlab:context-changed"));
+}
+
+function buildMasterLabAIContext() {
+  const inputQuestion = $("#questionInput")?.value.trim() || "";
+  const generatedQuestion = state.generatedQuestion || "";
+  const currentExperimentIsActive = state.hasGenerated && generatedQuestion && inputQuestion === generatedQuestion;
+  if (!currentExperimentIsActive) {
+    return {
+      mode: "question",
+      subject: state.subject,
+      originalQuestion: inputQuestion,
+      templateId: "",
+      parameters: {},
+      deterministicResult: {},
+      formula: "",
+      currentStep: ""
+    };
+  }
+  const metricText = elements.metricLabels.map((label, index) => {
+    const value = elements.metricValues[index]?.textContent || "";
+    const unit = elements.metricUnits[index]?.textContent || "";
+    return `${label?.textContent || "参数"} ${value}${unit}`.trim();
+  }).join("｜");
+  const currentReasoning = $(".reason-step.active") || $(`.reason-step[data-step="${state.reasonStep}"]`);
+  return {
+    mode: "experiment",
+    subject: state.subject,
+    title: config().title,
+    originalQuestion: generatedQuestion,
+    templateId: currentAITemplateId(),
+    parameters: currentAIParameters(),
+    deterministicResult: {
+      resultText: (elements.sceneTip?.textContent || "").trim().slice(0, 300),
+      metrics: metricText.slice(0, 300)
+    },
+    formula: ($(".formula-spotlight strong")?.textContent || "").trim().slice(0, 600),
+    currentStep: (currentReasoning?.textContent || "").replace(/\s+/g, " ").trim().slice(0, 600)
+  };
+}
+
+function applyAIParameterPatch(patch) {
+  if (!state.hasGenerated || !patch || currentAITemplateId() === "") {
+    return { ok: false, message: "请先生成一个可交互实验" };
+  }
+  const templateId = currentAITemplateId();
+  if (templateId === "cell" && patch.parameterKey === "cellType") {
+    switchBiologyCellType(Number(patch.nextValue) === 0 ? "animal" : "plant");
+    saveCurrentSubjectSnapshot();
+    dispatchAIContextChanged();
+    showToast("已按确认切换细胞模型");
+    return { ok: true };
+  }
+  const bindings = {
+    brake: { initialSpeed: [0, value => value], deceleration: [1, value => value] },
+    solenoid: { current: [0, value => value], turns: [1, value => value] },
+    board_slider: { initialSpeed: [0, value => value], boardLength: [1, value => value] },
+    projectile: { horizontalSpeed: [0, value => value], height: [1, value => value] },
+    ohm_circuit: { voltage: [0, value => value], resistance: [1, value => value] },
+    fe_cuso4: { ironMass: [0, value => value], copperSulfateMass: [1, value => value / 160] },
+    tangent: { pointX: [0, value => value] }
+  };
+  const extraNames = AI_PARAMETER_NAMES[templateId];
+  if (extraNames) {
+    bindings[templateId] = {
+      [extraNames[0]]: [0, value => value],
+      [extraNames[1]]: [1, value => value]
+    };
+  }
+  const binding = bindings[templateId]?.[patch.parameterKey];
+  if (!binding) return { ok: false, message: "当前实验不支持应用这项参数建议" };
+  const [rangeIndex, convert] = binding;
+  const range = elements.ranges[rangeIndex];
+  const converted = Number(convert(Number(patch.nextValue)));
+  if (!range || !Number.isFinite(converted) || converted < Number(range.min) || converted > Number(range.max)) {
+    return { ok: false, message: "建议值超出当前实验允许范围" };
+  }
+  range.value = String(converted);
+  updateParameters(true, { syncQuestion: true });
+  saveCurrentSubjectSnapshot();
+  dispatchAIContextChanged();
+  showToast("已按确认应用 AI 导师的参数建议");
+  return { ok: true };
+}
+
+window.MasterLabAIHost = Object.freeze({
+  getContext: buildMasterLabAIContext,
+  applyParameterPatch: applyAIParameterPatch,
+  showToast,
+  setMentorSummary(message) {
+    if (elements.mentorMessage) elements.mentorMessage.textContent = String(message || "");
+  }
+});
 
 function physicsSceneClassName() {
   if (state.physicsTemplate === "boardSlider") return "board-slider";
@@ -4178,6 +4328,7 @@ function applySubject(subject, updateQuestion = true, options = {}) {
       biologyTemplateRecognition()
     );
   }
+  dispatchAIContextChanged();
 }
 
 function playExperiment() {
@@ -4653,6 +4804,7 @@ $("#questionInput").addEventListener("input", () => {
   }
   if (!state.hasGenerated) {
     clearRecognitionFeedback();
+    dispatchAIContextChanged();
     return;
   }
   const currentQuestion = $("#questionInput").value.trim();
@@ -4665,6 +4817,7 @@ $("#questionInput").addEventListener("input", () => {
     $("#problemText").textContent = "题目已修改，点击“生成实验”后将重新识别并更新实验。";
     setDemoStep(2, "题目已修改，等待重新生成");
   }
+  dispatchAIContextChanged();
 });
 
 $$(".nav-item").forEach(button => {
@@ -4841,13 +4994,44 @@ elements.cellAutoButton?.addEventListener("click", event => {
   showToast(state.cellAutoRotate ? `${CELL_TYPE_LABELS[state.cellType] || "细胞"}模型开始自动旋转` : "已暂停自动旋转");
 });
 
-$("#generateButton").addEventListener("click", async () => {
+async function handOffUnmatchedQuestion(parseResult, question, detected, allowAiFallback) {
+  const message = parseResult?.message || "当前题目没有匹配到本地实验模板。";
+  if (!allowAiFallback || !window.MasterLabAITutor?.resolveUnmatchedQuestion) {
+    setRecognitionFeedback({ message }, true);
+    showToast(message);
+    return { mode: "unavailable" };
+  }
+  const button = $("#generateButton");
+  setRecognitionPending("本地模板暂未匹配，正在请 AI 判断题型与所需条件……");
+  button.classList.add("loading");
+  $("span", button).textContent = "AI 分析中";
+  try {
+    const result = await window.MasterLabAITutor.resolveUnmatchedQuestion({
+      question,
+      preferredSubject: detected,
+      localMessage: message
+    });
+    if (result?.mode === "explanation") {
+      setRecognitionPending("当前题目暂无可视化实验模板，已转入 AI 导师讲解。");
+    } else if (result?.mode === "unavailable") {
+      setRecognitionFeedback({ message: "未匹配实验模板；AI 服务暂未完成分析，可在问答页重试。" }, true);
+    }
+    return result || { mode: "unavailable" };
+  } finally {
+    button.classList.remove("loading");
+    $("span", button).textContent = "生成实验";
+  }
+}
+
+async function generateExperiment(options = {}) {
   const button = $("#generateButton");
   if (button.classList.contains("loading")) return;
+  const allowAiFallback = options.allowAiFallback !== false;
   state.userGeneratedOnce = true;
   if (state.autoDemoTimer) clearTimeout(state.autoDemoTimer);
   clearReasoningTimers();
-  let question = $("#questionInput").value.trim();
+  let question = String(options.questionOverride ?? $("#questionInput").value).trim();
+  const displayQuestion = String(options.displayQuestion ?? question).trim();
   if (!question) {
     showToast("请先输入一道理科题目");
     return;
@@ -4876,8 +5060,11 @@ $("#generateButton").addEventListener("click", async () => {
     if (boardSliderCandidate) {
       boardSliderParse = parsePhysicsBoardSliderQuestion(question);
       if (!boardSliderParse.ok) {
-        setRecognitionFeedback(boardSliderParse, true);
-        showToast(boardSliderParse.message);
+        const remote = await handOffUnmatchedQuestion(boardSliderParse, displayQuestion, detected, allowAiFallback);
+        if (remote?.mode === "experiment") {
+          $("#questionInput").value = remote.question;
+          await generateExperiment({ questionOverride: remote.question, displayQuestion, allowAiFallback: false });
+        }
         return;
       }
       state.subject = "物理";
@@ -4890,8 +5077,11 @@ $("#generateButton").addEventListener("click", async () => {
     } else if (solenoidCandidate) {
       solenoidParse = parsePhysicsSolenoidQuestion(question);
       if (!solenoidParse.ok) {
-        setRecognitionFeedback(solenoidParse, true);
-        showToast(solenoidParse.message);
+        const remote = await handOffUnmatchedQuestion(solenoidParse, displayQuestion, detected, allowAiFallback);
+        if (remote?.mode === "experiment") {
+          $("#questionInput").value = remote.question;
+          await generateExperiment({ questionOverride: remote.question, displayQuestion, allowAiFallback: false });
+        }
         return;
       }
       state.subject = "物理";
@@ -4910,8 +5100,11 @@ $("#generateButton").addEventListener("click", async () => {
     } else if (projectileCandidate) {
       projectileParse = parsePhysicsProjectileQuestion(question);
       if (!projectileParse.ok) {
-        setRecognitionFeedback(projectileParse, true);
-        showToast(projectileParse.message);
+        const remote = await handOffUnmatchedQuestion(projectileParse, displayQuestion, detected, allowAiFallback);
+        if (remote?.mode === "experiment") {
+          $("#questionInput").value = remote.question;
+          await generateExperiment({ questionOverride: remote.question, displayQuestion, allowAiFallback: false });
+        }
         return;
       }
       state.subject = "物理";
@@ -4924,8 +5117,11 @@ $("#generateButton").addEventListener("click", async () => {
     } else if (extraPhysicsCandidate) {
       extraPhysicsParse = parseExtraPhysicsQuestion(question, extraPhysicsCandidate);
       if (!extraPhysicsParse.ok) {
-        setRecognitionFeedback(extraPhysicsParse, true);
-        showToast(extraPhysicsParse.message);
+        const remote = await handOffUnmatchedQuestion(extraPhysicsParse, displayQuestion, detected, allowAiFallback);
+        if (remote?.mode === "experiment") {
+          $("#questionInput").value = remote.question;
+          await generateExperiment({ questionOverride: remote.question, displayQuestion, allowAiFallback: false });
+        }
         return;
       }
       state.subject = "物理";
@@ -4938,8 +5134,11 @@ $("#generateButton").addEventListener("click", async () => {
     } else if (circuitCandidate) {
       circuitParse = parsePhysicsCircuitQuestion(question);
       if (!circuitParse.ok) {
-        setRecognitionFeedback(circuitParse, true);
-        showToast(circuitParse.message);
+        const remote = await handOffUnmatchedQuestion(circuitParse, displayQuestion, detected, allowAiFallback);
+        if (remote?.mode === "experiment") {
+          $("#questionInput").value = remote.question;
+          await generateExperiment({ questionOverride: remote.question, displayQuestion, allowAiFallback: false });
+        }
         return;
       }
       state.subject = "物理";
@@ -4952,8 +5151,11 @@ $("#generateButton").addEventListener("click", async () => {
     } else {
       physicsParse = parsePhysicsBrakeQuestion(question);
       if (!physicsParse.ok) {
-        setRecognitionFeedback(physicsParse, true);
-        showToast(physicsParse.message);
+        const remote = await handOffUnmatchedQuestion(physicsParse, displayQuestion, detected, allowAiFallback);
+        if (remote?.mode === "experiment") {
+          $("#questionInput").value = remote.question;
+          await generateExperiment({ questionOverride: remote.question, displayQuestion, allowAiFallback: false });
+        }
         return;
       }
       state.subject = "物理";
@@ -4975,8 +5177,11 @@ $("#generateButton").addEventListener("click", async () => {
   if (detected === "化学") {
     chemistryParse = parseChemistryFeCuSO4Question(question);
     if (!chemistryParse.ok) {
-      setRecognitionFeedback(chemistryParse, true);
-      showToast(chemistryParse.message);
+      const remote = await handOffUnmatchedQuestion(chemistryParse, displayQuestion, detected, allowAiFallback);
+      if (remote?.mode === "experiment") {
+        $("#questionInput").value = remote.question;
+        await generateExperiment({ questionOverride: remote.question, displayQuestion, allowAiFallback: false });
+      }
       return;
     }
     state.subject = "化学";
@@ -4988,8 +5193,11 @@ $("#generateButton").addEventListener("click", async () => {
   if (detected === "数学") {
     mathParse = parseMathTangentQuestion(question);
     if (!mathParse.ok) {
-      setRecognitionFeedback(mathParse, true);
-      showToast(mathParse.message);
+      const remote = await handOffUnmatchedQuestion(mathParse, displayQuestion, detected, allowAiFallback);
+      if (remote?.mode === "experiment") {
+        $("#questionInput").value = remote.question;
+        await generateExperiment({ questionOverride: remote.question, displayQuestion, allowAiFallback: false });
+      }
       return;
     }
     state.subject = "数学";
@@ -5041,8 +5249,9 @@ $("#generateButton").addEventListener("click", async () => {
     syncPhysicsControlsFromState();
     refreshGeneratedSubjectSurface("物理", { preserveProblemText: true });
   }
-  $("#problemText").textContent = question;
-  state.generatedQuestion = question;
+  $("#questionInput").value = displayQuestion;
+  $("#problemText").textContent = displayQuestion;
+  state.generatedQuestion = displayQuestion;
   if (solenoidParse) setRecognitionFeedback(solenoidParse);
   if (boardSliderParse) setRecognitionFeedback(boardSliderParse);
   if (projectileParse) setRecognitionFeedback(projectileParse);
@@ -5062,9 +5271,12 @@ $("#generateButton").addEventListener("click", async () => {
   resetExperiment();
   setTimeout(focusExperimentCard, 80);
   scheduleReasoningAutoAdvance();
+  dispatchAIContextChanged();
   setDemoStep(3, "点击播放或请求 AI 导师提示");
   showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : extraPhysicsParse ? "物理典型题模板已生成，可拖动参数观察变化" : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
-});
+}
+
+$("#generateButton").addEventListener("click", () => generateExperiment());
 
 $(".reasoning-steps").addEventListener("click", event => {
   const step = event.target.closest(".reason-step");
@@ -5164,6 +5376,7 @@ $("#solenoidLab")?.addEventListener("wheel", event => {
 }, { passive: false });
 
 $("#hintButton").addEventListener("click", () => {
+  if (window.MasterLabAITutor?.askQuickAction?.("hint")) return;
   if (!state.hasGenerated) {
     showToast("请先生成实验，再向 AI 导师提问");
     return;
@@ -5216,6 +5429,7 @@ $("#hintButton").addEventListener("click", () => {
 });
 
 $("#challengeButton").addEventListener("click", () => {
+  if (window.MasterLabAITutor?.askQuickAction?.("variant")) return;
   if (!state.hasGenerated) {
     showToast("请先生成实验，再加载变式挑战");
     return;

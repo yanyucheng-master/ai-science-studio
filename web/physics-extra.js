@@ -687,7 +687,7 @@
                 <circle cx="490" cy="360" r="34"></circle>
                 <text class="meter-letter" x="490" y="369" text-anchor="middle">V</text>
               </g>
-              <g class="svg-reading-badge" transform="translate(606 328)">
+              <g class="svg-reading-badge" transform="translate(625 365)">
                 <rect width="112" height="32" rx="10"></rect>
                 <text x="56" y="21" text-anchor="middle">U₂ = ${fmt(v2, 2)}V</text>
               </g>
