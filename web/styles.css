@@ -3127,6 +3127,102 @@ body.ai-tutor-route .ai-tutor-messages { min-height: 360px; max-height: calc(100
   margin: 0;
 }
 
+.api-key-modal {
+  width: min(420px, 100%);
+  text-align: left;
+}
+
+.api-key-modal .section-kicker {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #6b7c99;
+  font-size: 10px;
+  letter-spacing: .12em;
+}
+
+.api-key-modal h2 {
+  margin: 0 0 8px;
+  color: #1c2d4d;
+  font-size: 22px;
+}
+
+.api-key-hint {
+  margin: 0 0 16px;
+  color: #667892;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.api-key-hint strong {
+  color: #2057d9;
+  font-weight: 700;
+}
+
+.api-key-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #445873;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.api-key-input {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  color: #1c2d4d;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  border: 1px solid #d5e0f1;
+  border-radius: 12px;
+  background: #f7f9fd;
+  outline: none;
+}
+
+.api-key-input:focus {
+  border-color: #7aa3f0;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(32, 87, 217, .12);
+}
+
+.api-key-status {
+  margin: 10px 0 0;
+  color: #71829f;
+  font-size: 11px;
+}
+
+.api-key-status.is-ready {
+  color: #1a9a6e;
+}
+
+.api-key-actions {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.api-key-actions button {
+  height: 40px;
+  color: #5d6f8c;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid #d8e2f1;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.api-key-actions .modal-primary {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(135deg, #2057d9, #3a7cf0);
+}
+
+.mentor-mark {
+  cursor: context-menu;
+}
+
 @keyframes spin {
   to { transform: rotate(360deg); }
 }

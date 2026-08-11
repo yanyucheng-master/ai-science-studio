@@ -5,9 +5,33 @@
   const DEFAULT_REMOTE_API = "https://master-lab-api.onrender.com";
   const API_BASE_URL = String(window.MASTER_LAB_API_URL ||
     (LOCAL_HOSTS.has(window.location.hostname) ? "http://127.0.0.1:10000" : DEFAULT_REMOTE_API)).replace(/\/$/, "");
+  const DEEPSEEK_BASE_URL = "https://api.deepseek.com";
+  const DEEPSEEK_MODEL = "deepseek-v4-pro";
+  const API_KEY_STORAGE = "masterLab.deepseekApiKey";
   const CHAT_TIMEOUT_MS = 130000;
   const GENERATE_TIMEOUT_MS = 45000;
   const MAX_HISTORY_ITEMS = 12;
+
+  const CHAT_SYSTEM_PROMPT = `你是“大师实验室”的中学数理化生 AI 导师。只返回 JSON 对象，禁止 Markdown 代码块、HTML、URL、代码和隐藏推理过程。
+
+教学原则：
+1. 只回答中学数学、物理、化学、生物学习问题；无关请求 mode=refusal。
+2. 默认分层引导。responseLevel=hint 时只给关键线索和一个追问，finalAnswer 必须为 null。
+3. responseLevel=explain 时解释当前概念或步骤；responseLevel=steps 时给出可核查分步解答；responseLevel=check 时检查思路；responseLevel=variant 时给变式。
+4. context.mode=experiment 时，deterministicResult 与 formula 是本地确定性结果，不得改写冲突。
+5. context.mode=question 且条件不足时 mode=clarification，禁止自行补造数值。
+6. 涉及计算时检查公式适用条件、单位、量纲与边界。
+
+返回结构：
+{"mode":"hint|explain|steps|answer|clarification|refusal","summary":"简洁说明","steps":["步骤1"],"formulas":["公式"],"finalAnswer":"完整结论；hint 时为 null","checks":["自检"],"followUp":"推荐追问","parameterPatch":null,"warnings":[]}`;
+
+  const GENERATE_SYSTEM_PROMPT = `你是“大师实验室”的理科题目解析器。只返回 JSON 对象，禁止 Markdown 代码块。
+支持模板 ID：brake, fe_cuso4, tangent, cell, solenoid, board_slider, projectile, ohm_circuit, lever, lens, buoyancy, friction, lamp_power, series_circuit, heat_balance, liquid_pressure, efficiency, sound。
+有对应模板时：
+{"mode":"experiment","title":"...","answer":"简短解释","plan":{"title":"...","subject":"physics|chemistry|mathematics|biology","modules":[{"id":"m1","templateId":"brake","parameters":{"initialSpeed":20,"deceleration":5}}],"links":[],"steps":["..."]},"visual":{"kind":"none","title":""}}
+无模板或条件不足时：
+{"mode":"explanation","title":"...","answer":"说明缺失条件或暂无模板","plan":null,"visual":{"kind":"none","title":""}}
+严禁输出代码、SVG、HTML、URL。`;
 
   const ACTIONS = {
     hint: {
@@ -66,7 +90,13 @@
     back: document.querySelector("#aiTutorBackButton"),
     page: document.querySelector("#aiTutorPageButton"),
     expand: document.querySelector("#mentorExpandButton"),
-    openPage: document.querySelector("#mentorOpenPageButton")
+    openPage: document.querySelector("#mentorOpenPageButton"),
+    apiKeyModal: document.querySelector("#apiKeyModal"),
+    apiKeyInput: document.querySelector("#apiKeyInput"),
+    apiKeyStatus: document.querySelector("#apiKeyStatus"),
+    apiKeySave: document.querySelector("#apiKeySaveButton"),
+    apiKeyClear: document.querySelector("#apiKeyClearButton"),
+    apiKeyClose: document.querySelector("#apiKeyModalClose")
   };
 
   if (!elements.workspace || !elements.messages || !elements.form) {
@@ -118,7 +148,8 @@
   function errorMessage(error) {
     const code = error?.code || error?.message;
     const messages = {
-      AI_NOT_CONFIGURED: "AI 服务尚未配置密钥。已有实验仍可离线运行；未匹配题目请在服务端配置密钥后重试。",
+      AI_NOT_CONFIGURED: "尚未配置 DeepSeek 密钥。请右键点击烧瓶图标，粘贴 API 密钥后重试。",
+      AI_AUTH_FAILED: "API 密钥无效或已失效，请右键烧瓶图标重新配置。",
       AI_RATE_LIMITED: "AI 请求较多，请稍后再试。",
       RATE_LIMITED: "AI 请求较多，请稍后再试。",
       AI_TIMEOUT: "这道题分析时间较长，本次请求已超时。你可以重试，或先请求一个简短提示。",
@@ -126,12 +157,271 @@
       INVALID_AI_RESPONSE: "AI 返回内容未通过安全校验，请重试。",
       ORIGIN_NOT_ALLOWED: "当前网页地址尚未加入 AI 服务允许列表。",
       ABORTED: "已停止本次回答。",
-      NETWORK_ERROR: "暂时无法连接 AI 服务，请检查网络或确认本地服务已启动。"
+      NETWORK_ERROR: "暂时无法连接 DeepSeek，请检查网络，或确认密钥是否正确。"
     };
     return messages[code] || "AI 导师暂时没有完成回答，请稍后重试。";
   }
 
+  function readStoredApiKey() {
+    try {
+      return String(localStorage.getItem(API_KEY_STORAGE) || "").trim();
+    } catch {
+      return "";
+    }
+  }
+
+  function writeStoredApiKey(value) {
+    const key = String(value || "").trim();
+    try {
+      if (!key) localStorage.removeItem(API_KEY_STORAGE);
+      else localStorage.setItem(API_KEY_STORAGE, key);
+    } catch {
+      /* ignore quota / private mode */
+    }
+    return key;
+  }
+
+  function maskApiKey(key) {
+    const value = String(key || "");
+    if (value.length < 10) return value ? "已配置" : "";
+    return `${value.slice(0, 6)}…${value.slice(-4)}`;
+  }
+
+  function hasBrowserApiKey() {
+    return readStoredApiKey().length > 0;
+  }
+
+  function notify(message) {
+    if (typeof window.showToast === "function") {
+      window.showToast(message);
+      return;
+    }
+    const toast = document.querySelector("#toast");
+    const textNode = toast?.querySelector("p");
+    if (!toast || !textNode) return;
+    textNode.textContent = message;
+    toast.classList.add("show");
+    window.setTimeout(() => toast.classList.remove("show"), 2200);
+  }
+
+  function syncApiKeyUi() {
+    const key = readStoredApiKey();
+    const ready = key.length > 0;
+    document.querySelectorAll(".mentor-card .online, .ai-tutor-identity .online").forEach((node) => {
+      const label = node.childNodes[node.childNodes.length - 1];
+      if (label && label.nodeType === Node.TEXT_NODE) {
+        label.textContent = ready ? " AI 导师在线" : " 待配置密钥";
+      }
+      node.title = ready
+        ? `已启用本地密钥 · ${DEEPSEEK_MODEL}`
+        : "右键烧瓶图标配置 DeepSeek API 密钥";
+    });
+    if (elements.apiKeyStatus) {
+      elements.apiKeyStatus.textContent = ready
+        ? `已启用本地密钥 ${maskApiKey(key)} · 模型 ${DEEPSEEK_MODEL}`
+        : "尚未配置密钥";
+      elements.apiKeyStatus.classList.toggle("is-ready", ready);
+    }
+    if (elements.apiKeyInput && document.activeElement !== elements.apiKeyInput) {
+      elements.apiKeyInput.value = "";
+      elements.apiKeyInput.placeholder = ready ? maskApiKey(key) : "sk-…";
+    }
+  }
+
+  function openApiKeyModal() {
+    if (!elements.apiKeyModal) return;
+    syncApiKeyUi();
+    elements.apiKeyModal.classList.add("show");
+    elements.apiKeyModal.setAttribute("aria-hidden", "false");
+    window.setTimeout(() => elements.apiKeyInput?.focus(), 40);
+  }
+
+  function closeApiKeyModal() {
+    if (!elements.apiKeyModal) return;
+    elements.apiKeyModal.classList.remove("show");
+    elements.apiKeyModal.setAttribute("aria-hidden", "true");
+    if (elements.apiKeyInput) elements.apiKeyInput.value = "";
+  }
+
+  function saveApiKeyFromModal() {
+    const next = String(elements.apiKeyInput?.value || "").trim();
+    if (!next) {
+      notify("请先粘贴有效的 API 密钥");
+      elements.apiKeyInput?.focus();
+      return;
+    }
+    if (!/^sk-[A-Za-z0-9._-]{10,}$/.test(next)) {
+      notify("密钥格式看起来不正确，请检查后重试");
+      return;
+    }
+    writeStoredApiKey(next);
+    syncApiKeyUi();
+    closeApiKeyModal();
+    notify("密钥已保存在本机，AI 导师已启用");
+  }
+
+  function clearApiKeyFromModal() {
+    writeStoredApiKey("");
+    syncApiKeyUi();
+    if (elements.apiKeyInput) {
+      elements.apiKeyInput.value = "";
+      elements.apiKeyInput.placeholder = "sk-…";
+    }
+    notify("已清除本机 API 密钥");
+  }
+
+  function softValidateChat(raw, responseLevel) {
+    if (!raw || typeof raw !== "object") return null;
+    const modes = new Set(["hint", "explain", "steps", "answer", "clarification", "refusal"]);
+    if (!modes.has(raw.mode)) return null;
+    const summary = text(raw.summary).slice(0, 1000);
+    const steps = Array.isArray(raw.steps)
+      ? raw.steps.map((step) => text(step).slice(0, 500)).filter(Boolean).slice(0, 8)
+      : [];
+    if (!summary && !steps.length) return null;
+    const warnings = Array.isArray(raw.warnings)
+      ? raw.warnings.map((item) => text(item).slice(0, 300)).filter(Boolean).slice(0, 4)
+      : [];
+    return {
+      schemaVersion: "1.0",
+      mode: raw.mode,
+      summary,
+      steps,
+      formulas: Array.isArray(raw.formulas)
+        ? raw.formulas.map((item) => text(item).slice(0, 300)).filter(Boolean).slice(0, 8)
+        : [],
+      finalAnswer: responseLevel === "hint" ? null : (text(raw.finalAnswer).slice(0, 1200) || null),
+      checks: Array.isArray(raw.checks)
+        ? raw.checks.map((item) => text(item).slice(0, 400)).filter(Boolean).slice(0, 6)
+        : [],
+      followUp: text(raw.followUp).slice(0, 500),
+      parameterPatch: null,
+      warnings,
+      source: "deepseek-browser",
+      model: DEEPSEEK_MODEL
+    };
+  }
+
+  function softValidateGenerate(raw) {
+    if (!raw || typeof raw !== "object") return null;
+    if (raw.mode !== "experiment" && raw.mode !== "explanation") return null;
+    return {
+      ...raw,
+      source: "deepseek-browser",
+      model: DEEPSEEK_MODEL
+    };
+  }
+
+  async function callDeepSeek(messages, options = {}) {
+    const apiKey = readStoredApiKey();
+    if (!apiKey) throw new TutorRequestError("AI_NOT_CONFIGURED");
+    if (state.controller) state.controller.abort();
+    const controller = new AbortController();
+    state.controller = controller;
+    const timeoutMs = options.timeoutMs || CHAT_TIMEOUT_MS;
+    state.timeoutId = window.setTimeout(() => controller.abort("timeout"), timeoutMs);
+    try {
+      let response;
+      try {
+        response = await fetch(`${DEEPSEEK_BASE_URL}/chat/completions`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: DEEPSEEK_MODEL,
+            messages,
+            thinking: { type: options.thinking ? "enabled" : "disabled" },
+            response_format: { type: "json_object" },
+            max_tokens: options.maxTokens || 2200,
+            ...(!options.thinking ? { temperature: 0.2 } : {})
+          }),
+          signal: controller.signal
+        });
+      } catch (error) {
+        if (controller.signal.aborted) {
+          throw new TutorRequestError(controller.signal.reason === "timeout" ? "AI_TIMEOUT" : "ABORTED");
+        }
+        throw new TutorRequestError("NETWORK_ERROR");
+      }
+      let payload = {};
+      try {
+        payload = await response.json();
+      } catch {
+        throw new TutorRequestError("INVALID_AI_RESPONSE", response.status);
+      }
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          throw new TutorRequestError("AI_AUTH_FAILED", response.status);
+        }
+        if (response.status === 429) {
+          throw new TutorRequestError("AI_RATE_LIMITED", response.status);
+        }
+        throw new TutorRequestError(payload.error || "AI_UNAVAILABLE", response.status);
+      }
+      const content = payload?.choices?.[0]?.message?.content;
+      if (typeof content !== "string" || !content.trim()) {
+        throw new TutorRequestError("INVALID_AI_RESPONSE", response.status);
+      }
+      try {
+        return JSON.parse(content);
+      } catch {
+        throw new TutorRequestError("INVALID_AI_RESPONSE", response.status);
+      }
+    } finally {
+      window.clearTimeout(state.timeoutId);
+      state.timeoutId = null;
+      if (state.controller === controller) state.controller = null;
+    }
+  }
+
+  async function browserTutorChat(request) {
+    const useThinking = request.responseLevel === "steps" || request.responseLevel === "check";
+    const history = (request.history || []).map((item) => ({ role: item.role, content: item.content }));
+    const raw = await callDeepSeek([
+      { role: "system", content: CHAT_SYSTEM_PROMPT },
+      ...history,
+      {
+        role: "user",
+        content: [
+          "【唯一原题】只允许解答 originalQuestion，不得替换或补写成另一道题。",
+          `originalQuestion: ${request.context?.originalQuestion || ""}`,
+          `latestStudentRequest: ${request.message}`,
+          `structuredInput: ${JSON.stringify({
+            responseLevel: request.responseLevel,
+            subject: request.context?.subject || "",
+            context: request.context || {}
+          }, null, 0)}`
+        ].join("\n")
+      }
+    ], {
+      thinking: useThinking,
+      timeoutMs: useThinking ? CHAT_TIMEOUT_MS : 45000,
+      maxTokens: useThinking ? 4200 : 2200
+    });
+    const validated = softValidateChat(raw, request.responseLevel);
+    if (!validated) throw new TutorRequestError("INVALID_AI_RESPONSE");
+    return validated;
+  }
+
+  async function browserGenerate(question, preferredSubject = "") {
+    const raw = await callDeepSeek([
+      { role: "system", content: GENERATE_SYSTEM_PROMPT },
+      { role: "user", content: JSON.stringify({ question, preferredSubject }, null, 0) }
+    ], { thinking: false, timeoutMs: GENERATE_TIMEOUT_MS, maxTokens: 1800 });
+    const validated = softValidateGenerate(raw);
+    if (!validated) throw new TutorRequestError("INVALID_AI_RESPONSE");
+    return validated;
+  }
+
   async function apiRequest(path, body, timeoutMs) {
+    if (hasBrowserApiKey()) {
+      if (path === "/api/v1/tutor/chat") return browserTutorChat(body);
+      if (path === "/api/v1/experiment/generate") {
+        return browserGenerate(body.question, body.preferredSubject || "");
+      }
+    }
     if (state.controller) state.controller.abort();
     const controller = new AbortController();
     state.controller = controller;
@@ -149,7 +439,7 @@
         if (controller.signal.aborted) {
           throw new TutorRequestError(controller.signal.reason === "timeout" ? "AI_TIMEOUT" : "ABORTED");
         }
-        throw new TutorRequestError("NETWORK_ERROR");
+        throw new TutorRequestError(hasBrowserApiKey() ? "NETWORK_ERROR" : "AI_NOT_CONFIGURED");
       }
       let payload = {};
       try {
@@ -708,6 +998,31 @@
   document.querySelectorAll("[data-ai-action]").forEach((button) => {
     button.addEventListener("click", () => askQuickAction(button.dataset.aiAction));
   });
+  document.querySelectorAll(".mentor-mark").forEach((mark) => {
+    mark.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      openApiKeyModal();
+    });
+  });
+  elements.apiKeySave?.addEventListener("click", saveApiKeyFromModal);
+  elements.apiKeyClear?.addEventListener("click", clearApiKeyFromModal);
+  elements.apiKeyClose?.addEventListener("click", closeApiKeyModal);
+  elements.apiKeyModal?.addEventListener("click", (event) => {
+    if (event.target === elements.apiKeyModal) closeApiKeyModal();
+  });
+  elements.apiKeyInput?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      saveApiKeyFromModal();
+    }
+    if (event.key === "Escape") closeApiKeyModal();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && elements.apiKeyModal?.classList.contains("show")) {
+      closeApiKeyModal();
+    }
+  });
   window.addEventListener("hashchange", updateRoute);
   window.addEventListener("masterlab:context-changed", () => {
     if (!state.route) adoptContext(currentHostContext());
@@ -724,10 +1039,15 @@
       openStandalone(currentHostContext());
     },
     resolveUnmatchedQuestion,
+    openApiKeySettings: openApiKeyModal,
     get apiBaseUrl() {
-      return API_BASE_URL;
+      return hasBrowserApiKey() ? DEEPSEEK_BASE_URL : API_BASE_URL;
+    },
+    get hasLocalApiKey() {
+      return hasBrowserApiKey();
     }
   });
 
+  syncApiKeyUi();
   updateRoute();
 })();

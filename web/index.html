@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231648e6'/%3E%3Cpath d='M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260810-ai-visual-3">
+  <link rel="stylesheet" href="styles.css?v=20260811-apikey-1">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -624,7 +624,7 @@
 
           <section class="mentor-card card">
             <div class="mentor-head">
-              <div class="mentor-mark mentor-mark-compact" role="img" aria-label="大师实验室 AI 导师标志" tabindex="0">
+              <div class="mentor-mark mentor-mark-compact" role="img" aria-label="大师实验室 AI 导师标志，右键可配置 API 密钥" title="右键配置 DeepSeek API 密钥" tabindex="0">
                 <span class="mentor-mark-aura" aria-hidden="true"></span>
                 <svg class="mentor-mark-glyph" viewBox="0 0 64 64" width="48" height="48" aria-hidden="true">
                   <rect class="mentor-mark-tile" x="5" y="5" width="54" height="54" rx="18" fill="#2057d9" />
@@ -673,7 +673,7 @@
         <section class="ai-tutor-workspace card" id="aiTutorWorkspace" aria-hidden="true">
           <header class="ai-tutor-header">
             <div class="ai-tutor-identity">
-              <div class="mentor-mark mentor-mark-large ai-tutor-avatar" role="img" aria-label="大师实验室 AI 导师标志" tabindex="0">
+              <div class="mentor-mark mentor-mark-large ai-tutor-avatar" role="img" aria-label="大师实验室 AI 导师标志，右键可配置 API 密钥" title="右键配置 DeepSeek API 密钥" tabindex="0">
                 <span class="mentor-mark-aura" aria-hidden="true"></span>
                 <svg class="mentor-mark-glyph" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
                   <rect class="mentor-mark-tile" x="5" y="5" width="54" height="54" rx="18" fill="#2057d9" />
@@ -766,8 +766,26 @@
 
   <div class="toast" id="toast"><span></span><p>操作成功</p></div>
 
+  <div class="modal-backdrop" id="apiKeyModal" aria-hidden="true">
+    <div class="ar-modal api-key-modal" role="dialog" aria-modal="true" aria-labelledby="apiKeyModalTitle">
+      <button class="modal-close" id="apiKeyModalClose" type="button" aria-label="关闭">
+        <svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+      </button>
+      <span class="section-kicker">SECURE LOCAL KEY</span>
+      <h2 id="apiKeyModalTitle">配置 DeepSeek 密钥</h2>
+      <p class="api-key-hint">密钥只保存在本机浏览器，不会写入网站代码或公开仓库。模型固定为 <strong>deepseek-v4-pro</strong>。</p>
+      <label class="api-key-label" for="apiKeyInput">API Key</label>
+      <input id="apiKeyInput" class="api-key-input" type="password" autocomplete="off" spellcheck="false" placeholder="sk-…" maxlength="200">
+      <p class="api-key-status" id="apiKeyStatus">尚未配置密钥</p>
+      <div class="api-key-actions">
+        <button type="button" id="apiKeyClearButton">清除</button>
+        <button type="button" class="modal-primary" id="apiKeySaveButton">保存并启用</button>
+      </div>
+    </div>
+  </div>
+
   <script src="physics-extra.js?v=20260808-ai-tutor-1"></script>
-  <script src="app.js?v=20260810-favorites-2"></script>
-  <script src="ai-tutor.js?v=20260810-ai-visual-2"></script>
+  <script src="app.js?v=20260811-apikey-1"></script>
+  <script src="ai-tutor.js?v=20260811-apikey-1"></script>
 </body>
 </html>
