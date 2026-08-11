@@ -23,7 +23,8 @@
 6. 涉及计算时检查公式适用条件、单位、量纲与边界。
 
 返回结构：
-{"mode":"hint|explain|steps|answer|clarification|refusal","summary":"简洁说明","steps":["步骤1"],"formulas":["公式"],"finalAnswer":"完整结论；hint 时为 null","checks":["自检"],"followUp":"推荐追问","parameterPatch":null,"warnings":[]}`;
+{"mode":"hint|explain|steps|answer|clarification|refusal","summary":"简洁说明","steps":["步骤1"],"formulas":["公式"],"finalAnswer":"完整结论；hint 时为 null","checks":["自检"],"followUp":"推荐追问","parameterPatch":null,"warnings":[]}
+注意：即使 responseLevel 是 variant 或 check，mode 也只能取上述枚举，不要返回 mode=variant 或 mode=check。`;
 
   const GENERATE_SYSTEM_PROMPT = `你是“大师实验室”的理科题目解析器。只返回 JSON 对象，禁止 Markdown 代码块。
 支持模板 ID：brake, fe_cuso4, tangent, cell, solenoid, board_slider, projectile, ohm_circuit, lever, lens, buoyancy, friction, lamp_power, series_circuit, heat_balance, liquid_pressure, efficiency, sound。
@@ -154,7 +155,7 @@
       RATE_LIMITED: "AI 请求较多，请稍后再试。",
       AI_TIMEOUT: "这道题分析时间较长，本次请求已超时。你可以重试，或先请求一个简短提示。",
       AI_UNAVAILABLE: "AI 服务暂时不可用，题目和当前实验状态均已保留。",
-      INVALID_AI_RESPONSE: "AI 返回内容未通过安全校验，请重试。",
+      INVALID_AI_RESPONSE: "AI 返回格式不符合约定，已拦截显示。请再试一次，或换个问法。",
       ORIGIN_NOT_ALLOWED: "当前网页地址尚未加入 AI 服务允许列表。",
       ABORTED: "已停止本次回答。",
       NETWORK_ERROR: "暂时无法连接 DeepSeek，请检查网络，或确认密钥是否正确。"
@@ -270,11 +271,49 @@
     notify("已清除本机 API 密钥");
   }
 
+  function extractJsonObject(rawText) {
+    const source = String(rawText || "").trim();
+    if (!source) return null;
+    try {
+      return JSON.parse(source);
+    } catch {
+      /* continue */
+    }
+    const fenced = source.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    if (fenced?.[1]) {
+      try {
+        return JSON.parse(fenced[1].trim());
+      } catch {
+        /* continue */
+      }
+    }
+    const start = source.indexOf("{");
+    const end = source.lastIndexOf("}");
+    if (start >= 0 && end > start) {
+      try {
+        return JSON.parse(source.slice(start, end + 1));
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  function normalizeChatMode(rawMode, responseLevel) {
+    const mode = text(rawMode).toLowerCase();
+    const allowed = new Set(["hint", "explain", "steps", "answer", "clarification", "refusal"]);
+    if (allowed.has(mode)) return mode;
+    if (mode === "variant" || mode === "check") return "explain";
+    if (responseLevel === "hint") return "hint";
+    if (responseLevel === "steps") return "steps";
+    if (responseLevel === "check" || responseLevel === "variant" || responseLevel === "explain") return "explain";
+    return "answer";
+  }
+
   function softValidateChat(raw, responseLevel) {
     if (!raw || typeof raw !== "object") return null;
-    const modes = new Set(["hint", "explain", "steps", "answer", "clarification", "refusal"]);
-    if (!modes.has(raw.mode)) return null;
-    const summary = text(raw.summary).slice(0, 1000);
+    const mode = normalizeChatMode(raw.mode, responseLevel);
+    const summary = text(raw.summary || raw.message || raw.answer).slice(0, 1000);
     const steps = Array.isArray(raw.steps)
       ? raw.steps.map((step) => text(step).slice(0, 500)).filter(Boolean).slice(0, 8)
       : [];
@@ -284,13 +323,13 @@
       : [];
     return {
       schemaVersion: "1.0",
-      mode: raw.mode,
+      mode,
       summary,
       steps,
       formulas: Array.isArray(raw.formulas)
         ? raw.formulas.map((item) => text(item).slice(0, 300)).filter(Boolean).slice(0, 8)
         : [],
-      finalAnswer: responseLevel === "hint" ? null : (text(raw.finalAnswer).slice(0, 1200) || null),
+      finalAnswer: responseLevel === "hint" ? null : (text(raw.finalAnswer || raw.answer).slice(0, 1200) || null),
       checks: Array.isArray(raw.checks)
         ? raw.checks.map((item) => text(item).slice(0, 400)).filter(Boolean).slice(0, 6)
         : [],
@@ -360,15 +399,14 @@
         }
         throw new TutorRequestError(payload.error || "AI_UNAVAILABLE", response.status);
       }
-      const content = payload?.choices?.[0]?.message?.content;
-      if (typeof content !== "string" || !content.trim()) {
+      const message = payload?.choices?.[0]?.message || {};
+      const content = typeof message.content === "string" ? message.content : "";
+      const reasoning = typeof message.reasoning_content === "string" ? message.reasoning_content : "";
+      const parsed = extractJsonObject(content) || extractJsonObject(reasoning);
+      if (!parsed) {
         throw new TutorRequestError("INVALID_AI_RESPONSE", response.status);
       }
-      try {
-        return JSON.parse(content);
-      } catch {
-        throw new TutorRequestError("INVALID_AI_RESPONSE", response.status);
-      }
+      return parsed;
     } finally {
       window.clearTimeout(state.timeoutId);
       state.timeoutId = null;
