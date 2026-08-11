@@ -632,6 +632,26 @@
     };
   }
 
+  function randomUnit() {
+    if (globalThis.crypto?.getRandomValues) {
+      const value = new Uint32Array(1);
+      globalThis.crypto.getRandomValues(value);
+      return value[0] / 0xFFFFFFFF;
+    }
+    return Math.random();
+  }
+
+  function applyThinkingPalette(field) {
+    const baseHue = Math.round(randomUnit() * 359);
+    const ringHue = (baseHue + 95 + Math.round(randomUnit() * 35)) % 360;
+    const moonHue = (baseHue + 205 + Math.round(randomUnit() * 35)) % 360;
+    field.style.setProperty("--thinking-planet-hue", String(baseHue));
+    field.style.setProperty("--thinking-ring-hue", String(ringHue));
+    field.style.setProperty("--thinking-moon-hue", String(moonHue));
+    field.style.setProperty("--thinking-spectrum-delay", `${(-randomUnit() * 9).toFixed(2)}s`);
+    field.style.setProperty("--thinking-orbit-delay", `${(-randomUnit() * 3.4).toFixed(2)}s`);
+  }
+
   function updatePendingMessage(copy) {
     if (!state.pendingNode || !state.pendingStartedAt) return;
     const elapsedSeconds = Math.max(0, Math.floor((Date.now() - state.pendingStartedAt) / 1000));
@@ -671,16 +691,19 @@
     const visual = createElement("div", "ai-thinking-visual");
     visual.setAttribute("aria-hidden", "true");
     const field = createElement("div", "ai-thinking-field");
-    field.append(
-      createElement("span", "ai-thinking-halo halo-one"),
-      createElement("span", "ai-thinking-halo halo-two"),
-      createElement("span", "ai-thinking-beam beam-input"),
-      createElement("span", "ai-thinking-prism-shape"),
-      createElement("span", "ai-thinking-beam beam-output output-one"),
-      createElement("span", "ai-thinking-beam beam-output output-two"),
-      createElement("span", "ai-thinking-beam beam-output output-three"),
-      createElement("span", "ai-thinking-glint")
+    applyThinkingPalette(field);
+    const orbit = createElement("span", "ai-thinking-orbit");
+    const planet = createElement("span", "ai-thinking-planet");
+    planet.append(createElement("span", "ai-thinking-planet-core"));
+    const moon = createElement("span", "ai-thinking-moon");
+    moon.append(createElement("span", "ai-thinking-moon-core"));
+    orbit.append(
+      createElement("span", "ai-thinking-orbit-track orbit-back"),
+      planet,
+      createElement("span", "ai-thinking-orbit-track orbit-front"),
+      moon
     );
+    field.append(orbit);
     visual.append(field);
 
     const copyNode = createElement("div", "ai-thinking-copy");

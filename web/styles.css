@@ -2337,131 +2337,149 @@ body.ai-tutor-route .ai-tutor-workspace {
 
 .ai-thinking-visual {
   display: grid;
-  width: 72px;
-  height: 54px;
+  width: 78px;
+  height: 58px;
   place-items: center;
 }
 
 .ai-thinking-field {
+  --thinking-planet-hue: 222;
+  --thinking-ring-hue: 174;
+  --thinking-moon-hue: 304;
+  --thinking-spectrum-delay: 0s;
+  --thinking-orbit-delay: 0s;
   position: relative;
-  width: 70px;
-  height: 52px;
-  overflow: hidden;
-  border: 1px solid rgba(134, 168, 229, .28);
-  border-radius: 18px;
+  width: 76px;
+  height: 56px;
+  overflow: visible;
+  border-radius: 22px;
   background:
-    linear-gradient(rgba(255, 255, 255, .5), rgba(255, 255, 255, .2)),
-    radial-gradient(circle at 48% 52%, rgba(73, 123, 236, .14), transparent 54%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .78), 0 7px 18px rgba(55, 92, 162, .08);
+    radial-gradient(circle at 50% 52%, hsl(var(--thinking-planet-hue) 82% 62% / .12), transparent 43%),
+    radial-gradient(ellipse at 50% 78%, rgba(52, 91, 170, .08), transparent 58%);
 }
 
-.ai-thinking-halo,
-.ai-thinking-beam,
-.ai-thinking-prism-shape,
-.ai-thinking-glint {
+.ai-thinking-orbit {
+  position: absolute;
+  top: 6px;
+  left: 4px;
+  width: 68px;
+  height: 44px;
+  overflow: visible;
+  transform: rotate(-11deg);
+  transform-origin: center;
+}
+
+.ai-thinking-orbit-track,
+.ai-thinking-planet,
+.ai-thinking-moon {
   position: absolute;
 }
 
-.ai-thinking-halo {
-  width: 40px;
-  height: 40px;
-  opacity: .58;
-  border-radius: 50%;
-  filter: blur(12px);
-  animation: ai-thinking-halo 3.6s ease-in-out infinite alternate;
-}
-
-.ai-thinking-halo.halo-one {
-  top: -13px;
-  left: 11px;
-  background: rgba(48, 208, 178, .32);
-}
-
-.ai-thinking-halo.halo-two {
-  right: -10px;
-  bottom: -17px;
-  background: rgba(112, 82, 229, .31);
-  animation-delay: -.9s;
-}
-
-.ai-thinking-beam {
-  z-index: 2;
-  height: 2px;
-  border-radius: 999px;
-  transform-origin: left center;
-}
-
-.ai-thinking-beam.beam-input {
-  top: 25px;
-  left: 3px;
-  width: 28px;
-  background: linear-gradient(90deg, transparent, rgba(75, 206, 209, .52) 27%, #51dfc1 80%, #fff);
-  box-shadow: 0 0 8px rgba(58, 211, 184, .42);
-  animation: ai-thinking-input 1.75s cubic-bezier(.45, 0, .2, 1) infinite;
-}
-
-.ai-thinking-prism-shape {
+.ai-thinking-orbit-track {
   top: 11px;
-  left: 27px;
+  left: 2px;
+  width: 64px;
+  height: 22px;
+  padding: 1.4px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 38deg,
+    hsl(var(--thinking-ring-hue) 96% 72%),
+    hsl(calc(var(--thinking-ring-hue) + 82) 94% 70%),
+    hsl(calc(var(--thinking-ring-hue) + 176) 92% 72%),
+    hsl(calc(var(--thinking-ring-hue) + 268) 96% 69%),
+    hsl(calc(var(--thinking-ring-hue) + 360) 96% 72%)
+  );
+  filter: hue-rotate(0deg) drop-shadow(0 0 3px hsl(var(--thinking-ring-hue) 88% 66% / .42));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: ai-thinking-ring-spectrum 9.6s linear infinite;
+  animation-delay: var(--thinking-spectrum-delay);
+}
+
+.ai-thinking-orbit-track.orbit-back {
+  z-index: 1;
+  opacity: .58;
+}
+
+.ai-thinking-orbit-track.orbit-front {
+  z-index: 4;
+  opacity: .98;
+  clip-path: inset(50% -5px -5px -5px);
+}
+
+.ai-thinking-planet {
+  top: 8px;
+  left: 20px;
   z-index: 3;
-  width: 25px;
-  height: 30px;
-  clip-path: polygon(0 0, 100% 50%, 0 100%);
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, .94), rgba(164, 213, 255, .58) 38%, rgba(95, 106, 230, .58) 68%, rgba(143, 83, 226, .72));
-  box-shadow: 0 8px 20px rgba(71, 94, 211, .26);
-  filter: drop-shadow(0 0 6px rgba(91, 134, 237, .2));
-  transform-origin: 45% 50%;
-  animation: ai-thinking-prism 2.5s ease-in-out infinite;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  box-shadow:
+    0 6px 13px hsl(var(--thinking-planet-hue) 60% 40% / .2),
+    0 0 12px hsl(var(--thinking-planet-hue) 88% 64% / .22);
+  animation: ai-thinking-planet-breathe 2.7s ease-in-out infinite;
 }
 
-.ai-thinking-prism-shape::after {
+.ai-thinking-planet-core {
   position: absolute;
-  inset: 2px 4px 2px 2px;
-  clip-path: inherit;
-  background: linear-gradient(120deg, rgba(255, 255, 255, .7), transparent 46%);
+  inset: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .56);
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 37% 28%, rgba(255, 255, 255, .9) 0 5%, rgba(255, 255, 255, .38) 13%, transparent 30%),
+    radial-gradient(circle at 53% 62%, hsl(calc(var(--thinking-planet-hue) + 98) 96% 66% / .98) 0 13%, transparent 47%),
+    radial-gradient(circle at 46% 48%, hsl(calc(var(--thinking-planet-hue) + 34) 89% 66%) 0 38%, hsl(var(--thinking-planet-hue) 78% 47%) 70%, hsl(calc(var(--thinking-planet-hue) - 34) 75% 36%) 100%);
+  box-shadow: inset -5px -7px 9px rgba(24, 42, 117, .24), inset 4px 4px 7px rgba(255, 255, 255, .25);
+  filter: hue-rotate(0deg) saturate(1.06);
+  animation: ai-thinking-planet-spectrum 11.8s linear infinite;
+  animation-delay: var(--thinking-spectrum-delay);
+}
+
+.ai-thinking-planet-core::after {
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  width: 15px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .48), transparent);
   content: "";
+  transform: rotate(-17deg);
 }
 
-.ai-thinking-beam.beam-output {
-  top: 25px;
-  left: 49px;
-  width: 18px;
-  opacity: .92;
-  transform: scaleX(.18);
-  animation: ai-thinking-output 1.75s cubic-bezier(.45, 0, .2, 1) infinite;
-}
-
-.ai-thinking-beam.beam-output.output-one {
-  --beam-rotation: rotate(-27deg);
-  background: linear-gradient(90deg, #fff, #b8a7ff 70%, transparent);
-  transform: rotate(-27deg) scaleX(.18);
-  animation-delay: .08s;
-}
-
-.ai-thinking-beam.beam-output.output-two {
-  background: linear-gradient(90deg, #fff, #65a9fa 70%, transparent);
-  animation-delay: .16s;
-}
-
-.ai-thinking-beam.beam-output.output-three {
-  --beam-rotation: rotate(27deg);
-  background: linear-gradient(90deg, #fff, #61d9c1 70%, transparent);
-  transform: rotate(27deg) scaleX(.18);
-  animation-delay: .24s;
-}
-
-.ai-thinking-glint {
-  top: 21px;
-  left: 47px;
+.ai-thinking-moon {
+  top: 0;
+  left: 0;
   z-index: 5;
   width: 9px;
   height: 9px;
-  opacity: .72;
-  transform: scale(.74) rotate(45deg);
-  background: linear-gradient(135deg, transparent 41%, #fff 42% 58%, transparent 59%),
-    linear-gradient(45deg, transparent 41%, #fff 42% 58%, transparent 59%);
-  animation: ai-thinking-glint-pulse 1.75s ease-in-out infinite;
+  offset-path: path("M 66 22 A 32 11 0 1 1 2 22 A 32 11 0 1 1 66 22");
+  offset-distance: 0%;
+  offset-rotate: 0deg;
+  offset-anchor: center;
+  animation: ai-thinking-moon-orbit 3.4s linear infinite;
+  animation-delay: var(--thinking-orbit-delay);
+}
+
+.ai-thinking-moon-core {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, .76);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 27%, rgba(255, 255, 255, .98) 0 8%, transparent 29%),
+    radial-gradient(circle at 55% 62%, hsl(calc(var(--thinking-moon-hue) + 72) 98% 72%) 0 18%, hsl(var(--thinking-moon-hue) 92% 58%) 64%, hsl(calc(var(--thinking-moon-hue) - 45) 84% 48%) 100%);
+  box-shadow:
+    0 0 0 2px hsl(var(--thinking-moon-hue) 95% 68% / .12),
+    0 0 8px hsl(var(--thinking-moon-hue) 94% 64% / .52);
+  filter: hue-rotate(0deg) saturate(1.12);
+  animation:
+    ai-thinking-moon-spectrum 7.2s linear infinite,
+    ai-thinking-moon-pulse 1.7s ease-in-out infinite;
+  animation-delay: var(--thinking-spectrum-delay), 0s;
 }
 
 .ai-thinking-copy { min-width: 0; }
@@ -2583,30 +2601,76 @@ body.ai-tutor-route .ai-tutor-workspace {
   50% { opacity: 1; transform: scale(1); }
 }
 
-@keyframes ai-thinking-halo {
-  to { opacity: .78; transform: translate(9px, 5px) scale(1.18); }
+@keyframes ai-thinking-planet-breathe {
+  0%, 100% {
+    box-shadow:
+      0 6px 13px hsl(var(--thinking-planet-hue) 60% 40% / .18),
+      0 0 9px hsl(var(--thinking-planet-hue) 88% 64% / .18);
+    transform: scale(.97);
+  }
+  50% {
+    box-shadow:
+      0 7px 15px hsl(var(--thinking-planet-hue) 60% 40% / .24),
+      0 0 15px hsl(var(--thinking-planet-hue) 88% 64% / .3);
+    transform: scale(1.035);
+  }
 }
 
-@keyframes ai-thinking-input {
-  0%, 12% { opacity: .2; transform: scaleX(.06); }
-  52%, 78% { opacity: 1; transform: scaleX(1); }
-  100% { opacity: .25; transform: scaleX(.2); }
+@keyframes ai-thinking-planet-spectrum {
+  to { filter: hue-rotate(360deg) saturate(1.08); }
 }
 
-@keyframes ai-thinking-prism {
-  0%, 100% { filter: saturate(.94) drop-shadow(0 0 4px rgba(91, 134, 237, .18)); transform: scale(.96); }
-  50% { filter: saturate(1.16) drop-shadow(0 0 9px rgba(91, 134, 237, .38)); transform: scale(1.035); }
+@keyframes ai-thinking-ring-spectrum {
+  to {
+    filter: hue-rotate(-360deg) drop-shadow(0 0 3px hsl(var(--thinking-ring-hue) 88% 66% / .42));
+  }
 }
 
-@keyframes ai-thinking-output {
-  0%, 32% { opacity: .18; transform: var(--beam-rotation, rotate(0deg)) scaleX(.08); }
-  63%, 86% { opacity: 1; transform: var(--beam-rotation, rotate(0deg)) scaleX(1); }
-  100% { opacity: .15; transform: var(--beam-rotation, rotate(0deg)) scaleX(.3); }
+@keyframes ai-thinking-moon-orbit {
+  0% {
+    z-index: 5;
+    offset-distance: 0%;
+    transform: scale(.98);
+  }
+  25% {
+    z-index: 5;
+    transform: scale(1.1);
+  }
+  49.8% {
+    z-index: 5;
+    transform: scale(1);
+  }
+  50% {
+    z-index: 1;
+    offset-distance: 50%;
+    transform: scale(.91);
+  }
+  75% {
+    z-index: 1;
+    transform: scale(.79);
+  }
+  99.8% {
+    z-index: 1;
+    transform: scale(.91);
+  }
+  100% {
+    z-index: 5;
+    offset-distance: 100%;
+    transform: scale(.98);
+  }
 }
 
-@keyframes ai-thinking-glint-pulse {
-  0%, 30%, 100% { opacity: .24; transform: scale(.58) rotate(45deg); }
-  58% { opacity: 1; transform: scale(1.08) rotate(135deg); }
+@keyframes ai-thinking-moon-spectrum {
+  to { filter: hue-rotate(360deg) saturate(1.16); }
+}
+
+@keyframes ai-thinking-moon-pulse {
+  50% {
+    box-shadow:
+      0 0 0 3px hsl(var(--thinking-moon-hue) 95% 68% / .08),
+      0 0 11px hsl(var(--thinking-moon-hue) 94% 64% / .68);
+    transform: scale(1.08);
+  }
 }
 
 @keyframes ai-thinking-phase-pulse {
@@ -2625,19 +2689,17 @@ body.ai-tutor-route .ai-tutor-workspace {
   .ai-thinking-card::before,
   .ai-thinking-card::after,
   .ai-thinking-badge i,
-  .ai-thinking-halo,
-  .ai-thinking-beam,
-  .ai-thinking-prism-shape,
-  .ai-thinking-glint,
+  .ai-thinking-orbit-track,
+  .ai-thinking-planet,
+  .ai-thinking-planet-core,
+  .ai-thinking-moon,
+  .ai-thinking-moon-core,
   .ai-thinking-phase i {
     animation: none;
     transition: none;
   }
 
-  .ai-thinking-beam.beam-input { opacity: .8; transform: scaleX(1); }
-  .ai-thinking-beam.beam-output.output-one { opacity: .75; transform: rotate(-27deg) scaleX(1); }
-  .ai-thinking-beam.beam-output.output-two { opacity: .75; transform: scaleX(1); }
-  .ai-thinking-beam.beam-output.output-three { opacity: .75; transform: rotate(27deg) scaleX(1); }
+  .ai-thinking-moon { offset-distance: 8%; transform: scale(1); }
 }
 
 body.ai-tutor-route .prompt-panel,
