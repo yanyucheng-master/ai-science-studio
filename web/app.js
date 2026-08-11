@@ -593,8 +593,9 @@ function favoriteVisualForCurrentExperiment() {
 }
 
 function currentFavoriteRecord() {
-  const question = normalizeFavoriteQuestion(state.generatedQuestion);
-  if (!state.hasGenerated || !question) return null;
+  const hasActiveExperiment = state.hasGenerated && !document.body.classList.contains("awaiting-generation");
+  const question = normalizeFavoriteQuestion(state.generatedQuestion || (hasActiveExperiment ? $("#questionInput")?.value : ""));
+  if (!hasActiveExperiment || !question) return null;
   const subject = state.subject;
   const title = String($("#experimentTitle")?.textContent || config()?.title || "实验记录").trim();
   const engine = String($("#engineBadge")?.textContent || "典型题型模板").trim();
@@ -661,13 +662,15 @@ function syncFavoriteState() {
   [$("#promptFavoriteButton"), $("#favoriteButton")].filter(Boolean).forEach(button => {
     button.classList.toggle("selected", state.favorite);
     button.setAttribute("aria-pressed", String(state.favorite));
-    const label = !state.hasGenerated ? "生成实验后可收藏" : state.favorite ? "取消收藏当前实验" : "收藏当前实验";
+    const label = !current ? "生成实验后可收藏" : state.favorite ? "取消收藏当前实验" : "收藏当前实验";
     button.setAttribute("aria-label", label);
     button.title = label;
   });
 }
 
-function toggleCurrentFavorite() {
+function toggleCurrentFavorite(event) {
+  event?.preventDefault?.();
+  event?.stopPropagation?.();
   const current = currentFavoriteRecord();
   if (!current) {
     showToast("请先生成实验，再收藏当前实验");
@@ -683,6 +686,13 @@ function toggleCurrentFavorite() {
   persistFavoriteRecords();
   renderFavoriteList();
   syncFavoriteState();
+  const trigger = event?.currentTarget;
+  if (trigger instanceof HTMLElement) {
+    trigger.classList.remove("favorite-pulse");
+    void trigger.offsetWidth;
+    trigger.classList.add("favorite-pulse");
+    window.setTimeout(() => trigger.classList.remove("favorite-pulse"), 520);
+  }
   showToast(state.favorite ? "已收藏到右侧实验列表" : "已取消收藏");
 }
 

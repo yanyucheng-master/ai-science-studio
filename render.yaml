@@ -5,6 +5,13 @@ services:
     plan: free
     buildCommand: echo "No build step"
     staticPublishPath: web
+    headers:
+      - path: /
+        name: Cache-Control
+        value: "no-cache, no-store, must-revalidate"
+      - path: /index.html
+        name: Cache-Control
+        value: "no-cache, no-store, must-revalidate"
 
   - type: web
     name: master-lab-api

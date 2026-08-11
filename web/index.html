@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231648e6'/%3E%3Cpath d='M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260810-ai-visual-1">
+  <link rel="stylesheet" href="styles.css?v=20260810-ai-visual-3">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -153,7 +153,7 @@
               <p id="problemText">输入题目并点击“生成实验”后，这里会构建对应的可视化实验。</p>
             </div>
             <div class="header-tools">
-              <button class="square-button" id="favoriteButton" aria-label="收藏当前实验" aria-pressed="false">
+              <button class="square-button" id="favoriteButton" type="button" aria-label="收藏当前实验" aria-pressed="false">
                 <svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>
               </button>
               <button class="square-button" id="shareButton" aria-label="分享实验">
@@ -624,19 +624,18 @@
 
           <section class="mentor-card card">
             <div class="mentor-head">
-              <div class="mentor-prism mentor-prism-compact" role="img" aria-label="大师实验室 AI 导师标志" tabindex="0">
-                <span class="mentor-prism-aura" aria-hidden="true"></span>
-                <svg class="mentor-prism-glyph" viewBox="0 0 48 48" aria-hidden="true">
-                  <path class="mentor-prism-input" d="M5 24h12" />
-                  <path class="mentor-prism-shell" d="m18 9 17 15-17 15Z" />
-                  <path class="mentor-prism-output output-one" d="M34 24 44 14" />
-                  <path class="mentor-prism-output output-two" d="M34 24h11" />
-                  <path class="mentor-prism-output output-three" d="m34 24 10 10" />
-                  <circle class="mentor-prism-node" cx="8" cy="24" r="2" />
-                  <path class="mentor-prism-glint" d="M36 7v6M33 10h6" />
+              <div class="mentor-mark mentor-mark-compact" role="img" aria-label="大师实验室 AI 导师标志" tabindex="0">
+                <span class="mentor-mark-aura" aria-hidden="true"></span>
+                <svg class="mentor-mark-glyph" viewBox="0 0 64 64" width="48" height="48" aria-hidden="true">
+                  <rect class="mentor-mark-tile" x="5" y="5" width="54" height="54" rx="18" fill="#2057d9" />
+                  <path class="mentor-mark-flask" d="M27 13h10M29 13v12L18.6 44.7C16.5 49.2 19.6 53 24.6 53h14.8c5 0 8.1-3.8 6-8.3L35 25V13" fill="rgba(255,255,255,.08)" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path class="mentor-mark-liquid" d="M19.5 43.3c4.1-2.7 7.3 2.1 11.8-.4 4-2.2 7.1-2 12.8.3l2 4.2c1.1 2.4-.7 4.6-3.4 4.6H21.3c-2.7 0-4.5-2.2-3.4-4.6Z" fill="#4bd7b2" opacity=".78" />
+                  <path class="mentor-mark-route" d="m23 44 6-7 5 3 5-9" fill="none" stroke="#eafffb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                  <circle class="mentor-mark-step step-one" cx="23" cy="44" r="2.5" fill="#a8f4df" stroke="#fff" stroke-width="1" />
+                  <circle class="mentor-mark-step step-two" cx="34" cy="40" r="2.5" fill="#a9d7ff" stroke="#fff" stroke-width="1" />
+                  <circle class="mentor-mark-step step-three" cx="39" cy="31" r="2.8" fill="#e0d7ff" stroke="#fff" stroke-width="1" />
+                  <path class="mentor-mark-drop" d="M32 18c2 2.5 3 4.2 3 5.4a3 3 0 1 1-6 0c0-1.2 1-2.9 3-5.4Z" fill="#9ee9ff" opacity=".88" />
                 </svg>
-                <span class="mentor-prism-orbit" aria-hidden="true"><i></i><i></i></span>
-                <span class="mentor-prism-badge" aria-hidden="true">AI</span>
               </div>
               <div>
                 <span class="online"><i></i> AI 导师在线</span>
@@ -674,19 +673,18 @@
         <section class="ai-tutor-workspace card" id="aiTutorWorkspace" aria-hidden="true">
           <header class="ai-tutor-header">
             <div class="ai-tutor-identity">
-              <div class="mentor-prism mentor-prism-large ai-tutor-avatar" role="img" aria-label="大师实验室 AI 导师标志" tabindex="0">
-                <span class="mentor-prism-aura" aria-hidden="true"></span>
-                <svg class="mentor-prism-glyph" viewBox="0 0 48 48" aria-hidden="true">
-                  <path class="mentor-prism-input" d="M5 24h12" />
-                  <path class="mentor-prism-shell" d="m18 9 17 15-17 15Z" />
-                  <path class="mentor-prism-output output-one" d="M34 24 44 14" />
-                  <path class="mentor-prism-output output-two" d="M34 24h11" />
-                  <path class="mentor-prism-output output-three" d="m34 24 10 10" />
-                  <circle class="mentor-prism-node" cx="8" cy="24" r="2" />
-                  <path class="mentor-prism-glint" d="M36 7v6M33 10h6" />
+              <div class="mentor-mark mentor-mark-large ai-tutor-avatar" role="img" aria-label="大师实验室 AI 导师标志" tabindex="0">
+                <span class="mentor-mark-aura" aria-hidden="true"></span>
+                <svg class="mentor-mark-glyph" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
+                  <rect class="mentor-mark-tile" x="5" y="5" width="54" height="54" rx="18" fill="#2057d9" />
+                  <path class="mentor-mark-flask" d="M27 13h10M29 13v12L18.6 44.7C16.5 49.2 19.6 53 24.6 53h14.8c5 0 8.1-3.8 6-8.3L35 25V13" fill="rgba(255,255,255,.08)" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path class="mentor-mark-liquid" d="M19.5 43.3c4.1-2.7 7.3 2.1 11.8-.4 4-2.2 7.1-2 12.8.3l2 4.2c1.1 2.4-.7 4.6-3.4 4.6H21.3c-2.7 0-4.5-2.2-3.4-4.6Z" fill="#4bd7b2" opacity=".78" />
+                  <path class="mentor-mark-route" d="m23 44 6-7 5 3 5-9" fill="none" stroke="#eafffb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                  <circle class="mentor-mark-step step-one" cx="23" cy="44" r="2.5" fill="#a8f4df" stroke="#fff" stroke-width="1" />
+                  <circle class="mentor-mark-step step-two" cx="34" cy="40" r="2.5" fill="#a9d7ff" stroke="#fff" stroke-width="1" />
+                  <circle class="mentor-mark-step step-three" cx="39" cy="31" r="2.8" fill="#e0d7ff" stroke="#fff" stroke-width="1" />
+                  <path class="mentor-mark-drop" d="M32 18c2 2.5 3 4.2 3 5.4a3 3 0 1 1-6 0c0-1.2 1-2.9 3-5.4Z" fill="#9ee9ff" opacity=".88" />
                 </svg>
-                <span class="mentor-prism-orbit" aria-hidden="true"><i></i><i></i></span>
-                <span class="mentor-prism-badge" aria-hidden="true">AI</span>
               </div>
               <div>
                 <span class="online"><i></i> AI 导师在线</span>
@@ -769,7 +767,7 @@
   <div class="toast" id="toast"><span></span><p>操作成功</p></div>
 
   <script src="physics-extra.js?v=20260808-ai-tutor-1"></script>
-  <script src="app.js?v=20260809-favorites-1"></script>
-  <script src="ai-tutor.js?v=20260810-ai-visual-1"></script>
+  <script src="app.js?v=20260810-favorites-2"></script>
+  <script src="ai-tutor.js?v=20260810-ai-visual-2"></script>
 </body>
 </html>
