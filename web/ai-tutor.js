@@ -71,6 +71,8 @@
     pendingNode: null,
     pendingTimer: null,
     pendingStartedAt: 0,
+    pendingReasoning: "",
+    pendingExpanded: false,
     requestSerial: 0,
     lastRequest: null,
     lastError: null
@@ -277,29 +279,46 @@
   function extractJsonObject(rawText) {
     const source = String(rawText || "").trim();
     if (!source) return null;
-    try {
-      return JSON.parse(source);
-    } catch {
-      /* continue */
-    }
+    const candidates = [source];
     const fenced = source.match(/```(?:json)?\s*([\s\S]*?)```/i);
-    if (fenced?.[1]) {
-      try {
-        return JSON.parse(fenced[1].trim());
-      } catch {
-        /* continue */
-      }
-    }
+    if (fenced?.[1]) candidates.push(fenced[1].trim());
     const start = source.indexOf("{");
     const end = source.lastIndexOf("}");
-    if (start >= 0 && end > start) {
-      try {
-        return JSON.parse(source.slice(start, end + 1));
-      } catch {
-        return null;
-      }
+    if (start >= 0 && end > start) candidates.push(source.slice(start, end + 1));
+    for (const candidate of candidates) {
+      const parsed = tryParseJson(candidate) || tryParseJson(repairJsonText(candidate));
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) return parsed;
     }
     return null;
+  }
+
+  function tryParseJson(value) {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return null;
+    }
+  }
+
+  function repairJsonText(value) {
+    return String(value || "")
+      .replace(/,\s*([}\]])/g, "$1")
+      .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, " ");
+  }
+
+  function asTextList(value, limit, itemLimit) {
+    if (Array.isArray(value)) {
+      return value.map((item) => {
+        if (typeof item === "string") return text(item).slice(0, itemLimit);
+        if (item && typeof item === "object") {
+          return text(item.text || item.content || item.step || item.formula || item.check || item.summary).slice(0, itemLimit);
+        }
+        return "";
+      }).filter(Boolean).slice(0, limit);
+    }
+    const single = text(value);
+    if (!single) return [];
+    return single.split(/\n+/).map((line) => line.replace(/^\d+[\.、)\s]+/, "").trim()).filter(Boolean).slice(0, limit);
   }
 
   function normalizeChatMode(rawMode, responseLevel) {
@@ -316,32 +335,39 @@
   function softValidateChat(raw, responseLevel) {
     if (!raw || typeof raw !== "object") return null;
     const mode = normalizeChatMode(raw.mode, responseLevel);
-    const summary = text(raw.summary || raw.message || raw.answer).slice(0, 1000);
-    const steps = Array.isArray(raw.steps)
-      ? raw.steps.map((step) => text(step).slice(0, 500)).filter(Boolean).slice(0, 8)
-      : [];
+    const summary = text(raw.summary || raw.message || raw.answer || raw.finalAnswer || raw.content).slice(0, 1000);
+    const steps = asTextList(raw.steps, 8, 500);
     if (!summary && !steps.length) return null;
-    const warnings = Array.isArray(raw.warnings)
-      ? raw.warnings.map((item) => text(item).slice(0, 300)).filter(Boolean).slice(0, 4)
-      : [];
+    const warnings = asTextList(raw.warnings, 4, 300);
     return {
       schemaVersion: "1.0",
       mode,
-      summary,
+      summary: summary || steps[0] || "",
       steps,
-      formulas: Array.isArray(raw.formulas)
-        ? raw.formulas.map((item) => text(item).slice(0, 300)).filter(Boolean).slice(0, 8)
-        : [],
+      formulas: asTextList(raw.formulas, 8, 300),
       finalAnswer: responseLevel === "hint" ? null : (text(raw.finalAnswer || raw.answer).slice(0, 1200) || null),
-      checks: Array.isArray(raw.checks)
-        ? raw.checks.map((item) => text(item).slice(0, 400)).filter(Boolean).slice(0, 6)
-        : [],
+      checks: asTextList(raw.checks, 6, 400),
       followUp: text(raw.followUp).slice(0, 500),
       parameterPatch: null,
       warnings,
       source: "deepseek-browser",
       model: DEEPSEEK_MODEL
     };
+  }
+
+  function fallbackChatFromText(rawText, responseLevel) {
+    const cleaned = text(rawText).replace(/```(?:json)?/g, "").slice(0, 1000);
+    if (cleaned.length < 8) return null;
+    return softValidateChat({
+      mode: normalizeChatMode("", responseLevel),
+      summary: cleaned,
+      steps: [],
+      formulas: [],
+      finalAnswer: responseLevel === "hint" ? null : cleaned,
+      checks: [],
+      followUp: "",
+      warnings: ["模型未按约定 JSON 返回，已转为可读文本。"]
+    }, responseLevel);
   }
 
   function softValidateGenerate(raw) {
@@ -354,6 +380,55 @@
     };
   }
 
+  async function readSseChat(response, controller, onDelta) {
+    if (!response.body?.getReader) {
+      const payload = await response.json();
+      const message = payload?.choices?.[0]?.message || {};
+      return {
+        content: typeof message.content === "string" ? message.content : "",
+        reasoning: typeof message.reasoning_content === "string" ? message.reasoning_content : ""
+      };
+    }
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    let content = "";
+    let reasoning = "";
+    while (true) {
+      if (controller.signal.aborted) {
+        try { await reader.cancel(); } catch { /* ignore */ }
+        throw new TutorRequestError(controller.signal.reason === "timeout" ? "AI_TIMEOUT" : "ABORTED");
+      }
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split(/\r?\n/);
+      buffer = lines.pop() || "";
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith("data:")) continue;
+        const data = trimmed.slice(5).trim();
+        if (!data || data === "[DONE]") continue;
+        let chunk;
+        try {
+          chunk = JSON.parse(data);
+        } catch {
+          continue;
+        }
+        const delta = chunk.choices?.[0]?.delta || {};
+        if (typeof delta.reasoning_content === "string" && delta.reasoning_content) {
+          reasoning += delta.reasoning_content;
+          onDelta?.({ reasoning, content, kind: "reasoning" });
+        }
+        if (typeof delta.content === "string" && delta.content) {
+          content += delta.content;
+          onDelta?.({ reasoning, content, kind: "content" });
+        }
+      }
+    }
+    return { content, reasoning };
+  }
+
   async function callDeepSeek(messages, options = {}) {
     const apiKey = readStoredApiKey();
     if (!apiKey) throw new TutorRequestError("AI_NOT_CONFIGURED");
@@ -361,6 +436,7 @@
     const controller = new AbortController();
     state.controller = controller;
     const timeoutMs = options.timeoutMs || CHAT_TIMEOUT_MS;
+    const useStream = Boolean(options.stream);
     state.timeoutId = window.setTimeout(() => controller.abort("timeout"), timeoutMs);
     try {
       let response;
@@ -377,6 +453,7 @@
             thinking: { type: options.thinking ? "enabled" : "disabled" },
             response_format: { type: "json_object" },
             max_tokens: options.maxTokens || 2200,
+            stream: useStream,
             ...(options.thinking ? { reasoning_effort: "high" } : { temperature: 0.2 })
           }),
           signal: controller.signal
@@ -387,13 +464,13 @@
         }
         throw new TutorRequestError("NETWORK_ERROR");
       }
-      let payload = {};
-      try {
-        payload = await response.json();
-      } catch {
-        throw new TutorRequestError("INVALID_AI_RESPONSE", response.status);
-      }
       if (!response.ok) {
+        let payload = {};
+        try {
+          payload = await response.json();
+        } catch {
+          payload = {};
+        }
         if (response.status === 401 || response.status === 403) {
           throw new TutorRequestError("AI_AUTH_FAILED", response.status);
         }
@@ -402,14 +479,36 @@
         }
         throw new TutorRequestError(payload.error || "AI_UNAVAILABLE", response.status);
       }
-      const message = payload?.choices?.[0]?.message || {};
-      const content = typeof message.content === "string" ? message.content : "";
-      const reasoning = typeof message.reasoning_content === "string" ? message.reasoning_content : "";
-      const parsed = extractJsonObject(content) || extractJsonObject(reasoning);
-      if (!parsed) {
-        throw new TutorRequestError("INVALID_AI_RESPONSE", response.status);
+      let content = "";
+      let reasoning = "";
+      if (useStream) {
+        const streamed = await readSseChat(response, controller, ({ reasoning: next }) => {
+          state.pendingReasoning = next;
+          options.onReasoning?.(next);
+        });
+        content = streamed.content;
+        reasoning = streamed.reasoning || state.pendingReasoning;
+      } else {
+        let payload = {};
+        try {
+          payload = await response.json();
+        } catch {
+          throw new TutorRequestError("INVALID_AI_RESPONSE", response.status);
+        }
+        const message = payload?.choices?.[0]?.message || {};
+        content = typeof message.content === "string" ? message.content : "";
+        reasoning = typeof message.reasoning_content === "string" ? message.reasoning_content : "";
+        if (reasoning) {
+          state.pendingReasoning = reasoning;
+          options.onReasoning?.(reasoning);
+        }
       }
-      return parsed;
+      if (reasoning && !state.pendingReasoning) state.pendingReasoning = reasoning;
+      const parsed = extractJsonObject(content) || extractJsonObject(reasoning);
+      if (parsed) return parsed;
+      const error = new TutorRequestError("INVALID_AI_RESPONSE", response.status);
+      error.rawText = content || reasoning;
+      throw error;
     } finally {
       window.clearTimeout(state.timeoutId);
       state.timeoutId = null;
@@ -417,10 +516,53 @@
     }
   }
 
+  function withReasoning(payload) {
+    if (!payload || typeof payload !== "object") return payload;
+    payload.reasoning = state.pendingReasoning || payload.reasoning || "";
+    payload.thinkingSeconds = state.pendingStartedAt
+      ? Math.max(1, Math.round((Date.now() - state.pendingStartedAt) / 1000))
+      : payload.thinkingSeconds;
+    return payload;
+  }
+
+  async function completeTutorChat(messages, request, options) {
+    const requestOptions = {
+      ...options,
+      stream: Boolean(options.thinking),
+      onReasoning: (value) => updatePendingReasoning(value)
+    };
+    try {
+      const raw = await callDeepSeek(messages, requestOptions);
+      const validated = withReasoning(softValidateChat(raw, request.responseLevel));
+      if (validated) return validated;
+      if (!options.thinking) {
+        const fallback = withReasoning(fallbackChatFromText([raw.summary, raw.message, raw.answer, raw.content].filter(Boolean).join("\n"), request.responseLevel));
+        if (fallback) return fallback;
+      }
+    } catch (error) {
+      if (error?.code === "ABORTED" || error?.code === "AI_TIMEOUT" || error?.code === "AI_AUTH_FAILED" || error?.code === "AI_RATE_LIMITED") {
+        throw error;
+      }
+      if (!options.thinking) {
+        const fallback = withReasoning(fallbackChatFromText(error?.rawText, request.responseLevel));
+        if (fallback) return fallback;
+        throw error;
+      }
+    }
+    if (options.thinking) {
+      return completeTutorChat(messages, request, {
+        thinking: false,
+        timeoutMs: 45000,
+        maxTokens: 2200
+      });
+    }
+    throw new TutorRequestError("INVALID_AI_RESPONSE");
+  }
+
   async function browserTutorChat(request) {
     const useThinking = request.responseLevel === "steps" || request.responseLevel === "check";
     const history = (request.history || []).map((item) => ({ role: item.role, content: item.content }));
-    const raw = await callDeepSeek([
+    const messages = [
       { role: "system", content: CHAT_SYSTEM_PROMPT },
       ...history,
       {
@@ -433,17 +575,16 @@
             responseLevel: request.responseLevel,
             subject: request.context?.subject || "",
             context: request.context || {}
-          }, null, 0)}`
+          }, null, 0)}`,
+          "只返回一个 JSON 对象，不要输出 Markdown 或解释文字。"
         ].join("\n")
       }
-    ], {
+    ];
+    return completeTutorChat(messages, request, {
       thinking: useThinking,
       timeoutMs: useThinking ? CHAT_TIMEOUT_MS : 45000,
-      maxTokens: useThinking ? 4200 : 2200
+      maxTokens: useThinking ? 16000 : 2200
     });
-    const validated = softValidateChat(raw, request.responseLevel);
-    if (!validated) throw new TutorRequestError("INVALID_AI_RESPONSE");
-    return validated;
   }
 
   async function browserGenerate(question, preferredSubject = "") {
@@ -615,6 +756,7 @@
     state.pendingNode?.remove();
     state.pendingNode = null;
     state.pendingStartedAt = 0;
+    state.pendingExpanded = false;
   }
 
   function thinkingCopy(responseLevel) {
@@ -680,28 +822,57 @@
     field.addEventListener("pointercancel", reset);
   }
 
-  function updatePendingMessage(copy) {
+  function thinkingElapsedLabel(seconds, live = true) {
+    if (seconds < 1) return live ? "刚刚开始" : "已思考";
+    return live ? `思考中 · ${seconds} 秒` : `已思考 ${seconds} 秒`;
+  }
+
+  function updatePendingReasoning(value) {
+    state.pendingReasoning = String(value || "");
+    const trace = state.pendingNode?.querySelector(".ai-thinking-trace-text");
+    const empty = state.pendingNode?.querySelector(".ai-thinking-trace-empty");
+    if (trace) {
+      trace.textContent = state.pendingReasoning;
+      if (state.pendingExpanded) {
+        const panel = state.pendingNode.querySelector(".ai-thinking-trace");
+        if (panel) panel.scrollTop = panel.scrollHeight;
+      }
+    }
+    if (empty) empty.hidden = Boolean(state.pendingReasoning);
+  }
+
+  function setPendingExpanded(expanded) {
+    state.pendingExpanded = Boolean(expanded);
+    const card = state.pendingNode?.querySelector(".ai-thinking-card");
+    const toggle = state.pendingNode?.querySelector(".ai-thinking-badge");
+    const panel = state.pendingNode?.querySelector(".ai-thinking-trace");
+    card?.classList.toggle("is-expanded", state.pendingExpanded);
+    if (toggle) {
+      toggle.setAttribute("aria-expanded", String(state.pendingExpanded));
+      const caret = toggle.querySelector(".ai-thinking-caret");
+      if (caret) caret.textContent = state.pendingExpanded ? "▾" : "▸";
+    }
+    if (panel) {
+      panel.hidden = !state.pendingExpanded;
+      if (state.pendingExpanded) panel.scrollTop = panel.scrollHeight;
+    }
+  }
+
+  function updatePendingMessage() {
     if (!state.pendingNode || !state.pendingStartedAt) return;
     const elapsedSeconds = Math.max(0, Math.floor((Date.now() - state.pendingStartedAt) / 1000));
-    const stageIndex = Math.min(copy.stages.length - 1, Math.floor(elapsedSeconds / 4));
-    const stage = state.pendingNode.querySelector(".ai-thinking-stage");
+    const badge = state.pendingNode.querySelector(".ai-thinking-badge-label");
     const elapsed = state.pendingNode.querySelector(".ai-thinking-elapsed");
-    const longWait = state.pendingNode.querySelector(".ai-thinking-long-wait");
-    const card = state.pendingNode.querySelector(".ai-thinking-card");
-    const phases = state.pendingNode.querySelectorAll(".ai-thinking-phase");
-    if (stage) stage.textContent = copy.stages[stageIndex];
-    if (elapsed) elapsed.textContent = elapsedSeconds < 1 ? "刚刚开始" : `已等待 ${elapsedSeconds} 秒`;
-    if (longWait) longWait.hidden = elapsedSeconds < 12;
-    if (card) card.dataset.stage = String(stageIndex);
-    phases.forEach((phase, index) => {
-      phase.classList.toggle("is-active", index === stageIndex);
-      phase.classList.toggle("is-complete", index < stageIndex);
-    });
+    const liveThinking = state.pendingNode.querySelector(".ai-thinking-badge")?.tagName === "BUTTON";
+    if (badge) badge.textContent = liveThinking ? "思考中" : "正在生成";
+    if (elapsed) elapsed.textContent = thinkingElapsedLabel(elapsedSeconds, true);
   }
 
   function addPendingMessage(responseLevel = "hint") {
     clearPending();
     elements.empty.hidden = true;
+    state.pendingReasoning = "";
+    state.pendingExpanded = false;
     const copy = thinkingCopy(responseLevel);
     const row = createElement("div", "ai-message assistant pending ai-thinking-row");
     row.setAttribute("role", "status");
@@ -711,8 +882,24 @@
     const bubble = createElement("div", "ai-message-bubble ai-thinking-card");
     const header = createElement("div", "ai-thinking-header");
     header.append(createElement("span", "ai-message-source", "大师 · AI 导师"));
-    const badge = createElement("span", "ai-thinking-badge", "正在思考");
-    badge.prepend(createElement("i"));
+    const useThinking = responseLevel === "steps" || responseLevel === "check";
+    const badge = createElement(useThinking ? "button" : "span", "ai-thinking-badge");
+    if (useThinking) {
+      badge.type = "button";
+      badge.setAttribute("aria-expanded", "false");
+      badge.setAttribute("aria-controls", "aiThinkingTrace");
+      badge.title = "点击查看实时思考过程";
+    }
+    badge.append(createElement("i"));
+    badge.append(createElement("span", "ai-thinking-badge-label", useThinking ? "思考中" : "正在生成"));
+    if (useThinking) badge.append(createElement("span", "ai-thinking-caret", "▸"));
+    if (useThinking) {
+      badge.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setPendingExpanded(!state.pendingExpanded);
+      });
+    }
     header.append(badge);
 
     const body = createElement("div", "ai-thinking-body");
@@ -737,34 +924,56 @@
 
     const copyNode = createElement("div", "ai-thinking-copy");
     copyNode.append(createElement("strong", "", copy.title));
-    copyNode.append(createElement("p", "ai-thinking-stage", copy.stages[0]));
+    copyNode.append(createElement("p", "ai-thinking-stage", useThinking
+      ? "思维链已折叠，点击“思考中”可查看实时过程。"
+      : "正在快速整理回答。"));
     const meta = createElement("div", "ai-thinking-meta");
     meta.append(
       createElement("span", "ai-thinking-elapsed", "刚刚开始"),
       createElement("span", "", "可随时点击“停止”")
     );
     copyNode.append(meta);
-    const longWait = createElement("p", "ai-thinking-long-wait", "复杂题目可能需要更久，当前请求仍在进行。 ");
-    longWait.hidden = true;
-    copyNode.append(longWait);
     body.append(visual, copyNode);
 
-    const phases = createElement("div", "ai-thinking-phases");
-    phases.setAttribute("aria-hidden", "true");
-    ["理解题意", "组织推理", "校验表达"].forEach((label, index) => {
-      const phase = createElement("span", "ai-thinking-phase", label);
-      phase.dataset.phase = String(index);
-      phase.prepend(createElement("i"));
-      phases.append(phase);
-    });
-    bubble.append(header, body, phases);
+    const trace = createElement("div", "ai-thinking-trace");
+    trace.id = "aiThinkingTrace";
+    trace.hidden = true;
+    const empty = createElement("p", "ai-thinking-trace-empty", useThinking
+      ? "正在进入思考，展开后会实时显示过程。"
+      : "当前为快速模式，没有深度思考过程。");
+    const textNode = createElement("pre", "ai-thinking-trace-text");
+    trace.append(empty, textNode);
+
+    bubble.append(header, body, trace);
     row.append(bubble);
     elements.messages.append(row);
     state.pendingNode = row;
     state.pendingStartedAt = Date.now();
-    state.pendingTimer = window.setInterval(() => updatePendingMessage(copy), 1000);
-    updatePendingMessage(copy);
+    state.pendingTimer = window.setInterval(() => updatePendingMessage(), 1000);
+    updatePendingMessage();
     elements.messages.scrollTop = elements.messages.scrollHeight;
+  }
+
+  function createReasoningToggle(reasoning, seconds) {
+    const details = createElement("div", "ai-reasoning-block");
+    const button = createElement("button", "ai-thinking-badge ai-reasoning-toggle");
+    button.type = "button";
+    button.setAttribute("aria-expanded", "false");
+    button.append(createElement("i"));
+    button.append(createElement("span", "", thinkingElapsedLabel(seconds || 0, false)));
+    button.append(createElement("span", "ai-thinking-caret", "▸"));
+    const panel = createElement("pre", "ai-thinking-trace-text ai-reasoning-panel");
+    panel.hidden = true;
+    panel.textContent = reasoning;
+    button.addEventListener("click", () => {
+      const expanded = button.getAttribute("aria-expanded") === "true";
+      button.setAttribute("aria-expanded", String(!expanded));
+      button.classList.toggle("is-expanded", !expanded);
+      panel.hidden = expanded;
+      button.querySelector(".ai-thinking-caret").textContent = expanded ? "▸" : "▾";
+    });
+    details.append(button, panel);
+    return details;
   }
 
   const NEGATIVE_UNIT_POWER = Object.freeze({
@@ -1093,6 +1302,9 @@
     } else if (options.error) {
       bubble.append(createElement("p", "", text(payload)));
     } else {
+      if (payload.reasoning) {
+        bubble.append(createReasoningToggle(payload.reasoning, payload.thinkingSeconds));
+      }
       renderAssistantPayload(bubble, payload);
       state.messages.push({ role, content: structuredToHistoryText(payload) });
     }
