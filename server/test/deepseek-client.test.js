@@ -34,6 +34,7 @@ test('uses the fixed model and retries only once', async () => {
   assert.equal(calls, 2);
   assert.equal(requests[0].model, 'deepseek-v4-pro');
   assert.deepEqual(requests[0].thinking, { type: 'disabled' });
+  assert.equal(Object.hasOwn(requests[0], 'reasoning_effort'), false);
   assert.deepEqual(requests[0].response_format, { type: 'json_object' });
 });
 
@@ -132,6 +133,7 @@ test('uses thinking mode only for full tutor steps', async () => {
   await client.chat({ ...base, responseLevel: 'steps' });
   assert.deepEqual(requests[0].thinking, { type: 'disabled' });
   assert.deepEqual(requests[1].thinking, { type: 'enabled' });
+  assert.equal(requests[1].reasoning_effort, 'high');
   assert.equal(requests[0].temperature, 0.2);
   assert.equal(Object.hasOwn(requests[1], 'temperature'), false);
   assert.equal(requests[1].max_tokens, 4200);

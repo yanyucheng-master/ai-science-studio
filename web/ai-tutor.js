@@ -7,6 +7,8 @@
     (LOCAL_HOSTS.has(window.location.hostname) ? "http://127.0.0.1:10000" : DEFAULT_REMOTE_API)).replace(/\/$/, "");
   const DEEPSEEK_BASE_URL = "https://api.deepseek.com";
   const DEEPSEEK_MODEL = "deepseek-v4-pro";
+  const DEEPSEEK_MODEL_VERSION = "DeepSeek-V4-Pro-0813";
+  const DEEPSEEK_MODEL_LABEL = "DeepSeek V4 Pro 正式版";
   const API_KEY_STORAGE = "masterLab.deepseekApiKey";
   const CHAT_TIMEOUT_MS = 130000;
   const GENERATE_TIMEOUT_MS = 45000;
@@ -21,6 +23,7 @@
 4. context.mode=experiment 时，deterministicResult 与 formula 是本地确定性结果，不得改写冲突。
 5. context.mode=question 且条件不足时 mode=clarification，禁止自行补造数值。
 6. 涉及计算时检查公式适用条件、单位、量纲与边界。
+7. 数学书写必须符合中文教材习惯：formulas 中凡表示相除都使用 \\frac{分子}{分母}，禁止使用斜杠；下标写成 v_{0}、R_{2}，幂写成 v^{2}；速度、加速度等单位优先写成 m·s^{-1}、m·s^{-2}。steps、finalAnswer 和 checks 中出现公式时遵循同一规则。
 
 返回结构：
 {"mode":"hint|explain|steps|answer|clarification|refusal","summary":"简洁说明","steps":["步骤1"],"formulas":["公式"],"finalAnswer":"完整结论；hint 时为 null","checks":["自检"],"followUp":"推荐追问","parameterPatch":null,"warnings":[]}
@@ -214,12 +217,12 @@
         label.textContent = ready ? " AI 导师在线" : " 待配置密钥";
       }
       node.title = ready
-        ? `已启用本地密钥 · ${DEEPSEEK_MODEL}`
+        ? `已启用本地密钥 · ${DEEPSEEK_MODEL_LABEL}`
         : "右键烧瓶图标配置 DeepSeek API 密钥";
     });
     if (elements.apiKeyStatus) {
       elements.apiKeyStatus.textContent = ready
-        ? `已启用本地密钥 ${maskApiKey(key)} · 模型 ${DEEPSEEK_MODEL}`
+        ? `已启用本地密钥 ${maskApiKey(key)} · ${DEEPSEEK_MODEL_LABEL}（${DEEPSEEK_MODEL} / ${DEEPSEEK_MODEL_VERSION}）`
         : "尚未配置密钥";
       elements.apiKeyStatus.classList.toggle("is-ready", ready);
     }
@@ -374,7 +377,7 @@
             thinking: { type: options.thinking ? "enabled" : "disabled" },
             response_format: { type: "json_object" },
             max_tokens: options.maxTokens || 2200,
-            ...(!options.thinking ? { temperature: 0.2 } : {})
+            ...(options.thinking ? { reasoning_effort: "high" } : { temperature: 0.2 })
           }),
           signal: controller.signal
         });
@@ -652,6 +655,31 @@
     field.style.setProperty("--thinking-orbit-delay", `${(-randomUnit() * 3.4).toFixed(2)}s`);
   }
 
+  function attachThinkingPointerEffects(field) {
+    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    const reset = () => {
+      field.classList.remove("is-pointer-active");
+      field.style.setProperty("--thinking-tilt-x", "0deg");
+      field.style.setProperty("--thinking-tilt-y", "0deg");
+      field.style.setProperty("--thinking-light-x", "50%");
+      field.style.setProperty("--thinking-light-y", "52%");
+    };
+    field.addEventListener("pointermove", (event) => {
+      if (event.pointerType === "touch" || reducedMotion?.matches) return;
+      const bounds = field.getBoundingClientRect();
+      if (!bounds.width || !bounds.height) return;
+      const xRatio = Math.min(1, Math.max(0, (event.clientX - bounds.left) / bounds.width));
+      const yRatio = Math.min(1, Math.max(0, (event.clientY - bounds.top) / bounds.height));
+      field.style.setProperty("--thinking-tilt-x", `${((xRatio - .5) * 10).toFixed(2)}deg`);
+      field.style.setProperty("--thinking-tilt-y", `${((.5 - yRatio) * 8).toFixed(2)}deg`);
+      field.style.setProperty("--thinking-light-x", `${Math.round(28 + xRatio * 44)}%`);
+      field.style.setProperty("--thinking-light-y", `${Math.round(30 + yRatio * 42)}%`);
+      field.classList.add("is-pointer-active");
+    });
+    field.addEventListener("pointerleave", reset);
+    field.addEventListener("pointercancel", reset);
+  }
+
   function updatePendingMessage(copy) {
     if (!state.pendingNode || !state.pendingStartedAt) return;
     const elapsedSeconds = Math.max(0, Math.floor((Date.now() - state.pendingStartedAt) / 1000));
@@ -692,6 +720,7 @@
     visual.setAttribute("aria-hidden", "true");
     const field = createElement("div", "ai-thinking-field");
     applyThinkingPalette(field);
+    attachThinkingPointerEffects(field);
     const orbit = createElement("span", "ai-thinking-orbit");
     const planet = createElement("span", "ai-thinking-planet");
     planet.append(createElement("span", "ai-thinking-planet-core"));
@@ -738,21 +767,248 @@
     elements.messages.scrollTop = elements.messages.scrollHeight;
   }
 
+  const NEGATIVE_UNIT_POWER = Object.freeze({
+    "1": "⁻¹",
+    "2": "⁻²",
+    "3": "⁻³",
+    "¹": "⁻¹",
+    "²": "⁻²",
+    "³": "⁻³"
+  });
+
+  const POSITIVE_UNIT_POWER = Object.freeze({
+    "1": "¹",
+    "2": "²",
+    "3": "³",
+    "¹": "¹",
+    "²": "²",
+    "³": "³"
+  });
+
+  function unitPowerToken(value, fallback = "1") {
+    return text(value).match(/[123¹²³]/)?.[0] || fallback;
+  }
+
+  function normalizeMathSource(value) {
+    let source = text(value)
+      .replace(/\\(?:left|right)/g, "")
+      .replace(/\\dfrac/g, "\\frac")
+      .replace(/\\tfrac/g, "\\frac")
+      .replace(/\\times/g, "×")
+      .replace(/\\cdot/g, "·")
+      .replace(/\\div/g, "÷")
+      .replace(/\\leq?/g, "≤")
+      .replace(/\\geq?/g, "≥")
+      .replace(/\\neq/g, "≠")
+      .replace(/\\approx/g, "≈")
+      .replace(/\\pm/g, "±")
+      .replace(/\\Delta/g, "Δ")
+      .replace(/\\theta/g, "θ")
+      .replace(/\\omega/g, "ω")
+      .replace(/\\rho/g, "ρ")
+      .replace(/\\mu/g, "μ")
+      .replace(/\\(?:mathrm|text)\{([^{}]+)\}/g, "$1")
+      .replace(/\\[()[\]]/g, "")
+      .replace(/\$+/g, "")
+      .replace(/\\[,;!]/g, " ")
+      .replace(/([0-9A-Za-z)])\s*\*\s*(?=[(0-9A-Za-z−-])/g, "$1 × ")
+      .replace(/-(?=\d)/g, "−");
+
+    source = source
+      .replace(/J\s*\/\s*\(\s*kg\s*[·×*]\s*(?:℃|°C|K)\s*\)/g, (unit) => {
+        const temperatureUnit = /K/.test(unit) ? "K" : "℃";
+        return `J·kg⁻¹·${temperatureUnit}⁻¹`;
+      })
+      .replace(/\b(m|km|cm|mm|kg|g|N|J|W|Pa|mol)(?:\s*((?:\^|\*\*)\s*[123]|[¹²³]))?\s*\/\s*(s|h|kg|m|cm|L)(?:\s*((?:\^|\*\*)\s*[123]|[¹²³]))?/g,
+        (_, numerator, numeratorPowerSource, denominator, denominatorPowerSource) => {
+          const numeratorPower = numeratorPowerSource
+            ? POSITIVE_UNIT_POWER[unitPowerToken(numeratorPowerSource)]
+            : "";
+          const denominatorPower = NEGATIVE_UNIT_POWER[unitPowerToken(denominatorPowerSource)];
+          return `${numerator}${numeratorPower}·${denominator}${denominatorPower}`;
+        });
+
+    return source;
+  }
+
+  function readBalancedGroup(source, startIndex, opener = "{", closer = "}") {
+    if (source[startIndex] !== opener) return null;
+    let depth = 0;
+    for (let index = startIndex; index < source.length; index += 1) {
+      if (source[index] === opener) depth += 1;
+      if (source[index] === closer) depth -= 1;
+      if (depth === 0) {
+        return {
+          value: source.slice(startIndex + 1, index),
+          end: index + 1
+        };
+      }
+    }
+    return null;
+  }
+
+  function readScriptToken(source, startIndex) {
+    if (source[startIndex] === "{") return readBalancedGroup(source, startIndex);
+    if (source[startIndex] === "(") return readBalancedGroup(source, startIndex, "(", ")");
+    if (/[+\-−]/.test(source[startIndex] || "") && /[A-Za-z0-9]/.test(source[startIndex + 1] || "")) {
+      let end = startIndex + 2;
+      while (/\d/.test(source[end] || "")) end += 1;
+      return { value: source.slice(startIndex, end), end };
+    }
+    if (!source[startIndex]) return null;
+    return { value: source[startIndex], end: startIndex + 1 };
+  }
+
+  function appendScriptedText(container, value) {
+    const source = text(value);
+    const basePattern = /[A-Za-zΑ-Ωα-ω]/;
+    for (let index = 0; index < source.length;) {
+      const base = source[index];
+      if (base === "^") {
+        const superscript = readScriptToken(source, index + 1);
+        if (superscript) {
+          const node = document.createElement("sup");
+          appendScriptedText(node, superscript.value.replace(/-/g, "−"));
+          container.append(node);
+          index = superscript.end;
+          continue;
+        }
+      }
+      if (!basePattern.test(base)) {
+        container.append(document.createTextNode(base));
+        index += 1;
+        continue;
+      }
+
+      container.append(document.createTextNode(base));
+      let cursor = index + 1;
+      let subscript = null;
+      let superscript = null;
+
+      if (source[cursor] === "_") {
+        subscript = readScriptToken(source, cursor + 1);
+        if (subscript) cursor = subscript.end;
+      } else if (/\d/.test(source[cursor] || "")) {
+        const previous = source[index - 1] || "";
+        const canUseImplicitSubscript = !/[A-Za-z]/.test(previous) || /[A-Z]/.test(base);
+        if (canUseImplicitSubscript) {
+          let end = cursor + 1;
+          while (/\d/.test(source[end] || "")) end += 1;
+          subscript = { value: source.slice(cursor, end), end };
+          cursor = end;
+        }
+      } else if (/[AB]/.test(source[cursor] || "") && /[avFxy]/.test(base)) {
+        const after = source[cursor + 1] || "";
+        if (!/[A-Za-z]/.test(after)) {
+          subscript = { value: source[cursor], end: cursor + 1 };
+          cursor += 1;
+        }
+      }
+
+      if (source[cursor] === "^") {
+        superscript = readScriptToken(source, cursor + 1);
+        if (superscript) cursor = superscript.end;
+      }
+
+      if (subscript) {
+        const node = document.createElement("sub");
+        appendScriptedText(node, subscript.value);
+        container.append(node);
+      }
+      if (superscript) {
+        const node = document.createElement("sup");
+        appendScriptedText(node, superscript.value.replace(/-/g, "−"));
+        container.append(node);
+      }
+      index = cursor;
+    }
+  }
+
+  function findLatexFraction(source, startIndex) {
+    const index = source.indexOf("\\frac", startIndex);
+    if (index < 0) return null;
+    let cursor = index + 5;
+    while (/\s/.test(source[cursor] || "")) cursor += 1;
+    const numerator = readBalancedGroup(source, cursor);
+    if (!numerator) return null;
+    cursor = numerator.end;
+    while (/\s/.test(source[cursor] || "")) cursor += 1;
+    const denominator = readBalancedGroup(source, cursor);
+    if (!denominator) return null;
+    return {
+      index,
+      end: denominator.end,
+      numerator: numerator.value,
+      denominator: denominator.value
+    };
+  }
+
+  function looksLikeMathAtom(value) {
+    const atom = text(value).replace(/^\(|\)$/g, "");
+    return /\d/.test(atom) || /^[A-Za-zΑ-Ωα-ω](?:[_^²³⁻⁺].*)?$/.test(atom);
+  }
+
+  function findSlashFraction(source, startIndex, aggressive = false) {
+    const atom = "(?:\\([^()\\n]{1,64}\\)|[-+−]?[A-Za-zΑ-Ωα-ω0-9_{}^²³⁻⁺.·×]+)";
+    const pattern = new RegExp(`(${atom})\\s*\\/\\s*(${atom})`, "g");
+    pattern.lastIndex = startIndex;
+    let match;
+    while ((match = pattern.exec(source))) {
+      if (source.slice(Math.max(0, match.index - 3), match.index + 1).includes("://")) continue;
+      if (!aggressive && (!looksLikeMathAtom(match[1]) || !looksLikeMathAtom(match[2]))) continue;
+      return {
+        index: match.index,
+        end: match.index + match[0].length,
+        numerator: match[1],
+        denominator: match[2]
+      };
+    }
+    return null;
+  }
+
+  function appendFraction(container, numerator, denominator) {
+    const fraction = createElement("span", "ai-safe-fraction");
+    fraction.setAttribute("aria-label", `${numerator} 除以 ${denominator}`);
+    const numeratorNode = createElement("span", "ai-safe-fraction-num");
+    const denominatorNode = createElement("span", "ai-safe-fraction-den");
+    appendMathContent(numeratorNode, numerator, { aggressiveFractions: true });
+    appendMathContent(denominatorNode, denominator, { aggressiveFractions: true });
+    fraction.append(numeratorNode, denominatorNode);
+    container.append(fraction);
+  }
+
+  function appendMathContent(container, value, options = {}) {
+    const source = normalizeMathSource(value);
+    container.classList.add("ai-rich-math");
+    let cursor = 0;
+    while (cursor < source.length) {
+      const latexFraction = findLatexFraction(source, cursor);
+      const slashFraction = findSlashFraction(source, cursor, options.aggressiveFractions);
+      const candidates = [latexFraction, slashFraction].filter(Boolean).sort((a, b) => a.index - b.index);
+      const nextFraction = candidates[0];
+      if (!nextFraction) {
+        appendScriptedText(container, source.slice(cursor));
+        break;
+      }
+      if (nextFraction.index > cursor) appendScriptedText(container, source.slice(cursor, nextFraction.index));
+      appendFraction(container, nextFraction.numerator, nextFraction.denominator);
+      cursor = nextFraction.end;
+    }
+  }
+
+  function createMathElement(tagName, className, value, options = {}) {
+    const node = createElement(tagName, className);
+    appendMathContent(node, value, options);
+    return node;
+  }
+
+  function stripStepNumber(value) {
+    return text(value).replace(/^\s*(?:步骤\s*)?\d+\s*[.、:：]\s*/, "");
+  }
+
   function appendFormula(container, formula) {
     const line = createElement("div", "ai-formula-line");
-    const source = text(formula);
-    const fractionPattern = /\\frac\{([^{}]+)\}\{([^{}]+)\}/g;
-    let cursor = 0;
-    let match;
-    while ((match = fractionPattern.exec(source))) {
-      if (match.index > cursor) line.append(document.createTextNode(source.slice(cursor, match.index)));
-      const fraction = createElement("span", "ai-safe-fraction");
-      fraction.append(createElement("span", "ai-safe-fraction-num", match[1]));
-      fraction.append(createElement("span", "ai-safe-fraction-den", match[2]));
-      line.append(fraction);
-      cursor = match.index + match[0].length;
-    }
-    if (cursor < source.length) line.append(document.createTextNode(source.slice(cursor)));
+    appendMathContent(line, formula, { aggressiveFractions: true });
     container.append(line);
   }
 
@@ -767,12 +1023,12 @@
   }
 
   function renderAssistantPayload(bubble, payload) {
-    if (payload.summary) bubble.append(createElement("p", "ai-answer-summary", payload.summary));
+    if (payload.summary) bubble.append(createMathElement("p", "ai-answer-summary", payload.summary));
     if (payload.steps?.length) {
       const section = createElement("section", "ai-answer-section");
       section.append(createElement("h4", "", "分步讲解"));
       const list = createElement("ol");
-      payload.steps.forEach((step) => list.append(createElement("li", "", step)));
+      payload.steps.forEach((step) => list.append(createMathElement("li", "", stripStepNumber(step))));
       section.append(list);
       bubble.append(section);
     }
@@ -785,20 +1041,20 @@
     if (payload.finalAnswer) {
       const section = createElement("section", "ai-answer-section final-section");
       section.append(createElement("h4", "", "当前结论"));
-      section.append(createElement("p", "", payload.finalAnswer));
+      section.append(createMathElement("p", "", payload.finalAnswer));
       bubble.append(section);
     }
     if (payload.checks?.length) {
       const section = createElement("section", "ai-answer-section check-section");
       section.append(createElement("h4", "", "结果自检"));
-      payload.checks.forEach((check) => section.append(createElement("p", "", check)));
+      payload.checks.forEach((check) => section.append(createMathElement("p", "", check)));
       bubble.append(section);
     }
-    if (payload.followUp) bubble.append(createElement("p", "ai-follow-up", payload.followUp));
+    if (payload.followUp) bubble.append(createMathElement("p", "ai-follow-up", payload.followUp));
     if (payload.parameterPatch) bubble.append(renderPatch(payload.parameterPatch));
     if (payload.warnings?.length) {
       const warning = createElement("div", "ai-answer-warning");
-      payload.warnings.forEach((item) => warning.append(createElement("span", "", item)));
+      payload.warnings.forEach((item) => warning.append(createMathElement("span", "", item)));
       bubble.append(warning);
     }
   }

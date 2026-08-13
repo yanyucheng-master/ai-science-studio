@@ -1,4 +1,4 @@
-import { config } from './config.js';
+import { config, DEEPSEEK_OFFICIAL_MODEL } from './config.js';
 
 const GENERATE_SYSTEM_PROMPT = `你是“大师实验室”的理科题目解析器。你必须只返回 JSON 对象，禁止 Markdown 代码块。
 
@@ -73,6 +73,7 @@ const CHAT_SYSTEM_PROMPT = `你是“大师实验室”的中学数理化生 AI 
 15. 不得偷换题设模型或术语，例如“圆形轨道内侧”不能改写为“轻杆模型”。只展开决定答案的步骤，避免与题目无关的延伸结论。
 16. 完整解答控制在 4 至 8 个紧凑步骤；每个小问至少在 steps 中计算一次，并在 checks 中用代回、守恒、边界或数量求和中的一种方法复核。
 17. 若同时求函数关系和稳定值、平衡值或临界值，必须把最终数值代回最终函数并写出等式；代回不满足零、守恒或边界条件时必须先纠正系数，禁止只写“代回正确”。
+18. 数学书写必须符合中文教材习惯：formulas 中凡表示相除都使用 \\frac{分子}{分母}，禁止使用斜杠；下标写成 v_{0}、R_{2}，幂写成 v^{2}；速度、加速度等单位优先写成 m·s^{-1}、m·s^{-2}。steps、finalAnswer 和 checks 中出现公式时遵循同一规则。
 
 返回结构：
 {"mode":"hint|explain|steps|answer|clarification|refusal","summary":"简洁说明","steps":["步骤1"],"formulas":["公式"],"finalAnswer":"完整结论；hint 时为 null","checks":["自检"],"followUp":"推荐追问","parameterPatch":null,"warnings":[]}
@@ -151,7 +152,7 @@ export class DeepSeekClient {
   constructor(options = {}) {
     this.apiKey = options.apiKey ?? config.deepSeekApiKey;
     this.baseUrl = options.baseUrl ?? config.deepSeekBaseUrl;
-    this.model = 'deepseek-v4-pro';
+    this.model = DEEPSEEK_OFFICIAL_MODEL.id;
     this.timeoutMs = options.timeoutMs ?? config.requestTimeoutMs;
     this.fetchImpl = options.fetchImpl ?? globalThis.fetch;
   }
@@ -246,7 +247,7 @@ export class DeepSeekClient {
           thinking: { type: options.thinking ? 'enabled' : 'disabled' },
           response_format: { type: 'json_object' },
           max_tokens: options.maxTokens ?? 2500,
-          ...(!options.thinking ? { temperature: 0.2 } : {})
+          ...(options.thinking ? { reasoning_effort: 'high' } : { temperature: 0.2 })
         }),
         signal: controller.signal
       });

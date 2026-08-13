@@ -17,10 +17,16 @@ function listFromEnv(name) {
     .filter(Boolean);
 }
 
+export const DEEPSEEK_OFFICIAL_MODEL = Object.freeze({
+  id: 'deepseek-v4-pro',
+  version: 'DeepSeek-V4-Pro-0813',
+  label: 'DeepSeek V4 Pro 正式版'
+});
+
 export const config = Object.freeze({
   port: integerFromEnv('PORT', 10000, 1, 65535),
   deepSeekApiKey: process.env.DEEPSEEK_API_KEY || '',
-  deepSeekModel: 'deepseek-v4-pro',
+  deepSeekModel: DEEPSEEK_OFFICIAL_MODEL.id,
   deepSeekBaseUrl: (process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com').replace(/\/$/, ''),
   requestTimeoutMs: integerFromEnv('REQUEST_TIMEOUT_MS', 20000, 2000, 20000),
   thinkingTimeoutMs: integerFromEnv('THINKING_TIMEOUT_MS', 75000, 10000, 120000),

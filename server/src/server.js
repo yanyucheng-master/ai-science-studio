@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { createServer as createHttpServer } from 'node:http';
 import { pathToFileURL } from 'node:url';
-import { config } from './config.js';
+import { config, DEEPSEEK_OFFICIAL_MODEL } from './config.js';
 import { DeepSeekClient } from './deepseek-client.js';
 import { localGenerateFallback, localTutorChatFallback, localTutorFallback } from './local-fallback.js';
 import {
@@ -148,7 +148,9 @@ export function createMasterLabServer(options = {}) {
         sendJson(response, status, {
           ok: true,
           service: 'master-lab-api',
-          model: 'deepseek-v4-pro',
+          model: DEEPSEEK_OFFICIAL_MODEL.id,
+          modelVersion: DEEPSEEK_OFFICIAL_MODEL.version,
+          modelLabel: DEEPSEEK_OFFICIAL_MODEL.label,
           aiConfigured: deepSeek.configured
         }, requestId);
         return;
@@ -278,6 +280,11 @@ export function createMasterLabServer(options = {}) {
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const server = createMasterLabServer();
   server.listen(config.port, '0.0.0.0', () => {
-    console.info(JSON.stringify({ event: 'server_started', port: config.port, model: 'deepseek-v4-pro' }));
+    console.info(JSON.stringify({
+      event: 'server_started',
+      port: config.port,
+      model: DEEPSEEK_OFFICIAL_MODEL.id,
+      modelVersion: DEEPSEEK_OFFICIAL_MODEL.version
+    }));
   });
 }

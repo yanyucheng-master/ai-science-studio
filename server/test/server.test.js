@@ -133,6 +133,8 @@ test('reports health without exposing secrets', async () => {
     assert.equal(response.status, 200);
     const body = await response.json();
     assert.equal(body.model, 'deepseek-v4-pro');
+    assert.equal(body.modelVersion, 'DeepSeek-V4-Pro-0813');
+    assert.equal(body.modelLabel, 'DeepSeek V4 Pro 正式版');
     assert.equal(body.aiConfigured, false);
     assert.equal(JSON.stringify(body).includes('apiKey'), false);
   });

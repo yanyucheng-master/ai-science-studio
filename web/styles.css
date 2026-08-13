@@ -2067,6 +2067,8 @@ body.ai-tutor-route .ai-tutor-workspace {
   gap: 5px;
 }
 
+.ai-answer-section li { line-height: 1.72; }
+
 .ai-answer-section p { margin: 0; }
 
 .ai-formula-line {
@@ -2076,18 +2078,41 @@ body.ai-tutor-route .ai-tutor-workspace {
   padding: 7px 10px;
   gap: 4px;
   align-items: center;
+  flex-wrap: wrap;
   color: #164fc6;
   font-family: Cambria, "Times New Roman", "Microsoft YaHei UI", sans-serif;
   font-size: 16px;
+  line-height: 1.45;
   border-radius: 10px;
   background: #eff5ff;
 }
 
+.ai-rich-math {
+  font-variant-numeric: lining-nums tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.ai-rich-math sub,
+.ai-rich-math sup {
+  position: relative;
+  font-family: inherit;
+  font-size: .68em;
+  line-height: 0;
+  vertical-align: baseline;
+}
+
+.ai-rich-math sub { bottom: -.28em; }
+.ai-rich-math sup { top: -.5em; }
+
 .ai-safe-fraction {
   display: inline-grid;
   min-width: 24px;
+  margin: 0 .16em;
+  align-self: center;
   vertical-align: middle;
   grid-template-rows: auto auto;
+  font-size: .9em;
+  line-height: 1.08;
   text-align: center;
 }
 
@@ -2348,14 +2373,45 @@ body.ai-tutor-route .ai-tutor-workspace {
   --thinking-moon-hue: 304;
   --thinking-spectrum-delay: 0s;
   --thinking-orbit-delay: 0s;
+  --thinking-tilt-x: 0deg;
+  --thinking-tilt-y: 0deg;
+  --thinking-light-x: 50%;
+  --thinking-light-y: 52%;
   position: relative;
   width: 76px;
   height: 56px;
   overflow: visible;
   border-radius: 22px;
   background:
-    radial-gradient(circle at 50% 52%, hsl(var(--thinking-planet-hue) 82% 62% / .12), transparent 43%),
+    radial-gradient(circle at var(--thinking-light-x) var(--thinking-light-y), hsl(var(--thinking-planet-hue) 82% 62% / .15), transparent 43%),
     radial-gradient(ellipse at 50% 78%, rgba(52, 91, 170, .08), transparent 58%);
+  transition: background-position .18s ease;
+}
+
+.ai-thinking-field::before,
+.ai-thinking-field::after {
+  position: absolute;
+  z-index: 7;
+  width: 3px;
+  height: 3px;
+  opacity: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  content: "";
+}
+
+.ai-thinking-field::before {
+  top: 16px;
+  left: 18px;
+  background: hsl(var(--thinking-ring-hue) 96% 72%);
+  box-shadow: 0 0 7px hsl(var(--thinking-ring-hue) 96% 68% / .8);
+}
+
+.ai-thinking-field::after {
+  right: 17px;
+  bottom: 14px;
+  background: hsl(var(--thinking-moon-hue) 96% 72%);
+  box-shadow: 0 0 7px hsl(var(--thinking-moon-hue) 96% 68% / .8);
 }
 
 .ai-thinking-orbit {
@@ -2365,8 +2421,9 @@ body.ai-tutor-route .ai-tutor-workspace {
   width: 68px;
   height: 44px;
   overflow: visible;
-  transform: rotate(-11deg);
+  transform: perspective(110px) rotateX(var(--thinking-tilt-y)) rotateY(var(--thinking-tilt-x)) rotateZ(-11deg);
   transform-origin: center;
+  transition: transform .2s cubic-bezier(.2, .8, .2, 1);
 }
 
 .ai-thinking-orbit-track,
@@ -2673,6 +2730,46 @@ body.ai-tutor-route .ai-tutor-workspace {
   }
 }
 
+@keyframes ai-thinking-hover-particle-one {
+  0% { opacity: 0; transform: translate(0, 0) scale(.6); }
+  18% { opacity: .9; }
+  100% { opacity: 0; transform: translate(-11px, -9px) scale(1.25); }
+}
+
+@keyframes ai-thinking-hover-particle-two {
+  0% { opacity: 0; transform: translate(0, 0) scale(.55); }
+  24% { opacity: .85; }
+  100% { opacity: 0; transform: translate(12px, 8px) scale(1.2); }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ai-thinking-field.is-pointer-active .ai-thinking-orbit {
+    transform: perspective(110px) rotateX(var(--thinking-tilt-y)) rotateY(var(--thinking-tilt-x)) rotateZ(-11deg) scale(1.055);
+  }
+
+  .ai-thinking-field.is-pointer-active .ai-thinking-orbit-track {
+    animation-duration: 4.8s;
+  }
+
+  .ai-thinking-field.is-pointer-active .ai-thinking-orbit-track.orbit-back { opacity: .76; }
+  .ai-thinking-field.is-pointer-active .ai-thinking-orbit-track.orbit-front { opacity: 1; }
+
+  .ai-thinking-field.is-pointer-active .ai-thinking-planet { animation-duration: 1.65s; }
+  .ai-thinking-field.is-pointer-active .ai-thinking-moon { animation-duration: 1.9s; }
+
+  .ai-thinking-field.is-pointer-active .ai-thinking-moon-core {
+    animation-duration: 3.9s, .82s;
+  }
+
+  .ai-thinking-field.is-pointer-active::before {
+    animation: ai-thinking-hover-particle-one 1.15s ease-out infinite;
+  }
+
+  .ai-thinking-field.is-pointer-active::after {
+    animation: ai-thinking-hover-particle-two 1.3s .18s ease-out infinite;
+  }
+}
+
 @keyframes ai-thinking-phase-pulse {
   50% { box-shadow: 0 0 0 6px rgba(72, 126, 232, .04), 0 0 13px rgba(72, 126, 232, .27); }
 }
@@ -2689,6 +2786,10 @@ body.ai-tutor-route .ai-tutor-workspace {
   .ai-thinking-card::before,
   .ai-thinking-card::after,
   .ai-thinking-badge i,
+  .ai-thinking-field,
+  .ai-thinking-field::before,
+  .ai-thinking-field::after,
+  .ai-thinking-orbit,
   .ai-thinking-orbit-track,
   .ai-thinking-planet,
   .ai-thinking-planet-core,

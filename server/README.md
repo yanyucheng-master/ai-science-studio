@@ -36,8 +36,15 @@ parameter and the web client requires explicit confirmation before applying it.
 Create `DEEPSEEK_API_KEY` as a Render secret. Do not put the key in `web`, a
 browser form, a build artifact, Git, or a HarmonyOS package. Keep
 `ALLOWED_ORIGINS` restricted to the deployed web origin. After deployment,
-verify `/health` reports `aiConfigured: true` and run the web and HarmonyOS
+verify `/health` reports `aiConfigured: true`, `model: deepseek-v4-pro`, and
+`modelVersion: DeepSeek-V4-Pro-0813`, then run the web and HarmonyOS
 integration tests against the same service URL.
+
+The built-in model is pinned to DeepSeek V4 Pro GA. The official API ID is
+`deepseek-v4-pro`; as of 2026-08-13 this routes to `DeepSeek-V4-Pro-0813`.
+Do not override the model from the client, environment variables, or request
+bodies. Thinking requests send `reasoning_effort: "high"` per the official
+Chat Completions docs.
 
 ## Model evaluation
 
