@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
 import { createMasterLabServer, RateLimiter } from '../src/server.js';
+import { DeepSeekClient } from '../src/deepseek-client.js';
 
 async function withServer(run, options = {}) {
   const server = createMasterLabServer({
@@ -59,6 +60,43 @@ test('does not fabricate an offline answer for a question without a template', a
     assert.equal((await response.json()).error, 'AI_NOT_CONFIGURED');
   });
 });
+
+for (const experiment of [false, true]) {
+  test(`a stalled upstream body ${experiment ? 'uses labelled local guidance for an experiment' : 'returns HTTP 504 AI_TIMEOUT for a question'}`, async () => {
+    let calls = 0;
+    const deepSeekClient = new DeepSeekClient({
+      apiKey: 'test-only', timeoutMs: 5,
+      fetchImpl: async (_url, options) => {
+        calls += 1;
+        return new Response(new ReadableStream({
+          start(controller) {
+            controller.enqueue(new TextEncoder().encode('{"choices":['));
+            options.signal.addEventListener('abort', () => controller.error(new DOMException('Aborted', 'AbortError')));
+          }
+        }));
+      }
+    });
+    await withServer(async baseUrl => {
+      const response = await fetch(`${baseUrl}/api/v1/tutor/chat`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: '给我一点提示', responseLevel: 'hint', context: experiment
+          ? { mode: 'experiment', templateId: 'brake', parameters: { initialSpeed: 20, deceleration: 5 } }
+          : { mode: 'question', originalQuestion: '求自由落体时间' } })
+      });
+      const body = await response.json();
+      assert.equal(calls, 1);
+      if (experiment) {
+        assert.equal(response.status, 200);
+        assert.equal(body.source, 'local_fallback');
+        assert.equal(body.mode, 'hint');
+        assert.equal(body.finalAnswer, null);
+      } else {
+        assert.equal(response.status, 504);
+        assert.equal(body.error, 'AI_TIMEOUT');
+      }
+    }, { deepSeekClient });
+  });
+}
 
 test('returns a validated structured DeepSeek tutor reply', async () => {
   const deepSeekClient = {

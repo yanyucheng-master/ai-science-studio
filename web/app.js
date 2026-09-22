@@ -136,7 +136,7 @@ const SUBJECTS = {
     ar: "移动端扩展可继续展示植物细胞截面、结构标注与 360° 观察。",
     metrics: [["可点结构", "个"], ["旋转视角", "°"], ["观察时间", "s"]],
     params: [
-      { label: "观察角度", desc: "拖拽或滑动旋转 3D 截面", unit: "°", min: -180, max: 180, step: 15, value: -10 },
+      { label: "观察角度", desc: "拖拽或滑动倾转分层剖面", unit: "°", min: -45, max: 45, step: 5, value: -10 },
       { label: "结构数量", desc: "本题要求识别的核心结构", unit: "个", min: 1, max: 7, step: 1, value: 6 }
     ],
     steps: [
@@ -1300,7 +1300,7 @@ function renderBoardSliderScene(values = boardSliderValuesAt(state.time)) {
     elements.boardSliderRelation.textContent = `${boardSliderNumber(data.relativeStopDistance)}m ${data.relationSymbol} ${boardSliderNumber(data.boardLength)}m`;
   }
   if (elements.boardSliderFrictionText) {
-    elements.boardSliderFrictionText.textContent = data.frictionActive ? `f = μmg = ${boardSliderNumber(data.friction)}N` : "共同运动：f = 0";
+    elements.boardSliderFrictionText.textContent = data.frictionActive ? `f = μmg = ${boardSliderNumber(data.friction)}N` : data.outcome === "fall" ? "接触结束：f = 0" : "共同运动：f = 0";
   }
   if (elements.boardSliderRelativeText) elements.boardSliderRelativeText.textContent = `Δx = ${boardSliderNumber(data.relativePosition)}m`;
   if (elements.boardSliderBlockSpeed) elements.boardSliderBlockSpeed.textContent = `滑块 ${boardSliderNumber(data.blockSpeed)}m/s`;
@@ -1475,7 +1475,7 @@ function buildChemistryFeCuSO4Content(feMass = state.p1, cuso4Mol = state.p2) {
   const feLeftText = formatMol(model.feLeftMol);
 
   return {
-    description: `Fe(s) + CuSO₄(aq) → FeSO₄(aq) + Cu(s)；铁表面析出红色铜，溶液由蓝色逐渐变为浅绿色。最多生成 Cu ${cuMolText}mol / ${cuMassText}g。`,
+    description: `Fe(s) + CuSO₄(aq) → FeSO₄(aq) + Cu(s)；铁表面析出红色铜；消耗蓝色 Cu²⁺ 并生成浅绿色 Fe²⁺，过量 CuSO₄ 保留蓝色。最多生成 Cu ${cuMolText}mol / ${cuMassText}g。`,
     params: [
       { label: "铁粉质量 m(Fe)", desc: "调整投入铁粉质量", unit: "g", min: CHEMISTRY_CONSTANTS.feMassMin, max: CHEMISTRY_CONSTANTS.feMassMax, step: 2.8, value: model.feMass },
       { label: "硫酸铜 n(CuSO₄)", desc: "调整硫酸铜物质的量", unit: "mol", min: CHEMISTRY_CONSTANTS.cuso4MolMin, max: CHEMISTRY_CONSTANTS.cuso4MolMax, step: 0.05, value: model.cuso4Mol }
@@ -1496,7 +1496,7 @@ function buildChemistryFeCuSO4Content(feMass = state.p1, cuso4Mol = state.p2) {
     ],
     recognitionText: `Fe = ${feMassText}g｜CuSO₄ = ${cuso4Text}mol｜反应判断：${judgement.short}｜生成 Cu = ${cuMolText}mol / ${cuMassText}g`,
     formulaHtml: `n(Fe) = ${feMassText} ÷ 56 = ${feMolText}mol<br>n(CuSO₄) = ${cuso4Text}mol<br>n(Cu) = min(${feMolText}, ${cuso4Text}) = ${cuMolText}mol<br>m(Cu) = ${cuMolText} × 64 = ${cuMassText}g`,
-    sceneTip: `铁丝进入硫酸铜溶液后，铁表面逐渐析出红色铜；溶液由蓝色变浅绿色。生成 Cu ${cuMolText}mol / ${cuMassText}g；CuSO₄ 剩余 ${cuso4LeftText}mol，Fe 剩余 ${feLeftText}mol。`,
+    sceneTip: `铁粉与溶液接触后表面析铜；颜色为定性示意，CuSO₄ 过量时仍有蓝色。理论最多生成 Cu ${cuMolText}mol / ${cuMassText}g；CuSO₄ 剩余 ${cuso4LeftText}mol，Fe 剩余 ${feLeftText}mol。`,
     model
   };
 }
@@ -1813,7 +1813,7 @@ function buildBiologyContent(type = state.cellType) {
       description: "动物细胞结构识别｜3D 截面模型｜点击查看功能。",
       ar: "移动端扩展可继续展示动物细胞截面、结构标注与 360° 观察。",
       params: [
-        { label: "观察角度", desc: "拖拽或滑动旋转 3D 截面", unit: "°", min: -180, max: 180, step: 15, value: state.cellRotateY || -10 },
+        { label: "观察角度", desc: "拖拽或滑动倾转分层剖面", unit: "°", min: -45, max: 45, step: 5, value: state.cellRotateY || -10 },
         { label: "结构数量", desc: "本题要求识别的核心结构", unit: "个", min: 1, max: 7, step: 1, value: currentCellOrganelles("animal").length }
       ],
       steps: [
@@ -1841,7 +1841,7 @@ function buildBiologyContent(type = state.cellType) {
     description: "植物细胞结构识别｜3D 截面模型｜点击查看功能。",
     ar: "移动端扩展可继续展示植物细胞截面、结构标注与 360° 观察。",
     params: [
-      { label: "观察角度", desc: "拖拽或滑动旋转 3D 截面", unit: "°", min: -180, max: 180, step: 15, value: state.cellRotateY || -10 },
+      { label: "观察角度", desc: "拖拽或滑动倾转分层剖面", unit: "°", min: -45, max: 45, step: 5, value: state.cellRotateY || -10 },
       { label: "结构数量", desc: "本题要求识别的核心结构", unit: "个", min: 1, max: 7, step: 1, value: currentCellOrganelles("plant").length }
     ],
     steps: [
@@ -1884,7 +1884,7 @@ function syncBiologyContent(type = state.cellType) {
 
 function setCellRotation(x = state.cellRotateX, y = state.cellRotateY) {
   state.cellRotateX = Math.max(-28, Math.min(18, x));
-  state.cellRotateY = ((y + 180) % 360 + 360) % 360 - 180;
+  state.cellRotateY = clamp(y, -45, 45);
   if (elements.plantCellModel) {
     elements.plantCellModel.style.setProperty("--cell-rotate-x", `${state.cellRotateX}deg`);
     elements.plantCellModel.style.setProperty("--cell-rotate-y", `${state.cellRotateY}deg`);
@@ -1892,12 +1892,15 @@ function setCellRotation(x = state.cellRotateX, y = state.cellRotateY) {
 }
 
 function setCellAutoRotate(enabled) {
-  state.cellAutoRotate = Boolean(enabled);
+  state.cellAutoRotate = Boolean(enabled) && !motionPreference.matches;
+  cellSweepDirection = state.cellRotateY >= 45 ? -1 : 1;
   if (elements.plantCellModel) elements.plantCellModel.classList.toggle("auto-rotate", state.cellAutoRotate);
   if (elements.cellAutoButton) {
     elements.cellAutoButton.classList.toggle("active", state.cellAutoRotate);
-    elements.cellAutoButton.textContent = state.cellAutoRotate ? "停止旋转" : "自动旋转";
+    elements.cellAutoButton.textContent = state.cellAutoRotate ? "停止观察" : "自动观察";
+    elements.cellAutoButton.disabled = motionPreference.matches;
   }
+  animationClock.reconcile();
 }
 
 function updateCellModelMode() {
@@ -1906,17 +1909,20 @@ function updateCellModelMode() {
   elements.plantCellModel.classList.toggle("animal-cell-mode", isAnimal);
   elements.plantCellModel.classList.toggle("plant-cell-mode", !isAnimal);
   elements.plantCellModel.setAttribute("aria-label", `${CELL_TYPE_LABELS[state.cellType]} 3D 截面模型`);
+  elements.plantCellModel.dataset.selected = state.selectedOrganelle;
   const title = $(".cell-viewer-head > span");
-  if (title) title.textContent = `${CELL_TYPE_LABELS[state.cellType]} 3D 截面`;
+  if (title) title.textContent = `${CELL_TYPE_LABELS[state.cellType]} · 分层剖面`;
   $$(".cell-organelle").forEach(node => {
     const allowed = currentCellOrganelleMap().has(node.dataset.organelle);
     node.classList.toggle("unavailable", !allowed);
     node.setAttribute("aria-hidden", String(!allowed));
+    node.tabIndex = allowed ? 0 : -1;
   });
   $$(".cell-structure-tag").forEach(node => {
     const allowed = currentCellOrganelleMap().has(node.dataset.organelle);
     node.classList.toggle("unavailable", !allowed);
     node.setAttribute("aria-hidden", String(!allowed));
+    node.tabIndex = allowed ? 0 : -1;
   });
 }
 
@@ -1925,12 +1931,15 @@ function renderCellDetail(id = state.selectedOrganelle) {
   const map = currentCellOrganelleMap();
   const organelle = map.get(id) || map.get(defaultOrganelleForCellType());
   state.selectedOrganelle = organelle.id;
+  elements.plantCellModel.dataset.selected = organelle.id;
 
   $$(".cell-organelle").forEach(node => {
     node.classList.toggle("active", node.dataset.organelle === organelle.id);
+    node.setAttribute("aria-pressed", String(node.dataset.organelle === organelle.id));
   });
   $$(".cell-structure-tag").forEach(node => {
     node.classList.toggle("active", node.dataset.organelle === organelle.id);
+    node.setAttribute("aria-pressed", String(node.dataset.organelle === organelle.id));
   });
 
   if (elements.cellDetailName) elements.cellDetailName.textContent = organelle.name;
@@ -2231,7 +2240,11 @@ function parseExtraPhysicsQuestion(text, preferredId = "") {
 
 function renderExtraPhysicsVisual(content = buildExtraPhysicsContent()) {
   if (!content || !elements.genericPhysicsVisual) return;
-  elements.genericPhysicsVisual.innerHTML = content.visualHtml || "";
+  const html = content.visualHtml || "";
+  if (elements.genericPhysicsVisual._visualHtml !== html) {
+    elements.genericPhysicsVisual.innerHTML = html;
+    elements.genericPhysicsVisual._visualHtml = html;
+  }
   if (elements.genericPhysicsMeta) elements.genericPhysicsMeta.textContent = `${content.stage} · ${content.block}`;
   setFormulaHtml(elements.genericPhysicsResult, content.resultTitle);
   setFormulaHtml(elements.genericPhysicsDescription, content.resultDescription);
@@ -2881,7 +2894,8 @@ function valuesAt(time) {
 
   if (state.subject === "化学") {
     const chem = chemistryFeCuSO4Model(state.p1, state.p2);
-    return { progress, metrics: [chem.feMass, chem.cuMol, chem.cuMass], chem };
+    const reaction = ScienceMotion.reactionAt(chem, progress);
+    return { progress, metrics: [chem.feMass, reaction.producedMol, reaction.producedMass], chem, reaction };
   }
 
   if (state.subject === "数学") {
@@ -3053,7 +3067,7 @@ function resizeSolenoidCanvas() {
   return { canvas, ctx, width: rect.width, height: rect.height };
 }
 
-function solenoidRenderState(time = performance.now()) {
+function solenoidRenderState(time = solenoidMotionTime) {
   const model = solenoidModel();
   return {
     current: model.current,
@@ -3066,7 +3080,7 @@ function solenoidRenderState(time = performance.now()) {
     yaw: (-0.18 + state.solenoidRotateY * Math.PI / 180),
     pitch: (-0.12 + state.solenoidRotateX * Math.PI / 180),
     zoom: state.solenoidZoom || 1,
-    time: state.solenoidPaused ? 0 : time
+    time
   };
 }
 
@@ -3145,17 +3159,21 @@ function solenoidFieldPoint(t, radius, plane) {
   return { x, y: radial * Math.cos(plane), z: radial * Math.sin(plane) };
 }
 
+// Fixed world-space samples are shared between frames; only projection and styling change.
+const solenoidFieldGeometry = [0, Math.PI / 2].map(plane => ({
+  plane,
+  lines: [98, 136, 174].map(radius => ({
+    radius,
+    points: Array.from({ length: 101 }, (_, i) => solenoidFieldPoint(i / 100 * Math.PI * 2, radius, plane))
+  }))
+}));
+
 function drawSolenoidFieldLines(ctx, renderState, bounds) {
   const relative = Math.min(2.4, (renderState.current / 0.5) * (renderState.turns / 200) * (renderState.core ? 1.65 : 1));
   const alpha = 0.18 + Math.min(0.42, relative * 0.14);
-  const radii = relative > 1.3 ? [98, 136, 174] : [110, 158];
-  const planes = relative > 2 ? [0, Math.PI / 3, 2 * Math.PI / 3] : [0, Math.PI / 2];
-  planes.forEach((plane) => {
-    radii.forEach((radius, index) => {
-      const points = [];
-      for (let i = 0; i <= 100; i += 1) {
-        points.push(solenoidFieldPoint(i / 100 * Math.PI * 2, radius, plane));
-      }
+  // Keep the field geometry fixed; strength changes line opacity and width.
+  solenoidFieldGeometry.forEach(({ plane, lines }) => {
+    lines.forEach(({ radius, points }, index) => {
       drawSolenoidPath(ctx, points, renderState, bounds, "#1b71d8", 1.4 + relative * 0.18, Math.max(0.12, alpha - index * 0.035), [8, 8]);
       const direction = renderState.reversed ? -1 : 1;
       const t1 = direction > 0 ? 0.62 : 0.38;
@@ -3376,7 +3394,8 @@ function drawSolenoidClips(ctx, renderState, bounds) {
   ctx.restore();
 }
 
-function drawSolenoidCanvas(time = performance.now()) {
+function drawSolenoidCanvas(time = solenoidMotionTime) {
+  if (document.hidden || !state.hasGenerated || state.subject !== "物理" || state.physicsTemplate !== "solenoid") return;
   const setup = resizeSolenoidCanvas();
   if (!setup) return;
   const { ctx, width, height } = setup;
@@ -3407,12 +3426,102 @@ function drawSolenoidCanvas(time = performance.now()) {
   drawSolenoidClips(ctx, renderState, bounds);
 }
 
-function solenoidAnimationFrame(time) {
-  if (state.subject === "物理" && state.physicsTemplate === "solenoid" && state.hasGenerated) {
-    drawSolenoidCanvas(time);
+// One clock owns all ongoing scene motion. Pending callbacks never outlive their scene.
+const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+let solenoidMotionTime = 0;
+let cellSweepDirection = 1;
+let circuitMotion = null;
+const circuitPhases = new Map();
+function activeSolenoid() { return state.hasGenerated && state.subject === "物理" && state.physicsTemplate === "solenoid"; }
+const animationClock = ScienceMotion.createClock({
+  request: callback => requestAnimationFrame(callback),
+  cancel: id => cancelAnimationFrame(id),
+  active: () => !document.hidden && !location.hash.startsWith("#/ai-tutor") && state.hasGenerated && (state.playing || (!motionPreference.matches && (
+    (activeSolenoid() && !state.solenoidPaused) ||
+    (state.subject === "生物" && state.cellAutoRotate) ||
+    (state.subject === "物理" && circuitMotion?.current > 0 && circuitMotion.closed)
+  ))),
+  render: dt => {
+    if (state.playing) {
+      state.time = Math.min(duration(), state.time + dt * state.playbackRate * experimentPlaybackTimeScale());
+      updateScene();
+    }
+    if (motionPreference.matches) return;
+    if (activeSolenoid() && !state.solenoidPaused) {
+      solenoidMotionTime += dt * 1000;
+      drawSolenoidCanvas();
+    }
+    if (state.subject === "物理" && circuitMotion) {
+      circuitMotion.render(dt);
+      circuitPhases.set(state.physicsTemplate, circuitMotion.phase);
+    }
+    if (state.subject === "生物" && state.cellAutoRotate) {
+      const next = state.cellRotateY + cellSweepDirection * dt * 12;
+      if (Math.abs(next) >= 45) cellSweepDirection *= -1;
+      setCellRotation(state.cellRotateX, next);
+      syncBiologyRotationUi();
+    }
   }
-  requestAnimationFrame(solenoidAnimationFrame);
+});
+
+function syncCircuitMotion(values) {
+  let svg = null;
+  let current = 0;
+  if (state.subject === "物理" && state.physicsTemplate === "circuit") {
+    svg = $("#circuitStage .edu-circuit-svg");
+    if (!svg.querySelector(".current-loop")) svg.insertAdjacentHTML("beforeend", ScienceMotion.circuitMarkup("M110 125V60H238L282 50L294 60H610V220H110V125Z"));
+    current = values.circuit.current;
+  } else if (state.subject === "物理" && ["lampPower", "seriesCircuit"].includes(state.physicsTemplate)) {
+    svg = elements.genericPhysicsVisual.querySelector(".edu-circuit-svg");
+    current = values.extraPhysics.model.metrics[state.physicsTemplate === "lampPower" ? 1 : 2];
+  }
+  if (!svg) { circuitMotion = null; return; }
+  if (circuitMotion?.svg !== svg) circuitMotion = ScienceMotion.bindCircuit(svg, circuitPhases.get(state.physicsTemplate) || 0);
+  circuitMotion.current = current;
+  circuitMotion.render(0, motionPreference.matches);
 }
+
+function renderProjectile(values) {
+  const model = values.projectile;
+  const g = ScienceMotion.projectileGeometry(model, model.t);
+  const attr = (id, attributes) => { const node = $(id); for (const [key, value] of Object.entries(attributes)) node.setAttribute(key, value); };
+  attr("#projectileBall", { cx: g.point.x, cy: g.point.y });
+  attr("#projectilePlatform", { d: `M48 210V${g.origin.y + 10}H80V210` });
+  attr("#projectilePath", { d: g.trail });
+  attr("#projectilePrediction", { d: g.prediction });
+  const ghosts = $("#projectileGhosts");
+  // Only rebuild when another fixed-time sample becomes visible or geometry changes.
+  const ghostKey = `${model.speed}/${model.height}/${g.ghosts.length}`;
+  if (ghosts.dataset.key !== ghostKey) {
+    ghosts.dataset.key = ghostKey;
+    ghosts.innerHTML = g.ghosts.map(p => `<circle cx="${p.x}" cy="${p.y}" r="3"/>`).join("");
+  }
+  attr("#projectileVelocity", { transform: `translate(${g.point.x} ${g.point.y})` });
+  attr("#projectileVx", { d: `M0 0H${g.dx}` });
+  attr("#projectileVy", { d: `M0 0V${g.dy}`, visibility: g.dy > 0 ? "visible" : "hidden" });
+  attr("#projectileV", { d: `M0 0L${g.dx} ${g.dy}`, visibility: g.dy > 0 ? "visible" : "hidden" });
+  attr("#projectileVxLabel", { x: g.dx + 8, y: -6 });
+  attr("#projectileVyLabel", { x: -24, y: g.dy + 14 });
+  attr("#projectileVLabel", { x: g.dx + 8, y: g.dy + 12, visibility: g.dy > 0 ? "visible" : "hidden" });
+  $("#projectileVelocityNote").textContent = `vₓ = ${smartNumber(g.vx)} m/s    vᵧ = ${smartNumber(g.vy, 1)} m/s ↓    |v| = ${smartNumber(Math.hypot(g.vx, g.vy), 1)} m/s`;
+  $("#projectileMobileVectors").textContent = $("#projectileVelocityNote").textContent;
+  elements.projectileHeightText.textContent = `${smartNumber(model.height)} m`;
+  elements.projectileResultText.textContent = `t = ${smartNumber(g.t, 2)}s，x = ${smartNumber(model.x, 1)}m`;
+  elements.projectileTimeText.textContent = `${smartNumber(model.fallTime, 2)}s`;
+  elements.projectileRangeText.textContent = `${smartNumber(model.range, 1)}m`;
+  elements.projectileVyText.textContent = `${smartNumber(model.verticalSpeed, 1)}m/s`;
+}
+
+document.addEventListener("visibilitychange", () => {
+  document.body.classList.toggle("motion-suspended", document.hidden);
+  animationClock.reconcile();
+});
+window.addEventListener("hashchange", () => animationClock.reconcile());
+motionPreference.addEventListener("change", () => {
+  setCellAutoRotate(false);
+  if (state.hasGenerated) updateScene();
+  animationClock.reconcile();
+});
 
 function updateSubjectVisuals(values) {
   elements.scene.style.setProperty("--experiment-progress", values.progress);
@@ -3446,7 +3555,10 @@ function updateSubjectVisuals(values) {
     const stopNosePx = Math.max(startNosePx, physicsStopLeftPx());
     const nosePx = startNosePx + (stopNosePx - startNosePx) * (values.experimentProgress ?? values.progress);
     const carLeftPx = nosePx - noseOffsetPx;
+    const wheelRadius = (elements.car.querySelector(".wheel")?.offsetWidth || 17) / 2;
     elements.car.style.left = `${carLeftPx}px`;
+    // The friction preset explicitly locks the wheels; rolling presets use s = rθ.
+    elements.car.style.setProperty("--wheel-angle", `${model.mode === "friction" ? 0 : (carLeftPx - startLeftPx) / wheelRadius}rad`);
     elements.brakeTrace.style.width = `${Math.max(0, nosePx - startTracePx)}px`;
     elements.car.classList.toggle("moving", state.playing && values.metrics[0] > 0);
   }
@@ -3498,38 +3610,12 @@ function updateSubjectVisuals(values) {
     if (turnsText) turnsText.textContent = `${Math.round(model.turns)}匝`;
     if (coreStateText) coreStateText.textContent = model.hasCore ? "已插入" : "未插入";
     if (strengthText) strengthText.textContent = model.strengthLevel;
-    drawSolenoidCanvas();
+    // Active animation paints on its next frame; paused/manual changes paint once.
+    if (state.solenoidPaused || motionPreference.matches) drawSolenoidCanvas();
   }
 
   if (state.subject === "物理" && state.physicsTemplate === "projectile") {
-    const model = values.projectile || projectileModel();
-    const progress = values.progress ?? 0;
-    const xPct = 18 + progress * 66;
-    const worldHeight = elements.projectileBall?.parentElement?.clientHeight || 300;
-    const ballRadius = (elements.projectileBall?.offsetHeight || 30) / 2;
-    const groundTop = worldHeight - 68;
-    const startYPct = 34;
-    const landingYPct = clamp(((groundTop - ballRadius) / worldHeight) * 100, 58, 74);
-    const yPct = startYPct + progress * progress * (landingYPct - startYPct);
-    elements.scene.style.setProperty("--projectile-progress", String(progress));
-    elements.scene.style.setProperty("--projectile-x", `${xPct}%`);
-    elements.scene.style.setProperty("--projectile-y", `${yPct}%`);
-    if (elements.projectileBall) {
-      elements.projectileBall.style.left = `${xPct}%`;
-      elements.projectileBall.style.top = `${yPct}%`;
-    }
-    if (elements.projectileShadow) {
-      elements.projectileShadow.style.left = `${xPct}%`;
-      elements.projectileShadow.style.opacity = String(0.16 + progress * 0.42);
-      elements.projectileShadow.style.transform = `translateX(-50%) scale(${0.6 + progress * 0.55})`;
-    }
-    if (elements.projectileHeightText) elements.projectileHeightText.textContent = `${smartNumber(model.height)} m`;
-    if (elements.projectileResultText) {
-      elements.projectileResultText.textContent = `t = ${smartNumber(model.fallTime, 2)}s，x = ${smartNumber(model.range, 1)}m`;
-    }
-    if (elements.projectileTimeText) elements.projectileTimeText.textContent = `${smartNumber(model.fallTime, 2)}s`;
-    if (elements.projectileRangeText) elements.projectileRangeText.textContent = `${smartNumber(model.range, 1)}m`;
-    if (elements.projectileVyText) elements.projectileVyText.textContent = `${smartNumber(model.verticalSpeed, 1)}m/s`;
+    renderProjectile(values);
   }
 
   if (state.subject === "物理" && state.physicsTemplate === "circuit") {
@@ -3545,10 +3631,6 @@ function updateSubjectVisuals(values) {
     if (elements.circuitReadoutResistance) elements.circuitReadoutResistance.textContent = `${smartNumber(model.resistance)}Ω`;
     if (elements.circuitReadoutCurrent) elements.circuitReadoutCurrent.textContent = `${smartNumber(model.current, 2)}A`;
     if (elements.circuitPowerText) elements.circuitPowerText.textContent = `${smartNumber(model.power, 1)}W`;
-    const pulseDuration = 3.8 - clamp(model.current / 4, 0.12, 1) * 1.9;
-    document.querySelectorAll("#circuitStage .current-pulse-motion").forEach((motion) => {
-      motion.setAttribute("dur", `${smartNumber(pulseDuration, 2)}s`);
-    });
     if (elements.circuitResistor) {
       elements.circuitResistor.style.setProperty("--resistor-heat", String(model.brightness));
     }
@@ -3559,40 +3641,19 @@ function updateSubjectVisuals(values) {
   }
 
   if (state.subject === "化学") {
-    const label = $(".chem-label span");
-    if (label) label.textContent = "定量反应模板";
-    const feRatio = clamp(
-      (values.chem.feMass - CHEMISTRY_CONSTANTS.feMassMin) /
-      (CHEMISTRY_CONSTANTS.feMassMax - CHEMISTRY_CONSTANTS.feMassMin)
-    );
-    const concentrationRatio = clamp(
-      (values.chem.cuso4Mol - CHEMISTRY_CONSTANTS.cuso4MolMin) /
-      (CHEMISTRY_CONSTANTS.cuso4MolMax - CHEMISTRY_CONSTANTS.cuso4MolMin)
-    );
-    const reactedFraction = values.chem.cuso4Mol > 0 ? clamp(values.chem.cuMol / values.chem.cuso4Mol) : 0;
-    const finalCopperAmount = clamp(0.18 + (values.chem.cuMol / CHEMISTRY_CONSTANTS.cuso4MolMax) * 0.82);
-    const progress = values.progress;
-    const greenAmount = clamp(progress * (0.24 + reactedFraction * 0.62));
-    const startColor = {
-      r: Math.round(83 - concentrationRatio * 48),
-      g: Math.round(180 - concentrationRatio * 76),
-      b: Math.round(240 - concentrationRatio * 34)
-    };
-    const endColor = { r: 142, g: 210, b: 170 };
-    const solutionR = Math.round(startColor.r + (endColor.r - startColor.r) * greenAmount);
-    const solutionG = Math.round(startColor.g + (endColor.g - startColor.g) * greenAmount);
-    const solutionB = Math.round(startColor.b + (endColor.b - startColor.b) * greenAmount);
-
-    elements.scene.style.setProperty("--iron-scale", String(0.78 + feRatio * 0.5));
-    elements.scene.style.setProperty("--iron-drop", String(clamp(progress * 1.2)));
-    elements.scene.style.setProperty("--chem-reaction-progress", String(progress));
-    elements.scene.style.setProperty("--copper-amount", String(clamp(progress * finalCopperAmount)));
-    elements.scene.style.setProperty("--solution-green", String(greenAmount));
-    if (elements.cuso4Solution) {
-      elements.cuso4Solution.style.setProperty("--cuso4-color", `rgb(${solutionR}, ${solutionG}, ${solutionB})`);
-      elements.cuso4Solution.style.filter = `saturate(${1 + concentrationRatio * 0.72 - greenAmount * 0.32}) brightness(${1 - concentrationRatio * 0.06 + greenAmount * 0.05})`;
-    }
-    $("#chemRate").textContent = `${Math.round(progress * finalCopperAmount * 100)}%析铜`;
+    const r = values.reaction;
+    const convertedFraction = values.chem.cuso4Mol > 0 ? r.producedMol / values.chem.cuso4Mol : 0;
+    const color = [45, 148, 229].map((start, i) => Math.round(start + ([166, 215, 181][i] - start) * convertedFraction));
+    elements.scene.style.setProperty("--iron-drop", String(r.contact));
+    elements.scene.style.setProperty("--chem-reaction-progress", String(r.extent));
+    elements.cuso4Solution.style.setProperty("--cuso4-color", `rgb(${color.join(",")})`);
+    $("#ironWire").style.opacity = String(values.chem.feMol ? r.feLeftMol / values.chem.feMol : 0);
+    $("#copperCoating").style.opacity = String(r.extent);
+    $("#copperCoating").style.strokeWidth = String(2 + r.producedMol / CHEMISTRY_CONSTANTS.cuso4MolMax * 8);
+    $(".chem-label span").textContent = "反应完成度";
+    $("#chemRate").textContent = `${Math.round(r.extent * 100)}%`;
+    $("#chemPhase").textContent = r.stage;
+    $("#chemAmounts").textContent = `已生成 Cu ${formatMol(r.producedMol)} mol / ${formatGram(r.producedMass)} g · Fe 剩余 ${formatMol(r.feLeftMol)} mol · CuSO₄ 剩余 ${formatMol(r.cuso4Left)} mol`;
   }
 
   if (state.subject === "数学") {
@@ -3622,6 +3683,8 @@ function updateSubjectVisuals(values) {
   }
 
   if (state.subject === "生物") renderCellDetail(state.selectedOrganelle);
+  syncCircuitMotion(values);
+  animationClock.reconcile();
 }
 
 function updateScene() {
@@ -3661,7 +3724,7 @@ function updateScene() {
         }
       }
     } else if (state.subject === "化学" && values.chem) {
-      conclusion = `铁表面析出红色铜，溶液由蓝色变为浅绿色；${chemistryReactionJudgement(values.chem).short}，生成 Cu ${formatMol(values.chem.cuMol)}mol / ${formatGram(values.chem.cuMass)}g。`;
+      conclusion = `铁表面析出红色铜；${values.chem.cuso4Left > 0 ? "CuSO₄ 仍有剩余，保留蓝色" : "CuSO₄ 耗尽，溶液呈浅绿色"}；${chemistryReactionJudgement(values.chem).short}，生成 Cu ${formatMol(values.chem.cuMol)}mol / ${formatGram(values.chem.cuMass)}g。`;
     } else if (state.subject === "数学") {
       conclusion = `函数 y = ${currentMathModel().expression}；当 x = ${formatMathNumber(state.p1)} 时，切线斜率 k = ${formatMathNumber(currentMathModel().derivative(state.p1))}。`;
     } else if (state.subject === "生物") {
@@ -3965,6 +4028,9 @@ function applyWaitingState(subject = state.subject, options = {}) {
   clearReasoningTimers();
   pauseExperiment();
   state.hasGenerated = false;
+  circuitMotion = null;
+  setCellAutoRotate(false);
+  animationClock.reconcile();
   state.generatedQuestion = "";
   state.subject = subject;
   updateSubjectBodyClass(subject);
@@ -4418,6 +4484,8 @@ function applySubject(subject, updateQuestion = true, options = {}) {
   pauseExperiment();
   document.body.classList.remove("awaiting-generation");
   state.hasGenerated = true;
+  circuitMotion = null;
+  setCellAutoRotate(false);
   state.subject = subject;
   updateSubjectBodyClass(subject);
   const restored = options.restore && restoreSubjectSnapshot(subject);
@@ -4529,18 +4597,20 @@ function playExperiment() {
     showToast("生物模型支持拖动旋转和点击识别，无需播放进度");
     return;
   }
+  if (!state.hasGenerated || state.playing) return;
   if (state.time >= duration()) state.time = 0;
   state.playing = true;
-  state.lastFrame = performance.now();
+  animationClock.reconcile();
   elements.playButton.classList.add("playing");
   if (document.body.classList.contains("demo-mode")) setDemoStep(4, "看见速度如何归零");
-  requestAnimationFrame(animationFrame);
+  animationClock.reconcile();
 }
 
 function pauseExperiment() {
   state.playing = false;
   elements.playButton.classList.remove("playing");
   elements.car.classList.remove("moving");
+  animationClock.reconcile();
 }
 
 function resetExperiment() {
@@ -4566,18 +4636,6 @@ function resetExperiment() {
   const tipLabel = state.subject === "化学" ? "实验现象" : "观察提示";
   elements.sceneTip.innerHTML = `<span>${tipLabel}</span>${tips[state.subject]}`;
   updateScene();
-}
-
-function animationFrame(timestamp) {
-  if (!state.playing) return;
-  const delta = Math.min(0.06, (timestamp - state.lastFrame) / 1000);
-  state.lastFrame = timestamp;
-  state.time = Math.min(
-    duration(),
-    state.time + delta * state.playbackRate * experimentPlaybackTimeScale()
-  );
-  updateScene();
-  if (state.playing) requestAnimationFrame(animationFrame);
 }
 
 function showToast(message) {
@@ -4716,7 +4774,7 @@ function playDemoSequence() {
   setReasoningStep(1, `<span>观察目标</span>先看速度如何从 ${vText}m/s 逐步归零。`);
   state.demoTimers = [
     setTimeout(() => setReasoningStep(2, "<span>公式选择</span>没有给时间 t，直接用速度—位移关系式。"), 520),
-    setTimeout(() => playExperiment(), 820),
+    setTimeout(() => { if (!motionPreference.matches) playExperiment(); }, 820),
     setTimeout(() => setReasoningStep(3, `<span>代入求解</span>0² − ${vText}² = 2 × (−${aText}) × s，所以 s = ${sText}m。`), solveMs),
     setTimeout(() => setReasoningStep(4, `<span>现象验证</span>小车速度归零时，停止点对应 ${sText}m。`), verifyMs),
     setTimeout(() => {
@@ -5549,7 +5607,7 @@ $("#solenoidLab")?.addEventListener("wheel", event => {
   event.preventDefault();
   clearReasoningTimers();
   state.solenoidZoom = clamp((state.solenoidZoom || 1) - event.deltaY * 0.0008, 0.72, 1.45);
-  drawSolenoidCanvas();
+  if (state.solenoidPaused || motionPreference.matches) drawSolenoidCanvas();
 }, { passive: false });
 
 $("#hintButton").addEventListener("click", () => {
@@ -5806,7 +5864,7 @@ $("#favoriteList")?.addEventListener("click", event => {
   if (!item) return;
   applyWaitingState(item.dataset.subject);
   $("#questionInput").value = item.dataset.question;
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: motionPreference.matches ? "auto" : "smooth" });
   showToast(`${item.dataset.subject}收藏实验已载入，点击生成实验开始建模`);
 });
 
@@ -5877,12 +5935,6 @@ window.addEventListener("resize", () => {
     setPhysicsStopMarker();
     updateScene();
   }
-  if (state.subject === "物理" && state.physicsTemplate === "solenoid") {
-    drawSolenoidCanvas();
-  }
-  if (state.subject === "物理" && state.physicsTemplate === "boardSlider") {
-    renderBoardSliderScene(valuesAt(state.time));
-  }
 });
 
 renderFavoriteList();
@@ -5891,7 +5943,7 @@ updateGreeting();
 applyWaitingState("物理", { presetQuestion: true });
 updatePhysicsPresetOption();
 setDemoStep(1, "输入题目，生成实验");
-requestAnimationFrame(solenoidAnimationFrame);
+animationClock.reconcile();
 if (document.body.classList.contains("demo-mode")) {
   scheduleAutoDemo();
 }

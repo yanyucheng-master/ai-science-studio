@@ -485,10 +485,9 @@
         const current = model.metrics[1];
         const power = model.metrics[2];
         const lampLevel = clamp(power / 2, .15, 1);
-        const pulseDuration = fmt(4.1 - clamp(current / 1, .08, 1) * 2, 2);
         const rheostatSliderX = 310;
         return genericShell(model, `
-          <div class="circuit-standard-badge generic-circuit-badge">教材电路图 · 电流表串联 · 电压表并联</div>
+          <div class="circuit-standard-badge generic-circuit-badge">U、I 为灯泡读数 · 绿色点表示传统电流</div>
           <svg class="edu-circuit-svg generic-edu-circuit lamp-power-schematic" viewBox="0 0 760 400" role="img" aria-label="测量小灯泡电功率电路：电源、开关、电流表、滑动变阻器和小灯泡串联，电压表并联在小灯泡两端" style="--lamp-level:${lampLevel}">
             <g class="edu-wire">
               <path d="M110 145V78H220"></path>
@@ -497,19 +496,13 @@
               <path d="M518 260H390V210"></path>
               <path d="M230 260H110V175"></path>
             </g>
-            <g class="circuit-current-pulses" aria-hidden="true">
-              <circle class="circuit-current-pulse" r="5"><animateMotion dur="${pulseDuration}s" repeatCount="indefinite" path="M110 145V78H220L275 68L287 78H396"></animateMotion></circle>
-              <circle class="circuit-current-pulse" r="5"><animateMotion dur="${pulseDuration}s" begin=".55s" repeatCount="indefinite" path="M464 78H650V260H582"></animateMotion></circle>
-              <circle class="circuit-current-pulse" r="5"><animateMotion dur="${pulseDuration}s" begin="1.1s" repeatCount="indefinite" path="M518 260H390V210L${rheostatSliderX} 242L230 260"></animateMotion></circle>
-              <circle class="circuit-current-pulse" r="5"><animateMotion dur="${pulseDuration}s" begin="1.65s" repeatCount="indefinite" path="M230 260H110V175"></animateMotion></circle>
-            </g>
 
             <g class="edu-source" aria-label="电源">
               <line class="source-long" x1="78" y1="145" x2="142" y2="145"></line>
               <line class="source-short" x1="91" y1="175" x2="129" y2="175"></line>
               <text class="polarity positive" x="154" y="151">+</text>
               <text class="polarity negative" x="142" y="181">−</text>
-              <text class="circuit-reading-text" x="28" y="211">U = ${fmt(voltage, 1)}&#8239;V</text>
+              <text class="circuit-reading-text" x="28" y="211">电源</text>
             </g>
 
             <g class="edu-switch edu-switch-closed" aria-label="闭合开关">
@@ -564,6 +557,7 @@
                 <text x="46" y="21" text-anchor="middle">${fmt(voltage, 1)}&#8239;V</text>
               </g>
             </g>
+            ${ScienceMotion.circuitMarkup(`M110 145V78H220L275 68L287 78H650V260H390V210L${rheostatSliderX} 242V260H110V145Z`)}
           </svg>`);
       },
       recognition: model => `小灯泡功率｜${model.formulaDetail}｜${model.facts[1].value}`
@@ -598,8 +592,8 @@
           metrics: [u, r2, current],
           metricUnit: "A",
           facts: [
-            fact("总电阻", `${fmt(r1 + r2)} Ω`),
             fact("电流", `${fmt(current, 2)} A`),
+            fact("总电阻", `${fmt(r1 + r2)} Ω`),
             fact("电压分配", `U₁ ${fmt(v1, 2)} V · U₂ ${fmt(v2, 2)} V`)
           ],
           conclusion: `串联总电阻 ${fmt(r1 + r2)}Ω，电流 ${fmt(current, 2)}A；R₁ 两端 ${fmt(v1, 2)}V，R₂ 两端 ${fmt(v2, 2)}V。`,
@@ -616,7 +610,6 @@
         const slider = clamp((r2 - 2) / 18, 0, 1);
         const sliderX = 432 + slider * 116;
         const v2 = current * r2;
-        const pulseDuration = fmt(4.1 - clamp(current / 1.5, .08, 1) * 2, 2);
         return genericShell(model, `
           <div class="circuit-standard-badge generic-circuit-badge">教材电路图 · R₁、R₂ 串联 · 电压表测 R₂</div>
           <svg class="edu-circuit-svg generic-edu-circuit series-circuit-schematic" viewBox="0 0 760 400" role="img" aria-label="串联动态电路：电源、开关、电流表、定值电阻和滑动变阻器串联，电压表并联在滑动变阻器两端">
@@ -626,12 +619,6 @@
               <path d="M499 76H650V220H590"></path>
               <path d="M420 270H320"></path>
               <path d="M200 270H105V175"></path>
-            </g>
-            <g class="circuit-current-pulses" aria-hidden="true">
-              <circle class="circuit-current-pulse" r="5"><animateMotion dur="${pulseDuration}s" repeatCount="indefinite" path="M105 145V76H210L265 66L277 76H431"></animateMotion></circle>
-              <circle class="circuit-current-pulse" r="5"><animateMotion dur="${pulseDuration}s" begin=".55s" repeatCount="indefinite" path="M499 76H650V220H590"></animateMotion></circle>
-              <circle class="circuit-current-pulse" r="5"><animateMotion dur="${pulseDuration}s" begin="1.1s" repeatCount="indefinite" path="M590 220L${sliderX} 252L420 270"></animateMotion></circle>
-              <circle class="circuit-current-pulse" r="5"><animateMotion dur="${pulseDuration}s" begin="1.65s" repeatCount="indefinite" path="M420 270H200H105V175"></animateMotion></circle>
             </g>
 
             <g class="edu-source" aria-label="电源">
@@ -692,6 +679,7 @@
                 <text x="56" y="21" text-anchor="middle">U₂ = ${fmt(v2, 2)}V</text>
               </g>
             </g>
+            ${ScienceMotion.circuitMarkup(`M105 145V76H210L265 66L277 76H650V220H590L${sliderX} 252V270H105V145Z`)}
           </svg>`);
       },
       recognition: model => `串联电路｜${model.formulaDetail}｜${model.facts[2].value}`

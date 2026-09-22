@@ -54,3 +54,24 @@ with compact reference checkpoints. With the configured server running, use
 failure status when fewer than 95% of the reference checkpoints are present.
 This automated screen does not replace manual review: every failed item and
 every scientifically suspicious answer must still be inspected before release.
+
+## Tutor transport regression checks
+
+Run `npm test` to check the server protocol and the actual browser tutor script
+in a Node VM, including SSE framing, split UTF-8, stream completion, JSON parsing,
+bounded fallback, cancellation and timeouts. These tests use only in-memory
+fixtures and do not load `.env` or call the upstream AI service.
+
+For browser acceptance, run `npm run test:browser` with Playwright available.
+`PLAYWRIGHT_MODULE` can point to an existing Playwright package directory;
+`BROWSER_CHANNEL` defaults to `msedge`. The script opens a fresh isolated browser,
+serves this project's web files and synthetic SSE/JSON on loopback, and uses the
+real gateway with AI disabled for offline cases. It never saves a credential or
+allows an external model request. Browser virtual time advances the 130-second
+deadline so timeout coverage does not require waiting 130 real seconds.
+
+Screenshots and a report containing response status/type, request mode/count,
+console errors and visible page results are written to the ignored directory
+`outputs/tutor-sse/after/` at the repository root. Request headers are not recorded.
+The `--baseline` flag records the same scenarios without asserting repaired
+behavior; run it against the original code to capture before/after evidence.

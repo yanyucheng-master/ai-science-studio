@@ -86,6 +86,25 @@ test('does not retry a client-side timeout', async () => {
   assert.equal(calls, 1);
 });
 
+test('preserves timeout classification when the response body stalls after HTTP 200', async () => {
+  let calls = 0;
+  const client = new DeepSeekClient({
+    apiKey: 'test-only',
+    timeoutMs: 5,
+    fetchImpl: async (_url, options) => {
+      calls += 1;
+      return new Response(new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode('{"choices":['));
+          options.signal.addEventListener('abort', () => controller.error(new DOMException('Aborted', 'AbortError')));
+        }
+      }), { headers: { 'Content-Type': 'application/json' } });
+    }
+  });
+  await assert.rejects(client.generate('测试题目'), { code: 'AI_TIMEOUT', retryable: false });
+  assert.equal(calls, 1);
+});
+
 test('does not retry an empty model answer', async () => {
   let calls = 0;
   const client = new DeepSeekClient({

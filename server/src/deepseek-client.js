@@ -285,7 +285,7 @@ export class DeepSeekClient {
         throw error;
       }
     } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
+      if (controller.signal.aborted || (error instanceof Error && error.name === 'AbortError')) {
         const timeoutError = new Error(`DeepSeek request timed out after ${timeoutMs}ms`);
         timeoutError.code = 'AI_TIMEOUT';
         timeoutError.retryable = false;

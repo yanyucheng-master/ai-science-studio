@@ -356,7 +356,10 @@
   }
 
   function fallbackChatFromText(rawText, responseLevel) {
-    const cleaned = text(rawText).replace(/```(?:json)?/g, "").slice(0, 1000);
+    const source = text(rawText);
+    // A broken JSON document is not a readable answer, especially for full steps.
+    if (responseLevel === "steps" || /```|^\s*[\[{]|[\[{]\s*"|"(?:mode|summary|steps|finalAnswer)"\s*:/.test(source)) return null;
+    const cleaned = source.slice(0, 1000);
     if (cleaned.length < 8) return null;
     return softValidateChat({
       mode: normalizeChatMode("", responseLevel),
@@ -380,53 +383,100 @@
     };
   }
 
+  async function readJsonChat(response) {
+    let payload;
+    try {
+      payload = await response.json();
+    } catch {
+      throw new TutorRequestError("INVALID_AI_RESPONSE", response.status);
+    }
+    const choice = payload?.choices?.[0];
+    if (choice?.finish_reason && choice.finish_reason !== "stop") {
+      throw new TutorRequestError("INVALID_AI_RESPONSE", response.status);
+    }
+    const message = choice?.message || {};
+    return {
+      content: typeof message.content === "string" ? message.content : "",
+      reasoning: typeof message.reasoning_content === "string" ? message.reasoning_content : ""
+    };
+  }
+
   async function readSseChat(response, controller, onDelta) {
-    if (!response.body?.getReader) {
-      const payload = await response.json();
-      const message = payload?.choices?.[0]?.message || {};
-      return {
-        content: typeof message.content === "string" ? message.content : "",
-        reasoning: typeof message.reasoning_content === "string" ? message.reasoning_content : ""
-      };
+    if (response.headers?.get("content-type")?.includes("application/json") || !response.body?.getReader) {
+      return readJsonChat(response);
     }
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let buffer = "";
     let content = "";
     let reasoning = "";
-    while (true) {
-      if (controller.signal.aborted) {
-        try { await reader.cancel(); } catch { /* ignore */ }
-        throw new TutorRequestError(controller.signal.reason === "timeout" ? "AI_TIMEOUT" : "ABORTED");
+    let dataLines = [];
+    let finished = false;
+    let finishReason = null;
+
+    function dispatchEvent() {
+      const data = dataLines.join("\n").trim();
+      dataLines = [];
+      if (!data) return;
+      if (data === "[DONE]") {
+        finished = true;
+        return;
       }
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split(/\r?\n/);
-      buffer = lines.pop() || "";
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed.startsWith("data:")) continue;
-        const data = trimmed.slice(5).trim();
-        if (!data || data === "[DONE]") continue;
-        let chunk;
-        try {
-          chunk = JSON.parse(data);
-        } catch {
-          continue;
-        }
-        const delta = chunk.choices?.[0]?.delta || {};
-        if (typeof delta.reasoning_content === "string" && delta.reasoning_content) {
-          reasoning += delta.reasoning_content;
-          onDelta?.({ reasoning, content, kind: "reasoning" });
-        }
-        if (typeof delta.content === "string" && delta.content) {
-          content += delta.content;
-          onDelta?.({ reasoning, content, kind: "content" });
-        }
+      const chunk = tryParseJson(data);
+      if (!chunk || chunk.error) throw new TutorRequestError("INVALID_AI_RESPONSE");
+      const choice = chunk.choices?.[0];
+      if (choice?.finish_reason) {
+        finishReason = choice.finish_reason;
+        if (finishReason !== "stop") throw new TutorRequestError("INVALID_AI_RESPONSE");
+      }
+      const delta = choice?.delta || {};
+      if (typeof delta.reasoning_content === "string" && delta.reasoning_content) {
+        reasoning += delta.reasoning_content;
+        onDelta?.({ reasoning, content, kind: "reasoning" });
+      }
+      if (typeof delta.content === "string" && delta.content) {
+        content += delta.content;
+        onDelta?.({ reasoning, content, kind: "content" });
       }
     }
-    return { content, reasoning };
+
+    function consumeLine(line) {
+      if (!line) dispatchEvent();
+      else if (line.startsWith("data:")) dataLines.push(line.slice(5).replace(/^ /, ""));
+    }
+
+    function consumeBuffer(atEnd = false) {
+      let match;
+      while (!finished && (match = /\r\n|\r|\n/.exec(buffer))) {
+        // A CR at a chunk boundary may be the first half of CRLF.
+        if (!atEnd && match[0] === "\r" && match.index === buffer.length - 1) break;
+        const line = buffer.slice(0, match.index);
+        buffer = buffer.slice(match.index + match[0].length);
+        consumeLine(line);
+      }
+      if (atEnd && !finished) {
+        consumeLine(buffer);
+        buffer = "";
+        dispatchEvent();
+      }
+    }
+
+    try {
+      while (!finished) {
+        if (controller.signal.aborted) {
+          throw new TutorRequestError(controller.signal.reason === "timeout" ? "AI_TIMEOUT" : "ABORTED");
+        }
+        const { done, value } = await reader.read();
+        buffer += done ? decoder.decode() : decoder.decode(value, { stream: true });
+        consumeBuffer(done);
+        if (done) break;
+      }
+      if (!finished && finishReason !== "stop") throw new TutorRequestError("INVALID_AI_RESPONSE");
+      return { content, reasoning };
+    } finally {
+      try { await reader.cancel(); } catch { /* preserve the original read/abort error */ }
+      reader.releaseLock();
+    }
   }
 
   async function callDeepSeek(messages, options = {}) {
@@ -437,7 +487,8 @@
     state.controller = controller;
     const timeoutMs = options.timeoutMs || CHAT_TIMEOUT_MS;
     const useStream = Boolean(options.stream);
-    state.timeoutId = window.setTimeout(() => controller.abort("timeout"), timeoutMs);
+    const timeoutId = window.setTimeout(() => controller.abort("timeout"), timeoutMs);
+    state.timeoutId = timeoutId;
     try {
       let response;
       try {
@@ -489,29 +540,30 @@
         content = streamed.content;
         reasoning = streamed.reasoning || state.pendingReasoning;
       } else {
-        let payload = {};
-        try {
-          payload = await response.json();
-        } catch {
-          throw new TutorRequestError("INVALID_AI_RESPONSE", response.status);
-        }
-        const message = payload?.choices?.[0]?.message || {};
-        content = typeof message.content === "string" ? message.content : "";
-        reasoning = typeof message.reasoning_content === "string" ? message.reasoning_content : "";
+        const message = await readJsonChat(response);
+        content = message.content;
+        reasoning = message.reasoning;
         if (reasoning) {
           state.pendingReasoning = reasoning;
           options.onReasoning?.(reasoning);
         }
       }
       if (reasoning && !state.pendingReasoning) state.pendingReasoning = reasoning;
-      const parsed = extractJsonObject(content) || extractJsonObject(reasoning);
+      // Only final content is an answer. Reasoning can contain tentative JSON.
+      const parsed = extractJsonObject(content);
       if (parsed) return parsed;
       const error = new TutorRequestError("INVALID_AI_RESPONSE", response.status);
-      error.rawText = content || reasoning;
+      error.rawText = content;
+      throw error;
+    } catch (error) {
+      // fetch resolves at headers; abort can also occur during SSE or JSON body reads.
+      if (controller.signal.aborted) {
+        throw new TutorRequestError(controller.signal.reason === "timeout" ? "AI_TIMEOUT" : "ABORTED");
+      }
       throw error;
     } finally {
-      window.clearTimeout(state.timeoutId);
-      state.timeoutId = null;
+      window.clearTimeout(timeoutId);
+      if (state.timeoutId === timeoutId) state.timeoutId = null;
       if (state.controller === controller) state.controller = null;
     }
   }
@@ -550,11 +602,14 @@
       }
     }
     if (options.thinking) {
-      return completeTutorChat(messages, request, {
+      updatePendingReasoning("");
+      const fallback = await completeTutorChat(messages, request, {
         thinking: false,
         timeoutMs: 45000,
         maxTokens: 2200
       });
+      fallback.warnings.push("深度回答未完成，已改用快速模式重新生成；请核对完整步骤与结论。");
+      return fallback;
     }
     throw new TutorRequestError("INVALID_AI_RESPONSE");
   }
@@ -607,7 +662,8 @@
     if (state.controller) state.controller.abort();
     const controller = new AbortController();
     state.controller = controller;
-    state.timeoutId = window.setTimeout(() => controller.abort("timeout"), timeoutMs);
+    const timeoutId = window.setTimeout(() => controller.abort("timeout"), timeoutMs);
+    state.timeoutId = timeoutId;
     try {
       let response;
       try {
@@ -633,9 +689,14 @@
         throw new TutorRequestError(payload.error || "AI_UNAVAILABLE", response.status);
       }
       return payload;
+    } catch (error) {
+      if (controller.signal.aborted) {
+        throw new TutorRequestError(controller.signal.reason === "timeout" ? "AI_TIMEOUT" : "ABORTED");
+      }
+      throw error;
     } finally {
-      window.clearTimeout(state.timeoutId);
-      state.timeoutId = null;
+      window.clearTimeout(timeoutId);
+      if (state.timeoutId === timeoutId) state.timeoutId = null;
       if (state.controller === controller) state.controller = null;
     }
   }
@@ -685,7 +746,7 @@
     elements.workspace.setAttribute("aria-hidden", "false");
     updateContext(state.context || currentHostContext());
     if (scroll) {
-      window.setTimeout(() => elements.workspace.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
+      window.setTimeout(() => elements.workspace.scrollIntoView({ behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ? "auto" : "smooth", block: "start" }), 40);
     }
   }
 

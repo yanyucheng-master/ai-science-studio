@@ -1178,7 +1178,7 @@ body.subject-extra-physics-active:not(.awaiting-generation) .scene-fullscreen-bu
 
 .wheel-one { left: 14px; }
 .wheel-two { right: 13px; }
-.car.moving .wheel { animation: spin 350ms linear infinite; }
+.car .wheel { transform: rotate(var(--wheel-angle, 0rad)); }
 
 .distance-flag {
   position: absolute;
@@ -6206,14 +6206,7 @@ body.subject-biology-active:not(.awaiting-generation) .scene {
   width: min(430px, 88%);
 }
 
-.plant-cell-model.auto-rotate {
-  animation: cell-auto-spin 9s linear infinite;
-}
-
-@keyframes cell-auto-spin {
-  from { transform: translateY(-38px) scale(.82) rotateX(var(--cell-rotate-x, -4deg)) rotateY(0deg); }
-  to { transform: translateY(-38px) scale(.82) rotateX(var(--cell-rotate-x, -4deg)) rotateY(360deg); }
-}
+.plant-cell-model.auto-rotate { will-change: transform; }
 
 .cell-wall,
 .cell-membrane,
@@ -8712,4 +8705,131 @@ body.subject-physics-active:not(.awaiting-generation) .generic-physics-readout .
   .subject-solenoid .solenoid-inspector {
     display: none;
   }
+}
+
+/* Scientific motion: geometry is data-driven; CSS supplies presentation only. */
+.projectile-diagram { width: 100%; height: 100%; display: block; stroke: none; }
+.projectile-diagram text { font: 13px "Microsoft YaHei", sans-serif; fill: #526b8b; }
+.projectile-diagram .projectile-velocity text { font-weight: 700; }
+.projectile-floor { stroke: #a4c6ed; stroke-width: 4; }
+.projectile-support { fill: #e0ecfa; stroke: #afc6e4; stroke-width: 2; }
+.projectile-prediction { fill: none; stroke: #a8bfda; stroke-width: 1.5; stroke-dasharray: 4 6; }
+.projectile-trail { fill: none; stroke: #3979d4; stroke-width: 2.5; }
+.projectile-ghosts { fill: #4c84c9; }
+.projectile-marker { fill: #2478e9; stroke: #fff; stroke-width: 3; }
+.projectile-velocity path { fill: none; stroke-width: 2; }
+#projectileVx { stroke: #2671df; }
+#projectileVy { stroke: #cc7030; }
+#projectileV { stroke: #19846e; }
+#projectileVxLabel { fill: #2671df; }
+#projectileVyLabel { fill: #b55d23; }
+#projectileVLabel { fill: #19846e; }
+.projectile-world::after { display: none; }
+.projectile-readout .projectile-mobile-vectors { display: none; }
+.current-direction { fill: none; stroke: #168867; stroke-width: 2.5; }
+.circuit-current-pulse { fill: #24be90; stroke: #fff; stroke-width: 1; filter: none; }
+.current-loop { pointer-events: none; }
+.car, .brake-trace, .board-slider-board, .board-slider-block { transition: none; }
+
+.plant-cell-viewport { touch-action: none; }
+.plant-cell-model {
+  transform: translateY(-43px) scale(.76) rotateX(var(--cell-rotate-x)) rotateY(var(--cell-rotate-y));
+  transition: none;
+}
+.plant-cell-model::before, .plant-cell-model::after {
+  position: absolute; inset: 0; content: ""; pointer-events: none;
+  border: 10px solid #82c8b1; border-radius: 34px 48px 36px 42px;
+  background: rgba(180, 222, 207, .4); transform: translateZ(-24px);
+  clip-path: polygon(5% 17%,18% 5%,82% 7%,96% 22%,92% 82%,75% 94%,14% 90%,4% 69%);
+}
+.plant-cell-model::after { transform: translateZ(-12px); background: transparent; border-color: #a5decb; }
+.animal-cell-mode::before, .animal-cell-mode::after {
+  inset: 10px 22px 16px 18px; clip-path: none;
+  border-radius: 48% 52% 45% 55% / 45% 38% 62% 55%; border-color: #93c6e1;
+  background: rgba(213, 235, 247, .4);
+}
+.cell-vacuole { right: 68px; top: 44px; width: 262px; height: 156px; transform: translateZ(36px); }
+.cell-nucleus { left: 61px; top: 105px; width: 62px; height: 59px; }
+.chloroplast-one { left: 230px; top: 31px; }
+.chloroplast-three { left: 292px; bottom: 25px; }
+.mitochondrion-one { left: 146px; top: 194px; }
+.mitochondrion-two { right: 70px; top: 121px; }
+.animal-cell-mode .mitochondrion-two { right: 100px; }
+.animal-cell-mode .golgi { right: 74px; top: 106px; width: 70px; transform: translateZ(48px) rotate(-8deg); }
+.mitochondrion::after { display: none; }
+.chloroplast { background: linear-gradient(135deg, #62cf9b, #1e9865); }
+.organelle-texture { width: 100%; height: 100%; display: block; pointer-events: none; overflow: visible; }
+.organelle-texture path { fill: none; stroke: #fff4dd; stroke-width: 1.8; }
+.chloroplast .organelle-texture path { stroke: #d8ffe4; stroke-width: 1.5; }
+.cell-organelle { transition: opacity 120ms ease; }
+.plant-cell-model[data-selected] .cell-organelle:not(.active) { opacity: .66; }
+.cell-organelle.active { z-index: auto; filter: none; opacity: 1; }
+.cell-organelle:focus-visible { outline: 3px solid #2768ca; outline-offset: 3px; }
+.cell-organelle span { display: none; }
+.cell-structure-tags {
+  inset: auto 0 -22px; display: flex; justify-content: center; flex-wrap: wrap; gap: 5px;
+}
+.cell-structure-tag {
+  position: static; width: auto; min-height: 30px; height: auto; padding: 5px 9px;
+  border: 1px solid #c2d4e9; border-radius: 8px; color: #365578;
+  font-size: 11px; background: #f9fcff; box-shadow: none;
+}
+.cell-structure-tag::after { display: none; }
+.cell-structure-tag.active { color: #185eb8; border-color: #598ad1; background: #e8f2ff; }
+.cell-structure-tag:focus-visible { outline: 2px solid #2768ca; outline-offset: 2px; }
+.cell-viewer-actions button:disabled { opacity: .5; cursor: default; }
+.cell-interaction-hint { font-size: 9px; }
+
+.chem-progress-note {
+  position: absolute; left: 0; right: 0; bottom: -10px; z-index: 15;
+  display: grid; gap: 4px; text-align: center; color: #385571; font-size: 10px;
+}
+.chem-progress-note strong { font-size: 12px; color: #167d69; }
+.chem-stage-note { display: block; top: 2px; bottom: auto; right: 0; max-width: 195px; padding: 6px 8px; box-shadow: none; }
+.chem-stage-note span { display: none; }
+.chem-stage-note strong { font-size: 10px; font-weight: 500; }
+.iron-wire-wrap { top: auto; bottom: 205px; width: 90px; height: 60px; transform: translateX(-50%) translate3d(0, calc(var(--iron-drop, 0) * 90px), 0); transition: none; }
+.iron-powder { display: block; width: 100%; height: 100%; overflow: visible; }
+.cuso4-solution { transition: none; filter: none; }
+.green-transition { display: none; }
+.subject-chemistry .scene-tip { display: none; }
+.motion-suspended *, .motion-suspended *::before, .motion-suspended *::after { animation-play-state: paused !important; }
+body.ai-tutor-route .scene *, body.ai-tutor-route .scene *::before, body.ai-tutor-route .scene *::after { animation-play-state: paused !important; }
+
+@media (max-width: 700px) {
+  body.subject-biology-active:not(.awaiting-generation) .scene { height: 540px; }
+  .cell-explorer { inset: 58px 12px 28px; grid-template-rows: 250px minmax(0, 1fr); gap: 10px; }
+  .plant-cell-viewport { inset: 42px 8px 45px; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+  .plant-cell-model { transform: translateY(-20px) scale(.54) rotateX(var(--cell-rotate-x)) rotateY(var(--cell-rotate-y)); width: 440px; }
+  .animal-cell-mode { width: 390px; }
+  .cell-structure-tags { gap: 3px; bottom: -34px; }
+  .cell-structure-tag { min-height: 30px; padding: 3px 6px; font-size: 10px; }
+  .cell-detail-card { display: block; padding: 12px; }
+  .cell-detail-card > span { display: none; }
+  .cell-detail-card strong { font-size: 18px; margin-bottom: 10px; }
+  .cell-detail-card dl { grid-template-columns: 58px minmax(0, 1fr); gap: 6px 8px; }
+  .cell-detail-card dd { font-size: 11px; }
+  .cell-detail-card dt { font-size: 10px; padding: 2px 4px; }
+  .cell-viewer-head { gap: 5px; }
+  .cell-viewer-head > span { font-size: 10px; }
+  .cell-viewer-actions { gap: 3px; }
+  .cell-viewer-actions button { padding: 5px 6px; }
+  .cell-interaction-hint { left: 18px; right: 18px; font-size: 8px; text-align: center; }
+  .subject-projectile .projectile-lab { inset: 42px 12px 18px; padding: 10px; grid-template-rows: minmax(170px, 1fr) auto; }
+  .projectile-readout { display: block; min-width: 0; padding: 8px 10px; }
+  .projectile-readout > strong { font-size: 15px; margin: 4px 0; }
+  .projectile-readout > p { font-size: 10px; }
+  .projectile-readout .projectile-mobile-vectors { display: block; margin-top: 4px; font-size: 10px; }
+  .projectile-diagram > text:not(#projectileHeightText) { display: none; }
+  .projectile-diagram text { font-size: 22px; }
+  .scene.subject-chemistry { height: 460px; }
+  .subject-chemistry .chem-label { top: 142px; right: 14px; min-width: 96px; padding: 6px 8px; }
+  .chem-stage-note { top: 62px; right: 0; left: 0; max-width: none; padding: 4px; text-align: center; }
+  .chem-progress-note { left: -24px; right: -24px; font-size: 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  /* Static directions, structure selection, parameters and timeline remain available. */
 }

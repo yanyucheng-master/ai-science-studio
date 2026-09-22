@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231648e6'/%3E%3Cpath d='M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260813-thinking-fold">
+  <link rel="stylesheet" href="styles.css?v=20260922-motion-1">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -276,24 +276,36 @@
             <div class="subject-stage projectile-stage" id="projectileStage">
               <div class="projectile-lab">
                 <div class="projectile-world">
-                  <div class="projectile-skyline"></div>
-                  <div class="projectile-platform">
-                    <span>释放高度</span>
-                    <strong id="projectileHeightText">20 m</strong>
-                  </div>
-                  <svg class="projectile-path" viewBox="0 0 640 300" preserveAspectRatio="none" aria-label="平抛运动轨迹">
-                    <path id="projectilePath" d="M120 112 C250 118 400 175 548 250"></path>
+                  <svg class="projectile-diagram" viewBox="0 0 640 290" role="img" aria-label="平抛：等比例轨迹、每0.2秒位置与实时速度矢量">
+                    <defs>
+                      <marker id="arrowVx" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7" fill="#2671df"/></marker>
+                      <marker id="arrowVy" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7" fill="#cc7030"/></marker>
+                      <marker id="arrowV" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7" fill="#19846e"/></marker>
+                    </defs>
+                    <path class="projectile-floor" d="M48 210H610"/>
+                    <path id="projectilePlatform" class="projectile-support"/>
+                    <text id="projectileHeightText" x="16" y="158">20 m</text>
+                    <path id="projectilePrediction" class="projectile-prediction"/>
+                    <path id="projectilePath" class="projectile-trail"/>
+                    <g id="projectileGhosts" class="projectile-ghosts"></g>
+                    <g id="projectileVelocity" class="projectile-velocity">
+                      <path id="projectileVx" marker-end="url(#arrowVx)"/>
+                      <path id="projectileVy" marker-end="url(#arrowVy)"/>
+                      <path id="projectileV" marker-end="url(#arrowV)"/>
+                      <text id="projectileVxLabel" fill="#2671df">vₓ</text>
+                      <text id="projectileVyLabel" fill="#b55d23">vᵧ</text>
+                      <text id="projectileVLabel" fill="#19846e">v</text>
+                    </g>
+                    <circle id="projectileBall" class="projectile-marker" r="10"/>
+                    <text x="250" y="24">残影 Δt = 0.2 s · 横纵距离等比例</text>
+                    <text id="projectileVelocityNote" x="250" y="44"></text>
                   </svg>
-                  <div class="projectile-ball" id="projectileBall"></div>
-                  <div class="projectile-shadow" id="projectileShadow"></div>
-                  <div class="projectile-ground"></div>
-                  <div class="projectile-vector vx"><span>v₀ 水平不变</span></div>
-                  <div class="projectile-vector vy"><span>竖直速度增大</span></div>
                 </div>
                 <aside class="projectile-readout">
                   <span>实时结论</span>
                   <strong id="projectileResultText">t = 2.0s，x = 24.2m</strong>
                   <p>水平匀速运动与竖直自由落体同时发生。</p>
+                  <p class="projectile-mobile-vectors"><span id="projectileMobileVectors"></span><br>残影 Δt = 0.2 s · 横纵距离等比例</p>
                   <dl class="stage-facts">
                     <div><dt>落地时间</dt><dd id="projectileTimeText">2.02s</dd></div>
                     <div><dt>水平位移</dt><dd id="projectileRangeText">24.2m</dd></div>
@@ -306,19 +318,13 @@
             <div class="subject-stage circuit-stage" id="circuitStage">
               <div class="circuit-lab">
                 <div class="circuit-board">
-                  <div class="circuit-standard-badge">教材电路图符号 · 开关闭合</div>
+                  <div class="circuit-standard-badge">传统电流：正极 → 外电路 → 负极 · 点速仅作示意</div>
                   <svg class="edu-circuit-svg core-ohm-schematic" viewBox="0 0 720 340" role="img" aria-label="欧姆定律实验电路：电源、开关、电流表和定值电阻串联，电压表并联在电阻两端">
                     <g class="edu-wire">
                       <path d="M110 125V60H238"></path>
                       <path d="M294 60H444"></path>
                       <path d="M516 60H610V220H430"></path>
                       <path d="M290 220H110V155"></path>
-                    </g>
-                    <g class="circuit-current-pulses" aria-hidden="true">
-                      <circle class="circuit-current-pulse" r="5"><animateMotion class="current-pulse-motion" dur="2.8s" repeatCount="indefinite" path="M110 125V60H238L282 50L294 60H444"></animateMotion></circle>
-                      <circle class="circuit-current-pulse" r="5"><animateMotion class="current-pulse-motion" dur="2.8s" begin=".55s" repeatCount="indefinite" path="M516 60H610V220H430"></animateMotion></circle>
-                      <circle class="circuit-current-pulse" r="5"><animateMotion class="current-pulse-motion" dur="2.8s" begin="1.1s" repeatCount="indefinite" path="M430 220H290"></animateMotion></circle>
-                      <circle class="circuit-current-pulse" r="5"><animateMotion class="current-pulse-motion" dur="2.8s" begin="1.65s" repeatCount="indefinite" path="M290 220H110V155"></animateMotion></circle>
                     </g>
 
                     <g class="edu-source" aria-label="电源">
@@ -447,13 +453,19 @@
                   <div class="copper-sediment" id="copperSediment"></div>
                 </div>
                 <div class="iron-wire-wrap" id="ironWireWrap">
-                  <div class="iron-wire" id="ironWire">
-                    <i class="copper-coating" id="copperCoating"></i>
-                  </div>
+                  <svg class="iron-powder" viewBox="0 0 100 64" role="img" aria-label="铁粉颗粒及其表面逐渐析出的铜，放大示意">
+                    <g id="ironWire" fill="#8999a8" stroke="#5f7183" stroke-width="2">
+                      <path d="M9 42L14 23L32 17L39 38L29 53Z"/><path d="M36 40L41 13L57 7L65 31L58 48Z"/><path d="M64 40L72 23L91 28L93 49L77 55Z"/>
+                    </g>
+                    <g id="copperCoating" fill="none" stroke="#c56f3e" stroke-width="5" stroke-linecap="round" stroke-dasharray="3 5">
+                      <path d="M9 42L14 23L32 17L39 38L29 53Z"/><path d="M36 40L41 13L57 7L65 31L58 48Z"/><path d="M64 40L72 23L91 28L93 49L77 55Z"/>
+                    </g>
+                  </svg>
                 </div>
+                <div class="chem-progress-note"><strong id="chemPhase">加入铁粉 · 尚未接触</strong><span id="chemAmounts"></span></div>
                 <div class="chem-stage-note">
                   <span>实验现象</span>
-                  <strong>铁表面析出红色铜，溶液由蓝色变浅绿色</strong>
+                  <strong>颗粒放大示意 · 演出时长不代表真实反应速率</strong>
                 </div>
               </div>
               <div class="chem-label"><span>反应进度</span><strong id="chemRate">Fe限量</strong></div>
@@ -485,7 +497,7 @@
                     <span>植物细胞 3D 截面</span>
                     <div class="cell-viewer-actions">
                       <button type="button" id="cellResetButton">重置视角</button>
-                      <button type="button" id="cellAutoButton">自动旋转</button>
+                      <button type="button" id="cellAutoButton">自动观察</button>
                     </div>
                   </div>
                   <div class="plant-cell-viewport" id="plantCellViewport">
@@ -495,20 +507,27 @@
                       <div class="cell-cytoplasm cell-organelle" data-organelle="cytoplasm" role="button" tabindex="0"><span>细胞质</span></div>
                       <div class="cell-vacuole cell-organelle" data-organelle="vacuole" role="button" tabindex="0"><span>液泡</span></div>
                       <div class="cell-nucleus cell-organelle active" data-organelle="nucleus" role="button" tabindex="0"><span>细胞核</span></div>
-                      <div class="chloroplast chloroplast-one cell-organelle" data-organelle="chloroplast" role="button" tabindex="0"><span>叶绿体</span></div>
-                      <div class="chloroplast chloroplast-two cell-organelle" data-organelle="chloroplast" role="button" tabindex="0"><span>叶绿体</span></div>
-                      <div class="chloroplast chloroplast-three cell-organelle" data-organelle="chloroplast" role="button" tabindex="0"><span>叶绿体</span></div>
-                      <div class="mitochondrion mitochondrion-one cell-organelle" data-organelle="mitochondrion" role="button" tabindex="0"><span>线粒体</span></div>
-                      <div class="mitochondrion mitochondrion-two cell-organelle" data-organelle="mitochondrion" role="button" tabindex="0"><span>线粒体</span></div>
+                      <div class="chloroplast chloroplast-one cell-organelle" data-organelle="chloroplast" role="button" tabindex="0"><svg class="organelle-texture" viewBox="0 0 60 30" aria-hidden="true"><path d="M10 10h10m-10 4h10m-10 4h10m6-10h10m-10 4h10m-10 4h10m6-6h8m-8 4h8m-8 4h8M20 14h6m10 2h6"/></svg><span>叶绿体</span></div>
+                      <div class="chloroplast chloroplast-two cell-organelle" data-organelle="chloroplast" role="button" tabindex="0"><svg class="organelle-texture" viewBox="0 0 60 30" aria-hidden="true"><path d="M10 10h10m-10 4h10m-10 4h10m6-10h10m-10 4h10m-10 4h10m6-6h8m-8 4h8m-8 4h8M20 14h6m10 2h6"/></svg><span>叶绿体</span></div>
+                      <div class="chloroplast chloroplast-three cell-organelle" data-organelle="chloroplast" role="button" tabindex="0"><svg class="organelle-texture" viewBox="0 0 60 30" aria-hidden="true"><path d="M10 10h10m-10 4h10m-10 4h10m6-10h10m-10 4h10m-10 4h10m6-6h8m-8 4h8m-8 4h8M20 14h6m10 2h6"/></svg><span>叶绿体</span></div>
+                      <div class="mitochondrion mitochondrion-one cell-organelle" data-organelle="mitochondrion" role="button" tabindex="0"><svg class="organelle-texture" viewBox="0 0 60 30" aria-hidden="true"><path d="M8 16C6 6 20 4 31 5S56 12 53 20S27 28 15 24S7 20 8 16Z"/><path d="M12 17C22 2 18 29 27 10S28 29 36 13S37 29 47 16"/></svg><span>线粒体</span></div>
+                      <div class="mitochondrion mitochondrion-two cell-organelle" data-organelle="mitochondrion" role="button" tabindex="0"><svg class="organelle-texture" viewBox="0 0 60 30" aria-hidden="true"><path d="M8 16C6 6 20 4 31 5S56 12 53 20S27 28 15 24S7 20 8 16Z"/><path d="M12 17C22 2 18 29 27 10S28 29 36 13S37 29 47 16"/></svg><span>线粒体</span></div>
                       <div class="endoplasmic-reticulum animal-only cell-organelle" data-organelle="endoplasmicReticulum" role="button" tabindex="0"><span>内质网</span></div>
                       <div class="golgi animal-only cell-organelle" data-organelle="golgi" role="button" tabindex="0"><span>高尔基体</span></div>
                       <div class="ribosome ribosome-one animal-only cell-organelle" data-organelle="ribosome" role="button" tabindex="0"><span>核糖体</span></div>
                       <div class="ribosome ribosome-two animal-only cell-organelle" data-organelle="ribosome" role="button" tabindex="0"><span>核糖体</span></div>
                     </div>
-                    <div class="cell-structure-tags" aria-label="细胞边界结构标签">
+                    <div class="cell-structure-tags" aria-label="细胞结构选择">
                       <button type="button" class="cell-structure-tag wall-tag" data-organelle="cellWall" data-label="细胞壁" aria-label="细胞壁">细胞壁</button>
                       <button type="button" class="cell-structure-tag membrane-tag" data-organelle="cellMembrane" data-label="细胞膜" aria-label="细胞膜">细胞膜</button>
                       <button type="button" class="cell-structure-tag cytoplasm-tag" data-organelle="cytoplasm" data-label="细胞质" aria-label="细胞质">细胞质</button>
+                      <button type="button" class="cell-structure-tag" data-organelle="vacuole" data-label="液泡">液泡</button>
+                      <button type="button" class="cell-structure-tag" data-organelle="nucleus" data-label="细胞核">细胞核</button>
+                      <button type="button" class="cell-structure-tag" data-organelle="chloroplast" data-label="叶绿体">叶绿体</button>
+                      <button type="button" class="cell-structure-tag" data-organelle="mitochondrion" data-label="线粒体">线粒体</button>
+                      <button type="button" class="cell-structure-tag" data-organelle="endoplasmicReticulum" data-label="内质网">内质网</button>
+                      <button type="button" class="cell-structure-tag" data-organelle="golgi" data-label="高尔基体">高尔基体</button>
+                      <button type="button" class="cell-structure-tag" data-organelle="ribosome" data-label="核糖体">核糖体</button>
                     </div>
                   </div>
                   <div class="cell-selection-badge" id="cellSelectionBadge">
@@ -527,7 +546,7 @@
                   </dl>
                 </div>
               </div>
-              <div class="cell-interaction-hint">拖动旋转 · 悬浮显示名称 · 点击查看功能</div>
+              <div class="cell-interaction-hint">拖动倾转 ±45° · 点击结构或标签 · 结构尺寸与纵深为示意<br>仅展示本题结构；植物也具有内质网、高尔基体和核糖体。</div>
               <div class="bio-label"><span>当前结构</span><strong id="bioFluidity">细胞核</strong></div>
             </div>
 
@@ -784,8 +803,9 @@
     </div>
   </div>
 
-  <script src="physics-extra.js?v=20260808-ai-tutor-1"></script>
-  <script src="app.js?v=20260811-apikey-1"></script>
-  <script src="ai-tutor.js?v=20260813-thinking-fold"></script>
+  <script src="science-motion.js?v=20260922-motion-1"></script>
+  <script src="physics-extra.js?v=20260922-motion-1"></script>
+  <script src="app.js?v=20260922-motion-1"></script>
+  <script src="ai-tutor.js?v=20260922-sse-completion-motion"></script>
 </body>
 </html>
