@@ -71,25 +71,25 @@ const SUBJECTS = {
     description: "从自然语言题目生成刹车实验：速度逐步归零，停止点对应 40m。",
     engine: "运动过程可视化",
     ar: "移动端扩展可继续展示汽车刹车实验。",
-    metrics: [["速度 v", "m/s"], ["位移 s", "m"], ["时间 t", "s"]],
+    metrics: [["速度 v", "m/s"], ["位移 x", "m"], ["时间 t", "s"]],
     params: [
       { label: "初速度 v₀", desc: "调整车辆起始速度", unit: "m/s", min: 5, max: 80, step: 1, value: 20 },
       { label: "加速度 a", desc: "调整刹车减速度", unit: "m/s²", min: 1, max: 20, step: 1, value: 5, prefix: "−" }
     ],
     steps: [
       ["题干条件", "v₀ = 20m/s，a = −5m/s²，v = 0", "先识别初速度、刹车加速度和末速度。"],
-      ["选择公式", "v² − v₀² = 2as", "题目没有给出时间，所以选择不含 t 的速度位移公式。"],
-      ["代入求解", "0² − 20² = 2×(−5)×s", "代入数据后得到刹车距离 s = 40m。"],
+      ["选择公式", "v² − v₀² = 2ax", "题目没有给出时间，所以选择不含 t 的速度位移公式。"],
+      ["代入求解", "0² − 20² = 2×(−5)×x", "代入数据后得到刹车距离 x = 40m。"],
       ["现象验证", "速度归零，停止点 40m", "结果为正且单位正确，并与实验停止点一致。"]
     ],
-    mentor: "为什么这里选 <strong>v² − v₀² = 2as</strong>？因为题目没有给时间，却给了速度、加速度和位移关系。",
+    mentor: "为什么这里选 <strong>v² − v₀² = 2ax</strong>？因为题目没有给时间，却给了速度、加速度和位移关系。",
     hint: "小提示：题目给出了 <strong>初速度、末速度和加速度</strong>，但没有给时间。哪条公式不含 t？",
     challenge: "很好！现在初速度变成了 <strong>30m/s</strong>。预测一下：刹车距离会变成原来的多少倍？"
   },
   "化学": {
     question: "将 5.6g 铁粉加入含有 0.20mol 硫酸铜的溶液中，充分反应。请计算最多生成多少 mol 铜？生成铜的质量是多少？并判断哪种反应物过量。",
     title: "铁与硫酸铜反应：定量观察铜的生成",
-    description: "Fe(s) + CuSO₄(aq) → FeSO₄(aq) + Cu(s)，铁表面析出红色铜，溶液由蓝色逐渐变为浅绿色。",
+    description: "Fe + CuSO₄ = FeSO₄ + Cu，铁表面析出红色铜，溶液由蓝色逐渐变为浅绿色。",
     engine: "典型题型模板演示",
     ar: "移动端扩展可继续展示铁与硫酸铜反应的沉积过程。",
     metrics: [["Fe 投入", "g"], ["生成 Cu", "mol"], ["Cu 质量", "g"]],
@@ -99,7 +99,7 @@ const SUBJECTS = {
     ],
     steps: [
       ["提取条件", "Fe = 5.6g，CuSO₄ = 0.20mol", "先识别铁的质量和硫酸铜的物质的量。"],
-      ["换算物质的量", "n(Fe) = 5.6 ÷ 56 = 0.10mol", "把铁的质量换算成物质的量。"],
+      ["换算物质的量", "n(Fe) = m/M = 5.6 g ÷ 56 g/mol = 0.10 mol", "把铁的质量换算成物质的量。"],
       ["判断限量反应物", "1:1 反应，Fe 为限量反应物", "比较 Fe 与 CuSO₄ 的物质的量，较少者限量，过量者剩余。"],
       ["计算生成物", "n(Cu)=0.10mol，m(Cu)=6.4g", "由 1:1 计量关系计算铜的物质的量和质量。"]
     ],
@@ -130,8 +130,8 @@ const SUBJECTS = {
   },
   "生物": {
     question: "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
-    title: "植物细胞结构识别：3D 截面模型",
-    description: "植物细胞结构识别｜3D 截面模型｜点击查看功能。",
+    title: "植物细胞：结构与功能",
+    description: "从细胞壁、细胞膜到中央液泡，点击结构，观察形态与功能。",
     engine: "典型题型模板演示",
     ar: "移动端扩展可继续展示植物细胞截面、结构标注与 360° 观察。",
     metrics: [["可点结构", "个"], ["旋转视角", "°"], ["观察时间", "s"]],
@@ -215,6 +215,8 @@ const state = {
   favorite: false,
   mathModel: null,
   cellType: "plant",
+  cellLevel: "senior",
+  cellLabelsVisible: true,
   selectedOrganelle: "nucleus",
   cellRotateX: -4,
   cellRotateY: -10,
@@ -321,123 +323,477 @@ const CHEMISTRY_CONSTANTS = {
   cuso4MolMax: 0.3
 };
 
-const CELL_ORGANELLES = [
-  {
-    id: "cellWall",
-    name: "细胞壁",
-    type: "植物细胞相对动物细胞的特征结构",
-    function: "支持和保护细胞，维持细胞形态",
-    memory: "典型植物细胞有细胞壁，动物细胞没有细胞壁"
-  },
-  {
-    id: "cellMembrane",
-    name: "细胞膜",
-    type: "边界结构",
-    function: "控制物质进出细胞，维持细胞内环境稳定",
-    memory: "选择透过性是细胞膜的重要特征"
-  },
-  {
-    id: "nucleus",
-    name: "细胞核",
-    type: "遗传控制中心",
-    function: "储存遗传信息，控制细胞生命活动",
-    memory: "细胞核中含有 DNA"
-  },
-  {
-    id: "vacuole",
-    name: "液泡",
-    type: "植物细胞常见结构",
-    function: "储存水分、无机盐和代谢产物，维持细胞渗透压",
-    memory: "成熟植物细胞通常有较大的中央液泡"
-  },
-  {
-    id: "chloroplast",
-    name: "叶绿体",
-    type: "绿色植物细胞常见结构",
-    function: "进行光合作用，将光能转化为有机物中的化学能",
-    memory: "叶绿体是绿色植物细胞进行光合作用的主要场所"
-  },
-  {
-    id: "mitochondrion",
-    name: "线粒体",
-    type: "能量转换结构",
-    function: "有氧呼吸的主要场所，为细胞生命活动提供能量",
-    memory: "线粒体与细胞能量转换密切相关"
-  },
-  {
-    id: "cytoplasm",
-    name: "细胞质",
-    type: "细胞内部环境",
-    function: "为多种细胞器提供存在环境，是许多代谢反应发生的场所",
-    memory: "细胞器分布在细胞质中"
-  }
-];
+// Cell structures follow 人教版 textbooks: 七年级上册（光学显微镜下的基本结构）and
+// 必修1《分子与细胞》第3章（电子显微镜下的亚显微结构）. Wording stays close to the textbooks.
+const CELL_LEVEL_LABELS = {
+  junior: "初中 · 显微结构",
+  senior: "高中 · 亚显微结构"
+};
 
-const ANIMAL_CELL_ORGANELLES = [
-  {
-    id: "cellMembrane",
+const CELL_LEVEL_SOURCES = {
+  junior: "人教版七年级上册",
+  senior: "人教版必修1《分子与细胞》"
+};
+
+const CELL_STRUCTURE_TEXT = {
+  cellWall: {
+    name: "细胞壁",
+    junior: {
+      type: "植物细胞特有结构",
+      function: "保护和支持细胞",
+      memory: "植物细胞有细胞壁，动物细胞没有细胞壁"
+    },
+    senior: {
+      type: "细胞最外层 · 全透性",
+      function: "主要由纤维素和果胶构成，对细胞起支持与保护作用",
+      memory: "细胞壁不是细胞的边界；细胞的边界是细胞膜"
+    }
+  },
+  cellMembrane: {
     name: "细胞膜",
-    type: "边界结构",
-    function: "控制物质进出细胞，维持细胞内环境稳定",
-    memory: "动物细胞没有细胞壁，最外层边界是细胞膜"
+    junior: {
+      type: "细胞的边界",
+      function: "控制物质的进出，使细胞拥有比较稳定的内部环境",
+      memory: {
+        plant: "细胞膜很薄，紧贴细胞壁内侧，在光学显微镜下不易看清",
+        animal: "动物细胞没有细胞壁，细胞膜是最外层结构"
+      }
+    },
+    senior: {
+      type: "细胞的边界",
+      function: "将细胞与外界环境分隔开；控制物质进出细胞；进行细胞间的信息交流",
+      memory: "细胞膜主要由脂质和蛋白质组成"
+    }
   },
-  {
-    id: "cytoplasm",
+  cytoplasm: {
     name: "细胞质",
-    type: "细胞内部环境",
-    function: "为细胞器提供存在环境，是许多代谢反应发生的场所",
-    memory: "动物细胞的细胞器分布在细胞质中"
+    junior: {
+      type: "细胞膜以内、细胞核以外的部分",
+      function: "细胞质能够流动，加快细胞与外界环境的物质交换",
+      memory: {
+        plant: "液泡、叶绿体和线粒体等结构都位于细胞质中",
+        animal: "线粒体等结构位于细胞质中"
+      }
+    },
+    senior: {
+      type: "细胞质基质 + 细胞器",
+      function: "细胞质基质呈溶胶状，是多种化学反应进行的场所",
+      memory: "各种细胞器分布在细胞质基质中"
+    }
   },
-  {
-    id: "nucleus",
+  nucleus: {
     name: "细胞核",
-    type: "遗传控制中心",
-    function: "储存遗传信息，控制细胞生命活动",
-    memory: "细胞核中含有 DNA"
+    junior: {
+      type: "细胞生命活动的控制中心",
+      function: "细胞核内含有遗传物质，控制着生物的发育和遗传",
+      memory: "遗传物质 DNA 主要存在于细胞核中"
+    },
+    senior: {
+      type: "遗传信息库 · 双层核膜",
+      function: "细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+      memory: "核膜为双层膜，核孔实现核质间物质交换和信息交流；核仁与某种 RNA 的合成及核糖体的形成有关；染色质主要由 DNA 和蛋白质组成"
+    }
   },
-  {
-    id: "mitochondrion",
+  vacuole: {
+    name: "液泡",
+    junior: {
+      type: "植物细胞特有（与动物细胞相比）",
+      function: "液泡内含细胞液，溶解着多种物质，如糖分和色素等",
+      memory: "成熟植物细胞中常有一个很大的中央液泡"
+    },
+    senior: {
+      type: "单层膜细胞器",
+      function: "内有细胞液，含糖类、无机盐、色素和蛋白质等，可以调节植物细胞内的环境，充盈的液泡还可以使植物细胞保持坚挺",
+      memory: "液泡由单层液泡膜包围，主要存在于植物细胞中"
+    }
+  },
+  chloroplast: {
+    name: "叶绿体",
+    junior: {
+      type: "能量转换器",
+      function: "光合作用的场所，能将光能转变为化学能储存在有机物中",
+      memory: "叶绿体只存在于植物体的绿色部分，如叶肉细胞"
+    },
+    senior: {
+      type: "双层膜细胞器",
+      function: "绿色植物能进行光合作用的细胞含有叶绿体，是光合作用的场所",
+      memory: "“养料制造车间”和“能量转换站”；内有许多由类囊体堆叠而成的基粒"
+    }
+  },
+  mitochondrion: {
     name: "线粒体",
-    type: "能量转换结构",
-    function: "有氧呼吸的主要场所，为细胞生命活动提供能量",
-    memory: "线粒体与细胞能量转换密切相关"
+    junior: {
+      type: "能量转换器",
+      function: "呼吸作用的场所，能将有机物中的化学能释放出来，供细胞利用",
+      memory: "动物细胞和植物细胞都有线粒体"
+    },
+    senior: {
+      type: "双层膜细胞器",
+      function: "细胞进行有氧呼吸的主要场所",
+      memory: "“动力车间”；内膜向内折叠形成嵴，增大膜面积"
+    }
   },
-  {
-    id: "endoplasmicReticulum",
+  endoplasmicReticulum: {
     name: "内质网",
-    type: "物质合成与运输结构",
-    function: "参与蛋白质和脂质的合成、加工与运输",
-    memory: "粗面内质网上附着核糖体"
+    senior: {
+      type: "单层膜细胞器",
+      function: "由膜连接而成的网状结构，是细胞内蛋白质等大分子物质的合成、加工场所和运输通道",
+      memory: "粗面内质网上附着有核糖体；内质网膜与外层核膜相连"
+    }
   },
-  {
-    id: "golgi",
+  golgi: {
     name: "高尔基体",
-    type: "加工与分泌结构",
-    function: "对蛋白质进行加工、分类和包装",
-    memory: "高尔基体像细胞内的分拣与包装站"
+    senior: {
+      type: "单层膜细胞器",
+      function: "对来自内质网的蛋白质进行加工、分类和包装的“车间”及“发送站”",
+      memory: {
+        plant: "在植物细胞中，高尔基体与细胞壁的形成有关",
+        animal: "分泌蛋白经内质网加工后以囊泡运到高尔基体，再以囊泡运往细胞膜"
+      }
+    }
   },
-  {
-    id: "ribosome",
+  ribosome: {
     name: "核糖体",
-    type: "蛋白质合成场所",
-    function: "合成蛋白质",
-    memory: "核糖体可以游离在细胞质中，也可以附着在内质网上"
+    senior: {
+      type: "无膜细胞器",
+      function: "“生产蛋白质的机器”，是合成蛋白质的场所",
+      memory: "有的附着在内质网上，有的游离分布在细胞质中；体积很小，图中已放大"
+    }
+  },
+  lysosome: {
+    name: "溶酶体",
+    senior: {
+      type: "单层膜细胞器",
+      function: "“消化车间”，内含多种水解酶，能分解衰老、损伤的细胞器，吞噬并杀死侵入细胞的病毒或细菌",
+      memory: "主要分布在动物细胞中"
+    }
+  },
+  centrosome: {
+    name: "中心体",
+    senior: {
+      type: "无膜细胞器",
+      function: "由两个互相垂直排列的中心粒及周围物质组成，与细胞的有丝分裂有关",
+      memory: "见于动物和某些低等植物细胞，高等植物细胞没有中心体"
+    }
   }
-];
+};
+
+const CELL_STRUCTURE_SETS = {
+  plant: {
+    junior: ["cellWall", "cellMembrane", "cytoplasm", "nucleus", "vacuole", "chloroplast", "mitochondrion"],
+    senior: ["cellWall", "cellMembrane", "cytoplasm", "nucleus", "vacuole", "chloroplast", "mitochondrion", "endoplasmicReticulum", "golgi", "ribosome"]
+  },
+  animal: {
+    junior: ["cellMembrane", "cytoplasm", "nucleus", "mitochondrion"],
+    senior: ["cellMembrane", "cytoplasm", "nucleus", "mitochondrion", "endoplasmicReticulum", "golgi", "ribosome", "lysosome", "centrosome"]
+  }
+};
+
+function normalizeCellLevel(level) {
+  return level === "junior" ? "junior" : "senior";
+}
+
+function cellStructureEntry(id, type = "plant", level = "senior") {
+  const source = CELL_STRUCTURE_TEXT[id];
+  if (!source) return null;
+  const detail = source[normalizeCellLevel(level)] || source.senior || source.junior;
+  const pick = value => (value && typeof value === "object" ? value[type] || value.plant : value);
+  return {
+    id,
+    name: source.name,
+    type: pick(detail.type),
+    function: pick(detail.function),
+    memory: pick(detail.memory)
+  };
+}
+
+function cellStructureList(type = "plant", level = "senior") {
+  const set = CELL_STRUCTURE_SETS[type] || CELL_STRUCTURE_SETS.plant;
+  return set[normalizeCellLevel(level)].map(id => cellStructureEntry(id, type, level));
+}
 
 const CELL_TYPE_LABELS = {
   plant: "植物细胞",
   animal: "动物细胞"
 };
 
-const CELL_ORGANELLE_DATA = {
-  plant: CELL_ORGANELLES,
-  animal: ANIMAL_CELL_ORGANELLES
+const CELL_ORGANELLE_MAP = new Map(
+  Object.keys(CELL_STRUCTURE_TEXT).map(id => [id, cellStructureEntry(id, "plant", "senior")])
+);
+
+/* ---------- Cell model drawing (SVG, viewBox 500 × 300) ---------- */
+
+const CELL_SHAPES = {
+  plant: {
+    wall: "M80 30 L418 26 Q444 28 446 56 L442 246 Q440 272 412 274 L88 272 Q60 270 58 244 L60 58 Q62 32 80 30 Z",
+    membrane: "M86 39.5 L414 35.5 Q435.5 37.5 436.5 60 L432.5 242 Q430.5 263.5 408 264.5 L92 262.5 Q69.5 260.5 68.5 240 L70 62 Q71.5 41.5 86 39.5 Z",
+    vacuole: "M190 70 C250 58 350 60 392 74 C412 84 412 140 408 186 C404 226 376 238 310 238 C250 240 196 238 176 214 C160 194 158 110 190 70 Z"
+  },
+  animal: {
+    membrane: "M104 94 C116 50 196 38 262 42 C330 34 396 54 414 102 C434 150 424 216 370 242 C314 266 250 254 194 262 C132 270 86 240 80 188 C74 150 84 120 104 94 Z"
+  }
 };
 
-const CELL_ORGANELLE_MAP = new Map(
-  [...CELL_ORGANELLES, ...ANIMAL_CELL_ORGANELLES].map(item => [item.id, item])
-);
+const CELL_LAYOUTS = {
+  plant: {
+    nucleus: { cx: 112, cy: 150, r: 26 },
+    chloroplasts: [[200, 51, -4], [318, 50, 3], [422, 116, 88], [322, 250, -2], [208, 251, 3], [100, 74, -32]],
+    mitochondria: [[262, 51, 2], [421, 176, 90], [265, 251, 0]],
+    erArcs: [{ r: 35, from: -160, to: -18 }, { r: 42, from: -150, to: -28 }],
+    golgi: { cx: 116, cy: 216, rot: 0, scale: 0.9 },
+    ribosomes: [[150, 44], [236, 45], [352, 46], [396, 44], [424, 84], [428, 146], [426, 222], [392, 254], [356, 256], [238, 257], [176, 256], [146, 246], [84, 190], [150, 186], [88, 108], [140, 76], [428, 238], [288, 46], [172, 62]],
+    labels: {
+      junior: [
+        ["cellWall", 61, 64, "left", 48],
+        ["chloroplast", 94, 70, "left", 84],
+        ["nucleus", 98, 150, "left", 150],
+        ["cellMembrane", 69.2, 222, "left", 214],
+        ["cytoplasm", 142, 238, "left", 262],
+        ["vacuole", 356, 150, "right", 132],
+        ["mitochondrion", 421, 176, "right", 196]
+      ],
+      senior: [
+        ["cellWall", 61, 60, "left", 38],
+        ["chloroplast", 94, 70, "left", 72],
+        ["endoplasmicReticulum", 96, 112, "left", 108],
+        ["nucleus", 100, 150, "left", 148],
+        ["golgi", 104, 216, "left", 190],
+        ["cellMembrane", 69.2, 232, "left", 228],
+        ["cytoplasm", 146, 236, "left", 264],
+        ["ribosome", 424, 84, "right", 70],
+        ["vacuole", 356, 150, "right", 132],
+        ["mitochondrion", 421, 176, "right", 196]
+      ]
+    }
+  },
+  animal: {
+    nucleus: { cx: 220, cy: 150, r: 38 },
+    mitochondria: [[128, 116, 30], [376, 150, 80], [268, 234, -8], [132, 198, -40]],
+    erArcs: [{ r: 48, from: 8, to: 112 }, { r: 56, from: 12, to: 104 }, { r: 64, from: 18, to: 96 }],
+    smoothEr: "M300 204 C310 196 318 212 328 204 S344 196 350 208 M306 216 C316 210 326 224 336 218",
+    golgi: { cx: 322, cy: 124, rot: 90, scale: 1 },
+    lysosomes: [[340, 232, 6.5], [150, 232, 6], [360, 88, 5.5]],
+    centrosome: { cx: 262, cy: 84 },
+    ribosomes: [[160, 70], [206, 62], [300, 62], [330, 170], [398, 176], [300, 244], [232, 246], [180, 240], [110, 160], [150, 96], [392, 112], [404, 206], [240, 60], [338, 58], [112, 226], [300, 176], [180, 104], [372, 222]],
+    labels: {
+      junior: [
+        ["mitochondrion", 122, 112, "left", 96],
+        ["nucleus", 196, 150, "left", 150],
+        ["cellMembrane", 80.5, 196, "left", 204],
+        ["cytoplasm", 150, 236, "left", 262]
+      ],
+      senior: [
+        ["mitochondrion", 122, 112, "left", 84],
+        ["nucleus", 196, 150, "left", 126],
+        ["cellMembrane", 80.5, 196, "left", 212],
+        ["cytoplasm", 190, 250, "left", 266],
+        ["centrosome", 262, 84, "right", 34],
+        ["golgi", 322, 124, "right", 84],
+        ["ribosome", 398, 176, "right", 138],
+        ["endoplasmicReticulum", 262, 186, "right", 196],
+        ["lysosome", 340, 232, "right", 250]
+      ]
+    }
+  }
+};
+
+// Which depth layer each structure is drawn in (base → mid → top).
+const CELL_STRUCTURE_LAYER = {
+  cellWall: "base",
+  cellMembrane: "base",
+  cytoplasm: "base",
+  vacuole: "mid",
+  nucleus: "mid",
+  endoplasmicReticulum: "mid",
+  golgi: "mid",
+  chloroplast: "top",
+  mitochondrion: "top",
+  ribosome: "top",
+  lysosome: "top",
+  centrosome: "top"
+};
+
+const cellNum = value => Number(value.toFixed(2));
+
+function cellOrganelleGroup(id, inner, extra = "") {
+  const name = CELL_STRUCTURE_TEXT[id]?.name || "细胞结构";
+  return `<g class="cell-organelle cell-${id}" data-organelle="${id}" role="button" tabindex="0" aria-label="${name}"${extra}>${inner}</g>`;
+}
+
+function cellChloroplast(cx, cy, rot, level) {
+  const body = level === "senior"
+    ? `<ellipse class="chl-outer" rx="17" ry="8.2"/><ellipse class="chl-inner" rx="15.2" ry="6.6"/>
+       <path class="chl-lamella" d="M-12 0H12M-8 -2.4L-3 1.6M3 -1.6L8 2.4"/>
+       ${[-10, -3.5, 3.5, 10].map((x, index) => `<g transform="translate(${x} ${index % 2 ? 0.6 : -0.6})">${[-3.4, -1.7, 0, 1.7].map(y => `<rect class="chl-granum" x="-2.3" y="${y}" width="4.6" height="1" rx="0.45"/>`).join("")}</g>`).join("")}`
+    : `<ellipse class="chl-outer junior" rx="17" ry="8.2"/>
+       ${[[-10, -2], [-4, 2], [2, -2.4], [8, 1.6], [12, -1], [-13, 2.2]].map(([x, y]) => `<circle class="chl-grain" cx="${x}" cy="${y}" r="1.7"/>`).join("")}`;
+  return `<g transform="translate(${cx} ${cy}) rotate(${rot})"><ellipse class="cell-hit" rx="21" ry="12"/>${body}</g>`;
+}
+
+function cellMitochondrion(cx, cy, rot) {
+  const cristae = [-7, -3.4, 0.2, 3.8, 7.2].map((x, index) => (
+    index % 2 ? `<path class="mito-crista" d="M${x} 3.9V-0.6"/>` : `<path class="mito-crista" d="M${x} -3.9V0.6"/>`
+  )).join("");
+  return `<g transform="translate(${cx} ${cy}) rotate(${rot})"><ellipse class="cell-hit" rx="15" ry="9"/>
+    <ellipse class="mito-outer" rx="11.5" ry="5.6"/><ellipse class="mito-inner" rx="9.8" ry="4.1"/>${cristae}</g>`;
+}
+
+function cellNucleus({ cx, cy, r }, level) {
+  if (level !== "senior") {
+    return `<g transform="translate(${cx} ${cy})"><circle class="cell-hit" r="${r + 4}"/>
+      <circle class="nuc-body junior" r="${r}"/>
+      ${[[-9, -8], [8, -10], [-11, 7], [10, 9], [0, 12], [-2, -14], [13, -1]].map(([x, y]) => `<circle class="nuc-grain" cx="${cellNum(x * r / 26)}" cy="${cellNum(y * r / 26)}" r="1.3"/>`).join("")}
+      <circle class="nuc-core junior" cx="${cellNum(r * 0.12)}" cy="${cellNum(-r * 0.08)}" r="${cellNum(r * 0.26)}"/></g>`;
+  }
+  const pores = [20, 70, 125, 170, 215, 262, 312, 345].map(angle => {
+    const rad = (angle * Math.PI) / 180;
+    const x = cellNum(Math.cos(rad) * (r - 1.2));
+    const y = cellNum(Math.sin(rad) * (r - 1.2));
+    return `<rect class="nuc-pore" x="-1.2" y="-2.6" width="2.4" height="5.2" transform="translate(${x} ${y}) rotate(${angle})"/>`;
+  }).join("");
+  const s = r / 26;
+  const chromatin = [
+    "M-14 -6 C-10 -12 -4 -8 -6 -2 S-12 4 -8 8",
+    "M4 -14 C10 -12 12 -6 8 -4",
+    "M10 6 C16 8 14 14 8 14 S2 12 4 16",
+    "M-16 10 C-12 8 -8 14 -12 16"
+  ].map(d => `<path class="nuc-chromatin" d="${d}" transform="scale(${cellNum(s)})"/>`).join("");
+  return `<g transform="translate(${cx} ${cy})"><circle class="cell-hit" r="${r + 4}"/>
+    <circle class="nuc-envelope" r="${r}"/><circle class="nuc-envelope-inner" r="${cellNum(r - 2.6)}"/>${pores}${chromatin}
+    ${[[-4, 8], [12, -8], [-8, -12], [0, -16], [14, 2]].map(([x, y]) => `<circle class="nuc-grain" cx="${cellNum(x * s)}" cy="${cellNum(y * s)}" r="1.2"/>`).join("")}
+    <circle class="nuc-core" cx="${cellNum(2 * s)}" cy="${cellNum(-1 * s)}" r="${cellNum(r * 0.25)}"/></g>`;
+}
+
+function cellArcPath(cx, cy, r, from, to) {
+  const point = angle => {
+    const rad = (angle * Math.PI) / 180;
+    return [cellNum(cx + Math.cos(rad) * r), cellNum(cy + Math.sin(rad) * r)];
+  };
+  const [x1, y1] = point(from);
+  const [x2, y2] = point(to);
+  const large = Math.abs(to - from) > 180 ? 1 : 0;
+  const sweep = to > from ? 1 : 0;
+  return `M${x1} ${y1}A${r} ${r} 0 ${large} ${sweep} ${x2} ${y2}`;
+}
+
+function cellRoughEr(nucleus, arcs, extra = "") {
+  const { cx, cy, r } = nucleus;
+  const sheets = arcs.map(arc => {
+    const d = cellArcPath(cx, cy, arc.r, arc.from, arc.to);
+    const dots = [];
+    for (let angle = arc.from + 6; angle < arc.to - 3; angle += 11) {
+      [arc.r - 3.3, arc.r + 3.3].forEach((radius, side) => {
+        const rad = ((angle + side * 5) * Math.PI) / 180;
+        dots.push(`<circle class="ribo-bound" cx="${cellNum(cx + Math.cos(rad) * radius)}" cy="${cellNum(cy + Math.sin(rad) * radius)}" r="1.05"/>`);
+      });
+    }
+    return `<path class="er-sheet" d="${d}"/><path class="er-lumen" d="${d}"/>${dots.join("")}`;
+  }).join("");
+  const mid = (arcs[0].from + arcs[0].to) / 2;
+  const rad = (mid * Math.PI) / 180;
+  const link = `M${cellNum(cx + Math.cos(rad) * r)} ${cellNum(cy + Math.sin(rad) * r)}L${cellNum(cx + Math.cos(rad) * arcs[0].r)} ${cellNum(cy + Math.sin(rad) * arcs[0].r)}`;
+  const hit = cellArcPath(cx, cy, (arcs[0].r + arcs[arcs.length - 1].r) / 2, arcs[0].from, arcs[0].to);
+  return `<path class="cell-hit-stroke" d="${hit}" style="stroke-width:${arcs[arcs.length - 1].r - arcs[0].r + 16}"/>
+    <path class="er-sheet" d="${link}"/><path class="er-lumen" d="${link}"/>${sheets}${extra}`;
+}
+
+function cellGolgi({ cx, cy, rot, scale }) {
+  const cisternae = [[-12, 30], [-6, 26], [0, 22], [6, 18], [12, 13]].map(([y, w]) => {
+    const d = `M${-w / 2} ${y}Q0 ${y + 7} ${w / 2} ${y}`;
+    return `<path class="golgi-sac" d="${d}"/><path class="golgi-lumen" d="${d}"/>`;
+  }).join("");
+  const vesicles = [[-18, -9, 2.4], [18, -7, 2.2], [-15, 4, 2], [14, 8, 2.3], [0, 21, 2.6], [-8, 24, 1.9]].map(([x, y, rr]) => `<circle class="golgi-vesicle" cx="${x}" cy="${y}" r="${rr}"/>`).join("");
+  return `<g transform="translate(${cx} ${cy}) rotate(${rot}) scale(${scale})"><ellipse class="cell-hit" rx="22" ry="22"/>${cisternae}${vesicles}</g>`;
+}
+
+function cellFreeRibosomes(points) {
+  return points.map(([x, y]) => `<circle class="cell-hit" cx="${x}" cy="${y}" r="5"/><circle class="ribo-free" cx="${x}" cy="${y}" r="1.15"/>`).join("");
+}
+
+function cellLysosome(cx, cy, r) {
+  return `<g transform="translate(${cx} ${cy})"><circle class="cell-hit" r="${r + 4}"/><circle class="lyso-body" r="${r}"/>
+    ${[[-2, -2], [2, 1], [-1, 2.5], [2.5, -2.5]].map(([x, y]) => `<circle class="lyso-grain" cx="${cellNum(x * r / 6.5)}" cy="${cellNum(y * r / 6.5)}" r="0.9"/>`).join("")}</g>`;
+}
+
+function cellCentrosome({ cx, cy }) {
+  const stripes = "M-4 -2.6V2.6M0 -2.6V2.6M4 -2.6V2.6";
+  return `<g transform="translate(${cx} ${cy})"><circle class="cell-hit" r="15"/><circle class="centro-matrix" r="12"/>
+    <g transform="translate(-3 -2)"><rect class="centriole" x="-7" y="-3" width="14" height="6" rx="1.2"/><path class="centriole-line" d="${stripes}"/></g>
+    <g transform="translate(5 3) rotate(90)"><rect class="centriole" x="-7" y="-3" width="14" height="6" rx="1.2"/><path class="centriole-line" d="${stripes}"/></g></g>`;
+}
+
+function cellLabelMarkup([id, ax, ay, side, ly]) {
+  const name = CELL_STRUCTURE_TEXT[id]?.name || "";
+  const textX = side === "left" ? 52 : 448;
+  const lineX = side === "left" ? 55 : 445;
+  return `<g class="cell-label" data-organelle="${id}" aria-hidden="true">
+    <path class="cell-label-line" d="M${lineX} ${ly - 4}L${ax} ${ay}"/>
+    <text x="${textX}" y="${ly}" text-anchor="${side === "left" ? "end" : "start"}">${name}</text></g>`;
+}
+
+function buildCellLayers(type = "plant", level = "senior") {
+  const lvl = normalizeCellLevel(level);
+  const layout = CELL_LAYOUTS[type] || CELL_LAYOUTS.plant;
+  const available = new Set(CELL_STRUCTURE_SETS[type][lvl]);
+  const layers = { slab: "", base: "", mid: "", top: "" };
+  const add = (id, layer, markup) => {
+    if (available.has(id)) layers[layer] += cellOrganelleGroup(id, markup);
+  };
+
+  if (type === "plant") {
+    const shape = CELL_SHAPES.plant;
+    layers.slab = `<path class="cell-slab plant" d="${shape.wall}"/>`;
+    add("cellWall", "base", `<path class="wall-body" d="${shape.wall}"/><path class="wall-texture" d="${shape.wall}"/>`);
+    add("cytoplasm", "base", `<path class="cyto-body plant" d="${shape.membrane}"/>`);
+    add("cellMembrane", "base", `<path class="cell-hit-stroke" d="${shape.membrane}" style="stroke-width:9"/><path class="membrane-line plant" d="${shape.membrane}"/>`);
+    add("vacuole", "mid", `<path class="vacuole-body" d="${shape.vacuole}"/><path class="vacuole-shine" d="M206 86 C250 74 318 74 356 84"/>`);
+    add("nucleus", "mid", cellNucleus(layout.nucleus, lvl));
+    add("endoplasmicReticulum", "mid", cellRoughEr(layout.nucleus, layout.erArcs));
+    add("golgi", "mid", cellGolgi(layout.golgi));
+    add("chloroplast", "top", layout.chloroplasts.map(([x, y, r]) => cellChloroplast(x, y, r, lvl)).join(""));
+    add("mitochondrion", "top", layout.mitochondria.map(([x, y, r]) => cellMitochondrion(x, y, r)).join(""));
+    add("ribosome", "top", cellFreeRibosomes(layout.ribosomes));
+  } else {
+    const shape = CELL_SHAPES.animal;
+    layers.slab = `<path class="cell-slab animal" d="${shape.membrane}"/>`;
+    add("cytoplasm", "base", `<path class="cyto-body animal" d="${shape.membrane}"/>`);
+    add("cellMembrane", "base", `<path class="cell-hit-stroke" d="${shape.membrane}" style="stroke-width:10"/><path class="membrane-line animal" d="${shape.membrane}"/>`);
+    add("nucleus", "mid", cellNucleus(layout.nucleus, lvl));
+    add("endoplasmicReticulum", "mid", cellRoughEr(layout.nucleus, layout.erArcs, `<path class="er-smooth" d="${layout.smoothEr}"/><path class="er-smooth-lumen" d="${layout.smoothEr}"/>`));
+    add("golgi", "mid", cellGolgi(layout.golgi));
+    add("mitochondrion", "top", layout.mitochondria.map(([x, y, r]) => cellMitochondrion(x, y, r)).join(""));
+    add("ribosome", "top", cellFreeRibosomes(layout.ribosomes));
+    add("lysosome", "top", layout.lysosomes.map(([x, y, r]) => cellLysosome(x, y, r)).join(""));
+    add("centrosome", "top", cellCentrosome(layout.centrosome));
+  }
+
+  (layout.labels[lvl] || []).forEach(label => {
+    if (!available.has(label[0])) return;
+    const layer = CELL_STRUCTURE_LAYER[label[0]] || "top";
+    layers[layer] += cellLabelMarkup(label);
+  });
+  return layers;
+}
+
+function renderCellModelMarkup(type = state.cellType, level = state.cellLevel) {
+  const model = elements.plantCellModel;
+  if (!model) return;
+  const key = `${type}:${normalizeCellLevel(level)}`;
+  if (model.dataset.rendered === key) return;
+  const layers = buildCellLayers(type, level);
+  const svg = (name, body) => `<svg class="cell-layer layer-${name}" viewBox="0 0 500 300" aria-hidden="${name === "slab"}" focusable="false">${body}</svg>`;
+  model.innerHTML = `
+    <svg class="cell-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs>
+      <filter id="cellActiveGlow" x="-40%" y="-40%" width="180%" height="180%">
+        <feMorphology in="SourceAlpha" operator="dilate" radius="1.6" result="grow"/>
+        <feFlood flood-color="#2f6fd6" flood-opacity="0.9"/><feComposite in2="grow" operator="in" result="ring"/>
+        <feGaussianBlur in="ring" stdDeviation="1.4" result="soft"/>
+        <feMerge><feMergeNode in="soft"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs></svg>
+    ${svg("slab", layers.slab)}${svg("base", layers.base)}${svg("mid", layers.mid)}${svg("top", layers.top)}`;
+  model.dataset.rendered = key;
+}
 
 const elements = {
   experimentCard: $(".experiment-card"),
@@ -488,6 +844,9 @@ const elements = {
   plantCellViewport: $("#plantCellViewport"),
   cellResetButton: $("#cellResetButton"),
   cellAutoButton: $("#cellAutoButton"),
+  cellLabelButton: $("#cellLabelButton"),
+  mathGraph: $("#mathGraph"),
+  cellSourceNote: $("#cellSourceNote"),
   cellDetailName: $("#cellDetailName"),
   cellDetailType: $("#cellDetailType"),
   cellDetailFunction: $("#cellDetailFunction"),
@@ -522,8 +881,21 @@ const elements = {
   generationOverlay: $("#generationOverlay"),
   generationStatus: $("#generationStatus"),
   generationProgress: $("#generationProgress"),
+  generationTitle: $("#generationTitle"),
+  generationKicker: $("#generationKicker"),
+  generationQuestion: $("#generationQuestion"),
+  generationSteps: $("#generationSteps"),
+  generationStepsHighlight: $(".gen-steps-highlight"),
   demoStepIndicator: $("#demoStepIndicator")
 };
+
+renderCellModelMarkup(state.cellType, state.cellLevel);
+
+if (elements.mathGraph && "ResizeObserver" in window) {
+  new ResizeObserver(() => {
+    if (state.subject === "数学" && Number.isFinite(state.mathGraphX)) renderMathGraph(currentMathModel(), state.mathGraphX);
+  }).observe(elements.mathGraph);
+}
 
 [
   elements.sceneTip,
@@ -729,6 +1101,7 @@ function saveCurrentSubjectSnapshot() {
     solenoidZoom: state.solenoidZoom,
     selectedOrganelle: state.selectedOrganelle,
     cellType: state.cellType,
+    cellLevel: state.cellLevel,
     mathModelSpec: state.mathModel?.spec || null,
     cellRotateX: state.cellRotateX,
     cellRotateY: state.cellRotateY
@@ -764,6 +1137,7 @@ function restoreSubjectSnapshot(subject) {
   }
   if (subject === "生物") {
     state.cellType = snapshot.cellType || "plant";
+    state.cellLevel = normalizeCellLevel(snapshot.cellLevel || state.cellLevel);
     state.selectedOrganelle = snapshot.selectedOrganelle || "nucleus";
     syncBiologyContent(state.cellType);
     setCellRotation(snapshot.cellRotateX ?? -4, snapshot.cellRotateY ?? -10);
@@ -935,8 +1309,8 @@ function buildPhysicsBrakeContent(v0 = state.p1, parameter = state.p2, options =
       ],
       steps: [
         ["提取条件", `v₀ = ${vText}m/s，μ = ${muText}，g = ${gText}m/s²`, "明确水平路面、滑动摩擦为主要制动力。"],
-        ["受力求加速度", `f = μN = μmg，a = −f/m = −μg = −${frictionAText}m/s²`, "质量在求加速度时约去，减速度由 μ 和 g 决定。"],
-        ["代入运动学", `0² − ${vText}² = 2×(−${frictionAText})×s`, `计算得到停止距离 s = ${sText}m。`],
+        ["受力求加速度", `f = μF压 = μmg，a = −f/m = −μg = −${frictionAText}m/s²`, "质量在求加速度时约去，减速度由 μ 和 g 决定。"],
+        ["代入运动学", `0² − ${vText}² = 2×(−${frictionAText})×x`, `计算得到停止距离 x = ${sText}m。`],
         ["现象验证", `速度归零，停止点 ${sText}m`, "路面越粗糙，μ 越大，停止距离越短。"]
       ],
       mentor: `为什么汽车质量没有出现在最终刹车距离中？因为 <strong>f = μmg</strong>，再由 <strong>a = f/m</strong> 得到 <strong>a = μg</strong>。`,
@@ -944,13 +1318,13 @@ function buildPhysicsBrakeContent(v0 = state.p1, parameter = state.p2, options =
       challenge: `如果动摩擦因数增大到 <strong>${smartNumber(nextMu, 2)}</strong>，停止距离会怎样变化？`,
       generationStages: [
         { label: "识别条件", text: `识别 v₀ = ${vText}m/s，μ = ${muText}，g = ${gText}m/s²`, progress: 28 },
-        { label: "建立受力模型", text: `由 f = μN 与 F = ma 得 a = −${aText}m/s²`, progress: 63 },
+        { label: "建立受力模型", text: `由 f = μF压 与 F = ma 得 a = −${aText}m/s²`, progress: 63 },
         { label: "生成制动过程", text: `速度匀减至 0，停止点锁定 ${sText}m`, progress: 100 }
       ],
       recognitionText: `摩擦制动｜v₀ = ${vText}m/s｜μ = ${muText}｜g = ${gText}m/s²｜a = −${frictionAText}m/s²｜停止距离 ${sText}m`,
       formulaLabel: "摩擦制动",
-      formula: "f = μN，a = −μg",
-      formulaHtml: `N = mg，f = μN = μmg<br>a = −f/m = −μg = −${frictionAText}m/s²<br>s = v₀²/(2μg) = ${sText}m`,
+      formula: "f = μF压，a = −μg",
+      formulaHtml: `F压 = mg，f = μF压 = μmg<br>a = −f/m = −μg = −${frictionAText}m/s²<br>x = v₀²/(2μg) = ${sText}m`,
       sceneTip: `水平路面上按滑动摩擦制动建模：μ = ${muText}，速度每秒约减少 ${frictionAText}m/s。`,
       indicatorLabel: "滑动摩擦制动",
       indicatorFormula: `a = −μg = −${frictionAText}m/s²`,
@@ -1015,11 +1389,11 @@ function buildPhysicsBrakeContent(v0 = state.p1, parameter = state.p2, options =
     ],
     steps: [
       ["题干条件", `v₀ = ${vText}m/s，a = −${aText}m/s²，v = 0`, "先识别初速度、刹车加速度和末速度。"],
-      ["选择公式", "v² − v₀² = 2as", "题目没有给出时间，所以选择不含 t 的速度位移公式。"],
-      ["代入求解", `0² − ${vText}² = 2×(−${aText})×s`, `计算得到刹车距离 s = ${sText}m。`],
+      ["选择公式", "v² − v₀² = 2ax", "题目没有给出时间，所以选择不含 t 的速度位移公式。"],
+      ["代入求解", `0² − ${vText}² = 2×(−${aText})×x`, `计算得到刹车距离 x = ${sText}m。`],
       ["现象验证", `速度归零，停止点 ${sText}m`, "结果与实验停止点一致。"]
     ],
-    mentor: `为什么这里选 <strong>v² − v₀² = 2as</strong>？因为题目没有给时间，却给了初速度 ${vText}m/s、末速度 0 和加速度 −${aText}m/s²。`,
+    mentor: `为什么这里选 <strong>v² − v₀² = 2ax</strong>？因为题目没有给时间，却给了初速度 ${vText}m/s、末速度 0 和加速度 −${aText}m/s²。`,
     hint: "小提示：题目给出了初速度、末速度和加速度，但没有给时间。哪条公式不含 t？",
     challenge: `如果初速度变为 <strong>${challengeSpeed}m/s</strong>，刹车距离会怎样变化？`,
     generationStages: [
@@ -1029,8 +1403,8 @@ function buildPhysicsBrakeContent(v0 = state.p1, parameter = state.p2, options =
     ],
     recognitionText: `初速度 ${vText}m/s｜刹车加速度 ${aText}m/s²｜停止距离 ${sText}m`,
     formulaLabel: "核心公式",
-    formula: "v² − v₀² = 2as",
-    formulaHtml: `0² − ${vText}² = 2 × (−${aText}) × s，得到 s = ${sText}m`,
+    formula: "v² − v₀² = 2ax",
+    formulaHtml: `0² − ${vText}² = 2 × (−${aText}) × x，得到 x = ${sText}m`,
     sceneTip: `刹车开始后，速度每秒减少 ${aText}m/s。`,
     indicatorLabel: "恒定减速度",
     indicatorFormula: `a = −${aText}m/s²`,
@@ -1384,12 +1758,12 @@ function buildPhysicsSolenoidContent(
     ar: "移动端扩展可继续展示螺线管空间磁场与观察端切换。",
     metrics: [["左端磁极", ""], ["右端磁极", ""], ["当前磁性", ""]],
     params: [
-      { label: "电流大小 I", desc: "调整传统电流大小", unit: "A", min: SOLENOID_LIMITS.currentMin, max: SOLENOID_LIMITS.currentMax, step: 0.1, value: model.current },
+      { label: "电流大小 I", desc: "调整电流大小", unit: "A", min: SOLENOID_LIMITS.currentMin, max: SOLENOID_LIMITS.currentMax, step: 0.1, value: model.current },
       { label: "线圈匝数 N", desc: "其他条件与长度基本相同时", unit: "匝", min: SOLENOID_LIMITS.turnsMin, max: SOLENOID_LIMITS.turnsMax, step: 50, value: model.turns }
     ],
     steps: [
       ["提取条件", `从${viewText}观察，电流沿${directionText}方向。`, `电流 I = ${currentText}A，线圈匝数 N = ${turnsText}匝，铁芯：${coreText}。`],
-      ["使用安培定则", "右手四指沿传统电流方向弯曲", "大拇指所指方向为螺线管内部磁场方向，也指向 N 极。"],
+      ["使用安培定则", "右手握住螺线管，四指指向电流的方向", "大拇指所指的那端就是螺线管的 N 极。"],
       ["判断磁极", `${observedText}，另一端相反。`, `所以左端为${model.leftPole}极，右端为${model.rightPole}极。`],
       ["分析磁性", "电流越大、匝数越多、插入铁芯，磁性越强。", "匝数规律需限定在其他条件和线圈长度基本相同时。"]
     ],
@@ -1398,7 +1772,7 @@ function buildPhysicsSolenoidContent(
     challenge: "将电流由 <strong>0.5A</strong> 增大到 <strong>1.0A</strong>，同时反转电流方向。磁极和磁性分别怎样变化？",
     generationStages: [
       { label: "识别电磁题", text: `识别 ${turnsText}匝、${currentText}A、${viewText}${directionText}`, progress: 28 },
-      { label: "生成螺线管", text: "生成3D线圈、传统电流箭头与闭合磁感线", progress: 63 },
+      { label: "生成螺线管", text: "生成3D线圈、电流方向箭头与闭合磁感线", progress: 63 },
       { label: "判断磁极", text: `${viewText}${directionText} → ${observedText}`, progress: 100 }
     ],
     recognitionText: `从${viewText}观察电流为${directionText}｜左端${model.leftPole}极｜右端${model.rightPole}极｜磁性：${model.strengthLevel}`,
@@ -1475,14 +1849,14 @@ function buildChemistryFeCuSO4Content(feMass = state.p1, cuso4Mol = state.p2) {
   const feLeftText = formatMol(model.feLeftMol);
 
   return {
-    description: `Fe(s) + CuSO₄(aq) → FeSO₄(aq) + Cu(s)；铁表面析出红色铜；消耗蓝色 Cu²⁺ 并生成浅绿色 Fe²⁺，过量 CuSO₄ 保留蓝色。最多生成 Cu ${cuMolText}mol / ${cuMassText}g。`,
+    description: `Fe + CuSO₄ = FeSO₄ + Cu；铁表面析出红色铜；消耗蓝色 Cu²⁺ 并生成浅绿色 Fe²⁺，过量 CuSO₄ 保留蓝色。最多生成 Cu ${cuMolText}mol / ${cuMassText}g。`,
     params: [
       { label: "铁粉质量 m(Fe)", desc: "调整投入铁粉质量", unit: "g", min: CHEMISTRY_CONSTANTS.feMassMin, max: CHEMISTRY_CONSTANTS.feMassMax, step: 2.8, value: model.feMass },
       { label: "硫酸铜 n(CuSO₄)", desc: "调整硫酸铜物质的量", unit: "mol", min: CHEMISTRY_CONSTANTS.cuso4MolMin, max: CHEMISTRY_CONSTANTS.cuso4MolMax, step: 0.05, value: model.cuso4Mol }
     ],
     steps: [
       ["提取条件", `Fe = ${feMassText}g，CuSO₄ = ${cuso4Text}mol`, "先识别铁的质量和硫酸铜的物质的量。"],
-      ["换算物质的量", `n(Fe) = ${feMassText} ÷ 56 = ${feMolText}mol`, "把铁的质量换算成物质的量。"],
+      ["换算物质的量", `n(Fe) = m/M = ${feMassText} g ÷ 56 g/mol = ${feMolText} mol`, "把铁的质量换算成物质的量。"],
       ["判断反应物关系", `1:1 反应，${judgement.limitLine}`, judgement.detail],
       ["现象验证", `n(Cu)=${cuMolText}mol，m(Cu)=${cuMassText}g`, "铁表面析出红色固体，溶液颜色由蓝色逐渐变为浅绿色。"]
     ],
@@ -1495,7 +1869,7 @@ function buildChemistryFeCuSO4Content(feMass = state.p1, cuso4Mol = state.p2) {
       { label: "生成结果", text: `生成 Cu ${cuMolText}mol / ${cuMassText}g`, progress: 100 }
     ],
     recognitionText: `Fe = ${feMassText}g｜CuSO₄ = ${cuso4Text}mol｜反应判断：${judgement.short}｜生成 Cu = ${cuMolText}mol / ${cuMassText}g`,
-    formulaHtml: `n(Fe) = ${feMassText} ÷ 56 = ${feMolText}mol<br>n(CuSO₄) = ${cuso4Text}mol<br>n(Cu) = min(${feMolText}, ${cuso4Text}) = ${cuMolText}mol<br>m(Cu) = ${cuMolText} × 64 = ${cuMassText}g`,
+    formulaHtml: `n(Fe) = ${feMassText} g ÷ 56 g/mol = ${feMolText} mol<br>n(CuSO₄) = ${cuso4Text}mol<br>Fe 与 CuSO₄ 按 1∶1 反应，${judgement.short}，n(Cu) = ${cuMolText} mol<br>m(Cu) = n·M = ${cuMolText} mol × 64 g/mol = ${cuMassText} g`,
     sceneTip: `铁粉与溶液接触后表面析铜；颜色为定性示意，CuSO₄ 过量时仍有蓝色。理论最多生成 Cu ${cuMolText}mol / ${cuMassText}g；CuSO₄ 剩余 ${cuso4LeftText}mol，Fe 剩余 ${feLeftText}mol。`,
     model
   };
@@ -1525,11 +1899,16 @@ function formatMathNumber(value, decimals = 2) {
   return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(decimals);
 }
 
+// Textbook style: "−0.5x² + 2x + 3" (minus sign, spaced binary operators, no trailing zeros).
+function formatCoefficient(value) {
+  return String(Number(Number(value).toFixed(2)));
+}
+
 function formatSignedTerm(value, body, isFirst = false) {
   if (!value) return "";
-  const sign = value < 0 ? "-" : isFirst ? "" : "+";
+  const sign = value < 0 ? (isFirst ? "−" : "− ") : isFirst ? "" : "+ ";
   const abs = Math.abs(value);
-  const coeff = abs === 1 && body ? "" : formatMathNumber(abs);
+  const coeff = abs === 1 && body ? "" : formatCoefficient(abs);
   return `${sign}${coeff}${body}`;
 }
 
@@ -1537,7 +1916,7 @@ function formatPolynomialSpec(spec) {
   const terms = [
     formatSignedTerm(spec.a, "x²", true),
     formatSignedTerm(spec.b, "x", !spec.a),
-    spec.c ? `${spec.c < 0 ? "-" : (!spec.a && !spec.b ? "" : "+")}${formatMathNumber(Math.abs(spec.c))}` : ""
+    formatSignedTerm(spec.c, "", !spec.a && !spec.b)
   ].filter(Boolean);
   return terms.join(" ") || "0";
 }
@@ -1772,30 +2151,42 @@ function normalizeBiologyCellType(text = "") {
   return /动物|animal/i.test(text) ? "animal" : "plant";
 }
 
-function currentCellOrganelles(type = state.cellType) {
-  return CELL_ORGANELLE_DATA[type] || CELL_ORGANELLE_DATA.plant;
+// 人教版：七年级上册只要求光学显微镜下的基本结构；亚显微结构（内质网、高尔基体等）属于必修1。
+function normalizeBiologyCellLevel(text = "", fallback = "junior") {
+  const source = String(text || "");
+  if (/初中|七年级|光学显微镜|显微镜下观察/.test(source) && !/亚显微/.test(source)) return "junior";
+  if (/亚显微|电子显微镜|电镜|高中|必修|细胞器|内质网|高尔基体|核糖体|溶酶体|中心体|核膜|核孔|核仁|染色质/.test(source)) return "senior";
+  return normalizeCellLevel(fallback);
 }
 
-function currentCellOrganelleMap(type = state.cellType) {
-  return new Map(currentCellOrganelles(type).map(item => [item.id, item]));
+function currentCellOrganelles(type = state.cellType, level = state.cellLevel) {
+  return cellStructureList(type, level);
+}
+
+function currentCellOrganelleMap(type = state.cellType, level = state.cellLevel) {
+  return new Map(currentCellOrganelles(type, level).map(item => [item.id, item]));
 }
 
 function defaultOrganelleForCellType(type = state.cellType) {
   return type === "animal" ? "cellMembrane" : "nucleus";
 }
 
-function buildBiologyQuestionText(type = state.cellType) {
-  if (type === "animal") {
-    return "请观察动物细胞的亚显微结构截面图，识别细胞膜、细胞质、细胞核、线粒体、内质网、高尔基体和核糖体等结构，并说明它们的主要作用。";
-  }
-  return "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。";
+function cellStructureNames(type = state.cellType, level = state.cellLevel) {
+  return currentCellOrganelles(type, level).map(item => item.name).join("、");
 }
 
-function biologyRecognitionText(type = state.cellType) {
-  if (type === "animal") {
-    return "动物细胞结构识别题｜截面模型｜可点击结构：细胞膜、细胞质、细胞核、线粒体、内质网、高尔基体、核糖体";
+function buildBiologyQuestionText(type = state.cellType, level = state.cellLevel) {
+  const label = CELL_TYPE_LABELS[type] || CELL_TYPE_LABELS.plant;
+  if (normalizeCellLevel(level) === "junior") {
+    return `请观察${label}结构示意图，识别${cellStructureNames(type, "junior")}，并说明它们的主要功能。`;
   }
-  return "植物细胞结构识别题｜截面模型｜可点击结构：细胞壁、细胞膜、细胞核、液泡、叶绿体、线粒体";
+  return `请观察${label}的亚显微结构模式图，识别${cellStructureNames(type, "senior")}等结构，并说明它们的主要功能。`;
+}
+
+function biologyRecognitionText(type = state.cellType, level = state.cellLevel) {
+  const label = CELL_TYPE_LABELS[type] || CELL_TYPE_LABELS.plant;
+  const lvl = normalizeCellLevel(level);
+  return `${label}结构识别题｜${CELL_LEVEL_LABELS[lvl]}（${CELL_LEVEL_SOURCES[lvl]}）｜可点击结构：${cellStructureNames(type, lvl)}`;
 }
 
 function selectedOrganelle() {
@@ -1803,70 +2194,93 @@ function selectedOrganelle() {
   return map.get(state.selectedOrganelle) || map.get(defaultOrganelleForCellType()) || CELL_ORGANELLE_MAP.get("nucleus");
 }
 
-function buildBiologyContent(type = state.cellType) {
+function buildBiologyContent(type = state.cellType, level = state.cellLevel) {
+  const lvl = normalizeCellLevel(level);
   const label = CELL_TYPE_LABELS[type] || CELL_TYPE_LABELS.plant;
-  const structures = currentCellOrganelles(type).map(item => item.name).join("、");
+  const structures = cellStructureNames(type, lvl);
+  const count = currentCellOrganelles(type, lvl).length;
+  const levelName = CELL_LEVEL_LABELS[lvl];
+  const params = [
+    { label: "观察角度", desc: "拖拽或滑动倾转分层剖面", unit: "°", min: -45, max: 45, step: 5, value: state.cellRotateY || -10 },
+    { label: "结构数量", desc: `${levelName}要求识别的结构`, unit: "个", min: 1, max: 12, step: 1, value: count }
+  ];
+  const generationStages = [
+    { label: "识别题型", text: `识别${label}结构识别题（${levelName}）`, progress: 28 },
+    { label: "生成截面", text: `按${CELL_LEVEL_SOURCES[lvl]}构建${label}结构模式图`, progress: 63 },
+    { label: "绑定标注", text: `绑定 ${count} 个可点击结构与功能解析`, progress: 100 }
+  ];
   if (type === "animal") {
+    const senior = lvl === "senior";
     return {
-      question: buildBiologyQuestionText("animal"),
-      title: "动物细胞结构识别：3D 截面模型",
-      description: "动物细胞结构识别｜3D 截面模型｜点击查看功能。",
-      ar: "移动端扩展可继续展示动物细胞截面、结构标注与 360° 观察。",
-      params: [
-        { label: "观察角度", desc: "拖拽或滑动倾转分层剖面", unit: "°", min: -45, max: 45, step: 5, value: state.cellRotateY || -10 },
-        { label: "结构数量", desc: "本题要求识别的核心结构", unit: "个", min: 1, max: 7, step: 1, value: currentCellOrganelles("animal").length }
+      question: buildBiologyQuestionText("animal", lvl),
+      title: senior ? "动物细胞：亚显微结构与功能" : "动物细胞：基本结构与功能",
+      description: senior
+        ? "按必修1模式图：细胞膜、细胞核与各种细胞器，点击结构查看功能。"
+        : "按七年级上册：细胞膜、细胞质、细胞核和线粒体，点击结构查看功能。",
+      ar: "移动端扩展可继续展示动物细胞截面、结构标注与倾转观察。",
+      params,
+      steps: senior ? [
+        ["观察截面", "先找细胞膜、细胞核，再看细胞质中的细胞器", "动物细胞没有细胞壁，细胞的边界是细胞膜。"],
+        ["识别结构", "区分双层膜（线粒体、核膜）、单层膜（内质网、高尔基体、溶酶体）与无膜结构（核糖体、中心体）", "按膜结构分类，便于记忆各细胞器的形态。"],
+        ["关联功能", "线粒体是有氧呼吸的主要场所，核糖体是合成蛋白质的场所", "把结构与“动力车间”“生产蛋白质的机器”等功能对应起来。"],
+        ["对比记忆", "与高等植物细胞相比：有中心体，无细胞壁、叶绿体和大液泡", "用动植物细胞的差异形成记忆抓手。"]
+      ] : [
+        ["观察截面", "先找细胞膜、细胞质和细胞核", "动物细胞没有细胞壁，最外层是细胞膜。"],
+        ["识别结构", "点击模型或结构名称，查看对应功能", "把示意图中的结构与名称对应起来。"],
+        ["关联功能", "线粒体是呼吸作用的场所，为细胞生命活动提供能量", "线粒体是动植物细胞共有的能量转换器。"],
+        ["对比记忆", "动物细胞没有细胞壁、叶绿体和液泡", "与植物细胞对比形成记忆抓手。"]
       ],
-      steps: [
-        ["观察截面", "先找细胞膜、细胞质和细胞核", "动物细胞没有细胞壁，外层边界是细胞膜。"],
-        ["识别结构", "点击线粒体、内质网、高尔基体、核糖体等结构", "通过交互标注把细胞器名称和形态对应起来。"],
-        ["关联功能", "线粒体参与有氧呼吸，核糖体合成蛋白质", "把结构名称进一步连接到生命活动中的作用。"],
-        ["对比记忆", "动物细胞通常无细胞壁、叶绿体和中央大液泡", "用与典型植物细胞的差异形成记忆抓手。"]
-      ],
-      mentor: "动物细胞结构和植物细胞有什么区别？重点看有没有<strong>细胞壁、叶绿体和中央大液泡</strong>。",
-      hint: "动物细胞最外层是细胞膜，没有细胞壁；通常没有叶绿体，也没有成熟植物细胞那样明显的中央大液泡。",
-      challenge: "切换回 <strong>植物细胞</strong>，对比哪些结构是植物细胞特有或更明显的。",
-      generationStages: [
-        { label: "识别题型", text: "识别动物细胞结构识别题", progress: 28 },
-        { label: "生成截面", text: "构建动物细胞 3D 截面模型", progress: 63 },
-        { label: "绑定标注", text: "绑定可点击结构与功能解析", progress: 100 }
-      ],
-      recognitionText: biologyRecognitionText("animal"),
+      mentor: senior
+        ? "动物细胞和高等植物细胞在亚显微结构上有什么区别？重点看<strong>中心体、细胞壁、叶绿体和液泡</strong>。"
+        : "动物细胞和植物细胞有什么区别？重点看有没有<strong>细胞壁、叶绿体和液泡</strong>。",
+      hint: senior
+        ? "动物细胞的边界是细胞膜；中心体见于动物和某些低等植物细胞，与有丝分裂有关；溶酶体主要分布在动物细胞中。"
+        : "动物细胞最外层是细胞膜，没有细胞壁；也没有叶绿体和液泡。动植物细胞都有细胞膜、细胞质、细胞核和线粒体。",
+      challenge: "切换到 <strong>植物细胞</strong>，对比哪些结构是植物细胞特有的。",
+      generationStages,
+      recognitionText: biologyRecognitionText("animal", lvl),
       structures,
       label
     };
   }
+  const senior = lvl === "senior";
   return {
-    question: buildBiologyQuestionText("plant"),
-    title: "植物细胞结构识别：3D 截面模型",
-    description: "植物细胞结构识别｜3D 截面模型｜点击查看功能。",
-    ar: "移动端扩展可继续展示植物细胞截面、结构标注与 360° 观察。",
-    params: [
-      { label: "观察角度", desc: "拖拽或滑动倾转分层剖面", unit: "°", min: -45, max: 45, step: 5, value: state.cellRotateY || -10 },
-      { label: "结构数量", desc: "本题要求识别的核心结构", unit: "个", min: 1, max: 7, step: 1, value: currentCellOrganelles("plant").length }
+    question: buildBiologyQuestionText("plant", lvl),
+    title: senior ? "植物细胞：亚显微结构与功能" : "植物细胞：基本结构与功能",
+    description: senior
+      ? "按必修1模式图：细胞壁、细胞膜、中央大液泡与各种细胞器，点击结构查看功能。"
+      : "按七年级上册：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体和线粒体，点击结构查看功能。",
+    ar: "移动端扩展可继续展示植物细胞截面、结构标注与倾转观察。",
+    params,
+    steps: senior ? [
+      ["观察截面", "先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡", "细胞壁全透性，细胞的边界是细胞膜。"],
+      ["识别结构", "区分双层膜（叶绿体、线粒体、核膜）、单层膜（内质网、高尔基体、液泡）与无膜结构（核糖体）", "按膜结构分类，便于记忆各细胞器的形态。"],
+      ["关联功能", "叶绿体是光合作用的场所，线粒体是有氧呼吸的主要场所", "把结构与“养料制造车间”“动力车间”等功能对应起来。"],
+      ["对比记忆", "高等植物细胞有细胞壁、叶绿体和液泡，没有中心体", "用与动物细胞的差异形成记忆抓手。"]
+    ] : [
+      ["观察截面", "先区分细胞壁、细胞膜和中央的大液泡", "细胞膜很薄，紧贴在细胞壁内侧。"],
+      ["识别结构", "点击模型或结构名称，查看对应功能", "把示意图中的结构与名称对应起来。"],
+      ["关联功能", "叶绿体和线粒体都是细胞中的能量转换器", "叶绿体是光合作用的场所，线粒体是呼吸作用的场所。"],
+      ["对比记忆", "植物细胞有细胞壁、叶绿体和液泡，动物细胞没有", "用与动物细胞的差异形成记忆抓手。"]
     ],
-    steps: [
-      ["观察截面", "先区分外层边界、内部细胞器和中央液泡", "从整体截面入手，先看边界，再看内部结构。"],
-      ["识别结构", "点击细胞壁、细胞膜、细胞核、叶绿体、线粒体等结构", "通过交互标注把图像结构和名称对应起来。"],
-      ["关联功能", "叶绿体进行光合作用，线粒体是有氧呼吸主要场所", "把结构名称进一步连接到生命活动中的作用。"],
-      ["对比记忆", "典型植物细胞常见细胞壁、叶绿体和大液泡", "用与动物细胞的差异形成记忆抓手。"]
-    ],
-    mentor: "植物细胞结构和动物细胞有什么区别？重点看<strong>细胞壁、叶绿体和大液泡</strong>。",
-    hint: "典型植物细胞有细胞壁；绿色植物细胞常见叶绿体；成熟植物细胞常有较大的中央液泡。动物细胞没有细胞壁，通常没有叶绿体。",
+    mentor: senior
+      ? "植物细胞的亚显微结构和动物细胞有什么区别？重点看<strong>细胞壁、叶绿体、液泡和中心体</strong>。"
+      : "植物细胞结构和动物细胞有什么区别？重点看<strong>细胞壁、叶绿体和液泡</strong>。",
+    hint: senior
+      ? "高等植物细胞有细胞壁、叶绿体和中央大液泡，没有中心体；植物细胞同样有内质网、高尔基体、核糖体和线粒体。"
+      : "植物细胞有细胞壁、叶绿体和液泡；叶绿体只存在于植物体的绿色部分。动物细胞没有细胞壁、叶绿体和液泡。",
     challenge: "切换到 <strong>动物细胞</strong>，观察它和植物细胞相比少了哪些结构。",
-    generationStages: [
-      { label: "识别题型", text: "识别植物细胞结构识别题", progress: 28 },
-      { label: "生成截面", text: "构建植物细胞 3D 截面模型", progress: 63 },
-      { label: "绑定标注", text: "绑定可点击结构与功能解析", progress: 100 }
-    ],
-    recognitionText: biologyRecognitionText("plant"),
+    generationStages,
+    recognitionText: biologyRecognitionText("plant", lvl),
     structures,
     label
   };
 }
 
-function syncBiologyContent(type = state.cellType) {
+function syncBiologyContent(type = state.cellType, level = state.cellLevel) {
   state.cellType = type;
-  const content = buildBiologyContent(type);
+  state.cellLevel = normalizeCellLevel(level);
+  const content = buildBiologyContent(type, state.cellLevel);
   const biology = SUBJECTS["生物"];
   biology.question = content.question;
   biology.title = content.title;
@@ -1906,20 +2320,37 @@ function setCellAutoRotate(enabled) {
 function updateCellModelMode() {
   if (!elements.plantCellModel) return;
   const isAnimal = state.cellType === "animal";
+  const level = normalizeCellLevel(state.cellLevel);
+  renderCellModelMarkup(state.cellType, level);
   elements.plantCellModel.classList.toggle("animal-cell-mode", isAnimal);
   elements.plantCellModel.classList.toggle("plant-cell-mode", !isAnimal);
-  elements.plantCellModel.setAttribute("aria-label", `${CELL_TYPE_LABELS[state.cellType]} 3D 截面模型`);
+  elements.plantCellModel.classList.toggle("labels-hidden", !state.cellLabelsVisible);
+  elements.plantCellModel.dataset.level = level;
+  elements.plantCellModel.setAttribute("aria-label", `${CELL_TYPE_LABELS[state.cellType]}${level === "senior" ? "亚显微结构模式图" : "结构示意图"}`);
   elements.plantCellModel.dataset.selected = state.selectedOrganelle;
   const title = $(".cell-viewer-head > span");
-  if (title) title.textContent = `${CELL_TYPE_LABELS[state.cellType]} · 分层剖面`;
+  if (title) title.textContent = `${CELL_TYPE_LABELS[state.cellType]} · ${level === "senior" ? "亚显微结构" : "结构示意"}`;
+  $$(".cell-level-toggle button").forEach(button => {
+    const on = button.dataset.level === level;
+    button.classList.toggle("active", on);
+    button.setAttribute("aria-pressed", String(on));
+  });
+  if (elements.cellLabelButton) {
+    elements.cellLabelButton.classList.toggle("active", state.cellLabelsVisible);
+    elements.cellLabelButton.setAttribute("aria-pressed", String(state.cellLabelsVisible));
+    elements.cellLabelButton.textContent = state.cellLabelsVisible ? "隐藏标注" : "显示标注";
+  }
+  if (elements.cellSourceNote) elements.cellSourceNote.textContent = `依据：${CELL_LEVEL_SOURCES[level]}`;
+  const map = currentCellOrganelleMap();
   $$(".cell-organelle").forEach(node => {
-    const allowed = currentCellOrganelleMap().has(node.dataset.organelle);
+    const allowed = map.has(node.dataset.organelle);
     node.classList.toggle("unavailable", !allowed);
     node.setAttribute("aria-hidden", String(!allowed));
-    node.tabIndex = allowed ? 0 : -1;
+    node.setAttribute("aria-label", map.get(node.dataset.organelle)?.name || "细胞结构");
+    node.setAttribute("tabindex", allowed ? "0" : "-1");
   });
   $$(".cell-structure-tag").forEach(node => {
-    const allowed = currentCellOrganelleMap().has(node.dataset.organelle);
+    const allowed = map.has(node.dataset.organelle);
     node.classList.toggle("unavailable", !allowed);
     node.setAttribute("aria-hidden", String(!allowed));
     node.tabIndex = allowed ? 0 : -1;
@@ -1937,6 +2368,7 @@ function renderCellDetail(id = state.selectedOrganelle) {
     node.classList.toggle("active", node.dataset.organelle === organelle.id);
     node.setAttribute("aria-pressed", String(node.dataset.organelle === organelle.id));
   });
+  $$(".cell-label").forEach(node => node.classList.toggle("active", node.dataset.organelle === organelle.id));
   $$(".cell-structure-tag").forEach(node => {
     node.classList.toggle("active", node.dataset.organelle === organelle.id);
     node.setAttribute("aria-pressed", String(node.dataset.organelle === organelle.id));
@@ -1975,9 +2407,18 @@ function resetBiologyCellModel() {
 function switchBiologyCellType(type, options = {}) {
   if (state.subject !== "生物") return;
   state.cellType = type;
-  const content = syncBiologyContent(type);
-  state.selectedOrganelle = defaultOrganelleForCellType(type);
-  resetBiologyCellModel();
+  if (options.level) state.cellLevel = normalizeCellLevel(options.level);
+  const content = syncBiologyContent(type, state.cellLevel);
+  const keepSelection = options.keepSelection && currentCellOrganelleMap().has(state.selectedOrganelle);
+  if (!keepSelection) state.selectedOrganelle = defaultOrganelleForCellType(type);
+  state.p2 = currentCellOrganelles().length;
+  if (options.keepView) {
+    updateCellModelMode();
+    renderCellDetail(state.selectedOrganelle);
+  } else {
+    resetBiologyCellModel();
+  }
+  refreshGeneratedSubjectSurface("生物", { preserveProblemText: true });
   updateFormulaSpotlight("生物");
   renderReasoning();
   elements.mentorMessage.innerHTML = config().mentor;
@@ -1989,6 +2430,16 @@ function switchBiologyCellType(type, options = {}) {
   if (options.updateQuestion !== false) $("#questionInput").value = content.question;
   state.generatedQuestion = $("#questionInput").value || content.question;
   if (state.hasGenerated) saveCurrentSubjectSnapshot();
+}
+
+function switchBiologyCellLevel(level) {
+  if (state.subject !== "生物") return;
+  const next = normalizeCellLevel(level);
+  if (next === state.cellLevel) return;
+  clearReasoningTimers();
+  switchBiologyCellType(state.cellType, { level: next, keepSelection: true, keepView: true });
+  setReasoningStep(2, `<span>学段切换</span>已切换到${CELL_LEVEL_LABELS[next]}（${CELL_LEVEL_SOURCES[next]}），共 ${currentCellOrganelles().length} 个结构。`);
+  showToast(`已切换到${CELL_LEVEL_LABELS[next]}`);
 }
 
 function syncPhysicsBrakeContent(v0 = state.p1, parameter = state.p2, options = {}) {
@@ -2011,7 +2462,7 @@ function syncPhysicsBrakeContent(v0 = state.p1, parameter = state.p2, options = 
   physics.description = content.description;
   physics.engine = content.engine;
   physics.ar = content.ar;
-  physics.metrics = [["速度 v", "m/s"], ["位移 s", "m"], ["时间 t", "s"]];
+  physics.metrics = [["速度 v", "m/s"], ["位移 x", "m"], ["时间 t", "s"]];
   physics.params = content.params;
   physics.steps = content.steps;
   physics.mentor = content.mentor;
@@ -2131,7 +2582,7 @@ function buildPhysicsCircuitContent(voltage = state.p1, resistance = state.p2) {
   const pText = smartNumber(model.power, 1);
   return {
     title: "欧姆定律电路：电压、电阻与电流",
-    description: `纯电阻电路中 I = U / R：电压 ${uText}V，电阻 ${rText}Ω，电流 ${iText}A。电流粒子仅表示传统电流方向与相对快慢。`,
+    description: `纯电阻电路中 I = U / R：电压 ${uText}V，电阻 ${rText}Ω，电流 ${iText}A。电流粒子仅表示电流方向与相对快慢。`,
     engine: "电路定量模板演示",
     ar: "移动端扩展可继续展示电路连接与电流变化。",
     metrics: [["电压 U", "V"], ["电阻 R", "Ω"], ["电流 I", "A"]],
@@ -2142,7 +2593,7 @@ function buildPhysicsCircuitContent(voltage = state.p1, resistance = state.p2) {
     steps: [
       ["提取条件", `U = ${uText}V，R = ${rText}Ω`, "识别电路两端电压和电阻。"],
       ["选择公式", "I = U / R", "纯电阻电路中电流与电压成正比，与电阻成反比。"],
-      ["代入计算", `I = ${uText} ÷ ${rText} = ${iText}A`, "用欧姆定律求出电流。"],
+      ["代入计算", `I = U/R = ${uText} V ÷ ${rText} Ω = ${iText} A`, "用欧姆定律求出电流。"],
       ["现象验证", `电流 ${iText}A，电阻功率 P = ${pText}W`, "电压增大或电阻改变时，电流与电阻消耗的功率同步变化。"]
     ],
     mentor: `为什么电阻变大后电流会变小？因为在电压 ${uText}V 不变时，<strong>I = U / R</strong> 中分母变大。`,
@@ -2154,8 +2605,8 @@ function buildPhysicsCircuitContent(voltage = state.p1, resistance = state.p2) {
       { label: "生成电路反馈", text: `生成电流 ${iText}A 与电阻功率 ${pText}W`, progress: 100 }
     ],
     recognitionText: `电压 ${uText}V｜电阻 ${rText}Ω｜电流 ${iText}A｜功率约 ${pText}W`,
-    formulaHtml: `代入：I = ${uText} ÷ ${rText} = ${iText}A<br>电阻功率：P = UI = ${pText}W`,
-    sceneTip: `电压 ${uText}V、电阻 ${rText}Ω 时，电流为 ${iText}A；运动粒子表示传统电流方向与相对快慢，不表示电子运动方向或真实漂移速度。`,
+    formulaHtml: `代入：I = U/R = ${uText} V ÷ ${rText} Ω = ${iText} A<br>电阻的电功率：P = UI = ${pText} W`,
+    sceneTip: `电压 ${uText}V、电阻 ${rText}Ω 时，电流为 ${iText}A；运动粒子表示电流方向与相对快慢，金属导体中自由电子定向移动的方向与电流方向相反，点速也不表示电子运动快慢或真实漂移速度。`,
     model
   };
 }
@@ -2241,9 +2692,23 @@ function parseExtraPhysicsQuestion(text, preferredId = "") {
 function renderExtraPhysicsVisual(content = buildExtraPhysicsContent()) {
   if (!content || !elements.genericPhysicsVisual) return;
   const html = content.visualHtml || "";
+  const diagramId = html.includes('edu-diagram') ? state.physicsTemplate : "";
+  if (elements.genericPhysicsVisual.dataset.diagramId !== diagramId) {
+    elements.genericPhysicsVisual.classList.remove("diagram-zoomed");
+    elements.genericPhysicsVisual.dataset.diagramId = diagramId;
+  }
   if (elements.genericPhysicsVisual._visualHtml !== html) {
-    elements.genericPhysicsVisual.innerHTML = html;
+    elements.genericPhysicsVisual.innerHTML = diagramId
+      ? `<div class="diagram-mobile-toolbar"><span>放大后左右滑动看全图</span><button type="button" class="diagram-zoom-toggle" aria-pressed="false">放大图示</button></div>
+         <div class="diagram-pan-viewport" role="region" aria-label="教材图示，放大后可左右滚动查看" tabindex="0">${html}</div>`
+      : html;
     elements.genericPhysicsVisual._visualHtml = html;
+  }
+  const zoomButton = elements.genericPhysicsVisual.querySelector(".diagram-zoom-toggle");
+  if (zoomButton) {
+    const zoomed = elements.genericPhysicsVisual.classList.contains("diagram-zoomed");
+    zoomButton.setAttribute("aria-pressed", String(zoomed));
+    zoomButton.textContent = zoomed ? "缩小图示" : "放大图示";
   }
   if (elements.genericPhysicsMeta) elements.genericPhysicsMeta.textContent = `${content.stage} · ${content.block}`;
   setFormulaHtml(elements.genericPhysicsResult, content.resultTitle);
@@ -2254,6 +2719,17 @@ function renderExtraPhysicsVisual(content = buildExtraPhysicsContent()) {
       .join("");
   }
 }
+
+elements.genericPhysicsVisual?.addEventListener("click", event => {
+  const button = event.target.closest?.(".diagram-zoom-toggle");
+  if (!button) return;
+  const visual = elements.genericPhysicsVisual;
+  const zoomed = visual.classList.toggle("diagram-zoomed");
+  button.setAttribute("aria-pressed", String(zoomed));
+  button.textContent = zoomed ? "缩小图示" : "放大图示";
+  const pan = visual.querySelector(".diagram-pan-viewport");
+  if (pan) pan.scrollLeft = 0;
+});
 
 function hideMentorFeedback() {
   if (!elements.mentorFeedback) return;
@@ -2960,63 +3436,128 @@ function mathGraphBounds(model = currentMathModel()) {
   };
 }
 
-function mathSvgPoint(x, model = currentMathModel(), bounds = mathGraphBounds(model)) {
-  const y = model.value(x);
-  const safeY = Number.isFinite(y) ? y : 0;
-  const cx = 70 + ((x - bounds.minX) / (bounds.maxX - bounds.minX)) * 460;
-  const cy = 230 - ((safeY - bounds.minY) / (bounds.maxY - bounds.minY)) * 200;
-  return {
-    x,
-    y: safeY,
-    cx,
-    cy
-  };
+function mathNiceStep(range, target = 6) {
+  const raw = Math.max(Math.abs(range) / target, 1e-6);
+  const power = 10 ** Math.floor(Math.log10(raw));
+  const unit = raw / power;
+  return (unit <= 1 ? 1 : unit <= 2 ? 2 : unit <= 5 ? 5 : 10) * power;
 }
 
-function mathParabolaPath(model = currentMathModel(), bounds = mathGraphBounds(model)) {
-  const points = [];
+function mathTickText(value, step) {
+  const decimals = step >= 1 ? 0 : Math.min(3, Math.ceil(-Math.log10(step)));
+  const text = Number(value.toFixed(decimals)).toString();
+  return text.replace("-", "−");
+}
+
+// One pixel-exact coordinate system for axes, curve, tangent and point (textbook style: O, x, y, arrows).
+function renderMathGraph(model = currentMathModel(), x = state.p1) {
+  const svg = elements.mathGraph;
+  if (!svg) return;
+  state.mathGraphX = x;
+  const width = Math.max(260, Math.round(svg.clientWidth || 600));
+  const height = Math.max(170, Math.round(svg.clientHeight || 280));
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  const bounds = mathGraphBounds(model);
+  const pad = { left: 30, right: 30, top: 18, bottom: 22 };
+  const plotW = width - pad.left - pad.right;
+  const plotH = height - pad.top - pad.bottom;
+  const sx = value => pad.left + ((value - bounds.minX) / (bounds.maxX - bounds.minX)) * plotW;
+  const sy = value => pad.top + ((bounds.maxY - value) / (bounds.maxY - bounds.minY)) * plotH;
+  const fx = value => Number(value.toFixed(2));
+  const within = (value, min, max) => value >= min && value <= max;
+  const axisY = within(0, bounds.minY, bounds.maxY) ? sy(0) : sy(bounds.minY > 0 ? bounds.minY : bounds.maxY);
+  const axisX = within(0, bounds.minX, bounds.maxX) ? sx(0) : sx(bounds.minX);
+  const xStep = mathNiceStep(bounds.maxX - bounds.minX, width < 420 ? 5 : 8);
+  const yStep = mathNiceStep(bounds.maxY - bounds.minY, height < 230 ? 4 : 6);
+  const parts = [];
+  parts.push(`<defs><clipPath id="mathPlotClip"><rect x="${pad.left}" y="${pad.top}" width="${fx(plotW)}" height="${fx(plotH)}"/></clipPath>
+    <marker id="mathAxisArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z"/></marker></defs>`);
+
+  const grid = [];
+  const ticks = [];
+  for (let v = Math.ceil(bounds.minX / xStep) * xStep; v <= bounds.maxX + 1e-9; v += xStep) {
+    const px = fx(sx(v));
+    grid.push(`M${px} ${pad.top}V${fx(pad.top + plotH)}`);
+    if (Math.abs(v) < xStep / 1000) continue;
+    ticks.push(`<path class="math-tick-mark" d="M${px} ${fx(axisY - 3)}V${fx(axisY + 3)}"/><text class="math-tick-label" x="${px}" y="${fx(Math.min(axisY + 15, height - 4))}" text-anchor="middle">${mathTickText(v, xStep)}</text>`);
+  }
+  for (let v = Math.ceil(bounds.minY / yStep) * yStep; v <= bounds.maxY + 1e-9; v += yStep) {
+    const py = fx(sy(v));
+    grid.push(`M${pad.left} ${py}H${fx(pad.left + plotW)}`);
+    if (Math.abs(v) < yStep / 1000) continue;
+    ticks.push(`<path class="math-tick-mark" d="M${fx(axisX - 3)} ${py}H${fx(axisX + 3)}"/><text class="math-tick-label" x="${fx(Math.max(axisX - 6, 12))}" y="${fx(py + 4)}" text-anchor="end">${mathTickText(v, yStep)}</text>`);
+  }
+  parts.push(`<path class="math-grid-line" d="${grid.join("")}"/>`);
+  parts.push(`<path class="math-axis-line" d="M${pad.left - 6} ${fx(axisY)}H${fx(pad.left + plotW + 16)}" marker-end="url(#mathAxisArrow)"/>`);
+  parts.push(`<path class="math-axis-line" d="M${fx(axisX)} ${fx(pad.top + plotH + 6)}V${pad.top - 12}" marker-end="url(#mathAxisArrow)"/>`);
+  parts.push(`<text class="math-axis-name" x="${fx(pad.left + plotW + 18)}" y="${fx(axisY - 7)}">x</text>`);
+  parts.push(`<text class="math-axis-name" x="${fx(axisX + 8)}" y="${pad.top - 4}">y</text>`);
+  if (within(0, bounds.minX, bounds.maxX) && within(0, bounds.minY, bounds.maxY)) {
+    parts.push(`<text class="math-origin" x="${fx(axisX - 5)}" y="${fx(axisY + 14)}" text-anchor="end">O</text>`);
+  }
+  parts.push(ticks.join(""));
+
+  const samples = [];
   let started = false;
-  for (let i = 0; i <= 120; i += 1) {
-    const x = bounds.minX + ((bounds.maxX - bounds.minX) * i) / 120;
-    const y = model.value(x);
-    if (!Number.isFinite(y)) {
+  let lastPoint = null;
+  let firstPoint = null;
+  for (let i = 0; i <= 240; i += 1) {
+    const vx = bounds.minX + ((bounds.maxX - bounds.minX) * i) / 240;
+    const vy = model.value(vx);
+    if (!Number.isFinite(vy)) {
       started = false;
       continue;
     }
-    const point = mathSvgPoint(x, model, bounds);
-    points.push(`${started ? "L" : "M"}${smartNumber(point.cx, 1)} ${smartNumber(point.cy, 1)}`);
+    samples.push(`${started ? "L" : "M"}${fx(sx(vx))} ${fx(sy(vy))}`);
     started = true;
+    lastPoint = [sx(vx), sy(vy)];
+    if (!firstPoint && vy <= bounds.maxY && vy >= bounds.minY) firstPoint = [sx(vx), sy(vy)];
   }
-  return points.join(" ");
-}
-
-function updateMathAxis(model, bounds) {
-  const axisY = $(".axis-y");
-  const axisX = $(".axis-x");
-  const axisYLabel = $(".math-axis-y");
-  const axisXLabel = $(".math-axis-x");
-  const xRange = bounds.maxX - bounds.minX;
-  const yRange = bounds.maxY - bounds.minY;
-  const yAxisPercent = clamp((0 - bounds.minX) / xRange, 0, 1) * 80 + 10;
-  const xAxisBottom = 58 + (1 - clamp((0 - bounds.minY) / yRange, 0, 1)) * 200;
-  if (axisY) axisY.style.left = `${yAxisPercent}%`;
-  if (axisYLabel) axisYLabel.style.left = `${Math.min(90, yAxisPercent + 1)}%`;
-  if (axisX) axisX.style.bottom = `${xAxisBottom}px`;
-  if (axisXLabel) axisXLabel.style.bottom = `${xAxisBottom + 8}px`;
-
-  const midX = bounds.minX <= 0 && bounds.maxX >= 0 ? 0 : (bounds.minX + bounds.maxX) / 2;
-  const ticks = [
-    [$(".tick-x-left"), bounds.minX, 10],
-    [$(".tick-x-mid"), midX, 10 + ((midX - bounds.minX) / xRange) * 80],
-    [$(".tick-x-right"), bounds.maxX, 90]
-  ];
-  ticks.forEach(([node, value, left]) => {
-    if (!node) return;
-    node.textContent = formatMathNumber(value);
-    node.style.left = `${left}%`;
-  });
-  const topTick = $(".tick-y-top");
-  if (topTick) topTick.textContent = formatMathNumber(bounds.maxY);
+  const y0 = model.value(x);
+  const slope = model.derivative(x);
+  const hasPoint = Number.isFinite(y0);
+  const plot = [`<path class="math-curve" d="${samples.join(" ")}"/>`];
+  const slopeText = [];
+  let triangleDir = 0;
+  if (hasPoint && Number.isFinite(slope)) {
+    const t1 = y0 + slope * (bounds.minX - x);
+    const t2 = y0 + slope * (bounds.maxX - x);
+    plot.push(`<line class="math-tangent" x1="${fx(sx(bounds.minX))}" y1="${fx(sy(t1))}" x2="${fx(sx(bounds.maxX))}" y2="${fx(sy(t2))}"/>`);
+    // Slope triangle: run Δx = one grid step, rise Δy = k·Δx along the tangent.
+    const run = xStep;
+    const dir = x + run <= bounds.maxX ? 1 : -1;
+    triangleDir = dir;
+    const xEnd = x + dir * run;
+    const yEnd = y0 + slope * dir * run;
+    if (within(xEnd, bounds.minX, bounds.maxX) && within(yEnd, bounds.minY, bounds.maxY) && Math.abs(sy(yEnd) - sy(y0)) > 8) {
+      const px = sx(x);
+      const py = sy(y0);
+      const qx = sx(xEnd);
+      const qy = sy(yEnd);
+      plot.push(`<path class="math-slope-triangle" d="M${fx(px)} ${fx(py)}H${fx(qx)}V${fx(qy)}"/>`);
+      slopeText.push(`<text class="math-slope-text" x="${fx((px + qx) / 2)}" y="${fx(py + (qy < py ? 14 : -6))}" text-anchor="middle">Δx = ${mathTickText(run, xStep)}</text>`);
+      const riseRight = dir > 0 ? qx + 6 + 60 < width : qx - 6 - 60 < 0;
+      slopeText.push(`<text class="math-slope-text" x="${fx(riseRight === (dir > 0) ? qx + 6 : qx - 6)}" y="${fx((py + qy) / 2 + 4)}" text-anchor="${riseRight === (dir > 0) ? "start" : "end"}">Δy = ${formatMathNumber(slope * run)}</text>`);
+    }
+  }
+  parts.push(`<g clip-path="url(#mathPlotClip)">${plot.join("")}</g>${slopeText.join("")}`);
+  if (lastPoint && firstPoint) {
+    // Put the function name at the curve end farther from P so it never sits on the slope triangle.
+    const pointX = hasPoint ? sx(x) : width / 2;
+    const useLeft = Math.abs(firstPoint[0] - pointX) > Math.abs(lastPoint[0] - pointX);
+    const end = useLeft ? firstPoint : lastPoint;
+    const labelY = fx(Math.max(Math.min(end[1] + (end[1] < height / 2 ? 18 : -10), height - 26), 14));
+    parts.push(`<text class="math-function-label" x="${fx(useLeft ? Math.max(end[0] + 6, 8) : Math.min(end[0] - 6, width - 8))}" y="${labelY}" text-anchor="${useLeft ? "start" : "end"}">y = ${model.expression}</text>`);
+  }
+  if (hasPoint) {
+    const px = sx(x);
+    const py = sy(y0);
+    parts.push(`<path class="math-projection" d="M${fx(px)} ${fx(py)}V${fx(axisY)}M${fx(px)} ${fx(py)}H${fx(axisX)}"/>`);
+    parts.push(`<circle class="math-point" cx="${fx(px)}" cy="${fx(py)}" r="6.5"/>`);
+    const labelRight = triangleDir > 0 ? px - 110 < pad.left : px < pad.left + plotW - 90;
+    parts.push(`<text class="math-point-label" x="${fx(px + (labelRight ? 11 : -11))}" y="${fx(py - 10)}" text-anchor="${labelRight ? "start" : "end"}">P(${formatMathNumber(x)}, ${formatMathNumber(y0)})</text>`);
+  }
+  svg.innerHTML = parts.join("");
 }
 
 function formatTime(seconds) {
@@ -3160,7 +3701,8 @@ function solenoidFieldPoint(t, radius, plane) {
 }
 
 // Fixed world-space samples are shared between frames; only projection and styling change.
-const solenoidFieldGeometry = [0, Math.PI / 2].map(plane => ({
+// Four planes so the closed field lines appear on both sides of the coil, as in the textbook figure.
+const solenoidFieldGeometry = [0, Math.PI / 2, Math.PI, Math.PI * 1.5].map(plane => ({
   plane,
   lines: [98, 136, 174].map(radius => ({
     radius,
@@ -3501,7 +4043,7 @@ function renderProjectile(values) {
   attr("#projectileVy", { d: `M0 0V${g.dy}`, visibility: g.dy > 0 ? "visible" : "hidden" });
   attr("#projectileV", { d: `M0 0L${g.dx} ${g.dy}`, visibility: g.dy > 0 ? "visible" : "hidden" });
   attr("#projectileVxLabel", { x: g.dx + 8, y: -6 });
-  attr("#projectileVyLabel", { x: -24, y: g.dy + 14 });
+  attr("#projectileVyLabel", { x: -24, y: g.dy + 14, visibility: g.dy > 0 ? "visible" : "hidden" });
   attr("#projectileVLabel", { x: g.dx + 8, y: g.dy + 12, visibility: g.dy > 0 ? "visible" : "hidden" });
   $("#projectileVelocityNote").textContent = `vₓ = ${smartNumber(g.vx)} m/s    vᵧ = ${smartNumber(g.vy, 1)} m/s ↓    |v| = ${smartNumber(Math.hypot(g.vx, g.vy), 1)} m/s`;
   $("#projectileMobileVectors").textContent = $("#projectileVelocityNote").textContent;
@@ -3626,7 +4168,7 @@ function updateSubjectVisuals(values) {
     if (elements.circuitVoltmeterText) elements.circuitVoltmeterText.textContent = `${smartNumber(model.voltage)}V`;
     if (elements.circuitResistanceText) elements.circuitResistanceText.textContent = `R = ${smartNumber(model.resistance)}Ω`;
     if (elements.circuitCurrentText) elements.circuitCurrentText.textContent = `${smartNumber(model.current, 2)}A`;
-    if (elements.circuitResultText) elements.circuitResultText.textContent = `I = ${smartNumber(model.voltage)} ÷ ${smartNumber(model.resistance)} = ${smartNumber(model.current, 2)}A`;
+    if (elements.circuitResultText) elements.circuitResultText.textContent = `I = ${smartNumber(model.voltage)} V ÷ ${smartNumber(model.resistance)} Ω = ${smartNumber(model.current, 2)} A`;
     if (elements.circuitReadoutVoltage) elements.circuitReadoutVoltage.textContent = `${smartNumber(model.voltage)}V`;
     if (elements.circuitReadoutResistance) elements.circuitReadoutResistance.textContent = `${smartNumber(model.resistance)}Ω`;
     if (elements.circuitReadoutCurrent) elements.circuitReadoutCurrent.textContent = `${smartNumber(model.current, 2)}A`;
@@ -3659,27 +4201,11 @@ function updateSubjectVisuals(values) {
   if (state.subject === "数学") {
     const x = values.x;
     const model = currentMathModel();
-    const bounds = mathGraphBounds(model);
-    const point = mathSvgPoint(x, model, bounds);
     const slope = model.derivative(x);
-    const dx = (bounds.maxX - bounds.minX) * 0.16;
-    const x1 = clamp(x - dx, bounds.minX, bounds.maxX);
-    const x2 = clamp(x + dx, bounds.minX, bounds.maxX);
-    const tangentY1 = point.y + slope * (x1 - x);
-    const tangentY2 = point.y + slope * (x2 - x);
-    const tangentPoint1 = mathSvgPoint(x1, { ...model, value: () => tangentY1 }, bounds);
-    const tangentPoint2 = mathSvgPoint(x2, { ...model, value: () => tangentY2 }, bounds);
-    $("#parabolaCurve")?.setAttribute("d", mathParabolaPath(model, bounds));
-    $("#mathPoint").setAttribute("cx", point.cx);
-    $("#mathPoint").setAttribute("cy", point.cy);
-    $("#tangentLine").setAttribute("x1", tangentPoint1.cx);
-    $("#tangentLine").setAttribute("y1", tangentPoint1.cy);
-    $("#tangentLine").setAttribute("x2", tangentPoint2.cx);
-    $("#tangentLine").setAttribute("y2", tangentPoint2.cy);
-    $("#mathCoordinate").textContent = `(${formatMathNumber(x)}, ${formatMathNumber(point.y)})`;
+    renderMathGraph(model, x);
+    $("#mathCoordinate").textContent = `(${formatMathNumber(x)}, ${formatMathNumber(model.value(x))})`;
     const slopeNote = $("#mathSlopeNote");
-    if (slopeNote) slopeNote.textContent = `y = ${model.expression}｜k = ${formatMathNumber(slope)}`;
-    updateMathAxis(model, bounds);
+    if (slopeNote) slopeNote.textContent = `切线斜率 k = f′(${formatMathNumber(x)}) = ${formatMathNumber(slope)}`;
   }
 
   if (state.subject === "生物") renderCellDetail(state.selectedOrganelle);
@@ -3778,18 +4304,17 @@ function updateFormulaSpotlight(subject) {
   const biologyConcept = state.cellType === "animal"
     ? [
         "核心概念",
-        "结构定位 → 功能对应",
-        `<span class="bio-concept-line"><b>边界</b>细胞膜 + 细胞质</span>
-         <span class="bio-concept-line"><b>控制</b>细胞核</span>
-         <span class="bio-concept-line"><b>细胞器</b>线粒体、内质网、高尔基体、核糖体</span>
-         <span class="bio-concept-line"><b>区别</b>通常无细胞壁、叶绿体和中央大液泡</span>`
+        "先看边界，再辨结构",
+        `<span class="bio-concept-line"><b>边界</b>细胞膜</span>
+         <span class="bio-concept-line"><b>内部</b>细胞质、细胞核及其他结构</span>
+         <span class="bio-concept-line"><b>区别</b>无细胞壁、叶绿体和中央大液泡</span>`
       ]
     : [
         "核心概念",
-        "结构定位 → 功能对应",
-        `<span class="bio-concept-line"><b>边界</b>细胞壁 + 细胞膜 + 细胞质</span>
-         <span class="bio-concept-line"><b>细胞器</b>细胞核、叶绿体、线粒体、液泡</span>
-         <span class="bio-concept-line"><b>区别</b>典型植物细胞常见细胞壁、叶绿体和较大液泡</span>`
+        "先看边界，再辨结构",
+        `<span class="bio-concept-line"><b>边界</b>细胞壁 → 细胞膜</span>
+         <span class="bio-concept-line"><b>内部</b>细胞质、细胞核及其他结构</span>
+         <span class="bio-concept-line"><b>特征</b>中央大液泡；绿色组织常见叶绿体</span>`
       ];
 
   const physicsFormula = state.physicsTemplate === "boardSlider"
@@ -3807,7 +4332,7 @@ function updateFormulaSpotlight(subject) {
     : state.physicsTemplate === "solenoid"
     ? [
         "安培定则",
-        "四指沿传统电流方向，大拇指指向 N 极",
+        "四指沿电流方向，大拇指指向 N 极",
         solenoid.formulaHtml
       ]
     : state.physicsTemplate === "projectile"
@@ -3832,7 +4357,7 @@ function updateFormulaSpotlight(subject) {
     "物理": physicsFormula,
     "化学": [
       "核心关系",
-      "Fe + CuSO₄ → FeSO₄ + Cu",
+      "Fe + CuSO₄ = FeSO₄ + Cu",
       `计量关系：1mol Fe : 1mol CuSO₄ : 1mol Cu<br>${chemistry.formulaHtml}`
     ],
     "数学": [
@@ -4056,7 +4581,7 @@ function applyWaitingState(subject = state.subject, options = {}) {
     state.cellType = "plant";
     syncBiologyContent("plant");
     state.p1 = -10;
-    state.p2 = 6;
+    state.p2 = currentCellOrganelles().length;
     state.selectedOrganelle = defaultOrganelleForCellType();
     resetBiologyCellModel();
   }
@@ -4513,7 +5038,7 @@ function applySubject(subject, updateQuestion = true, options = {}) {
   if (subject === "生物" && updateQuestion && !restored) {
     syncBiologyContent(state.cellType || "plant");
     state.p1 = -10;
-    state.p2 = 6;
+    state.p2 = currentCellOrganelles().length;
     state.selectedOrganelle = defaultOrganelleForCellType();
     resetBiologyCellModel();
   }
@@ -4655,34 +5180,174 @@ function clearGenerationTimers() {
   state.generationTimers = [];
 }
 
+const GENERATION_TIMING = Object.freeze({
+  full: Object.freeze({ stageStarts: [0, 700, 1400], complete: 2080, resolve: 2440, exit: 460 }),
+  reduced: Object.freeze({ stageStarts: [0, 260, 520], complete: 760, resolve: 940, exit: 0 })
+});
+
+const GENERATION_SUBJECT_KEYS = Object.freeze({ "物理": "physics", "化学": "chemistry", "数学": "mathematics", "生物": "biology" });
+
+const GENERATION_KEYWORDS = /植物细胞|动物细胞|细胞壁|细胞膜|细胞核|液泡|叶绿体|线粒体|抛物线|切线斜率|切线|导数|硫酸铜|铁粉|刹车|制动|平抛|螺线管|欧姆定律|杠杆|凸透镜|浮力|液体压强|热平衡|电功率|机械效率/g;
+
+function generationPrefersReducedMotion() {
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+}
+
+function generationTiming() {
+  return generationPrefersReducedMotion() ? GENERATION_TIMING.reduced : GENERATION_TIMING.full;
+}
+
+// Highlight the quantities the parser reads, so the "识别条件" step is visible on the user's own text.
+function generationQuestionTokens(text) {
+  const tokens = [];
+  const numberPattern = /[-−]?\d+(?:\.\d+)?\s*(?:m\/s²|m\/s\^?2|m\/s|km\/h|kg\/m³|g\/cm³|mol|kg|cm|mm|m²|m³|m|g|N|V|Ω|A|W|J|Pa|Hz|s|℃|°C|%|匝|倍|个)?/g;
+  let match;
+  while ((match = numberPattern.exec(text)) && tokens.length < 6) {
+    const previous = text[match.index - 1] || "";
+    if (/[A-Za-z0-9_.]/.test(previous)) continue;
+    tokens.push({ start: match.index, end: match.index + match[0].trimEnd().length });
+  }
+  // Questions with few quantities (math, biology) also mark their key concepts.
+  if (tokens.length < 2) {
+    GENERATION_KEYWORDS.lastIndex = 0;
+    while ((match = GENERATION_KEYWORDS.exec(text)) && tokens.length < 4) {
+      const start = match.index;
+      const end = start + match[0].length;
+      if (!tokens.some(token => start < token.end && end > token.start)) tokens.push({ start, end });
+    }
+  }
+  return tokens.sort((left, right) => left.start - right.start);
+}
+
+function renderGenerationQuestion(question) {
+  const container = elements.generationQuestion;
+  if (!container) return;
+  container.replaceChildren();
+  const normalized = String(question ?? "").replace(/\s+/g, " ").trim();
+  if (!normalized) {
+    container.hidden = true;
+    return;
+  }
+  const limit = 92;
+  let cut = normalized.length;
+  if (cut > limit) {
+    // Do not split a number or unit at the ellipsis ("0.20" must not become "0…").
+    cut = limit;
+    while (cut > limit - 12 && /[\w.²³]/.test(normalized[cut - 1]) && /[\w.²³/]/.test(normalized[cut])) cut -= 1;
+  }
+  const text = cut < normalized.length ? `${normalized.slice(0, cut).trimEnd()}…` : normalized;
+  let cursor = 0;
+  generationQuestionTokens(text).forEach((token, index) => {
+    if (token.start > cursor) container.append(document.createTextNode(text.slice(cursor, token.start)));
+    const mark = document.createElement("mark");
+    mark.className = "gen-token";
+    mark.style.setProperty("--i", String(index));
+    mark.textContent = text.slice(token.start, token.end);
+    container.append(mark);
+    cursor = token.end;
+  });
+  if (cursor < text.length) container.append(document.createTextNode(text.slice(cursor)));
+  container.hidden = false;
+}
+
+function renderGenerationSteps(stages) {
+  const list = elements.generationSteps;
+  if (!list) return;
+  list.replaceChildren(...stages.map((stage, index) => {
+    const item = document.createElement("li");
+    item.className = "gen-step";
+    item.dataset.state = "pending";
+    item.style.setProperty("--i", String(index));
+    item.innerHTML = `
+      <span class="gen-step-icon" aria-hidden="true"><i class="gen-step-spinner"></i><svg viewBox="0 0 20 20"><path d="m5.4 10.4 3 3 6.2-6.6"/></svg></span>
+      <span class="gen-step-copy">
+        <strong></strong>
+        <span class="gen-step-detail"><span class="gen-step-skeleton" aria-hidden="true"><i></i><i></i></span><span class="gen-step-text"></span></span>
+      </span>`;
+    $("strong", item).textContent = stage.label;
+    const detail = document.createElement("span");
+    detail.textContent = stage.text;
+    $(".gen-step-text", item).innerHTML = verticalizeFormulaHtml(detail.innerHTML);
+    return item;
+  }));
+}
+
+function moveGenerationHighlight() {
+  const highlight = elements.generationStepsHighlight;
+  const active = elements.generationSteps && $('.gen-step[data-state="active"]', elements.generationSteps);
+  if (!highlight) return;
+  if (!active) {
+    highlight.classList.remove("show");
+    return;
+  }
+  highlight.style.setProperty("--y", `${active.offsetTop}px`);
+  highlight.style.setProperty("--h", `${active.offsetHeight}px`);
+  highlight.classList.add("show");
+}
+
 function setGenerationStage(index) {
   const stages = state.generationStages || GENERATION_STAGES;
   const stage = stages[index];
   if (!stage) return;
-  elements.generationStatus.textContent = stage.text;
+  const timing = generationTiming();
+  const nextStart = index + 1 < timing.stageStarts.length ? timing.stageStarts[index + 1] : timing.complete;
+  elements.generationOverlay.dataset.stage = String(index);
+  elements.generationStatus.textContent = `${stage.label}：${stage.text}`;
+  elements.generationProgress.style.transitionDuration = `${Math.max(0, nextStart - timing.stageStarts[index])}ms`;
   elements.generationProgress.style.width = `${stage.progress}%`;
-  $$(".generation-steps span").forEach((item, itemIndex) => {
-    item.classList.toggle("active", itemIndex <= index);
+  $$(".gen-step", elements.generationSteps).forEach((item, itemIndex) => {
+    item.dataset.state = itemIndex < index ? "done" : itemIndex === index ? "active" : "pending";
   });
+  moveGenerationHighlight();
 }
 
-function showGenerationOverlay(stages = null) {
+function completeGenerationOverlay() {
+  const overlay = elements.generationOverlay;
+  overlay.dataset.stage = "complete";
+  $$(".gen-step", elements.generationSteps).forEach(item => { item.dataset.state = "done"; });
+  moveGenerationHighlight();
+  elements.generationProgress.style.transitionDuration = "240ms";
+  elements.generationProgress.style.width = "100%";
+  elements.generationTitle.textContent = "实验已生成";
+  elements.generationKicker.textContent = "READY";
+  elements.generationStatus.textContent = "实验已生成";
+}
+
+function showGenerationOverlay(stages = null, options = {}) {
   clearGenerationTimers();
   state.generationStages = stages;
   setDemoStep(2, "识别题干并匹配实验");
-  elements.generationOverlay.classList.add("show");
-  elements.generationOverlay.setAttribute("aria-hidden", "false");
-  const activeStages = state.generationStages || GENERATION_STAGES;
-  $$(".generation-steps span").forEach((item, index) => {
-    item.textContent = activeStages[index]?.label || GENERATION_STAGES[index]?.label || item.textContent;
-  });
+  const overlay = elements.generationOverlay;
+  const activeStages = (state.generationStages || GENERATION_STAGES).slice(0, 3).map((stage, index) => ({
+    ...GENERATION_STAGES[index],
+    ...stage
+  }));
+  state.generationStages = activeStages;
+  overlay.classList.remove("is-leaving");
+  overlay.dataset.subject = GENERATION_SUBJECT_KEYS[options.subject] || "physics";
+  elements.generationTitle.textContent = "正在把题目生成实验";
+  elements.generationKicker.textContent = "SEMANTIC INPUT";
+  renderGenerationQuestion(options.question);
+  renderGenerationSteps(activeStages);
+  elements.generationProgress.style.transitionDuration = "0ms";
+  elements.generationProgress.style.width = "0%";
+  overlay.classList.add("show");
+  overlay.setAttribute("aria-hidden", "false");
+  // Bundled local templates do not need the simulated web generation delay.
+  if (document.body.classList.contains("harmony-compat-mode")) {
+    setGenerationStage(activeStages.length - 1);
+    return Promise.resolve();
+  }
+  // Commit the 0% state before the first stage starts its progress transition.
+  void elements.generationProgress.offsetWidth;
   setGenerationStage(0);
 
+  const timing = generationTiming();
   return new Promise(resolve => {
     state.generationTimers = [
-      setTimeout(() => setGenerationStage(1), 620),
-      setTimeout(() => setGenerationStage(2), 1280),
-      setTimeout(resolve, 1850)
+      ...timing.stageStarts.slice(1).map((delay, offset) => setTimeout(() => setGenerationStage(offset + 1), delay)),
+      setTimeout(completeGenerationOverlay, timing.complete),
+      setTimeout(resolve, timing.resolve)
     ];
   });
 }
@@ -4690,8 +5355,14 @@ function showGenerationOverlay(stages = null) {
 function hideGenerationOverlay() {
   clearGenerationTimers();
   state.generationStages = null;
-  elements.generationOverlay.classList.remove("show");
-  elements.generationOverlay.setAttribute("aria-hidden", "true");
+  const overlay = elements.generationOverlay;
+  const wasVisible = overlay.classList.contains("show");
+  overlay.classList.remove("show");
+  overlay.setAttribute("aria-hidden", "true");
+  const exit = generationTiming().exit;
+  if (!wasVisible || exit <= 0) return;
+  overlay.classList.add("is-leaving");
+  state.generationTimers = [setTimeout(() => overlay.classList.remove("is-leaving"), exit)];
 }
 
 function focusExperimentCard() {
@@ -4775,7 +5446,7 @@ function playDemoSequence() {
   state.demoTimers = [
     setTimeout(() => setReasoningStep(2, "<span>公式选择</span>没有给时间 t，直接用速度—位移关系式。"), 520),
     setTimeout(() => { if (!motionPreference.matches) playExperiment(); }, 820),
-    setTimeout(() => setReasoningStep(3, `<span>代入求解</span>0² − ${vText}² = 2 × (−${aText}) × s，所以 s = ${sText}m。`), solveMs),
+    setTimeout(() => setReasoningStep(3, `<span>代入求解</span>0² − ${vText}² = 2 × (−${aText}) × x，所以 x = ${sText}m。`), solveMs),
     setTimeout(() => setReasoningStep(4, `<span>现象验证</span>小车速度归零时，停止点对应 ${sText}m。`), verifyMs),
     setTimeout(() => {
       state.time = duration();
@@ -5097,15 +5768,28 @@ function syncBiologyRotationUi() {
   if (state.hasGenerated) updateScene();
 }
 
-$$(".cell-organelle").forEach(node => {
-  const chooseOrganelle = event => {
+// The cell model is re-rendered per cell type and level, so organelle events are delegated.
+elements.plantCellModel?.addEventListener("keydown", event => {
+  const node = event.target.closest?.(".cell-organelle");
+  if (!node || (event.key !== "Enter" && event.key !== " ")) return;
+  event.preventDefault();
+  event.stopPropagation();
+  selectBioOrganelle(node.dataset.organelle);
+});
+
+$$(".cell-level-toggle button").forEach(button => {
+  button.addEventListener("pointerdown", event => event.stopPropagation());
+  button.addEventListener("click", event => {
     event.stopPropagation();
-    selectBioOrganelle(node.dataset.organelle);
-  };
-  node.addEventListener("click", chooseOrganelle);
-  node.addEventListener("keydown", event => {
-    if (event.key === "Enter" || event.key === " ") chooseOrganelle(event);
+    switchBiologyCellLevel(button.dataset.level);
   });
+});
+
+elements.cellLabelButton?.addEventListener("click", event => {
+  event.stopPropagation();
+  state.cellLabelsVisible = !state.cellLabelsVisible;
+  updateCellModelMode();
+  showToast(state.cellLabelsVisible ? "已显示结构标注" : "已隐藏标注，可自测识图");
 });
 
 $$(".cell-structure-tag").forEach(tag => {
@@ -5118,49 +5802,48 @@ $$(".cell-structure-tag").forEach(tag => {
   });
 });
 
+function cellTargetAt(clientX, clientY) {
+  const hit = document.elementFromPoint(clientX, clientY);
+  const node = hit?.closest?.(".cell-organelle, .cell-label, .cell-structure-tag");
+  return node && !node.classList.contains("unavailable") ? node : null;
+}
+
 function selectNearestBioOrganelle(clientX, clientY) {
-  const candidates = $$(".cell-organelle").filter(node => {
-    if (!currentCellOrganelleMap().has(node.dataset.organelle)) return false;
-    const rect = node.getBoundingClientRect();
-    return rect.width > 0 && rect.height > 0;
-  }).map(node => {
-    const rect = node.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    return {
-      node,
-      distance: Math.hypot(clientX - cx, clientY - cy)
-    };
-  }).sort((a, b) => a.distance - b.distance);
-  const match = candidates[0];
-  if (match && match.distance < 76) selectBioOrganelle(match.node.dataset.organelle);
+  const direct = cellTargetAt(clientX, clientY);
+  if (direct) {
+    selectBioOrganelle(direct.dataset.organelle);
+    return;
+  }
+  // Distance to the nearest drawn instance (not the group's bounding box, which may span the cell).
+  const map = currentCellOrganelleMap();
+  let best = null;
+  $$(".cell-organelle").forEach(node => {
+    if (!map.has(node.dataset.organelle)) return;
+    const parts = node.querySelectorAll(".cell-hit, .cell-hit-stroke");
+    (parts.length ? [...parts] : [node]).forEach(part => {
+      const rect = part.getBoundingClientRect();
+      if (!rect.width && !rect.height) return;
+      const dx = Math.max(rect.left - clientX, 0, clientX - rect.right);
+      const dy = Math.max(rect.top - clientY, 0, clientY - rect.bottom);
+      const distance = Math.hypot(dx, dy);
+      if (!best || distance < best.distance) best = { node, distance };
+    });
+  });
+  if (best && best.distance < 28) selectBioOrganelle(best.node.dataset.organelle);
 }
 
 function clearBioHoverLabels() {
-  $$(".cell-organelle.hover, .cell-structure-tag.hover").forEach(node => node.classList.remove("hover"));
+  $$(".cell-organelle.hover, .cell-structure-tag.hover, .cell-label.hover").forEach(node => node.classList.remove("hover"));
 }
 
 function updateBioHoverLabel(clientX, clientY) {
   if (state.subject !== "生物" || !state.hasGenerated) return;
-  const targets = [...$$(".cell-structure-tag"), ...$$(".cell-organelle")];
-  let hovered = null;
-  for (const node of targets) {
-    if (node.classList.contains("unavailable")) continue;
-    const rect = node.getBoundingClientRect();
-    if (
-      rect.width > 0 &&
-      rect.height > 0 &&
-      clientX >= rect.left &&
-      clientX <= rect.right &&
-      clientY >= rect.top &&
-      clientY <= rect.bottom
-    ) {
-      hovered = node;
-      break;
-    }
-  }
+  const hovered = cellTargetAt(clientX, clientY);
   clearBioHoverLabels();
-  if (hovered) hovered.classList.add("hover");
+  if (!hovered) return;
+  const id = hovered.dataset.organelle;
+  $$(`.cell-organelle[data-organelle="${id}"], .cell-label[data-organelle="${id}"], .cell-structure-tag[data-organelle="${id}"]`)
+    .forEach(node => node.classList.add("hover"));
 }
 
 if (elements.plantCellViewport) {
@@ -5178,7 +5861,7 @@ if (elements.plantCellViewport) {
       pointerId: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
-      directOrganelle: event.target.closest(".cell-organelle, .cell-structure-tag")?.dataset.organelle || "",
+      directOrganelle: event.target.closest(".cell-organelle, .cell-structure-tag, .cell-label")?.dataset.organelle || "",
       distance: 0,
       rotateX: state.cellRotateX,
       rotateY: state.cellRotateY
@@ -5445,11 +6128,12 @@ async function generateExperiment(options = {}) {
   if (detected === "生物") {
     const cellType = normalizeBiologyCellType(question);
     state.cellType = cellType;
-    syncBiologyContent(cellType);
+    state.cellLevel = normalizeBiologyCellLevel(question, "junior");
+    syncBiologyContent(cellType, state.cellLevel);
     templateRecognition = biologyTemplateRecognition();
     state.subject = "生物";
     state.p1 = -10;
-    state.p2 = 6;
+    state.p2 = currentCellOrganelles().length;
     state.selectedOrganelle = defaultOrganelleForCellType(cellType);
     resetBiologyCellModel();
     setRecognitionFeedback(templateRecognition);
@@ -5477,7 +6161,7 @@ async function generateExperiment(options = {}) {
         : templateRecognition
           ? SUBJECTS["生物"].generationStages
       : null;
-  await showGenerationOverlay(generationStages);
+  await showGenerationOverlay(generationStages, { question: displayQuestion, subject: detected });
   applySubject(detected, false);
   if (extraPhysicsParse) {
     syncExtraPhysicsContent(extraPhysicsParse.templateId, extraPhysicsParse.p1, extraPhysicsParse.p2);
@@ -5539,7 +6223,7 @@ $("#solenoidStage")?.addEventListener("click", event => {
   if (action === "reverse") {
     state.solenoidWindingDirection = state.solenoidWindingDirection === "counterclockwise" ? "clockwise" : "counterclockwise";
     refreshSolenoidAfterControl(true);
-    setReasoningStep(3, `<span>电流反转</span>传统电流方向反向，磁感线方向与小磁针同步反转，N/S 极交换；磁性强弱不因方向反转而减弱。`);
+    setReasoningStep(3, `<span>电流反转</span>电流方向反向，磁感线方向与小磁针同步反转，N/S 极交换；磁性强弱不因方向反转而减弱。`);
     showToast("电流已反转：磁极交换，强弱基本不变");
   }
   if (action === "core") {
@@ -5652,8 +6336,12 @@ $("#hintButton").addEventListener("click", () => {
   }
   if (state.subject === "生物") {
     const tip = state.cellType === "animal"
-      ? "先抓动物细胞特征：没有细胞壁，通常没有叶绿体和中央大液泡，最外层是细胞膜。"
-      : "先抓典型植物细胞特征：细胞壁、叶绿体和成熟细胞中较大的中央液泡。";
+      ? (state.cellLevel === "senior"
+        ? "先抓动物细胞特征：没有细胞壁、叶绿体和液泡，有中心体；细胞的边界是细胞膜。"
+        : "先抓动物细胞特征：没有细胞壁、叶绿体和液泡，最外层是细胞膜。")
+      : (state.cellLevel === "senior"
+        ? "先抓高等植物细胞特征：有细胞壁、叶绿体和中央大液泡，没有中心体。"
+        : "先抓植物细胞特征：有细胞壁、叶绿体和液泡，成熟细胞有很大的中央液泡。");
     setReasoningStep(4, `<span>AI 提示</span>${tip}`);
     hideMentorFeedback();
     showToast("AI 导师已给出结构识别提示");
@@ -5840,8 +6528,8 @@ $("#challengeButton").addEventListener("click", () => {
     const label = CELL_TYPE_LABELS[nextType];
     setReasoningStep(4, `<span>对比迁移</span>已切换到${label}，观察它与${nextType === "animal" ? "植物" : "动物"}细胞的结构差异。`);
     elements.mentorMessage.innerHTML = nextType === "animal"
-      ? "已切换到 <strong>动物细胞</strong>。请对比：动物细胞为什么没有细胞壁，通常也没有叶绿体和中央大液泡？"
-      : "已切换到 <strong>植物细胞</strong>。请对比：典型植物细胞中的细胞壁、叶绿体和大液泡分别对应什么功能？";
+      ? "已切换到 <strong>动物细胞</strong>。请对比：动物细胞没有哪些结构？细胞壁、叶绿体和液泡分别承担什么功能？"
+      : "已切换到 <strong>植物细胞</strong>。请对比：植物细胞中的细胞壁、叶绿体和液泡分别对应什么功能？";
     showToast(`AI 导师已切换到${label}对比模型`);
     return;
   }

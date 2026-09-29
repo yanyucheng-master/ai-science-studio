@@ -133,7 +133,8 @@ try{
   await generate(page,'观察动物细胞，识别细胞膜、细胞质、细胞核、线粒体、内质网、高尔基体和核糖体。');
   await page.locator('.cell-structure-tag[data-organelle="ribosome"]').focus();await page.keyboard.press('Enter');
   assert.equal(await page.locator('#cellDetailName').textContent(),'核糖体');
-  assert.equal(await page.locator('.cell-structure-tag:not(.unavailable)').count(),7);
+  // 人教版必修1 animal cell (亚显微): 细胞膜、细胞质、细胞核、线粒体、内质网、高尔基体、核糖体、溶酶体、中心体.
+  assert.equal(await page.locator('.cell-structure-tag:not(.unavailable)').count(),9);
   await screenshot(page,`${tag}-animal`);
   // Verify limiting cases with the actual rendered amount and residue readouts.
   await subjectTab(page,'化学');
