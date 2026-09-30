@@ -2016,8 +2016,8 @@ body.ai-tutor-route .ai-tutor-workspace {
   min-width: 150px;
   padding: 13px 15px;
   color: #3f536f;
-  font-size: 11px;
-  line-height: 1.65;
+  font-size: 14px;
+  line-height: 1.8;
   border: 1px solid #dce7f7;
   border-radius: 16px 16px 16px 5px;
   background: #fff;
@@ -2057,34 +2057,44 @@ body.ai-tutor-route .ai-tutor-workspace {
 .ai-answer-section h4 {
   margin: 0 0 6px;
   color: #2859b8;
-  font-size: 10px;
+  font-size: 12px;
 }
+
+.solution-section:first-of-type {
+  margin-top: 7px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.solution-section h4 { color: #274063; }
+.solution-section li::marker { color: #3a6fd9; font-weight: 600; }
+.ai-answer-section .ai-step-result { margin-top: 4px; font-weight: 600; }
+.formula-section h4 { color: #697b93; font-size: 11px; }
 
 .ai-answer-section ol {
   display: grid;
   margin: 0;
   padding-left: 20px;
-  gap: 5px;
+  gap: 10px;
 }
 
-.ai-answer-section li { line-height: 1.72; }
+.ai-answer-section li { line-height: 1.85; overflow-wrap: anywhere; }
 
 .ai-answer-section p { margin: 0; }
 
 .ai-formula-line {
   display: flex;
-  min-height: 34px;
-  margin-top: 6px;
-  padding: 7px 10px;
+  min-height: 0;
+  margin-top: 5px;
+  padding: 3px 0;
   gap: 4px;
   align-items: center;
   flex-wrap: wrap;
-  color: #164fc6;
+  color: #465e7e;
   font-family: Cambria, "Times New Roman", "Microsoft YaHei UI", sans-serif;
-  font-size: 16px;
-  line-height: 1.45;
-  border-radius: 10px;
-  background: #eff5ff;
+  font-size: 14px;
+  line-height: 1.6;
+  background: transparent;
 }
 
 .ai-rich-math {
@@ -2136,7 +2146,8 @@ body.ai-tutor-route .ai-tutor-workspace {
   margin-top: 10px;
   gap: 3px;
   color: #8b6c54;
-  font-size: 9px;
+  font-size: 12px;
+  line-height: 1.6;
 }
 
 .ai-parameter-patch {

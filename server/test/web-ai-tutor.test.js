@@ -25,7 +25,8 @@ function loadTutor(fetchImpl = () => { throw new Error('Unexpected network reque
   sandbox.window = sandbox;
   vm.runInNewContext(source.replace(/\n  syncApiKeyUi\(\);\n  updateRoute\(\);/, `
     globalThis.tutorTest = { readSseChat, extractJsonObject, fallbackChatFromText,
-      completeTutorChat, apiRequest, errorMessage, writeStoredApiKey, state };`), sandbox);
+      completeTutorChat, apiRequest, errorMessage, writeStoredApiKey, state,
+      getAnswerPresentation, structuredToHistoryText, CHAT_SYSTEM_PROMPT, ACTIONS };`), sandbox);
   return sandbox.tutorTest;
 }
 
@@ -50,6 +51,87 @@ function jsonResponse(content = JSON.stringify(answer)) {
     headers: { 'Content-Type': 'application/json' }
   });
 }
+
+test('web: solution presentation prioritizes steps and excludes hidden verification from history', () => {
+  const tutor = loadTutor();
+  const payload = { ...answer, summary: 'context.mode=question，参数为空。',
+    checks: ['内部复核专用：代回与量纲均正确。'], followUp: '如果初速度加倍呢？' };
+  const display = tutor.getAnswerPresentation(payload, { responseLevel: 'steps' });
+  assert.equal(display.lead, '');
+  assert.equal(display.followUp, '');
+  assert.equal(display.steps.length, 2);
+  assert.equal(display.result, answer.finalAnswer);
+  const history = tutor.structuredToHistoryText(payload, { responseLevel: 'steps' });
+  assert.match(history, /40 m/);
+  assert.doesNotMatch(history, /context\.mode|内部复核专用|如果初速度/);
+  assert.equal(payload.checks.length, 1, 'the verification protocol field is not deleted');
+});
+
+test('web: complete conclusions and units merge into the last step without guessing equivalence', () => {
+  const tutor = loadTutor();
+  const finalAnswer = '加速度为 3 m·s^{-2}，力为 6 N，做功为 36 J。';
+  const display = tutor.getAnswerPresentation({ ...answer, steps: ['求加速度。', '求力和做功。'], finalAnswer });
+  assert.equal(display.result, finalAnswer);
+  assert.equal(display.steps.length, 2);
+  const repeated = tutor.getAnswerPresentation({ ...answer, steps: ['求加速度。', finalAnswer], finalAnswer });
+  assert.equal(repeated.result, '');
+  assert.equal(repeated.steps.at(-1), finalAnswer);
+});
+
+test('web: formula deduplication removes only literal duplicates, never a complex required relation', () => {
+  const tutor = loadTutor();
+  const formulas = ['F = ma', 'F=ma', 'W=Fs', 'W=ΔE_{k}', 's=\\frac{at^{2}}{2}'];
+  const display = tutor.getAnswerPresentation({ ...answer, formulas });
+  assert.equal(display.formulas.length, 4);
+  assert.equal(display.formulas.at(-1), formulas.at(-1));
+});
+
+test('web: conceptual and readable-text replies survive without a forced formula block', () => {
+  const tutor = loadTutor();
+  const summary = '植物细胞具有细胞壁，细胞膜控制物质进出。';
+  const display = tutor.getAnswerPresentation({ mode: 'explain', summary, steps: [], formulas: [], finalAnswer: summary });
+  assert.equal(display.lead, '');
+  assert.equal(display.steps.join(''), summary);
+  assert.equal(display.formulas.length, 0);
+  const summaryOnly = tutor.getAnswerPresentation({ mode: 'explain', summary });
+  assert.equal(summaryOnly.lead, summary);
+});
+
+test('web: hints, explicit variants and necessary clarification retain their teaching question', () => {
+  const tutor = loadTutor();
+  const followUp = '末速度是多少？';
+  const hint = tutor.getAnswerPresentation({ ...answer, mode: 'hint', steps: [], followUp });
+  assert.equal(hint.result, '');
+  assert.equal(hint.steps.length, 0);
+  assert.equal(hint.followUp, followUp);
+  assert.equal(tutor.getAnswerPresentation({ ...answer, followUp }, { responseLevel: 'variant' }).followUp, followUp);
+  assert.equal(tutor.getAnswerPresentation({ ...answer, followUp }, { responseLevel: 'steps', message: '再给一道变式练习' }).followUp, followUp);
+  const clarification = tutor.getAnswerPresentation({ ...answer, mode: 'clarification',
+    summary: '还缺少物体质量。', steps: ['请先确认研究对象。'], finalAnswer: null,
+    followUp: '物体的质量是多少？' }, { responseLevel: 'steps' });
+  assert.equal(clarification.lead, '还缺少物体质量。');
+  assert.equal(clarification.followUp, '物体的质量是多少？');
+});
+
+test('web: actual limitations, incomplete answers and offline status are never hidden with the disclaimer', () => {
+  const tutor = loadTutor();
+  const warnings = ['AI 讲解可能存在误差，请结合教材与教师要求核对。',
+    '完整性提醒：当前回答未明确覆盖产生的热量。', '该公式仅适用于加速度恒定的阶段。',
+    '当前为本地教学提示，联网后可继续向 AI 导师追问。'];
+  const display = tutor.getAnswerPresentation({ ...answer, warnings });
+  assert.equal(display.warnings.length, 3);
+  assert.match(display.warnings.join(''), /完整性提醒.*加速度恒定.*本地教学提示/);
+});
+
+test('web: personal-key prompt keeps internal verification but asks for a concise visible solution', () => {
+  const tutor = loadTutor();
+  assert.match(tutor.CHAT_SYSTEM_PROMPT, /精简展示不等于省略验证/);
+  assert.match(tutor.CHAT_SYSTEM_PROMPT, /把最终答案融入最后一步/);
+  assert.match(tutor.CHAT_SYSTEM_PROMPT, /checks 仅承载已完成的内部复核/);
+  assert.match(tutor.CHAT_SYSTEM_PROMPT, /formulas 只列.*不重复/);
+  assert.match(tutor.CHAT_SYSTEM_PROMPT, /followUp 默认返回空字符串/);
+  assert.doesNotMatch(tutor.ACTIONS.steps.message, /自检/);
+});
 
 test('web: full steps preserve split UTF-8, CRLF, reasoning and escaped formulas', async () => {
   const requests = [];

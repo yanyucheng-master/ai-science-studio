@@ -16,12 +16,13 @@ const baseline = process.argv.includes('--baseline');
 const output = resolve(root, 'outputs/tutor-sse', baseline ? 'before' : 'after');
 await mkdir(output, { recursive: true });
 const answer = {
-  mode: 'steps', summary: '末速度为零，使用匀变速运动公式。',
+  mode: 'steps', summary: '本题 context.mode=question，parameters 与 deterministicResult 为空。',
   steps: ['已知初速度 v0 = 20 m/s，减速度大小 a = 5 m/s²。',
     '由 v² − v0² = −2as，代入求得 s = 40 m。'],
   formulas: ['s = \\frac{v_{0}^{2}}{2a}'], finalAnswer: '刹车距离为 40 m。',
-  checks: ['代入后末速度为零，距离单位是 m。'],
-  followUp: '如果初速度加倍，刹车距离如何变化？', parameterPatch: null, warnings: []
+  checks: ['内部复核专用：代入后末速度为零，距离单位是 m。'],
+  followUp: '如果初速度加倍，刹车距离如何变化？', parameterPatch: null,
+  warnings: ['AI 讲解可能存在误差，请结合教材与教师要求核对。']
 };
 const broken = '{"mode":"steps","summary":"先求刹车距离","steps":["代入';
 const frame = (delta, finish = null) => `data: ${JSON.stringify({ choices: [{ delta, finish_reason: finish }] })}\n\n`;
@@ -29,6 +30,27 @@ let scenario;
 let upstreamCalls = [];
 let gatewayCalls = 0;
 let gatewayBase;
+function fixtureAnswer() {
+  if (scenario === 'default_concept') return { ...answer, mode: 'explain',
+    summary: '植物细胞具有细胞壁，细胞膜控制物质进出。', steps: [], formulas: [],
+    finalAnswer: '植物细胞具有细胞壁，细胞膜控制物质进出。' };
+  if (scenario === 'default_clarification') return { ...answer, mode: 'clarification',
+    summary: '题目没有给出物体质量，无法确定合力的数值。',
+    steps: ['已知加速度仍不足以计算合力。'], formulas: ['F=ma'], finalAnswer: null,
+    followUp: '请补充物体的质量是多少。', warnings: ['关键条件不足：缺少物体质量。'] };
+  if (scenario === 'default_warning') return { ...answer, warnings: [...answer.warnings,
+    '完整性提醒：当前回答未明确覆盖产生的热量。', '该公式仅适用于加速度恒定的阶段。'] };
+  if (scenario === 'default_multi_goals') return { ...answer, steps: [
+    '根据速度变化，加速度 a=3 m·s^{-2}。', '由 F=ma 得 F=6 N，由 W=Fs 得 W=36 J。'],
+    formulas: ['F=ma', 'F = ma', 'W=Fs', 'W=ΔE_{k}'],
+    finalAnswer: '加速度为 3 m·s^{-2}，合力为 6 N，做功为 36 J。' };
+  if (scenario === 'default_mobile_long_formula') return { ...answer,
+    formulas: ['a(v)=\\frac{F-\\frac{B^{2}L^{2}v}{R}}{m}', 'v_{临界}=\\frac{FR}{B^{2}L^{2}}'] };
+  if (scenario === 'default_safe_math') return { ...answer,
+    steps: [...answer.steps, '<img src="invalid" onerror="window.fixtureUnsafe=true"> 仅作为文本处理。'],
+    formulas: [...answer.formulas, '<svg onload="window.fixtureUnsafe=true">'] };
+  return answer;
+}
 const mime = { html: 'text/html', css: 'text/css', js: 'text/javascript' };
 const webFiles = new Set(['index.html', 'styles.css', 'app.js', 'physics-extra.js', 'science-motion.js', 'ai-tutor.js']);
 const server = createServer(async (req, res) => {
@@ -94,7 +116,7 @@ const gateway = createMasterLabServer({ deepSeekClient: {
   async chat() {
     gatewayCalls += 1;
     if (scenario === 'default_unavailable') throw Object.assign(new Error('fixture unavailable'), { code: 'AI_UNAVAILABLE' });
-    return answer;
+    return fixtureAnswer();
   }
 }, allowedOrigins: [base] });
 gateway.listen(0, '127.0.0.1');
@@ -103,11 +125,15 @@ gatewayBase = `http://127.0.0.1:${gateway.address().port}`;
 const browser = await chromium.launch({ channel: process.env.BROWSER_CHANNEL || 'msedge', headless: true });
 const reports = [];
 try {
-  for (scenario of ['full_steps', 'missing_tail', 'invalid_twice', 'fallback_recovered', 'hint', 'timeout', 'stop', 'no_key_experiment', 'no_key_question', 'default_question', 'default_unavailable', 'personal_auth_failure', 'personal_cleared']) {
+  for (scenario of ['full_steps', 'missing_tail', 'invalid_twice', 'fallback_recovered', 'hint', 'timeout', 'stop', 'no_key_experiment', 'no_key_question', 'default_question', 'default_unavailable', 'personal_auth_failure', 'personal_cleared',
+    'default_concept', 'default_clarification', 'default_warning', 'default_multi_goals',
+    'default_mobile_steps', 'default_mobile_long_formula', 'default_safe_math']) {
     upstreamCalls = [];
     gatewayCalls = 0;
     const noKey = scenario.startsWith('no_key') || scenario.startsWith('default_');
-    const context = await browser.newContext({ viewport: { width: 1366, height: 900 } });
+    const mobile = scenario.startsWith('default_mobile');
+    const context = await browser.newContext({ viewport: mobile ? { width: 375, height: 812 } : { width: 1366, height: 900 },
+      reducedMotion: mobile ? 'reduce' : 'no-preference' });
     const page = await context.newPage();
     const consoleErrors = [];
     const network = [];
@@ -163,7 +189,18 @@ try {
       steps: document.querySelectorAll('.ai-answer-section ol li').length,
       fractions: document.querySelectorAll('.ai-safe-fraction').length,
       subscripts: document.querySelectorAll('.ai-message.assistant sub').length,
-      final: document.querySelector('.final-section')?.innerText || '',
+      final: document.querySelector('.ai-final-step')?.innerText || '',
+      oldSections: document.querySelectorAll('.final-section, .check-section').length,
+      followUps: document.querySelectorAll('.ai-follow-up').length,
+      warning: document.querySelector('.ai-answer-warning')?.innerText || '',
+      formulas: document.querySelectorAll('.ai-formula-line').length,
+      bodySize: parseFloat(getComputedStyle(document.querySelector('.ai-message.assistant .ai-message-bubble')).fontSize),
+      formulaSize: document.querySelector('.ai-formula-line') ? parseFloat(getComputedStyle(document.querySelector('.ai-formula-line')).fontSize) : 0,
+      formulaBackground: document.querySelector('.ai-formula-line') ? getComputedStyle(document.querySelector('.ai-formula-line')).backgroundColor : '',
+      horizontalOverflow: [...document.querySelectorAll('#aiTutorWorkspace, .ai-message.assistant .ai-message-bubble')]
+        .some(node => node.scrollWidth > node.clientWidth + 2),
+      unsafeNodes: document.querySelectorAll('.ai-message.assistant img, .ai-message.assistant svg, .ai-message.assistant script').length,
+      unsafeExecuted: Boolean(window.fixtureUnsafe),
       provider: document.querySelector('.ai-tutor-identity .online')?.textContent || '',
       pending: Boolean(document.querySelector('.ai-message.pending')),
       busy: document.querySelector('#aiTutorWorkspace').getAttribute('aria-busy'),
@@ -182,6 +219,13 @@ try {
       assert.equal(ui.sendEnabled, true, name);
       assert.equal(ui.pending, false, name);
       assert.doesNotMatch(ui.text, /\{"mode"|"summary"\s*:/, name);
+      assert.equal(ui.oldSections, 0, name);
+      assert.doesNotMatch(ui.text, /结果自检|内部复核专用|context\.mode|deterministicResult/, name);
+      assert.equal(ui.bodySize, 14, name);
+      assert.ok(ui.formulaSize <= ui.bodySize, name);
+      assert.equal(ui.horizontalOverflow, false, name);
+      if (ui.formulas) assert.equal(ui.formulaBackground, 'rgba(0, 0, 0, 0)', name);
+      if (name !== 'hint' && name !== 'default_clarification') assert.equal(ui.followUps, 0, name);
       for (const call of calls) {
         assert.equal(call.model, 'deepseek-flash', name);
         assert.equal(call.thinking, 'enabled', name);
@@ -215,6 +259,33 @@ try {
       if (name === 'personal_auth_failure') {
         assert.equal(calls.length, 1); assert.equal(report.gatewayCalls, 0);
         assert.equal(ui.error, true); assert.match(ui.text, /不会切换到公益默认服务/);
+      }
+      if (name.startsWith('default_') && !['default_unavailable'].includes(name)) {
+        assert.equal(report.gatewayCalls, 1, name);
+        assert.equal(calls.length, 0, name);
+        assert.equal(ui.error, false, name);
+      }
+      if (name === 'default_concept') {
+        assert.equal(ui.formulas, 0, name);
+        assert.match(ui.final, /植物细胞.*细胞壁.*细胞膜/, name);
+      }
+      if (name === 'default_clarification') {
+        assert.match(ui.text, /题目没有给出物体质量/, name);
+        assert.match(ui.text, /请补充物体的质量/, name);
+        assert.match(ui.warning, /关键条件不足/, name);
+      }
+      if (name === 'default_warning') {
+        assert.match(ui.warning, /完整性提醒.*热量/, name);
+        assert.match(ui.warning, /加速度恒定/, name);
+        assert.doesNotMatch(ui.warning, /AI 讲解可能存在误差/, name);
+      }
+      if (name === 'default_multi_goals') {
+        assert.equal(ui.formulas, 3, name);
+        assert.match(ui.final, /3 m.*6 N.*36 J/, name);
+      }
+      if (name === 'default_safe_math') {
+        assert.equal(ui.unsafeNodes, 0, name);
+        assert.equal(ui.unsafeExecuted, false, name);
       }
       assert.equal(report.consoleErrors.filter(message => !/503|401/.test(message)).length, 0, name);
     }

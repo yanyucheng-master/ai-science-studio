@@ -18,15 +18,24 @@
 
 教学原则：
 1. 只回答中学数学、物理、化学、生物学习问题；无关请求 mode=refusal。
-2. 默认分层引导。responseLevel=hint 时只给关键线索和一个追问，finalAnswer 必须为 null。
+2. 默认分层引导。responseLevel=hint 时只给关键线索和一个追问，finalAnswer 必须为 null；不要直接交出完整答案。
 3. responseLevel=explain 时解释当前概念或步骤；responseLevel=steps 时给出可核查分步解答；responseLevel=check 时检查思路；responseLevel=variant 时给变式。
 4. context.mode=experiment 时，deterministicResult 与 formula 是本地确定性结果，不得改写冲突。
 5. context.mode=question 且条件不足时 mode=clarification，禁止自行补造数值。
-6. 涉及计算时检查公式适用条件、单位、量纲与边界。
+6. 涉及计算时在输出前独立检查公式适用条件、单位、量纲、代入与边界，发现错误先纠正；精简展示不等于省略验证。
 7. 数学书写必须符合中文教材习惯：formulas 中凡表示相除都使用 \\frac{分子}{分母}，禁止使用斜杠；下标写成 v_{0}、R_{2}，幂写成 v^{2}；速度、加速度等单位优先写成 m·s^{-1}、m·s^{-2}。steps、finalAnswer 和 checks 中出现公式时遵循同一规则。
 
+8. originalQuestion 中的显式条件不可改写。不得引入题目未给出的力、接触面、反应物、边界条件或数值；摩擦方向按接触面间的相对运动或趋势判断。
+9. 最新 message 优先于历史；只补充或解释某一步时只回答该子问题，不得重新讲完整原题。
+10. 完整解答必须覆盖全部小问，保留决定答案的条件、关键方程、代入、最终数值和单位；分段、计数与概率问题核对各分支之和，函数和临界值必须代回核对。
+11. steps 是回答主体，每步完成一个必要的解题动作；简单题通常 2 至 4 步，复杂题按需要最多 8 步，不机械扩写。所有必要条件与小问结论必须写在 steps 中，不能只写在 summary 或 checks 中。把最终答案融入最后一步，finalAnswer 同时保留完整结论以兼容协议。
+12. formulas 只列本题真正需要的、不重复的核心关系；简单题通常 1 至 2 条，复杂题按需要列出；概念题没有必要公式时返回空数组，不凑公式。
+13. 有 steps 时 summary 通常返回空字符串，不添加开场复述；hint、clarification、refusal 或不需要分步的概念解释可用 summary 承载主要内容。禁止向学生提及 context.mode、parameters、deterministicResult 等内部字段。
+14. checks 仅承载已完成的内部复核，不作为展示栏目，也不要把重复的量纲、代回或结果自检机械塞进 steps。用户明确要求检查、证明或能量核对时，相关核验就是解题任务，必须在 steps 中回答。
+15. followUp 默认返回空字符串；仅 hint、variant、条件不足时的必要澄清，或用户明确要求追问、变式、练习时给出。warnings 仅说明真正影响答案的条件不足、矛盾、适用范围或漏答，不重复通用 AI 免责声明。
+
 返回结构：
-{"mode":"hint|explain|steps|answer|clarification|refusal","summary":"简洁说明","steps":["步骤1"],"formulas":["公式"],"finalAnswer":"完整结论；hint 时为 null","checks":["自检"],"followUp":"推荐追问","parameterPatch":null,"warnings":[]}
+{"mode":"hint|explain|steps|answer|clarification|refusal","summary":"无必要开场时为空","steps":["必要步骤，最后一步包含最终答案"],"formulas":["不重复的核心公式"],"finalAnswer":"完整结论；hint 时为 null","checks":["内部复核，不展示"],"followUp":"默认空字符串","parameterPatch":null,"warnings":[]}
 注意：即使 responseLevel 是 variant 或 check，mode 也只能取上述枚举，不要返回 mode=variant 或 mode=check。`;
 
   const GENERATE_SYSTEM_PROMPT = `你是“大师实验室”的理科题目解析器。只返回 JSON 对象，禁止 Markdown 代码块。
@@ -56,7 +65,7 @@
     },
     steps: {
       level: "steps",
-      message: "请给出清晰、可核查的完整解题步骤，包括关键公式、代入、结果和自检。"
+      message: "请分步解答，保留必要条件、关键公式和代入，将各小问的最终答案及单位写入最后一步。"
     }
   };
 
@@ -1268,49 +1277,77 @@
     container.append(line);
   }
 
-  function structuredToHistoryText(payload) {
-    return [
-      payload.summary,
-      ...(payload.steps || []),
-      ...(payload.formulas || []),
-      payload.finalAnswer,
-      ...(payload.checks || [])
-    ].filter(Boolean).join("\n").slice(0, 1800);
+  function answerTextKey(value) {
+    return normalizeMathSource(text(value)).replace(/[\s，,。.;；:：]/g, "");
   }
 
-  function renderAssistantPayload(bubble, payload) {
-    if (payload.summary) bubble.append(createMathElement("p", "ai-answer-summary", payload.summary));
-    if (payload.steps?.length) {
-      const section = createElement("section", "ai-answer-section");
-      section.append(createElement("h4", "", "分步讲解"));
+  function getAnswerPresentation(payload, options = {}) {
+    const level = options.responseLevel || payload.mode;
+    const steps = asTextList(payload.steps, 8, 500).map(stripStepNumber);
+    const summary = text(payload.summary);
+    let lead = !steps.length || ["clarification", "refusal"].includes(payload.mode) ? summary : "";
+    let result = level === "hint" || payload.mode === "hint" ? "" : text(payload.finalAnswer);
+    if (result && steps.length) {
+      // Only collapse literal equivalents. Similar numbers are not proof that
+      // every requested sub-answer is present in the last step.
+      if (answerTextKey(steps.at(-1)).includes(answerTextKey(result))) result = "";
+    } else if (result && !steps.length) {
+      if (answerTextKey(lead) === answerTextKey(result)) lead = "";
+      steps.push(result);
+      result = "";
+    }
+    const seen = new Set();
+    const formulas = asTextList(payload.formulas, 8, 300).filter((formula) => {
+      const key = answerTextKey(formula);
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    const requestedFollowUp = ["hint", "variant"].includes(level) || payload.mode === "clarification" ||
+      /追问|变式|练习|类似题|再出.{0,8}题|提问|问题引导/.test(options.message || "");
+    return {
+      lead, steps, result, formulas,
+      followUp: requestedFollowUp ? text(payload.followUp) : "",
+      // Remove only the duplicate page-level disclaimer. Actual limitations,
+      // incomplete-answer alerts and offline-status warnings remain visible.
+      warnings: asTextList(payload.warnings, 5, 300).filter((warning) =>
+        warning !== "AI 讲解可能存在误差，请结合教材与教师要求核对。")
+    };
+  }
+
+  function structuredToHistoryText(payload, options = {}) {
+    const display = getAnswerPresentation(payload, options);
+    return [display.lead, ...display.steps, display.result, ...display.formulas,
+      display.followUp, ...display.warnings].filter(Boolean).join("\n").slice(0, 1800);
+  }
+
+  function renderAssistantPayload(bubble, payload, options = {}) {
+    const display = getAnswerPresentation(payload, options);
+    if (display.lead) bubble.append(createMathElement("p", "ai-answer-summary", display.lead));
+    if (display.steps.length) {
+      const section = createElement("section", "ai-answer-section solution-section");
+      section.append(createElement("h4", "", "解题步骤"));
       const list = createElement("ol");
-      payload.steps.forEach((step) => list.append(createMathElement("li", "", stripStepNumber(step))));
+      display.steps.forEach((step, index) => {
+        const last = index === display.steps.length - 1;
+        const item = createMathElement("li", last ? "ai-final-step" : "", step);
+        if (last && display.result) item.append(createMathElement("p", "ai-step-result", display.result));
+        list.append(item);
+      });
       section.append(list);
       bubble.append(section);
     }
-    if (payload.formulas?.length) {
+    if (display.formulas.length) {
       const section = createElement("section", "ai-answer-section formula-section");
       section.append(createElement("h4", "", "关键公式"));
-      payload.formulas.forEach((formula) => appendFormula(section, formula));
+      display.formulas.forEach((formula) => appendFormula(section, formula));
       bubble.append(section);
     }
-    if (payload.finalAnswer) {
-      const section = createElement("section", "ai-answer-section final-section");
-      section.append(createElement("h4", "", "当前结论"));
-      section.append(createMathElement("p", "", payload.finalAnswer));
-      bubble.append(section);
-    }
-    if (payload.checks?.length) {
-      const section = createElement("section", "ai-answer-section check-section");
-      section.append(createElement("h4", "", "结果自检"));
-      payload.checks.forEach((check) => section.append(createMathElement("p", "", check)));
-      bubble.append(section);
-    }
-    if (payload.followUp) bubble.append(createMathElement("p", "ai-follow-up", payload.followUp));
+    if (display.followUp) bubble.append(createMathElement("p", "ai-follow-up", display.followUp));
     if (payload.parameterPatch) bubble.append(renderPatch(payload.parameterPatch));
-    if (payload.warnings?.length) {
+    if (display.warnings.length) {
       const warning = createElement("div", "ai-answer-warning");
-      payload.warnings.forEach((item) => warning.append(createMathElement("span", "", item)));
+      display.warnings.forEach((item) => warning.append(createMathElement("span", "", item)));
       bubble.append(warning);
     }
   }
@@ -1352,8 +1389,8 @@
       if (payload.reasoning) {
         bubble.append(createReasoningToggle(payload.reasoning, payload.thinkingSeconds));
       }
-      renderAssistantPayload(bubble, payload);
-      state.messages.push({ role, content: structuredToHistoryText(payload) });
+      renderAssistantPayload(bubble, payload, options);
+      state.messages.push({ role, content: structuredToHistoryText(payload, options) });
     }
     row.append(bubble);
     elements.messages.append(row);
@@ -1392,7 +1429,7 @@
       const payload = await apiRequest("/api/v1/tutor/chat", request, CHAT_TIMEOUT_MS);
       if (requestSerial !== state.requestSerial) return null;
       clearPending();
-      addMessage("assistant", payload, { source: payload.source });
+      addMessage("assistant", payload, { source: payload.source, responseLevel, message: content });
       elements.status.textContent = payload.source === "local_fallback" ? "AI 未连接，当前显示本地教学提示" : "回答完成，可继续追问";
       return payload;
     } catch (error) {
