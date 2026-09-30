@@ -50,9 +50,14 @@ depth remains independent: hint mode still withholds the final answer.
 The output budget is 32768 tokens, not a claim of unlimited reasoning. Upstream
 requests have a 240-second deadline; timeout, incomplete output and wrong-model
 responses are never retried or silently downgraded. At most two upstream calls
-are concurrent, and the default per-address limit is ten requests per ten minutes.
-These controls reduce accidental spending but are not authentication or a global
-spending limit. Set an account-level budget before a public production release.
+are concurrent. `RATE_LIMIT_MAX=0` disables per-address rate quotas without
+retaining address counters. There is no daily quota; capacity, request-size,
+response-validation and timeout protections remain enabled. This public demo
+can exhaust the owner's finite API balance. It is not authentication or a
+guaranteed spending cap, and it never triggers an automatic recharge.
+Web visitors without a personal key use this server's secret. A personal key
+keeps the existing browser-to-DeepSeek route and is never sent to this gateway;
+personal-key errors do not automatically fall back to the public balance.
 `/health` reports configuration, not evidence of a successful paid model call.
 
 For unmatched questions, the generate endpoint returns the complete checked
@@ -80,8 +85,8 @@ For browser acceptance, run `npm run test:browser` with Playwright available.
 `BROWSER_CHANNEL` defaults to `msedge`. The script opens a fresh isolated browser,
 serves this project's web files and synthetic SSE/JSON on loopback, and uses the
 real gateway with AI disabled for offline cases. It never saves a credential or
-allows an external model request. Browser virtual time advances the 130-second
-deadline so timeout coverage does not require waiting 130 real seconds.
+allows an external model request. Browser virtual time advances the configured
+deadline so timeout coverage does not require waiting in real time.
 
 Screenshots and a report containing response status/type, request mode/count,
 console errors and visible page results are written to the ignored directory

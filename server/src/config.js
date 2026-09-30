@@ -33,7 +33,8 @@ export const config = Object.freeze({
   thinkingTimeoutMs: integerFromEnv('THINKING_TIMEOUT_MS', 240000, 10000, 240000),
   deepSeekMaxTokens: integerFromEnv('DEEPSEEK_MAX_TOKENS', 32768, 4096, 131072),
   maxConcurrentAiRequests: integerFromEnv('MAX_CONCURRENT_AI_REQUESTS', 2, 1, 4),
-  rateLimitMax: integerFromEnv('RATE_LIMIT_MAX', 10, 1, 500),
+  // 0 disables address-based quotas; upstream concurrency remains bounded.
+  rateLimitMax: integerFromEnv('RATE_LIMIT_MAX', 0, 0, 500),
   rateLimitWindowMs: integerFromEnv('RATE_LIMIT_WINDOW_MS', 600000, 60000, 3600000),
   allowedOrigins: listFromEnv('ALLOWED_ORIGINS')
 });

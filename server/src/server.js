@@ -24,6 +24,7 @@ export class RateLimiter {
   }
 
   allow(key, now = Date.now()) {
+    if (this.limit === 0) return true;
     const current = this.entries.get(key);
     if (!current) {
       if (this.entries.size >= MAX_RATE_LIMIT_KEYS) {
@@ -154,7 +155,9 @@ export function createMasterLabServer(options = {}) {
           modelLabel: DEEPSEEK_OFFICIAL_MODEL.label,
           thinking: 'enabled',
           reasoningEffort: DEEPSEEK_OFFICIAL_MODEL.reasoningEffort,
-          aiConfigured: deepSeek.configured
+          aiConfigured: deepSeek.configured,
+          perAddressRateLimitEnabled: limiter.limit > 0,
+          maxConcurrentAiRequests: config.maxConcurrentAiRequests
         }, requestId);
         return;
       }

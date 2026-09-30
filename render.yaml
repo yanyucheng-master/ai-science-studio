@@ -36,6 +36,6 @@ services:
       - key: THINKING_TIMEOUT_MS
         value: 75000
       - key: RATE_LIMIT_MAX
-        value: 30
+        value: 0
       - key: RATE_LIMIT_WINDOW_MS
         value: 600000

@@ -7,7 +7,8 @@ import { DeepSeekClient } from '../src/deepseek-client.js';
 async function withServer(run, options = {}) {
   const server = createMasterLabServer({
     deepSeekClient: options.deepSeekClient || { configured: false },
-    allowedOrigins: []
+    allowedOrigins: [],
+    rateLimiter: options.rateLimiter
   });
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
@@ -292,4 +293,38 @@ test('bounds rate-limiter memory even with many distinct client keys', () => {
     assert.equal(limiter.allow(`client-${index}`, 1_000), true);
   }
   assert.ok(limiter.entries.size <= 10_000);
+});
+
+test('a zero limit disables address quotas without retaining client addresses', () => {
+  const limiter = new RateLimiter(0, 600_000);
+  for (let index = 0; index < 12_000; index += 1) {
+    assert.equal(limiter.allow('same-client', 1_000), true);
+    assert.equal(limiter.allow(`client-${index}`, 1_000), true);
+  }
+  assert.equal(limiter.entries.size, 0);
+});
+
+test('an explicitly enabled address quota still expires correctly', () => {
+  const limiter = new RateLimiter(2, 600_000);
+  assert.equal(limiter.allow('client', 1_000), true);
+  assert.equal(limiter.allow('client', 1_001), true);
+  assert.equal(limiter.allow('client', 1_002), false);
+  assert.equal(limiter.allow('client', 601_000), true);
+});
+
+test('disabled quotas allow more than ten same-address POSTs without calling AI', async () => {
+  const rateLimiter = new RateLimiter(0, 600_000);
+  await withServer(async baseUrl => {
+    for (let index = 0; index < 12; index += 1) {
+      const response = await fetch(`${baseUrl}/api/v1/experiment/generate`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}'
+      });
+      assert.equal(response.status, 400);
+      assert.equal((await response.json()).error, 'INVALID_QUESTION');
+    }
+    const health = await (await fetch(`${baseUrl}/health`)).json();
+    assert.equal(health.perAddressRateLimitEnabled, false);
+    assert.equal(health.maxConcurrentAiRequests, 2);
+  }, { rateLimiter });
+  assert.equal(rateLimiter.entries.size, 0);
 });
