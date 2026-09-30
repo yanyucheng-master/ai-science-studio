@@ -91,6 +91,7 @@ function sendJson(response, status, payload, requestId) {
 function aiErrorStatus(error) {
   if (error?.code === 'AI_AUTH_FAILED') return { status: 503, error: 'AI_NOT_CONFIGURED' };
   if (error?.code === 'AI_RATE_LIMITED') return { status: 429, error: 'AI_RATE_LIMITED' };
+  if (error?.code === 'AI_BUSY') return { status: 429, error: 'AI_BUSY' };
   if (error?.code === 'AI_TIMEOUT') return { status: 504, error: 'AI_TIMEOUT' };
   return { status: 503, error: 'AI_UNAVAILABLE' };
 }
@@ -151,6 +152,8 @@ export function createMasterLabServer(options = {}) {
           model: DEEPSEEK_OFFICIAL_MODEL.id,
           modelVersion: DEEPSEEK_OFFICIAL_MODEL.version,
           modelLabel: DEEPSEEK_OFFICIAL_MODEL.label,
+          thinking: 'enabled',
+          reasoningEffort: DEEPSEEK_OFFICIAL_MODEL.reasoningEffort,
           aiConfigured: deepSeek.configured
         }, requestId);
         return;

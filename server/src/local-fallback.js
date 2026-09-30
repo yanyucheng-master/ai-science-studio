@@ -1,36 +1,4 @@
-function numbersFromText(text) {
-  const withoutAsciiIdentifiers = text.replace(/[A-Za-z][A-Za-z0-9]*/g, ' ');
-  return (withoutAsciiIdentifiers.match(/-?\d+(?:\.\d+)?/g) || [])
-    .map(Number)
-    .filter(Number.isFinite);
-}
-
-function clamp(value, minimum, maximum) {
-  return Math.min(maximum, Math.max(minimum, value));
-}
-
-function firstMeasurement(text, patterns) {
-  for (const pattern of patterns) {
-    const match = text.match(pattern);
-    const value = Number(match?.groups?.value);
-    if (Number.isFinite(value)) {
-      return { value, unit: (match.groups.unit || '').toLowerCase() };
-    }
-  }
-  return null;
-}
-
-function extractFeCuSO4Inputs(text) {
-  const iron = firstMeasurement(text, [
-    /(?:铁粉?|Fe)\s*(?:的)?\s*(?:质量)?\s*(?:为|是|=)?\s*(?<value>\d+(?:\.\d+)?)\s*(?<unit>g)/i,
-    /(?<value>\d+(?:\.\d+)?)\s*(?<unit>g)\s*(?:的)?\s*(?:铁粉?|Fe)/i
-  ]);
-  const copperSulfate = firstMeasurement(text, [
-    /(?:硫酸铜|CuSO(?:4|₄))\s*(?:溶液)?\s*(?:的)?\s*(?:质量|物质的量)?\s*(?:为|是|=)?\s*(?<value>\d+(?:\.\d+)?)\s*(?<unit>mol|g)/i,
-    /(?<value>\d+(?:\.\d+)?)\s*(?<unit>mol|g)\s*(?:的)?\s*(?:硫酸铜|CuSO(?:4|₄))(?:溶液)?/i
-  ]);
-  return { iron, copperSulfate };
-}
+import { offlineInputs } from './offline-inputs.js';
 
 function experiment(title, subject, templateId, parameters, answer, steps) {
   return {
@@ -62,68 +30,59 @@ function missingConditions(message) {
 }
 
 export function localGenerateFallback(question) {
-  const values = numbersFromText(question);
   const isFeCuSO4Question = /(?:铁|Fe)/i.test(question) && /(?:硫酸铜|CuSO(?:4|₄))/i.test(question);
   if (isFeCuSO4Question) {
-    const { iron, copperSulfate } = extractFeCuSO4Inputs(question);
-    if (!iron || !copperSulfate) {
-      return missingConditions('请补充铁的质量和硫酸铜的质量或物质的量，系统不会自行补造题设数值。');
+    const parameters = offlineInputs(question, 'fe_cuso4');
+    if (!parameters) {
+      return missingConditions('请补充铁的质量和硫酸铜溶质的质量或物质的量，并使用实验范围内的数值；不能直接把溶液质量当作溶质质量。系统不会自行补造题设或截断数值。');
     }
-    const copperSulfateMass = copperSulfate.unit === 'mol'
-      ? copperSulfate.value * 160
-      : copperSulfate.value;
     return experiment(
       '铁与硫酸铜置换反应',
       'chemistry',
       'fe_cuso4',
-      {
-        ironMass: clamp(iron.value, 0.5, 30),
-        copperSulfateMass: clamp(copperSulfateMass, 1, 80)
-      },
+      parameters,
       '已使用本地规则识别置换反应，计算由设备端确定性引擎完成。',
       ['换算反应物的物质的量', '按 1∶1 计量比确定限量试剂', '计算铜的理论生成量并观察现象']
     );
   }
   if (/切线|导数|斜率/.test(question)) {
-    if (values.length < 2) {
-      return missingConditions('请补充函数表达式和切点横坐标，系统不会自行补造题设数值。');
+    const parameters = offlineInputs(question, 'tangent');
+    if (!parameters) {
+      return missingConditions('离线切线模板仅支持 y=ax²（0.25≤a≤3，−3≤x₀≤3）。请明确函数表达式和切点横坐标，系统不会补造或截断数值。');
     }
     return experiment(
       '函数切线与导数',
       'mathematics',
       'tangent',
-      {
-        coefficient: clamp(values[0] ?? 1, 0.25, 3),
-        pointX: clamp(values[1] ?? 1, -3, 3)
-      },
+      parameters,
       '已使用本地规则匹配二次函数切线实验。',
       ['确定函数与切点', '计算导数值', '拖动切点比较切线斜率']
     );
   }
   if (/细胞|叶绿体|线粒体|细胞核/.test(question)) {
+    const parameters = offlineInputs(question, 'cell');
+    if (!parameters) return missingConditions('请明确选择植物细胞或动物细胞，或从实验库打开预设。');
     return experiment(
       '细胞结构识别',
       'biology',
       'cell',
-      { cellType: /动物/.test(question) ? 0 : 1 },
+      parameters,
       '已使用本地规则匹配细胞结构实验。',
       ['选择细胞类型', '定位细胞器', '比较结构与功能']
     );
   }
-  const explicitlyAboutBraking = /刹车|制动|停车|减速度/.test(question) ||
-    (/初速度/.test(question) && /汽车|车辆|小车/.test(question));
+  const explicitlyAboutBraking = /刹车|制动|停车/.test(question) ||
+    (/初速度|减速度/.test(question) && /汽车|车辆|小车/.test(question));
   if (explicitlyAboutBraking) {
-    if (values.length < 2) {
-      return missingConditions('请补充初速度和刹车加速度（或减速度），系统不会自行补造题设数值。');
+    const parameters = offlineInputs(question, 'brake');
+    if (!parameters) {
+      return missingConditions('请补充带单位的初速度和刹车加速度（或减速度），并使用实验范围内的数值；系统不会自行补造题设或截断数值。');
     }
     return experiment(
       '制动距离实验',
       'physics',
       'brake',
-      {
-        initialSpeed: clamp(values[0] ?? 20, 5, 40),
-        deceleration: clamp(values[1] ?? 5, 1, 12)
-      },
+      parameters,
       '已使用本地规则识别匀减速制动模型。',
       ['提取初速度和减速度', '计算停车时间', '验证停车距离与速度的平方关系']
     );

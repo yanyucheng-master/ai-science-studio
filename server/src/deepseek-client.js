@@ -4,7 +4,7 @@ const GENERATE_SYSTEM_PROMPT = `你是“大师实验室”的理科题目解析
 
 任务分两种模式：
 1. 题目能映射到受支持实验时，mode=experiment，返回受限声明式实验计划。
-2. 没有相应模板时，mode=explanation，只做路由判断：说明“暂无对应实验模板”或指出缺少的建模条件。不要在本接口完成数值解题；完整讲解由导师接口负责。
+2. 没有相应模板但题设完整时，mode=explanation，给出可独立阅读的文字解答：关键方程、紧凑计算步骤、全部小问的最终数值和单位，以及一次代回、守恒或边界复核。鸿蒙客户端会直接展示本接口的 answer，不会再调用导师接口，所以不能只返回“暂无对应实验模板”。可附带一种受限 VISUAL。题设不足时指出缺少的建模条件并追问，禁止补造数值。answer 控制在 4500 字以内。
 
 支持模板 ID：brake, fe_cuso4, tangent, cell, solenoid, board_slider, projectile, ohm_circuit, lever, lens, buoyancy, friction, lamp_power, series_circuit, heat_balance, liquid_pressure, efficiency, sound。
 最多组合两个模板，且只允许：friction>brake、ohm_circuit>solenoid、series_circuit>lamp_power、friction>board_slider、liquid_pressure>buoyancy、brake>tangent。
@@ -35,7 +35,7 @@ experiment JSON：
 只使用题目中明确出现、物理意义正确且处于上述范围的参数。缺少建立实验所需的关键参数时，必须返回 mode=explanation，指出缺少哪些条件并提出一个明确追问，禁止自行补造教材常见值。
 
 explanation JSON：
-{"mode":"explanation","title":"...","answer":"暂无对应实验模板；若条件不足，指出缺失条件并提出一个明确追问","plan":null,"visual":VISUAL}
+{"mode":"explanation","title":"...","answer":"无模板时给出完整文字解答与复核；若条件不足，指出缺失条件并提出一个明确追问","plan":null,"visual":VISUAL}
 
 VISUAL 只允许以下一种：
 - {"kind":"none","title":""}
@@ -46,6 +46,7 @@ VISUAL 只允许以下一种：
 
 涉及计算、方程或推导时，输出 JSON 前必须独立复核最终结论：把结果代回原方程，检查量纲，并核对全部初始条件和边界条件；发现任一不满足时先纠正。answer 中给出可供读者检查的关键方程，不能跳过决定答案的代数步骤。
 function_plot 只能表示一条由 title 明确命名的曲线；如果需要同时说明多条曲线或多个对象，改用 relation_diagram，不能让标题声称绘制了 points 实际没有区分的多条曲线。
+可视化必须遵守 answer 中的物理适用区间和边界：当发生脱离接触、相变、停下或阶段切换时，只绘制所声明阶段内实际成立的点。支持力大小、质量、耗散热量等非负量不能出现负数；不得把脱轨后“假设继续贴轨”所得的负支持力画成实际支持力。title 标明横纵量、单位及适用区间；复杂分段或无法可靠取点时改用 relation_diagram 或 none，不补造数据。
 严禁输出代码、SVG、HTML、URL、脚本、自由表达式或声称不存在的实验结果。数值不确定时说明假设。`;
 
 const TUTOR_SYSTEM_PROMPT = `你是“大师实验室”的实验导师。只返回 JSON 对象，不使用代码块。
@@ -141,11 +142,10 @@ export function buildTutorGuardrails(input) {
   };
 }
 
-export function shouldUseThinkingMode(input) {
-  if (!['steps', 'check'].includes(input.responseLevel)) {
-    return false;
-  }
-  return !isTargetedFollowUp(input);
+export function shouldUseThinkingMode(_input) {
+  // Reasoning effort and teaching depth are independent: a hint still hides
+  // the final answer, but all upstream requests use the user's max profile.
+  return true;
 }
 
 export class DeepSeekClient {
@@ -153,8 +153,10 @@ export class DeepSeekClient {
     this.apiKey = options.apiKey ?? config.deepSeekApiKey;
     this.baseUrl = options.baseUrl ?? config.deepSeekBaseUrl;
     this.model = DEEPSEEK_OFFICIAL_MODEL.id;
-    this.timeoutMs = options.timeoutMs ?? config.requestTimeoutMs;
+    this.timeoutMs = options.timeoutMs ?? config.thinkingTimeoutMs;
     this.fetchImpl = options.fetchImpl ?? globalThis.fetch;
+    this.activeRequests = 0;
+    this.maxConcurrentRequests = options.maxConcurrentRequests ?? config.maxConcurrentAiRequests;
   }
 
   get configured() {
@@ -182,7 +184,6 @@ export class DeepSeekClient {
   }
 
   async chat(input) {
-    const useThinking = shouldUseThinkingMode(input);
     const history = input.history.map((item) => ({ role: item.role, content: item.content }));
     const guardrails = buildTutorGuardrails(input);
     const requestEnvelope = {
@@ -205,29 +206,36 @@ export class DeepSeekClient {
           `structuredInput: ${JSON.stringify(requestEnvelope, null, 0)}`
         ].join('\n')
       }
-    ], {
-      thinking: useThinking,
-      timeoutMs: useThinking ? config.thinkingTimeoutMs : this.timeoutMs,
-      maxTokens: useThinking ? 4200 : 2200
-    });
+    ]);
   }
 
   async #requestJson(messages, options = {}) {
     if (!this.configured) {
       throw new Error('DeepSeek API key is not configured');
     }
-    let lastError = new Error('DeepSeek request failed');
-    for (let attempt = 0; attempt < 2; attempt += 1) {
-      try {
-        return await this.#singleRequest(messages, options);
-      } catch (error) {
-        lastError = error instanceof Error ? error : new Error('Unknown DeepSeek error');
-        if (lastError.retryable === false) {
-          break;
+    if (this.activeRequests >= this.maxConcurrentRequests) {
+      const error = new Error('DeepSeek concurrency limit reached');
+      error.code = 'AI_BUSY';
+      error.retryable = false;
+      throw error;
+    }
+    this.activeRequests += 1;
+    try {
+      let lastError = new Error('DeepSeek request failed');
+      for (let attempt = 0; attempt < 2; attempt += 1) {
+        try {
+          return await this.#singleRequest(messages, options);
+        } catch (error) {
+          lastError = error instanceof Error ? error : new Error('Unknown DeepSeek error');
+          if (lastError.retryable === false) {
+            break;
+          }
         }
       }
+      throw lastError;
+    } finally {
+      this.activeRequests -= 1;
     }
-    throw lastError;
   }
 
   async #singleRequest(messages, options = {}) {
@@ -244,10 +252,10 @@ export class DeepSeekClient {
         body: JSON.stringify({
           model: this.model,
           messages,
-          thinking: { type: options.thinking ? 'enabled' : 'disabled' },
+          thinking: { type: 'enabled' },
           response_format: { type: 'json_object' },
-          max_tokens: options.maxTokens ?? 2500,
-          ...(options.thinking ? { reasoning_effort: 'high' } : { temperature: 0.2 })
+          max_tokens: config.deepSeekMaxTokens,
+          reasoning_effort: DEEPSEEK_OFFICIAL_MODEL.reasoningEffort
         }),
         signal: controller.signal
       });
@@ -271,7 +279,20 @@ export class DeepSeekClient {
         error.retryable = false;
         throw error;
       }
-      const content = payload?.choices?.[0]?.message?.content;
+      const choice = payload?.choices?.[0];
+      if (choice?.finish_reason !== 'stop') {
+        const error = new Error('DeepSeek returned an incomplete answer');
+        error.code = 'INVALID_AI_RESPONSE';
+        error.retryable = false;
+        throw error;
+      }
+      if (payload?.model !== this.model && payload?.model !== DEEPSEEK_OFFICIAL_MODEL.version) {
+        const error = new Error('DeepSeek returned an unexpected model');
+        error.code = 'AI_MODEL_MISMATCH';
+        error.retryable = false;
+        throw error;
+      }
+      const content = choice.message?.content;
       if (typeof content !== 'string' || content.trim().length === 0) {
         const error = new Error('DeepSeek returned empty content');
         error.retryable = false;

@@ -34,17 +34,30 @@ parameter and the web client requires explicit confirmation before applying it.
 ## Deployment
 
 Create `DEEPSEEK_API_KEY` as a Render secret. Do not put the key in `web`, a
-browser form, a build artifact, Git, or a HarmonyOS package. Keep
+client-side browser storage, a build artifact, Git, or a HarmonyOS package. Keep
 `ALLOWED_ORIGINS` restricted to the deployed web origin. After deployment,
-verify `/health` reports `aiConfigured: true`, `model: deepseek-v4-pro`, and
-`modelVersion: DeepSeek-V4-Pro-0813`, then run the web and HarmonyOS
+verify `/health` reports `aiConfigured: true`, `model: deepseek-flash`,
+`modelVersion: DeepSeek-V4.1-Flash`, and `reasoningEffort: max`, then run the web and HarmonyOS
 integration tests against the same service URL.
 
-The built-in model is pinned to DeepSeek V4 Pro GA. The official API ID is
-`deepseek-v4-pro`; as of 2026-08-13 this routes to `DeepSeek-V4-Pro-0813`.
+The configured model is DeepSeek V4.1 Flash. The official API ID is
+`deepseek-flash`; as of 2026-09-30 this routes to `DeepSeek-V4.1-Flash`.
 Do not override the model from the client, environment variables, or request
-bodies. Thinking requests send `reasoning_effort: "high"` per the official
-Chat Completions docs.
+bodies. All requests send `thinking: {"type":"enabled"}` and
+`reasoning_effort: "max"` per the official Chat Completions docs. Teaching
+depth remains independent: hint mode still withholds the final answer.
+
+The output budget is 32768 tokens, not a claim of unlimited reasoning. Upstream
+requests have a 240-second deadline; timeout, incomplete output and wrong-model
+responses are never retried or silently downgraded. At most two upstream calls
+are concurrent, and the default per-address limit is ten requests per ten minutes.
+These controls reduce accidental spending but are not authentication or a global
+spending limit. Set an account-level budget before a public production release.
+`/health` reports configuration, not evidence of a successful paid model call.
+
+For unmatched questions, the generate endpoint returns the complete checked
+explanation and an optional declarative visualization: the HarmonyOS client
+does not make an additional chat request. Never execute model-generated code.
 
 ## Model evaluation
 

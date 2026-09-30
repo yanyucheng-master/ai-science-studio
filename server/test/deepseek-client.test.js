@@ -2,12 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildTutorGuardrails, DeepSeekClient, shouldUseThinkingMode } from '../src/deepseek-client.js';
 
-function jsonResponse(content) {
+function jsonResponse(content, finishReason = 'stop', model = 'deepseek-flash') {
   return {
     ok: true,
     status: 200,
     async json() {
-      return { choices: [{ message: { content } }] };
+      return { model, choices: [{ message: { content }, finish_reason: finishReason }] };
     }
   };
 }
@@ -32,9 +32,11 @@ test('uses the fixed model and retries only once', async () => {
   const result = await client.generate('测试题目');
   assert.equal(result.mode, 'explanation');
   assert.equal(calls, 2);
-  assert.equal(requests[0].model, 'deepseek-v4-pro');
-  assert.deepEqual(requests[0].thinking, { type: 'disabled' });
-  assert.equal(Object.hasOwn(requests[0], 'reasoning_effort'), false);
+  assert.equal(requests[0].model, 'deepseek-flash');
+  assert.deepEqual(requests[0].thinking, { type: 'enabled' });
+  assert.equal(requests[0].reasoning_effort, 'max');
+  assert.equal(requests[0].max_tokens, 32768);
+  assert.equal(Object.hasOwn(requests[0], 'temperature'), false);
   assert.deepEqual(requests[0].response_format, { type: 'json_object' });
 });
 
@@ -133,7 +135,7 @@ test('does not retry invalid model JSON', async () => {
   assert.equal(calls, 1);
 });
 
-test('uses thinking mode only for full tutor steps', async () => {
+test('uses maximum thinking for every tutor level without changing teaching depth', async () => {
   const requests = [];
   const client = new DeepSeekClient({
     apiKey: 'test-only',
@@ -148,14 +150,15 @@ test('uses thinking mode only for full tutor steps', async () => {
     message: '测试',
     context: { mode: 'question', subject: '物理', originalQuestion: '测试题' }
   };
-  await client.chat({ ...base, responseLevel: 'hint' });
-  await client.chat({ ...base, responseLevel: 'steps' });
-  assert.deepEqual(requests[0].thinking, { type: 'disabled' });
-  assert.deepEqual(requests[1].thinking, { type: 'enabled' });
-  assert.equal(requests[1].reasoning_effort, 'high');
-  assert.equal(requests[0].temperature, 0.2);
-  assert.equal(Object.hasOwn(requests[1], 'temperature'), false);
-  assert.equal(requests[1].max_tokens, 4200);
+  for (const responseLevel of ['hint', 'explain', 'steps', 'check', 'variant']) {
+    await client.chat({ ...base, responseLevel });
+  }
+  for (const request of requests) {
+    assert.deepEqual(request.thinking, { type: 'enabled' });
+    assert.equal(request.reasoning_effort, 'max');
+    assert.equal(Object.hasOwn(request, 'temperature'), false);
+    assert.equal(request.max_tokens, 32768);
+  }
   assert.match(requests[1].messages.at(-1).content, /【唯一原题】/);
   assert.match(requests[1].messages.at(-1).content, /originalQuestion: 测试题/);
 });
@@ -181,14 +184,14 @@ test('extracts immutable question constraints and every requested goal', () => {
   ]);
 });
 
-test('uses fast mode for a targeted follow-up instead of restarting long reasoning', async () => {
+test('keeps maximum thinking for targeted follow-ups while restricting their answer scope', async () => {
   const targeted = {
     responseLevel: 'steps',
     history: [{ role: 'assistant', content: '前面已经求出相对加速度。' }],
     message: '不要重复前面的步骤，只补充热量和能量核对。',
     context: { mode: 'question', subject: '物理', originalQuestion: '木板滑块问题' }
   };
-  assert.equal(shouldUseThinkingMode(targeted), false);
+  assert.equal(shouldUseThinkingMode(targeted), true);
   assert.deepEqual(buildTutorGuardrails(targeted).requestedGoals, ['求产生的热量', '核对能量关系']);
   assert.match(buildTutorGuardrails(targeted).replyScope, /局部追问/);
   assert.equal(shouldUseThinkingMode({ ...targeted, history: [], message: '请给出完整步骤。' }), true);
@@ -202,4 +205,88 @@ test('does not turn an explicitly excluded old step into a new requested goal', 
     context: { mode: 'question', subject: '物理', originalQuestion: '木板滑块问题' }
   });
   assert.deepEqual(guardrails.requestedGoals, ['求产生的热量']);
+});
+
+test('parameter suggestions use the same fixed maximum-thinking profile', async () => {
+  let request;
+  const client = new DeepSeekClient({
+    apiKey: 'test-only',
+    fetchImpl: async (_url, options) => {
+      request = JSON.parse(options.body);
+      return jsonResponse('{"message":"先比较两次实验","patch":null}');
+    }
+  });
+  await client.tutor({}, '如何比较？');
+  assert.equal(request.model, 'deepseek-flash');
+  assert.equal(request.reasoning_effort, 'max');
+  assert.deepEqual(request.thinking, { type: 'enabled' });
+});
+
+for (const finishReason of ['length', 'content_filter', 'aborted', 'insufficient_system_resource', undefined]) {
+  test(`rejects incomplete upstream output even when JSON is valid (${finishReason})`, async () => {
+    let calls = 0;
+    const client = new DeepSeekClient({
+      apiKey: 'test-only',
+      fetchImpl: async () => {
+        calls += 1;
+        const result = jsonResponse('{"mode":"explanation"}', finishReason);
+        if (finishReason === undefined) {
+          result.json = async () => ({ model: 'deepseek-flash', choices: [{ message: { content: '{}' } }] });
+        }
+        return result;
+      }
+    });
+    await assert.rejects(client.generate('测试'), { code: 'INVALID_AI_RESPONSE', retryable: false });
+    assert.equal(calls, 1);
+    assert.equal(client.activeRequests, 0);
+  });
+}
+
+test('rejects a different upstream model without retrying or accepting its answer', async () => {
+  let calls = 0;
+  const client = new DeepSeekClient({
+    apiKey: 'test-only',
+    fetchImpl: async () => {
+      calls += 1;
+      return jsonResponse('{}', 'stop', 'deepseek-v4-pro');
+    }
+  });
+  await assert.rejects(client.generate('测试'), { code: 'AI_MODEL_MISMATCH', retryable: false });
+  assert.equal(calls, 1);
+});
+
+test('limits concurrent upstream calls and releases slots after completion', async () => {
+  const releases = [];
+  let calls = 0;
+  const client = new DeepSeekClient({
+    apiKey: 'test-only',
+    maxConcurrentRequests: 2,
+    fetchImpl: async () => {
+      calls += 1;
+      await new Promise(resolve => releases.push(resolve));
+      return jsonResponse('{}');
+    }
+  });
+  const first = client.generate('一');
+  const second = client.generate('二');
+  await assert.rejects(client.generate('三'), { code: 'AI_BUSY', retryable: false });
+  assert.equal(calls, 2);
+  assert.equal(client.activeRequests, 2);
+  releases.forEach(resolve => resolve());
+  await Promise.all([first, second]);
+  assert.equal(client.activeRequests, 0);
+});
+
+test('unmatched HarmonyOS questions ask the model for a standalone explanation, not a route-only notice', async () => {
+  let request;
+  const client = new DeepSeekClient({
+    apiKey: 'test-only',
+    fetchImpl: async (_url, options) => {
+      request = JSON.parse(options.body);
+      return jsonResponse('{}');
+    }
+  });
+  await client.generate('圆周运动问题');
+  assert.match(request.messages[0].content, /不会再调用导师接口/);
+  assert.match(request.messages[0].content, /最终数值和单位/);
 });

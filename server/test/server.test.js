@@ -170,9 +170,11 @@ test('reports health without exposing secrets', async () => {
     const response = await fetch(`${baseUrl}/health`);
     assert.equal(response.status, 200);
     const body = await response.json();
-    assert.equal(body.model, 'deepseek-v4-pro');
-    assert.equal(body.modelVersion, 'DeepSeek-V4-Pro-0813');
-    assert.equal(body.modelLabel, 'DeepSeek V4 Pro 正式版');
+    assert.equal(body.model, 'deepseek-flash');
+    assert.equal(body.modelVersion, 'DeepSeek-V4.1-Flash');
+    assert.equal(body.modelLabel, 'DeepSeek V4.1 Flash');
+    assert.equal(body.thinking, 'enabled');
+    assert.equal(body.reasoningEffort, 'max');
     assert.equal(body.aiConfigured, false);
     assert.equal(JSON.stringify(body).includes('apiKey'), false);
   });
