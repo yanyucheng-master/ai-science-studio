@@ -145,7 +145,9 @@ try {
       await page.locator('#generateButton').click();
       await page.waitForFunction(() => window.MasterLabAIHost?.getContext?.().mode === 'experiment');
     }
-    await page.evaluate(() => window.MasterLabAITutor.openStandalone());
+    // Exercise the same visible entry point as a visitor, not just its JS API.
+    await page.locator('#mentorOpenPageButton').click();
+    await page.waitForURL('**/#/ai-tutor');
     if (scenario === 'timeout') await page.clock.install();
     await page.locator(`[data-ai-action="${scenario === 'hint' ? 'hint' : 'steps'}"]`).click();
     if (scenario === 'timeout' || scenario === 'stop') {

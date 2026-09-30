@@ -8789,7 +8789,7 @@ body.fullscreen-lock {
   font-size: 19px;
 }
 
-.awaiting-generation .mentor-actions {
+.awaiting-generation .mentor-actions button:not(.mentor-open-page) {
   opacity: 0.55;
   pointer-events: none;
 }
