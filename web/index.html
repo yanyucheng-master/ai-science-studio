@@ -802,11 +802,11 @@
         <svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
       </button>
       <span class="section-kicker">SECURE LOCAL KEY</span>
-      <h2 id="apiKeyModalTitle">配置 DeepSeek 密钥</h2>
-      <p class="api-key-hint">密钥只保存在本机浏览器，不会写入网站代码或公开仓库。内置模型固定为 <strong>DeepSeek V4 Pro 正式版</strong>（API：deepseek-v4-pro，版本 DeepSeek-V4-Pro-0813）。</p>
+      <h2 id="apiKeyModalTitle">个人密钥（可选）</h2>
+      <p class="api-key-hint">不填密钥即可使用后台公益默认 AI，余额有限，用完后默认服务将不可用。填写个人密钥后优先直连 DeepSeek；个人密钥仅保存在本机浏览器，不上传公益后台，失败时不会自动消耗公益余额。两种模式均使用 <strong>DeepSeek V4.1 Flash</strong>（API：deepseek-flash，最高思考 max）。清除个人密钥可恢复公益默认模式。</p>
       <label class="api-key-label" for="apiKeyInput">API Key</label>
       <input id="apiKeyInput" class="api-key-input" type="password" autocomplete="off" spellcheck="false" placeholder="sk-…" maxlength="200">
-      <p class="api-key-status" id="apiKeyStatus">尚未配置密钥</p>
+      <p class="api-key-status" id="apiKeyStatus">未配置个人密钥：使用后台公益默认服务</p>
       <div class="api-key-actions">
         <button type="button" id="apiKeyClearButton">清除</button>
         <button type="button" class="modal-primary" id="apiKeySaveButton">保存并启用</button>
@@ -817,6 +817,6 @@
   <script src="science-motion.js?v=20260922-motion-1"></script>
   <script src="physics-extra.js?v=20260929-diagram-pan-2"></script>
   <script src="app.js?v=20260929-diagram-pan-2"></script>
-  <script src="ai-tutor.js?v=20260922-sse-completion-motion"></script>
+  <script src="ai-tutor.js?v=20260930-public-default-1"></script>
 </body>
 </html>

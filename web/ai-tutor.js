@@ -2,16 +2,16 @@
   "use strict";
 
   const LOCAL_HOSTS = new Set(["127.0.0.1", "localhost"]);
-  const DEFAULT_REMOTE_API = "https://master-lab-api.onrender.com";
+  const DEFAULT_REMOTE_API = "https://masterlab-harmony-ai-2026.onrender.com";
   const API_BASE_URL = String(window.MASTER_LAB_API_URL ||
     (LOCAL_HOSTS.has(window.location.hostname) ? "http://127.0.0.1:10000" : DEFAULT_REMOTE_API)).replace(/\/$/, "");
   const DEEPSEEK_BASE_URL = "https://api.deepseek.com";
-  const DEEPSEEK_MODEL = "deepseek-v4-pro";
-  const DEEPSEEK_MODEL_VERSION = "DeepSeek-V4-Pro-0813";
-  const DEEPSEEK_MODEL_LABEL = "DeepSeek V4 Pro 正式版";
+  const DEEPSEEK_MODEL = "deepseek-flash";
+  const DEEPSEEK_MODEL_VERSION = "DeepSeek-V4.1-Flash";
+  const DEEPSEEK_MODEL_LABEL = "DeepSeek V4.1 Flash";
   const API_KEY_STORAGE = "masterLab.deepseekApiKey";
-  const CHAT_TIMEOUT_MS = 130000;
-  const GENERATE_TIMEOUT_MS = 45000;
+  const CHAT_TIMEOUT_MS = 540000;
+  const GENERATE_TIMEOUT_MS = 540000;
   const MAX_HISTORY_ITEMS = 12;
 
   const CHAT_SYSTEM_PROMPT = `你是“大师实验室”的中学数理化生 AI 导师。只返回 JSON 对象，禁止 Markdown 代码块、HTML、URL、代码和隐藏推理过程。
@@ -154,16 +154,19 @@
   function errorMessage(error) {
     const code = error?.code || error?.message;
     const messages = {
-      AI_NOT_CONFIGURED: "尚未配置 DeepSeek 密钥。请右键点击烧瓶图标，粘贴 API 密钥后重试。",
-      AI_AUTH_FAILED: "API 密钥无效或已失效，请右键烧瓶图标重新配置。",
+      AI_NOT_CONFIGURED: "公益默认 AI 服务尚未就绪。可稍后重试，或右键烧瓶图标配置个人密钥。",
+      AI_AUTH_FAILED: "个人 API 密钥无效或已失效，请右键烧瓶图标重新配置；本次不会切换到公益默认服务。",
       AI_RATE_LIMITED: "AI 请求较多，请稍后再试。",
       RATE_LIMITED: "AI 请求较多，请稍后再试。",
+      AI_BUSY: "公益后台的 AI 并发容量已满，请稍后重试。",
       AI_TIMEOUT: "这道题分析时间较长，本次请求已超时。你可以重试，或先请求一个简短提示。",
-      AI_UNAVAILABLE: "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+      AI_UNAVAILABLE: hasBrowserApiKey()
+        ? "个人 AI 接口暂时不可用，题目和实验状态已保留；不会自动使用公益余额。"
+        : "公益默认 AI 服务暂时不可用（可能余额不足或临时故障）。题目已保留，可稍后重试或配置个人密钥。",
       INVALID_AI_RESPONSE: "AI 返回格式不符合约定，已拦截显示。请再试一次，或换个问法。",
       ORIGIN_NOT_ALLOWED: "当前网页地址尚未加入 AI 服务允许列表。",
       ABORTED: "已停止本次回答。",
-      NETWORK_ERROR: "暂时无法连接 DeepSeek，请检查网络，或确认密钥是否正确。"
+      NETWORK_ERROR: "暂时无法连接 AI 服务，请检查网络后重试。免费后台闲置后首次唤醒可能需要约一分钟。"
     };
     return messages[code] || "AI 导师暂时没有完成回答，请稍后重试。";
   }
@@ -216,16 +219,16 @@
     document.querySelectorAll(".mentor-card .online, .ai-tutor-identity .online").forEach((node) => {
       const label = node.childNodes[node.childNodes.length - 1];
       if (label && label.nodeType === Node.TEXT_NODE) {
-        label.textContent = ready ? " AI 导师在线" : " 待配置密钥";
+        label.textContent = ready ? " 个人密钥模式" : " 公益默认服务";
       }
       node.title = ready
-        ? `已启用本地密钥 · ${DEEPSEEK_MODEL_LABEL}`
-        : "右键烧瓶图标配置 DeepSeek API 密钥";
+        ? `个人密钥优先 · ${DEEPSEEK_MODEL_LABEL} · 最高思考 max`
+        : `使用后台公益密钥 · ${DEEPSEEK_MODEL_LABEL} · 最高思考 max；右键烧瓶可配置个人密钥`;
     });
     if (elements.apiKeyStatus) {
       elements.apiKeyStatus.textContent = ready
-        ? `已启用本地密钥 ${maskApiKey(key)} · ${DEEPSEEK_MODEL_LABEL}（${DEEPSEEK_MODEL} / ${DEEPSEEK_MODEL_VERSION}）`
-        : "尚未配置密钥";
+        ? `个人密钥 ${maskApiKey(key)} 优先直连 DeepSeek · ${DEEPSEEK_MODEL_LABEL} · 最高思考 max；失败时不会使用公益余额`
+        : `未配置个人密钥：使用后台公益默认服务 · ${DEEPSEEK_MODEL_LABEL} · 最高思考 max；公益余额有限`;
       elements.apiKeyStatus.classList.toggle("is-ready", ready);
     }
     if (elements.apiKeyInput && document.activeElement !== elements.apiKeyInput) {
@@ -263,7 +266,7 @@
     writeStoredApiKey(next);
     syncApiKeyUi();
     closeApiKeyModal();
-    notify("密钥已保存在本机，AI 导师已启用");
+    notify("个人密钥已保存在本机，后续请求优先使用个人接口");
   }
 
   function clearApiKeyFromModal() {
@@ -273,7 +276,7 @@
       elements.apiKeyInput.value = "";
       elements.apiKeyInput.placeholder = "sk-…";
     }
-    notify("已清除本机 API 密钥");
+    notify("已清除个人密钥，后续请求使用公益默认服务");
   }
 
   function extractJsonObject(rawText) {
@@ -501,11 +504,11 @@
           body: JSON.stringify({
             model: DEEPSEEK_MODEL,
             messages,
-            thinking: { type: options.thinking ? "enabled" : "disabled" },
+            thinking: { type: "enabled" },
             response_format: { type: "json_object" },
-            max_tokens: options.maxTokens || 2200,
+            max_tokens: 32768,
             stream: useStream,
-            ...(options.thinking ? { reasoning_effort: "high" } : { temperature: 0.2 })
+            reasoning_effort: "max"
           }),
           signal: controller.signal
         });
@@ -592,30 +595,14 @@
         if (fallback) return fallback;
       }
     } catch (error) {
-      if (error?.code === "ABORTED" || error?.code === "AI_TIMEOUT" || error?.code === "AI_AUTH_FAILED" || error?.code === "AI_RATE_LIMITED") {
-        throw error;
-      }
-      if (!options.thinking) {
-        const fallback = withReasoning(fallbackChatFromText(error?.rawText, request.responseLevel));
-        if (fallback) return fallback;
-        throw error;
-      }
-    }
-    if (options.thinking) {
-      updatePendingReasoning("");
-      const fallback = await completeTutorChat(messages, request, {
-        thinking: false,
-        timeoutMs: 45000,
-        maxTokens: 2200
-      });
-      fallback.warnings.push("深度回答未完成，已改用快速模式重新生成；请核对完整步骤与结论。");
-      return fallback;
+      // Max is an explicit user requirement. A failed or truncated answer
+      // is terminal, never a reason to make a second, lower-effort call.
+      throw error;
     }
     throw new TutorRequestError("INVALID_AI_RESPONSE");
   }
 
   async function browserTutorChat(request) {
-    const useThinking = request.responseLevel === "steps" || request.responseLevel === "check";
     const history = (request.history || []).map((item) => ({ role: item.role, content: item.content }));
     const messages = [
       { role: "system", content: CHAT_SYSTEM_PROMPT },
@@ -636,9 +623,8 @@
       }
     ];
     return completeTutorChat(messages, request, {
-      thinking: useThinking,
-      timeoutMs: useThinking ? CHAT_TIMEOUT_MS : 45000,
-      maxTokens: useThinking ? 16000 : 2200
+      thinking: true,
+      timeoutMs: CHAT_TIMEOUT_MS
     });
   }
 
@@ -646,7 +632,7 @@
     const raw = await callDeepSeek([
       { role: "system", content: GENERATE_SYSTEM_PROMPT },
       { role: "user", content: JSON.stringify({ question, preferredSubject }, null, 0) }
-    ], { thinking: false, timeoutMs: GENERATE_TIMEOUT_MS, maxTokens: 1800 });
+    ], { thinking: true, timeoutMs: GENERATE_TIMEOUT_MS });
     const validated = softValidateGenerate(raw);
     if (!validated) throw new TutorRequestError("INVALID_AI_RESPONSE");
     return validated;
@@ -677,7 +663,7 @@
         if (controller.signal.aborted) {
           throw new TutorRequestError(controller.signal.reason === "timeout" ? "AI_TIMEOUT" : "ABORTED");
         }
-        throw new TutorRequestError(hasBrowserApiKey() ? "NETWORK_ERROR" : "AI_NOT_CONFIGURED");
+        throw new TutorRequestError("NETWORK_ERROR");
       }
       let payload = {};
       try {

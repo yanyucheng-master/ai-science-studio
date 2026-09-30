@@ -17,14 +17,15 @@ function loadTutor(fetchImpl = () => { throw new Error('Unexpected network reque
   const node = { addEventListener() {} };
   const sandbox = {
     document: { querySelector: () => node, querySelectorAll: () => [], addEventListener() {} },
-    localStorage: { getItem: () => options.noKey ? null : 'test-only' },
+    localStorage: { getItem: () => options.noKey ? null : 'test-only',
+      setItem: () => { options.noKey = false; }, removeItem: () => { options.noKey = true; } },
     AbortController, TextDecoder, Response, fetch: fetchImpl, setTimeout, clearTimeout,
-    location: { hostname: 'localhost' }, addEventListener() {}
+    location: { hostname: options.hostname || 'localhost' }, addEventListener() {}
   };
   sandbox.window = sandbox;
   vm.runInNewContext(source.replace(/\n  syncApiKeyUi\(\);\n  updateRoute\(\);/, `
     globalThis.tutorTest = { readSseChat, extractJsonObject, fallbackChatFromText,
-      completeTutorChat, apiRequest, state };`), sandbox);
+      completeTutorChat, apiRequest, errorMessage, writeStoredApiKey, state };`), sandbox);
   return sandbox.tutorTest;
 }
 
@@ -62,6 +63,9 @@ test('web: full steps preserve split UTF-8, CRLF, reasoning and escaped formulas
   const result = await tutor.completeTutorChat([], input, thinking);
   assert.equal(requests.length, 1);
   assert.equal(requests[0].stream, true);
+  assert.equal(requests[0].model, 'deepseek-flash');
+  assert.equal(requests[0].reasoning_effort, 'max');
+  assert.equal(requests[0].max_tokens, 32768);
   assert.equal(result.finalAnswer, answer.finalAnswer);
   assert.equal(result.formulas[0], answer.formulas[0]);
 });
@@ -108,14 +112,14 @@ test('web: a JSON response to a streaming request is parsed without an unnecessa
   assert.equal(calls, 1);
 });
 
-test('web: token truncation followed by malformed JSON never becomes a successful answer', async () => {
+test('web: token truncation is terminal and never causes a lower-effort retry', async () => {
   let calls = 0;
   const broken = '{"mode":"steps","summary":"先求刹车距离","steps":["代入';
   const tutor = loadTutor(async () => ++calls === 1
     ? sseResponse(sseFrame({ content: broken }, 'length') + 'data: [DONE]\n\n')
     : jsonResponse(broken));
   await assert.rejects(tutor.completeTutorChat([], input, thinking), { code: 'INVALID_AI_RESPONSE' });
-  assert.equal(calls, 2);
+  assert.equal(calls, 1);
 });
 
 test('web: finish_reason length rejects even syntactically valid partial answers', async () => {
@@ -137,11 +141,8 @@ test('web: reasoning JSON is never promoted to the final answer', async () => {
   const tutor = loadTutor(async () => ++calls === 1
     ? sseResponse(sseFrame({ reasoning_content: JSON.stringify(answer) }, 'stop') + 'data: [DONE]\n\n')
     : jsonResponse());
-  const result = await tutor.completeTutorChat([], input, thinking);
-  assert.equal(calls, 2);
-  assert.equal(result.finalAnswer, answer.finalAnswer);
-  assert.equal(result.reasoning, '');
-  assert.match(result.warnings.join(''), /快速模式/);
+  await assert.rejects(tutor.completeTutorChat([], input, thinking), { code: 'INVALID_AI_RESPONSE' });
+  assert.equal(calls, 1);
 });
 
 test('web: fenced and trailing-comma JSON preserve escaped textbook formulas', () => {
@@ -183,7 +184,7 @@ for (const reason of ['timeout', undefined]) {
   });
 }
 
-test('web: ordinary hints use non-stream JSON and do not reveal the final answer', async () => {
+test('web: non-stream hints still use maximum thinking and hide the final answer', async () => {
   let request;
   const tutor = loadTutor(async (_url, options) => {
     request = JSON.parse(options.body);
@@ -191,7 +192,8 @@ test('web: ordinary hints use non-stream JSON and do not reveal the final answer
   });
   const result = await tutor.completeTutorChat([], { responseLevel: 'hint' }, { thinking: false, timeoutMs: 1000 });
   assert.equal(request.stream, false);
-  assert.equal(request.thinking.type, 'disabled');
+  assert.equal(request.thinking.type, 'enabled');
+  assert.equal(request.reasoning_effort, 'max');
   assert.equal(result.finalAnswer, null);
 });
 
@@ -215,6 +217,60 @@ test('web: absent browser key selects the gateway and sends no Authorization hea
   assert.equal(request.url, 'http://127.0.0.1:10000/api/v1/tutor/chat');
   assert.equal(Object.hasOwn(request.options.headers, 'Authorization'), false);
   assert.equal(result.source, 'local_fallback');
+});
+
+test('web: an anonymous public visitor uses the new gateway without forwarding a key', async () => {
+  const calls = [];
+  const tutor = loadTutor(async (url, options) => {
+    calls.push({ url, options });
+    return new Response(JSON.stringify({ ...answer, source: 'deepseek' }));
+  }, { noKey: true, hostname: 'ai-science-studio.onrender.com' });
+  assert.equal((await tutor.apiRequest('/api/v1/tutor/chat', input, 1000)).source, 'deepseek');
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].url, 'https://masterlab-harmony-ai-2026.onrender.com/api/v1/tutor/chat');
+  assert.deepEqual(Object.keys(calls[0].options.headers), ['Content-Type']);
+  assert.doesNotMatch(calls[0].options.body, /test-only|Authorization|apiKey/);
+});
+
+test('web: personal key takes priority, then clearing it restores the default route', async () => {
+  const calls = [];
+  const tutor = loadTutor(async (url, options) => {
+    calls.push({ url, options });
+    return url.startsWith('https://api.deepseek.com') ? jsonResponse()
+      : new Response(JSON.stringify({ ...answer, source: 'deepseek' }));
+  }, { hostname: 'ai-science-studio.onrender.com' });
+  await tutor.apiRequest('/api/v1/tutor/chat', input, 1000);
+  assert.equal(calls[0].url, 'https://api.deepseek.com/chat/completions');
+  assert.equal(calls[0].options.headers.Authorization, 'Bearer test-only');
+  const direct = JSON.parse(calls[0].options.body);
+  assert.equal(direct.model, 'deepseek-flash');
+  assert.equal(direct.thinking.type, 'enabled');
+  assert.equal(direct.reasoning_effort, 'max');
+  tutor.writeStoredApiKey('');
+  await tutor.apiRequest('/api/v1/tutor/chat', input, 1000);
+  assert.equal(calls.length, 2);
+  assert.match(calls[1].url, /masterlab-harmony-ai-2026/);
+  assert.equal(Object.hasOwn(calls[1].options.headers, 'Authorization'), false);
+});
+
+test('web: invalid personal credentials do not fall back to the public balance', async () => {
+  const calls = [];
+  const tutor = loadTutor(async url => {
+    calls.push(url);
+    return new Response('{}', { status: 401 });
+  }, { hostname: 'ai-science-studio.onrender.com' });
+  await assert.rejects(tutor.apiRequest('/api/v1/tutor/chat', input, 1000), { code: 'AI_AUTH_FAILED' });
+  assert.deepEqual(calls, ['https://api.deepseek.com/chat/completions']);
+});
+
+test('web: default-service network and capacity failures are not labelled missing personal keys', async () => {
+  const offline = loadTutor(async () => { throw new TypeError('fixture offline'); }, { noKey: true });
+  await assert.rejects(offline.apiRequest('/api/v1/tutor/chat', input, 1000), { code: 'NETWORK_ERROR' });
+  assert.match(offline.errorMessage({ code: 'NETWORK_ERROR' }), /检查网络/);
+  assert.match(offline.errorMessage({ code: 'AI_BUSY' }), /并发容量/);
+  assert.match(offline.errorMessage({ code: 'AI_UNAVAILABLE' }), /公益默认.*可能余额不足或临时故障/);
+  const busy = loadTutor(async () => new Response('{"error":"AI_BUSY"}', { status: 429 }), { noKey: true });
+  await assert.rejects(busy.apiRequest('/api/v1/tutor/chat', input, 1000), { code: 'AI_BUSY' });
 });
 
 for (const gateway of [false, true]) {
