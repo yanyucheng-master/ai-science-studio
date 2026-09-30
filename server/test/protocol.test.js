@@ -97,12 +97,40 @@ test('flags missing requested sub-answers in a full solution', () => {
   });
   const response = {
     summary: 'A、B会发生相对滑动。',
-    steps: ['相对滑动后计算相对加速度。', '时间 t = 1.15 s。'],
+    steps: ['A、B会发生相对滑动，再计算相对加速度。', '时间 t = 1.15 s。'],
     formulas: ['t = 1.15 s'],
     finalAnswer: '经过1.15 s滑块离开木板。',
     checks: []
   };
   assert.deepEqual(findMissingTutorCoverage(request, response), ['产生的热量', '能量核对']);
+});
+
+test('hidden verification and an omitted summary cannot satisfy visible answer coverage', () => {
+  const request = sanitizeTutorChatRequest({
+    message: '请完整解答并核对能量。', responseLevel: 'steps',
+    context: { mode: 'question', subject: '物理', originalQuestion: '求产生的热量并核对能量关系。' }
+  });
+  const response = {
+    mode: 'steps', summary: '热量 Q=4 J，符合能量守恒。',
+    steps: ['分析受力，再计算运动过程。'], formulas: [], finalAnswer: '运动时间为 1 s。',
+    checks: ['热量 Q=4 J，符合能量守恒。']
+  };
+  assert.deepEqual(findMissingTutorCoverage(request, response), ['产生的热量', '能量核对']);
+  const validated = validateTutorChatResponse(response, request);
+  assert.match(validated.warnings.join(''), /完整性提醒.*产生的热量.*能量核对/);
+  assert.equal(validated.checks.length, 1);
+  assert.deepEqual(findMissingTutorCoverage(request, { ...response,
+    steps: ['根据接触面的相对位移，热量 Q=4 J。', '用能量守恒核对。'] }), []);
+});
+
+test('a visible summary-only explanation still counts toward requested coverage', () => {
+  const request = sanitizeTutorChatRequest({
+    message: '只补充产生的热量。', responseLevel: 'explain',
+    context: { mode: 'question', subject: '物理', originalQuestion: '木板滑块问题' }
+  });
+  assert.deepEqual(findMissingTutorCoverage(request, {
+    mode: 'explain', summary: '热量 Q=4 J。', steps: [], checks: []
+  }), []);
 });
 
 test('does not warn about a step the student explicitly asked not to repeat', () => {

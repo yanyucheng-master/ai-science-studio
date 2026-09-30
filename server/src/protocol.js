@@ -125,13 +125,14 @@ const TUTOR_COVERAGE_SIGNALS = Object.freeze([
   }
 ]);
 
-function tutorResponseText(response) {
+function tutorResponseText(response, { visibleOnly = false } = {}) {
+  const summaryVisible = !response.steps?.length || ['clarification', 'refusal'].includes(response.mode);
   return [
-    response.summary,
+    ...(!visibleOnly || summaryVisible ? [response.summary] : []),
     ...(response.steps || []),
     ...(response.formulas || []),
     response.finalAnswer,
-    ...(response.checks || [])
+    ...(!visibleOnly ? response.checks || [] : [])
   ].filter(Boolean).join('\n');
 }
 
@@ -218,7 +219,9 @@ export function findMissingTutorCoverage(request, response) {
     ? `${request.context?.originalQuestion || ''}\n${request.message || ''}`
     : request.message || '';
   const requestText = rawRequestText.replace(/(?:不要|无需|不必|不用).{0,40}?(?:[，,。；;]|$)/g, '');
-  const responseText = tutorResponseText(response);
+  // Hidden verification or an omitted opening summary cannot satisfy a
+  // student's requested sub-question. Count only the rendered solution.
+  const responseText = tutorResponseText(response, { visibleOnly: true });
   return TUTOR_COVERAGE_SIGNALS
     .filter((signal) => {
       if (signal.label === '产生的热量' && /(?:为什么|为何|怎么理解)/.test(requestText) &&

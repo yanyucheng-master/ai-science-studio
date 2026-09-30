@@ -161,6 +161,12 @@ test('uses maximum thinking for every tutor level without changing teaching dept
   }
   assert.match(requests[1].messages.at(-1).content, /【唯一原题】/);
   assert.match(requests[1].messages.at(-1).content, /originalQuestion: 测试题/);
+  const prompt = requests[0].messages[0].content;
+  assert.match(prompt, /精简展示不等于省略验证/);
+  assert.match(prompt, /把最终答案融入最后一步/);
+  assert.match(prompt, /checks 仅承载已完成的内部复核/);
+  assert.match(prompt, /用户明确要求检查、证明或能量核对/);
+  assert.match(prompt, /followUp 默认返回空字符串/);
 });
 
 test('extracts immutable question constraints and every requested goal', () => {
