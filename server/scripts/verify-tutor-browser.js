@@ -31,6 +31,15 @@ let upstreamCalls = [];
 let gatewayCalls = 0;
 let gatewayBase;
 function fixtureAnswer() {
+  // Replay the visible content captured from the one real public AI reply.
+  // This is a DOM-based fixture, not another paid request or raw API record.
+  if (scenario === 'default_live_replay') return { ...answer, summary: '', steps: [
+    '取初速度方向为正方向。汽车初速度 v_{0}=20m·s^{-1}，末速度 v=0；刹车加速度大小为 5m·s^{-2}，方向与初速度相反，因此取 a=-5m·s^{-2}。',
+    '由匀变速直线运动速度与位移关系 v^{2}-v_{0}^{2}=2as，代入已知量：0^{2}-20^{2}=2×(-5)×s，即 -400=-10s。',
+    '解得 s=40m。因此汽车的刹车距离为 40m；同时，汽车刹车加速度大小为 5m·s^{-2}，方向与初速度方向相反。',
+    '最终答案：刹车加速度大小为 5m·s^{-2}，方向与初速度方向相反（取初速度方向为正时 a=-5m·s^{-2}）；刹车距离 s=40m。'],
+    finalAnswer: '汽车刹车加速度大小为 5m·s^{-2}，方向与初速度方向相反（取初速度方向为正时 a=-5m·s^{-2}）；刹车距离 s=40m。',
+    formulas: ['v^{2}-v_{0}^{2}=2as', 's=\\frac{v_{0}^{2}}{2a}（a为刹车加速度大小）'], followUp: '' };
   if (scenario === 'default_concept') return { ...answer, mode: 'explain',
     summary: '植物细胞具有细胞壁，细胞膜控制物质进出。', steps: [], formulas: [],
     finalAnswer: '植物细胞具有细胞壁，细胞膜控制物质进出。' };
@@ -127,7 +136,7 @@ const reports = [];
 try {
   for (scenario of ['full_steps', 'missing_tail', 'invalid_twice', 'fallback_recovered', 'hint', 'timeout', 'stop', 'no_key_experiment', 'no_key_question', 'default_question', 'default_unavailable', 'personal_auth_failure', 'personal_cleared',
     'default_concept', 'default_clarification', 'default_warning', 'default_multi_goals',
-    'default_mobile_steps', 'default_mobile_long_formula', 'default_safe_math']) {
+    'default_mobile_steps', 'default_mobile_long_formula', 'default_safe_math', 'default_live_replay']) {
     upstreamCalls = [];
     gatewayCalls = 0;
     const noKey = scenario.startsWith('no_key') || scenario.startsWith('default_');
@@ -190,6 +199,7 @@ try {
       fractions: document.querySelectorAll('.ai-safe-fraction').length,
       subscripts: document.querySelectorAll('.ai-message.assistant sub').length,
       final: document.querySelector('.ai-final-step')?.innerText || '',
+      appendedResults: document.querySelectorAll('.ai-step-result').length,
       oldSections: document.querySelectorAll('.final-section, .check-section').length,
       followUps: document.querySelectorAll('.ai-follow-up').length,
       warning: document.querySelector('.ai-answer-warning')?.innerText || '',
@@ -282,6 +292,12 @@ try {
       if (name === 'default_multi_goals') {
         assert.equal(ui.formulas, 3, name);
         assert.match(ui.final, /3 m.*6 N.*36 J/, name);
+      }
+      if (name === 'default_live_replay') {
+        assert.equal(ui.appendedResults, 0, name);
+        assert.equal(ui.steps, 4, name);
+        assert.match(ui.final, /刹车距离 s=40m/, name);
+        assert.match(ui.final, /a=[−-]5m/, name);
       }
       if (name === 'default_safe_math') {
         assert.equal(ui.unsafeNodes, 0, name);

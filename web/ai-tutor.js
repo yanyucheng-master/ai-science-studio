@@ -28,7 +28,7 @@
 8. originalQuestion 中的显式条件不可改写。不得引入题目未给出的力、接触面、反应物、边界条件或数值；摩擦方向按接触面间的相对运动或趋势判断。
 9. 最新 message 优先于历史；只补充或解释某一步时只回答该子问题，不得重新讲完整原题。
 10. 完整解答必须覆盖全部小问，保留决定答案的条件、关键方程、代入、最终数值和单位；分段、计数与概率问题核对各分支之和，函数和临界值必须代回核对。
-11. steps 是回答主体，每步完成一个必要的解题动作；简单题通常 2 至 4 步，复杂题按需要最多 8 步，不机械扩写。所有必要条件与小问结论必须写在 steps 中，不能只写在 summary 或 checks 中。把最终答案融入最后一步，finalAnswer 同时保留完整结论以兼容协议。
+11. steps 是回答主体，每步完成一个必要的解题动作；简单题通常 2 至 4 步，复杂题按需要最多 8 步，不机械扩写。所有必要条件与小问结论必须写在 steps 中，不能只写在 summary 或 checks 中。把最终答案融入最后一步，不另加只复述答案的步骤；finalAnswer 必须取最后一步中已出现的完整结论文字，以兼容协议并避免重复。
 12. formulas 只列本题真正需要的、不重复的核心关系；简单题通常 1 至 2 条，复杂题按需要列出；概念题没有必要公式时返回空数组，不凑公式。
 13. 有 steps 时 summary 通常返回空字符串，不添加开场复述；hint、clarification、refusal 或不需要分步的概念解释可用 summary 承载主要内容。禁止向学生提及 context.mode、parameters、deterministicResult 等内部字段。
 14. checks 仅承载已完成的内部复核，不作为展示栏目，也不要把重复的量纲、代回或结果自检机械塞进 steps。用户明确要求检查、证明或能量核对时，相关核验就是解题任务，必须在 steps 中回答。
@@ -1290,7 +1290,17 @@
     if (result && steps.length) {
       // Only collapse literal equivalents. Similar numbers are not proof that
       // every requested sub-answer is present in the last step.
-      if (answerTextKey(steps.at(-1)).includes(answerTextKey(result))) result = "";
+      const lastKey = answerTextKey(steps.at(-1));
+      const resultKey = answerTextKey(result);
+      const conclusionOnly = steps.at(-1).match(/^(?:最终(?:答案|结论)|答案|结论|结果)\s*[:：]\s*(.+)$/s);
+      if (lastKey.includes(resultKey)) {
+        result = "";
+      } else if (conclusionOnly && resultKey.includes(answerTextKey(conclusionOnly[1]))) {
+        // A final-answer-only step may omit a subject prefix. Replacing it is
+        // safe only when all its text is literally contained in finalAnswer.
+        steps[steps.length - 1] = result;
+        result = "";
+      }
     } else if (result && !steps.length) {
       if (answerTextKey(lead) === answerTextKey(result)) lead = "";
       steps.push(result);

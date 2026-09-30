@@ -78,6 +78,27 @@ test('web: complete conclusions and units merge into the last step without guess
   assert.equal(repeated.steps.at(-1), finalAnswer);
 });
 
+test('web: real-reply conclusion prefix variation is collapsed without duplicating the last answer', () => {
+  const tutor = loadTutor();
+  const display = tutor.getAnswerPresentation({ ...answer,
+    steps: ['代入已知量，解得 s=40m。', '最终答案：刹车距离 s=40m。'],
+    finalAnswer: '汽车刹车距离 s=40m。' });
+  assert.equal(display.result, '');
+  assert.equal(display.steps.at(-1), '汽车刹车距离 s=40m。');
+});
+
+test('web: distinct conditions in a conclusion-only step are never discarded as duplicates', () => {
+  const tutor = loadTutor();
+  const display = tutor.getAnswerPresentation({ ...answer,
+    steps: ['求位移。', '最终答案：s=40m，仅适用于停车前。'], finalAnswer: 's=40m。' });
+  assert.match(display.steps.at(-1), /仅适用于停车前/);
+  assert.equal(display.result, '', 'the shorter finalAnswer already appears in the last step');
+  const distinct = tutor.getAnswerPresentation({ ...answer,
+    steps: ['求位移。', '最终答案：s=40m，仅适用于停车前。'], finalAnswer: '时间 t=4s。' });
+  assert.match(distinct.steps.at(-1), /仅适用于停车前/);
+  assert.equal(distinct.result, '时间 t=4s。');
+});
+
 test('web: formula deduplication removes only literal duplicates, never a complex required relation', () => {
   const tutor = loadTutor();
   const formulas = ['F = ma', 'F=ma', 'W=Fs', 'W=ΔE_{k}', 's=\\frac{at^{2}}{2}'];
