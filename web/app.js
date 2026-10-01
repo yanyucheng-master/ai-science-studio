@@ -6608,6 +6608,7 @@ $("#shareButton").addEventListener("click", async () => {
 });
 
 document.addEventListener("keydown", event => {
+  if (event.defaultPrevented || $("#announcementsDialog")?.open || event.target.closest?.("input, textarea, select, button, [contenteditable], summary")) return;
   if (event.code === "Space" && event.target.tagName !== "INPUT") {
     event.preventDefault();
     if (state.subject === "数学" || state.subject === "生物") {

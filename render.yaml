@@ -12,6 +12,9 @@ services:
       - path: /index.html
         name: Cache-Control
         value: "no-cache, no-store, must-revalidate"
+      - path: /announcements.json
+        name: Cache-Control
+        value: "no-cache, no-store, must-revalidate"
 
   - type: web
     name: master-lab-api
