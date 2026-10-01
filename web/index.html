@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231648e6'/%3E%3Cpath d='M18 6h12M21 6v11L10 36c-2 4 1 7 5 7h18c4 0 7-3 5-7L27 17V6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260930-answer-focus-1">
+  <link rel="stylesheet" href="styles.css?v=20261001-announcements-1">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -31,13 +31,9 @@
           <p class="subheading">今天想把哪一道题“动”起来？</p>
         </div>
         <div class="top-actions">
-          <div class="streak">
-            <span class="streak-icon">7</span>
-            <div><strong>连续探索 7 天</strong><small>本周完成 12 个实验</small></div>
-          </div>
-          <button class="icon-button" data-toast="暂时没有新通知" aria-label="通知">
+          <button class="icon-button" id="announcementsButton" type="button" aria-label="查看更新公告" aria-haspopup="dialog" aria-controls="announcementsDialog" aria-expanded="false" title="更新公告">
             <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8 13h4"/></svg>
-            <i></i>
+            <i id="announcementsDot" aria-hidden="true" hidden></i>
           </button>
         </div>
       </header>
@@ -814,9 +810,34 @@
     </div>
   </div>
 
+  <dialog class="announcements-dialog" id="announcementsDialog" aria-labelledby="announcementsTitle" aria-describedby="announcementsDescription">
+    <header class="announcements-header">
+      <div>
+        <h2 id="announcementsTitle">更新公告</h2>
+        <p id="announcementsDescription">查看大师实验室的功能更新与改进</p>
+      </div>
+      <button class="square-button" id="announcementsClose" type="button" aria-label="关闭更新公告" autofocus>
+        <svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+      </button>
+    </header>
+    <div class="announcements-toolbar">
+      <span id="announcementsCount" aria-live="polite">正在检查公告</span>
+      <button id="announcementsRefresh" type="button">刷新</button>
+    </div>
+    <p class="announcements-status" id="announcementsStatus" role="status">正在加载公告…</p>
+    <div class="announcements-list" id="announcementsList"></div>
+    <p class="announcements-empty" id="announcementsEmpty" hidden>暂时没有公告，有更新时会在这里发布。</p>
+    <footer class="announcements-footer">
+      <span>展开公告即可标为已读</span>
+      <button id="announcementsReadAll" type="button" disabled>全部标为已读</button>
+    </footer>
+    <p class="announcements-storage-note" id="announcementsStorageNote" hidden>浏览器未允许保存已读状态，本次浏览仍可正常阅读。</p>
+  </dialog>
+
   <script src="science-motion.js?v=20260922-motion-1"></script>
   <script src="physics-extra.js?v=20260929-diagram-pan-2"></script>
-  <script src="app.js?v=20260929-diagram-pan-2"></script>
+  <script src="app.js?v=20261001-announcements-1"></script>
   <script src="ai-tutor.js?v=20260930-answer-focus-2"></script>
+  <script src="announcements.js?v=20261001-announcements-1"></script>
 </body>
 </html>
