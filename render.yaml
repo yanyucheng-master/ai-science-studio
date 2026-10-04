@@ -2,6 +2,7 @@ services:
   - type: web
     name: ai-science-studio
     runtime: static
+    branch: codex/public-demo-byo-key
     plan: free
     buildCommand: echo "No build step"
     staticPublishPath: web
