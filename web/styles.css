@@ -206,18 +206,19 @@ svg {
   display: grid;
   width: 48px;
   height: 48px;
-  padding: 10px;
+  padding: 5px;
   flex: 0 0 auto;
   place-items: center;
-  color: #fff;
+  border: 1px solid #dce6f7;
   border-radius: 16px;
-  background: linear-gradient(145deg, #327ef9, #1648e6);
-  box-shadow: 0 12px 24px rgba(31, 91, 236, 0.24);
+  background: #fff;
+  box-shadow: 0 10px 22px rgba(31, 91, 236, 0.12);
 }
 
-.topbar-logo svg {
-  width: 29px;
-  stroke-width: 2.2;
+.topbar-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .eyebrow {
@@ -6658,12 +6659,8 @@ body.fullscreen-lock {
   .topbar-logo {
     width: 42px;
     height: 42px;
-    padding: 9px;
+    padding: 4px;
     border-radius: 14px;
-  }
-
-  .topbar-logo svg {
-    width: 25px;
   }
 
   .topbar h1 {

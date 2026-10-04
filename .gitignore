@@ -3,6 +3,8 @@
 *.docx
 *.pptx
 *.png
+# 正式启用的网站图标需要随网站部署
+!web/assets/brand/orbit-flask-2026-10-04/*.png
 *.mp4
 ~$*
 outputs/
