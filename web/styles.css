@@ -215,10 +215,43 @@ svg {
   box-shadow: 0 10px 22px rgba(31, 91, 236, 0.12);
 }
 
-.topbar-logo img {
+.topbar-logo svg {
   display: block;
   width: 100%;
   height: 100%;
+  overflow: visible;
+}
+
+/* 页首标志：悬停时与 AI 导师标志同款动效 */
+.topbar-logo {
+  transition: transform .34s cubic-bezier(.2, .8, .2, 1), box-shadow .34s ease, border-color .34s ease;
+}
+
+.topbar-logo:hover {
+  border-color: #b9d4fb;
+  box-shadow: 0 14px 26px rgba(31, 91, 236, 0.18);
+  transform: translateY(-2px) rotate(-1.5deg) scale(1.045);
+}
+
+.topbar-logo:hover .mentor-orbit-flask {
+  transform: scale(1.03);
+}
+
+.topbar-logo:hover .mentor-orbit-liquid {
+  animation: mentor-orbit-liquid 1.8s ease-in-out infinite;
+}
+
+.topbar-logo:hover .mentor-orbit-bubble {
+  animation: mentor-orbit-bubble 1.45s ease-in-out infinite;
+}
+
+.topbar-logo:hover .bubble-two {
+  animation-delay: .36s;
+}
+
+.topbar-logo:hover .mentor-orbit-spark {
+  opacity: 1;
+  animation: mentor-orbit-spark 1.6s linear infinite;
 }
 
 .eyebrow {
@@ -239,6 +272,16 @@ svg {
   border-radius: 50%;
   background: #26c895;
   box-shadow: 0 0 0 5px rgba(38, 200, 149, 0.12);
+}
+
+/* AI SCIENCE STUDIO 前的绿点：常驻的微弱呼吸 */
+.eyebrow span {
+  animation: eyebrow-breathe 3.2s ease-in-out infinite;
+}
+
+@keyframes eyebrow-breathe {
+  0%, 100% { opacity: .8; box-shadow: 0 0 0 3px rgba(38, 200, 149, 0.1); }
+  50% { opacity: 1; box-shadow: 0 0 0 6px rgba(38, 200, 149, 0.2); }
 }
 
 .topbar h1 {
@@ -605,8 +648,9 @@ body.announcements-open {
 .prompt-input-wrap {
   display: flex;
   height: 48px;
-  padding: 4px;
+  padding: 4px 0 4px 4px;
   gap: 4px;
+  overflow: hidden;
   border: 1px solid #d6e2f4;
   border-radius: 14px;
   background: #fff;
@@ -736,35 +780,33 @@ body.announcements-open {
 .generate-button {
   display: flex;
   min-width: 130px;
-  padding: 0 16px;
+  margin: -4px 0;
+  padding: 0 18px;
   gap: 10px;
   align-items: center;
   justify-content: center;
   color: #1a56d6;
   font-size: 12px;
   font-weight: 800;
-  border: 1px solid #b9d4fb;
-  border-radius: 11px;
-  background: linear-gradient(110deg, #eef5ff, #d9e9ff);
-  box-shadow: 0 6px 16px rgba(45, 115, 246, 0.14);
-  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
+  border: 0;
+  border-left: 1px solid #d6e2f4;
+  border-radius: 0;
+  background: linear-gradient(110deg, #eef5ff, #dceaff);
+  transition: background 160ms ease, color 160ms ease;
 }
 
 .generate-button:hover {
-  border-color: #93bdfa;
-  background: linear-gradient(110deg, #e4efff, #cbe1ff);
-  box-shadow: 0 9px 20px rgba(45, 115, 246, 0.2);
-  transform: translateY(-1px);
+  color: #174fc7;
+  background: linear-gradient(110deg, #e2eeff, #cfe2ff);
 }
 
 .generate-button:active {
-  transform: translateY(0);
-  background: #cfe3ff;
+  background: #c9dfff;
 }
 
 .generate-button:focus-visible {
-  outline: 3px solid rgba(45, 115, 246, 0.28);
-  outline-offset: 2px;
+  outline: 0;
+  box-shadow: inset 0 0 0 2px rgba(45, 115, 246, 0.45);
 }
 
 .generate-button svg {
@@ -2035,9 +2077,18 @@ input[type="range"] {
   .mentor-orbit-flask,
   .mentor-orbit-liquid,
   .mentor-orbit-bubble,
-  .mentor-orbit-spark {
-    animation: none;
+  .mentor-orbit-spark,
+  .eyebrow span {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .topbar-logo {
     transition: none;
+  }
+
+  .topbar-logo:hover {
+    transform: none;
   }
 }
 
@@ -6799,6 +6850,7 @@ body.fullscreen-lock {
   .prompt-input-wrap {
     height: auto;
     min-height: 48px;
+    padding: 4px;
     flex-wrap: wrap;
   }
 
@@ -6808,6 +6860,11 @@ body.fullscreen-lock {
 
   .generate-button {
     min-width: 110px;
+    height: 40px;
+    margin: 0;
+    flex: 1 0 100%;
+    border-left: 0;
+    border-radius: 10px;
   }
 
   .prompt-foot {
@@ -6941,8 +6998,6 @@ body.fullscreen-lock {
 .demo-mode .generate-button {
   min-width: 156px;
   font-size: 14px;
-  border-radius: 13px;
-  box-shadow: 0 10px 22px rgba(45, 115, 246, 0.2);
 }
 
 .demo-mode .generate-button.loading {
@@ -9189,29 +9244,12 @@ body.subject-physics-active:not(.awaiting-generation) .scene-tip {
   line-height: 1.5;
 }
 
-body.subject-physics-active:not(.awaiting-generation) .reason-step small {
-  font-size: 9px;
-}
-
-body.subject-physics-active:not(.awaiting-generation) .reason-step strong {
-  font-size: 11px;
-}
-
-body.subject-physics-active:not(.awaiting-generation) .reason-step p {
-  font-size: 9.5px;
-}
-
-body.subject-physics-active:not(.awaiting-generation) .reason-step .formula {
-  font-size: 10.5px;
-  line-height: 1.65;
-}
-
 body.subject-physics-active:not(.awaiting-generation) .formula-spotlight strong {
   font-size: 24px;
   line-height: 1.4;
 }
 
-body.subject-physics-active:not(.awaiting-generation) .formula-spotlight p {
+body.subject-physics-active:not(.awaiting-generation) .formula-spotlight p:not(.formula-result) {
   font-size: 12px;
   line-height: 1.8;
   overflow-wrap: anywhere;
@@ -9429,4 +9467,156 @@ body.ai-tutor-route .scene *, body.ai-tutor-route .scene *::before, body.ai-tuto
   html { scroll-behavior: auto !important; }
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   /* Static directions, structure selection, parameters and timeline remain available. */
+}
+
+/* ===== 解题思维链：时间线样式（2026-10-05） =====
+   放在文件末尾，覆盖早期的卡片式步骤、演示模式和等待态规则。 */
+.reasoning-card .section-kicker {
+  font-size: 11px;
+  letter-spacing: .5px;
+}
+
+.reasoning-card .progress-ring {
+  display: inline-flex;
+  width: auto;
+  height: auto;
+  gap: 1px;
+  align-items: baseline;
+  color: #7f8ea6;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: none;
+}
+
+.reasoning-card .progress-ring strong {
+  margin: 0;
+  color: var(--blue);
+  font-size: 15px;
+}
+
+/* 生成前：只保留标题和 4 个步骤名 */
+.awaiting-generation .reasoning-card .progress-ring,
+.awaiting-generation .reasoning-card .formula-spotlight {
+  display: none;
+}
+
+/* 公式卡：公式 + 醒目的结果 */
+.reasoning-card .formula-spotlight p.formula-result {
+  display: flex;
+  margin-top: 10px;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  color: #0f4cc4;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.reasoning-card .formula-spotlight p.formula-result b {
+  padding: 2px 8px;
+  color: #2d73f6;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 999px;
+  background: rgba(45, 115, 246, .1);
+}
+
+/* 步骤：竖线串起序号，不再每步一个框 */
+.reasoning-card .reasoning-steps {
+  gap: 2px;
+}
+
+.reasoning-card .reasoning-steps::before {
+  top: 22px;
+  bottom: 22px;
+  left: 20px;
+  width: 2px;
+  background: linear-gradient(#cfe0fb, #e6edf7);
+}
+
+.reasoning-card .reason-step {
+  padding: 9px 8px;
+  gap: 10px;
+  grid-template-columns: 26px 1fr;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.reasoning-card .reason-step:hover {
+  transform: none;
+  background: #f5f8ff;
+}
+
+.reasoning-card .reason-step.done {
+  background: transparent;
+}
+
+.reasoning-card .reason-step.active {
+  background: #eef5ff;
+  box-shadow: inset 3px 0 0 #2d73f6;
+}
+
+.reasoning-card .reason-step:focus-visible {
+  outline: 2px solid rgba(45, 115, 246, .45);
+  outline-offset: 1px;
+}
+
+.reasoning-card .reason-step > i {
+  display: none;
+}
+
+/* 状态由序号颜色表示；文字只留给读屏软件 */
+.reasoning-card .reason-step small {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.reasoning-card .step-index {
+  width: 26px;
+  height: 26px;
+  font-size: 12px;
+}
+
+.reasoning-card .reason-step strong {
+  color: #1d2f52;
+  font-size: 13px;
+}
+
+.reasoning-card .reason-step:not(.active):not(.done) strong {
+  color: #5d6d86;
+}
+
+.reasoning-card .reason-step p,
+.reasoning-card .reason-step .formula {
+  font-size: 12px;
+  white-space: normal;
+}
+
+.reasoning-card .pending-placeholder {
+  padding: 7px 8px;
+  cursor: default;
+  background: transparent;
+}
+
+.reasoning-card .pending-placeholder:hover {
+  background: transparent;
+}
+
+.reasoning-card .pending-placeholder strong {
+  color: #7c8aa1;
+  font-weight: 600;
+}
+
+/* 演示模式右上角的步骤提示会盖住进度，把进度压到标题底线 */
+.demo-mode .reasoning-card .progress-ring {
+  align-self: flex-end;
+  margin-bottom: 3px;
 }

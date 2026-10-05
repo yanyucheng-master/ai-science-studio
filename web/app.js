@@ -4375,7 +4375,26 @@ function updateFormulaSpotlight(subject) {
 
   if (labelEl) labelEl.textContent = label;
   setFormulaHtml(formulaEl, formula);
-  setFormulaHtml(descEl, desc);
+  const result = formulaSpotlightResult(subject, { physics, projectile, circuit, solenoid, boardSlider, extraPhysics, chemistry, mathX, mathSlope });
+  if (descEl) descEl.classList.toggle("formula-result", Boolean(result));
+  // 有明确结果时只显示结果，代入过程留给下面的步骤；生物等概念类保留原说明
+  setFormulaHtml(descEl, result ? `<b>结果</b><span>${result}</span>` : desc);
+}
+
+// 取各模板已算好的结论（识别摘要或实验读数），不在这里重新计算
+function formulaSpotlightResult(subject, parts) {
+  const segments = text => String(text || "").split("｜").map(item => item.trim()).filter(Boolean);
+  if (subject === "物理") {
+    if (parts.extraPhysics) return parts.extraPhysics.model?.readout || "";
+    if (state.physicsTemplate === "projectile") return segments(parts.projectile.recognitionText).slice(-2).join(" · ");
+    if (state.physicsTemplate === "circuit") return segments(parts.circuit.recognitionText).slice(-2).join(" · ");
+    if (state.physicsTemplate === "solenoid") return segments(parts.solenoid.recognitionText).slice(1, 3).join(" · ");
+    if (state.physicsTemplate === "boardSlider") return parts.boardSlider.steps[3][1];
+    return segments(parts.physics.recognitionText).slice(-1).join("");
+  }
+  if (subject === "化学") return segments(parts.chemistry.recognitionText).slice(-1).join("");
+  if (subject === "数学") return `x = ${parts.mathX} 时，切线斜率 k = ${parts.mathSlope}`;
+  return "";
 }
 
 function setReasonProgress(step) {
@@ -4525,8 +4544,8 @@ function syncPhysicsControlsFromState() {
 }
 
 function renderWaitingReasoning() {
-  $(".side-card-header .section-kicker").textContent = "等待题目解析";
-  $(".side-card-header h2").textContent = "思维链将在生成后出现";
+  $(".side-card-header .section-kicker").textContent = "生成实验后展开";
+  $(".side-card-header h2").textContent = "解题思维链";
   setReasonProgress(0);
   const spotlight = $(".formula-spotlight");
   if (spotlight) {
@@ -4534,15 +4553,10 @@ function renderWaitingReasoning() {
     $("strong", spotlight).textContent = "公式将在这里呈现";
     $("p", spotlight).textContent = "AI 会根据题干条件选择公式，并展示代入与验证过程。";
   }
-  $(".reasoning-steps").innerHTML = [
-    ["识别题干条件", "点击生成后开始分析"],
-    ["选择适用公式", "生成后展示推理路径"],
-    ["代入数据求解", "生成后联动实验结果"],
-    ["检验学习结论", "生成后形成总结"]
-  ].map((step, index) => `<button class="reason-step pending-placeholder" data-step="${index + 1}">
+  $(".reasoning-steps").innerHTML = ["识别题干条件", "选择适用公式", "代入数据求解", "检验学习结论"]
+    .map((title, index) => `<button class="reason-step pending-placeholder" data-step="${index + 1}">
       <span class="step-index">${index + 1}</span>
-      <div><small>等待</small><strong>${step[0]}</strong><p>${step[1]}</p></div>
-      <i><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></i>
+      <div><strong>${title}</strong></div>
     </button>`).join("");
   elements.mentorMessage.innerHTML = "生成实验后，我会根据题目给出关键追问、提示和变式迁移。";
   hideMentorFeedback();

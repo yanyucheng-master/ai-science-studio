@@ -8,7 +8,7 @@
   <link rel="icon" href="favicon.ico?v=20261004-orbit-flask" sizes="16x16 32x32 48x48">
   <link rel="apple-touch-icon" href="assets/brand/orbit-flask-2026-10-04/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=20261005-light-buttons-1">
+  <link rel="stylesheet" href="styles.css?v=20261005-reasoning-timeline-1">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -21,7 +21,36 @@
           <p class="eyebrow"><span></span> AI SCIENCE STUDIO</p>
           <div class="greeting-row">
             <div class="topbar-logo" aria-hidden="true">
-              <img src="assets/brand/orbit-flask-2026-10-04/logo-small.svg" alt="" width="36" height="36">
+              <svg class="topbar-orbit-glyph" viewBox="0 0 64 64" width="36" height="36" aria-hidden="true">
+                <defs>
+                  <path id="mmoTFlask" d="M524 470V300C524 285 515 278 500 276C485 274 478 263 478 253C478 243 487 235 500 235H752C765 235 774 243 774 253C774 263 767 274 752 276C737 278 728 285 728 300V470C728 490 734 505 740 515L946 870C964 902 970 945 962 975C952 1005 922 1023 872 1023H380C330 1023 300 1005 290 975C282 945 288 902 306 870L512 515C518 505 524 490 524 470Z"/>
+                  <path id="mmoTRing" d="M1099.2 448.6A482.5 142.1 -13.2 1 1 159.8 669A482.5 142.1 -13.2 1 1 1099.2 448.6ZM1040.1 458.6A421.9 92.8 -13.32 1 1 218.9 653A421.9 92.8 -13.32 1 1 1040.1 458.6Z"/>
+                  <path id="mmoTOrbit" d="M1069.6 453.6A452.2 117.5 -13.26 1 1 189.4 661A452.2 117.5 -13.26 1 1 1069.6 453.6Z" pathLength="100"/>
+                  <clipPath id="mmoTInside"><use href="#mmoTFlask"/></clipPath>
+                  <clipPath id="mmoTBack"><path d="M-733.5 878.5L1992.5 239.1L1672.8 -1123.9L-1053.2 -484.5Z"/></clipPath>
+                  <clipPath id="mmoTFront"><path d="M-733.5 878.5L1992.5 239.1L2312.2 1602.1L-413.8 2241.5Z"/></clipPath>
+                </defs>
+                <g transform="translate(-8.653 -8.621) scale(0.06459)">
+                  <g clip-path="url(#mmoTBack)">
+                    <use href="#mmoTRing" fill="#74adfb" fill-rule="evenodd" stroke="none"/>
+                    <use class="mentor-orbit-spark" href="#mmoTOrbit" fill="none" stroke="#2d73f6" stroke-width="34" stroke-linecap="round" stroke-dasharray="12 88"/>
+                  </g>
+                  <g class="mentor-orbit-flask">
+                    <use href="#mmoTFlask" fill="#fff" stroke="#fff" stroke-width="98" stroke-linejoin="round"/>
+                    <g clip-path="url(#mmoTInside)">
+                      <path class="mentor-orbit-liquid" d="M153.7 1238L385.8 838L416.6 785C424.1 772 440 755 470 754C520 750 570 742 620 731C670 720 718 706 765 705C782 705 798.9 722 806.4 735L854.6 818L1098.3 1238Z" fill="#74b1fc" stroke="none"/>
+                      <use href="#mmoTFlask" fill="none" stroke="#fff" stroke-width="126" stroke-linejoin="round"/>
+                      <circle class="mentor-orbit-bubble bubble-one" cx="599" cy="902" r="48.7" fill="#fff" stroke="none"/>
+                      <circle class="mentor-orbit-bubble bubble-two" cx="745" cy="926" r="31.5" fill="#fff" stroke="none"/>
+                    </g>
+                    <use href="#mmoTFlask" fill="none" stroke="#2d73f6" stroke-width="62" stroke-linejoin="round"/>
+                  </g>
+                  <g clip-path="url(#mmoTFront)">
+                    <use href="#mmoTRing" fill="#74adfb" fill-rule="evenodd" stroke="#fff" stroke-width="24" stroke-linejoin="round" paint-order="stroke"/>
+                    <use class="mentor-orbit-spark" href="#mmoTOrbit" fill="none" stroke="#2d73f6" stroke-width="34" stroke-linecap="round" stroke-dasharray="12 88"/>
+                  </g>
+                </g>
+              </svg>
             </div>
             <h1>早上好，同学</h1>
           </div>
@@ -42,7 +71,6 @@
         <div class="prompt-main">
           <div class="prompt-label">
             <span>AI 习题即时建模</span>
-            <small>输入题目后生成可视化实验、公式推理与 AI 提示</small>
           </div>
           <div class="prompt-input-wrap">
             <input id="questionInput" value="一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。" placeholder="请输入或粘贴一道理科题目" autocomplete="off" aria-label="输入理科题目">
@@ -130,7 +158,6 @@
               <button class="subject-tab" data-subject="数学"><i class="math"></i>数学</button>
               <button class="subject-tab" data-subject="生物"><i class="biology"></i>生物</button>
             </div>
-            <span class="free-count">内测无限次数</span>
           </div>
         </div>
       </section>
@@ -583,8 +610,8 @@
           <section class="reasoning-card card">
             <div class="side-card-header">
               <div>
-                <span class="section-kicker">等待题目解析</span>
-                <h2>思维链将在生成后出现</h2>
+                <span class="section-kicker">生成实验后展开</span>
+                <h2>解题思维链</h2>
               </div>
               <span class="progress-ring"><strong id="reasonProgress">0</strong>/4</span>
             </div>
@@ -598,23 +625,19 @@
             <div class="reasoning-steps">
               <button class="reason-step pending-placeholder" data-step="1">
                 <span class="step-index">1</span>
-                <div><small>等待</small><strong>识别题干条件</strong><p>点击生成后开始分析</p></div>
-                <i><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></i>
+                <div><strong>识别题干条件</strong></div>
               </button>
               <button class="reason-step pending-placeholder" data-step="2">
                 <span class="step-index">2</span>
-                <div><small>等待</small><strong>选择适用公式</strong><p>生成后展示推理路径</p></div>
-                <i><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></i>
+                <div><strong>选择适用公式</strong></div>
               </button>
               <button class="reason-step pending-placeholder" data-step="3">
                 <span class="step-index">3</span>
-                <div><small>等待</small><strong>代入数据求解</strong><p>生成后联动实验结果</p></div>
-                <i><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></i>
+                <div><strong>代入数据求解</strong></div>
               </button>
               <button class="reason-step pending-placeholder" data-step="4">
                 <span class="step-index">4</span>
-                <div><small>等待</small><strong>检验学习结论</strong><p>生成后形成总结</p></div>
-                <i><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></i>
+                <div><strong>检验学习结论</strong></div>
               </button>
             </div>
           </section>
@@ -875,7 +898,7 @@
 
   <script src="science-motion.js?v=20260922-motion-1"></script>
   <script src="physics-extra.js?v=20260929-diagram-pan-2"></script>
-  <script src="app.js?v=20261001-announcements-1"></script>
+  <script src="app.js?v=20261005-reasoning-timeline-1"></script>
   <script src="ai-tutor.js?v=20261005-hide-default-label-1"></script>
   <script src="announcements.js?v=20261001-announcements-1"></script>
 </body>
