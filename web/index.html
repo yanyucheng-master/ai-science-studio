@@ -8,7 +8,7 @@
   <link rel="icon" href="favicon.ico?v=20261004-orbit-flask" sizes="16x16 32x32 48x48">
   <link rel="apple-touch-icon" href="assets/brand/orbit-flask-2026-10-04/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=20261004-orbit-flask-1">
+  <link rel="stylesheet" href="styles.css?v=20261005-light-buttons-1">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -621,17 +621,38 @@
 
           <section class="mentor-card card">
             <div class="mentor-head">
-              <div class="mentor-mark mentor-mark-compact" role="img" aria-label="大师实验室 AI 导师标志，右键可配置 API 密钥" title="右键配置 DeepSeek API 密钥" tabindex="0">
+              <div class="mentor-mark mentor-mark-compact mentor-mark-orbit" role="img" aria-label="大师实验室 AI 导师标志，右键可配置 API 密钥" title="右键配置 DeepSeek API 密钥" tabindex="0">
                 <span class="mentor-mark-aura" aria-hidden="true"></span>
-                <svg class="mentor-mark-glyph" viewBox="0 0 64 64" width="48" height="48" aria-hidden="true">
-                  <rect class="mentor-mark-tile" x="5" y="5" width="54" height="54" rx="18" fill="#2057d9" />
-                  <path class="mentor-mark-flask" d="M27 13h10M29 13v12L18.6 44.7C16.5 49.2 19.6 53 24.6 53h14.8c5 0 8.1-3.8 6-8.3L35 25V13" fill="rgba(255,255,255,.08)" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-                  <path class="mentor-mark-liquid" d="M19.5 43.3c4.1-2.7 7.3 2.1 11.8-.4 4-2.2 7.1-2 12.8.3l2 4.2c1.1 2.4-.7 4.6-3.4 4.6H21.3c-2.7 0-4.5-2.2-3.4-4.6Z" fill="#4bd7b2" opacity=".78" />
-                  <path class="mentor-mark-route" d="m23 44 6-7 5 3 5-9" fill="none" stroke="#eafffb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-                  <circle class="mentor-mark-step step-one" cx="23" cy="44" r="2.5" fill="#a8f4df" stroke="#fff" stroke-width="1" />
-                  <circle class="mentor-mark-step step-two" cx="34" cy="40" r="2.5" fill="#a9d7ff" stroke="#fff" stroke-width="1" />
-                  <circle class="mentor-mark-step step-three" cx="39" cy="31" r="2.8" fill="#e0d7ff" stroke="#fff" stroke-width="1" />
-                  <path class="mentor-mark-drop" d="M32 18c2 2.5 3 4.2 3 5.4a3 3 0 1 1-6 0c0-1.2 1-2.9 3-5.4Z" fill="#9ee9ff" opacity=".88" />
+                <svg class="mentor-mark-glyph mentor-orbit-glyph" viewBox="0 0 64 64" width="48" height="48" aria-hidden="true">
+                  <defs>
+                    <path id="mmoFlask" d="M524 470V300C524 285 515 278 500 276C485 274 478 263 478 253C478 243 487 235 500 235H752C765 235 774 243 774 253C774 263 767 274 752 276C737 278 728 285 728 300V470C728 490 734 505 740 515L946 870C964 902 970 945 962 975C952 1005 922 1023 872 1023H380C330 1023 300 1005 290 975C282 945 288 902 306 870L512 515C518 505 524 490 524 470Z"/>
+                    <path id="mmoRing" d="M1099.2 448.6A482.5 142.1 -13.2 1 1 159.8 669A482.5 142.1 -13.2 1 1 1099.2 448.6ZM1040.1 458.6A421.9 92.8 -13.32 1 1 218.9 653A421.9 92.8 -13.32 1 1 1040.1 458.6Z"/>
+                    <path id="mmoOrbit" d="M1069.6 453.6A452.2 117.5 -13.26 1 1 189.4 661A452.2 117.5 -13.26 1 1 1069.6 453.6Z" pathLength="100"/>
+                    <clipPath id="mmoInside"><use href="#mmoFlask"/></clipPath>
+                    <clipPath id="mmoBack"><path d="M-733.5 878.5L1992.5 239.1L1672.8 -1123.9L-1053.2 -484.5Z"/></clipPath>
+                    <clipPath id="mmoFront"><path d="M-733.5 878.5L1992.5 239.1L2312.2 1602.1L-413.8 2241.5Z"/></clipPath>
+                  </defs>
+                  <rect class="mentor-orbit-tile" x="5" y="5" width="54" height="54" rx="18" fill="#fff" stroke="#dce6f7" stroke-width="1"/>
+                  <g transform="translate(2.188 2.611) scale(0.04736)">
+                    <g clip-path="url(#mmoBack)">
+                      <use href="#mmoRing" fill="#74adfb" fill-rule="evenodd" stroke="none"/>
+                      <use class="mentor-orbit-spark" href="#mmoOrbit" fill="none" stroke="#2d73f6" stroke-width="34" stroke-linecap="round" stroke-dasharray="12 88"/>
+                    </g>
+                    <g class="mentor-orbit-flask">
+                      <use href="#mmoFlask" fill="#fff" stroke="#fff" stroke-width="98" stroke-linejoin="round"/>
+                      <g clip-path="url(#mmoInside)">
+                        <path class="mentor-orbit-liquid" d="M153.7 1238L385.8 838L416.6 785C424.1 772 440 755 470 754C520 750 570 742 620 731C670 720 718 706 765 705C782 705 798.9 722 806.4 735L854.6 818L1098.3 1238Z" fill="#74b1fc" stroke="none"/>
+                        <use href="#mmoFlask" fill="none" stroke="#fff" stroke-width="126" stroke-linejoin="round"/>
+                        <circle class="mentor-orbit-bubble bubble-one" cx="599" cy="902" r="48.7" fill="#fff" stroke="none"/>
+                        <circle class="mentor-orbit-bubble bubble-two" cx="745" cy="926" r="31.5" fill="#fff" stroke="none"/>
+                      </g>
+                      <use href="#mmoFlask" fill="none" stroke="#2d73f6" stroke-width="62" stroke-linejoin="round"/>
+                    </g>
+                    <g clip-path="url(#mmoFront)">
+                      <use href="#mmoRing" fill="#74adfb" fill-rule="evenodd" stroke="#fff" stroke-width="24" stroke-linejoin="round" paint-order="stroke"/>
+                      <use class="mentor-orbit-spark" href="#mmoOrbit" fill="none" stroke="#2d73f6" stroke-width="34" stroke-linecap="round" stroke-dasharray="12 88"/>
+                    </g>
+                  </g>
                 </svg>
               </div>
               <div>
@@ -670,17 +691,38 @@
         <section class="ai-tutor-workspace card" id="aiTutorWorkspace" aria-hidden="true">
           <header class="ai-tutor-header">
             <div class="ai-tutor-identity">
-              <div class="mentor-mark mentor-mark-large ai-tutor-avatar" role="img" aria-label="大师实验室 AI 导师标志，右键可配置 API 密钥" title="右键配置 DeepSeek API 密钥" tabindex="0">
+              <div class="mentor-mark mentor-mark-large ai-tutor-avatar mentor-mark-orbit" role="img" aria-label="大师实验室 AI 导师标志，右键可配置 API 密钥" title="右键配置 DeepSeek API 密钥" tabindex="0">
                 <span class="mentor-mark-aura" aria-hidden="true"></span>
-                <svg class="mentor-mark-glyph" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
-                  <rect class="mentor-mark-tile" x="5" y="5" width="54" height="54" rx="18" fill="#2057d9" />
-                  <path class="mentor-mark-flask" d="M27 13h10M29 13v12L18.6 44.7C16.5 49.2 19.6 53 24.6 53h14.8c5 0 8.1-3.8 6-8.3L35 25V13" fill="rgba(255,255,255,.08)" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-                  <path class="mentor-mark-liquid" d="M19.5 43.3c4.1-2.7 7.3 2.1 11.8-.4 4-2.2 7.1-2 12.8.3l2 4.2c1.1 2.4-.7 4.6-3.4 4.6H21.3c-2.7 0-4.5-2.2-3.4-4.6Z" fill="#4bd7b2" opacity=".78" />
-                  <path class="mentor-mark-route" d="m23 44 6-7 5 3 5-9" fill="none" stroke="#eafffb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-                  <circle class="mentor-mark-step step-one" cx="23" cy="44" r="2.5" fill="#a8f4df" stroke="#fff" stroke-width="1" />
-                  <circle class="mentor-mark-step step-two" cx="34" cy="40" r="2.5" fill="#a9d7ff" stroke="#fff" stroke-width="1" />
-                  <circle class="mentor-mark-step step-three" cx="39" cy="31" r="2.8" fill="#e0d7ff" stroke="#fff" stroke-width="1" />
-                  <path class="mentor-mark-drop" d="M32 18c2 2.5 3 4.2 3 5.4a3 3 0 1 1-6 0c0-1.2 1-2.9 3-5.4Z" fill="#9ee9ff" opacity=".88" />
+                <svg class="mentor-mark-glyph mentor-orbit-glyph" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
+                  <defs>
+                    <path id="mmoLFlask" d="M524 470V300C524 285 515 278 500 276C485 274 478 263 478 253C478 243 487 235 500 235H752C765 235 774 243 774 253C774 263 767 274 752 276C737 278 728 285 728 300V470C728 490 734 505 740 515L946 870C964 902 970 945 962 975C952 1005 922 1023 872 1023H380C330 1023 300 1005 290 975C282 945 288 902 306 870L512 515C518 505 524 490 524 470Z"/>
+                    <path id="mmoLRing" d="M1099.2 448.6A482.5 142.1 -13.2 1 1 159.8 669A482.5 142.1 -13.2 1 1 1099.2 448.6ZM1040.1 458.6A421.9 92.8 -13.32 1 1 218.9 653A421.9 92.8 -13.32 1 1 1040.1 458.6Z"/>
+                    <path id="mmoLOrbit" d="M1069.6 453.6A452.2 117.5 -13.26 1 1 189.4 661A452.2 117.5 -13.26 1 1 1069.6 453.6Z" pathLength="100"/>
+                    <clipPath id="mmoLInside"><use href="#mmoLFlask"/></clipPath>
+                    <clipPath id="mmoLBack"><path d="M-733.5 878.5L1992.5 239.1L1672.8 -1123.9L-1053.2 -484.5Z"/></clipPath>
+                    <clipPath id="mmoLFront"><path d="M-733.5 878.5L1992.5 239.1L2312.2 1602.1L-413.8 2241.5Z"/></clipPath>
+                  </defs>
+                  <rect class="mentor-orbit-tile" x="5" y="5" width="54" height="54" rx="18" fill="#fff" stroke="#dce6f7" stroke-width="1"/>
+                  <g transform="translate(2.188 2.611) scale(0.04736)">
+                    <g clip-path="url(#mmoLBack)">
+                      <use href="#mmoLRing" fill="#74adfb" fill-rule="evenodd" stroke="none"/>
+                      <use class="mentor-orbit-spark" href="#mmoLOrbit" fill="none" stroke="#2d73f6" stroke-width="34" stroke-linecap="round" stroke-dasharray="12 88"/>
+                    </g>
+                    <g class="mentor-orbit-flask">
+                      <use href="#mmoLFlask" fill="#fff" stroke="#fff" stroke-width="98" stroke-linejoin="round"/>
+                      <g clip-path="url(#mmoLInside)">
+                        <path class="mentor-orbit-liquid" d="M153.7 1238L385.8 838L416.6 785C424.1 772 440 755 470 754C520 750 570 742 620 731C670 720 718 706 765 705C782 705 798.9 722 806.4 735L854.6 818L1098.3 1238Z" fill="#74b1fc" stroke="none"/>
+                        <use href="#mmoLFlask" fill="none" stroke="#fff" stroke-width="126" stroke-linejoin="round"/>
+                        <circle class="mentor-orbit-bubble bubble-one" cx="599" cy="902" r="48.7" fill="#fff" stroke="none"/>
+                        <circle class="mentor-orbit-bubble bubble-two" cx="745" cy="926" r="31.5" fill="#fff" stroke="none"/>
+                      </g>
+                      <use href="#mmoLFlask" fill="none" stroke="#2d73f6" stroke-width="62" stroke-linejoin="round"/>
+                    </g>
+                    <g clip-path="url(#mmoLFront)">
+                      <use href="#mmoLRing" fill="#74adfb" fill-rule="evenodd" stroke="#fff" stroke-width="24" stroke-linejoin="round" paint-order="stroke"/>
+                      <use class="mentor-orbit-spark" href="#mmoLOrbit" fill="none" stroke="#2d73f6" stroke-width="34" stroke-linecap="round" stroke-dasharray="12 88"/>
+                    </g>
+                  </g>
                 </svg>
               </div>
               <div>

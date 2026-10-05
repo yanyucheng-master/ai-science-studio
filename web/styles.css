@@ -505,13 +505,13 @@ body.announcements-open {
   padding: 0;
   flex: 0 0 50px;
   place-items: center;
-  color: #fff;
+  color: #2d73f6;
   cursor: pointer;
-  border: 0;
+  border: 1px solid #cfe0fb;
   border-radius: 16px;
-  background: linear-gradient(145deg, #406efb, #2250da);
-  box-shadow: 0 10px 25px rgba(44, 89, 229, 0.25);
-  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+  background: linear-gradient(145deg, #ffffff, #eaf3ff);
+  box-shadow: 0 8px 20px rgba(45, 115, 246, 0.12);
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
 }
 
 .prompt-icon svg {
@@ -521,7 +521,9 @@ body.announcements-open {
 
 .prompt-favorite-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(44, 89, 229, 0.3);
+  border-color: #b4d0fa;
+  background: linear-gradient(145deg, #f7fbff, #e1eeff);
+  box-shadow: 0 12px 24px rgba(45, 115, 246, 0.18);
 }
 
 .prompt-favorite-button:active {
@@ -529,17 +531,18 @@ body.announcements-open {
 }
 
 .prompt-favorite-button:focus-visible {
-  outline: 3px solid rgba(40, 104, 244, 0.24);
+  outline: 3px solid rgba(45, 115, 246, 0.28);
   outline-offset: 3px;
 }
 
 .prompt-favorite-button.selected {
-  background: linear-gradient(145deg, #3167f2, #1749d2);
-  box-shadow: 0 12px 28px rgba(32, 80, 218, 0.32);
+  border-color: #9cc2fb;
+  background: linear-gradient(145deg, #eaf3ff, #d6e8ff);
+  box-shadow: 0 10px 24px rgba(45, 115, 246, 0.2);
 }
 
 .prompt-favorite-button.selected svg {
-  fill: rgba(255, 255, 255, 0.3);
+  fill: #74b1fc;
   transform: scale(1.06);
 }
 
@@ -737,17 +740,36 @@ body.announcements-open {
   gap: 10px;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: #1a56d6;
   font-size: 12px;
-  font-weight: 700;
-  border: 0;
+  font-weight: 800;
+  border: 1px solid #b9d4fb;
   border-radius: 11px;
-  background: linear-gradient(110deg, #286bfa, #1746dd);
-  box-shadow: 0 8px 18px rgba(29, 82, 224, 0.24);
+  background: linear-gradient(110deg, #eef5ff, #d9e9ff);
+  box-shadow: 0 6px 16px rgba(45, 115, 246, 0.14);
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.generate-button:hover {
+  border-color: #93bdfa;
+  background: linear-gradient(110deg, #e4efff, #cbe1ff);
+  box-shadow: 0 9px 20px rgba(45, 115, 246, 0.2);
+  transform: translateY(-1px);
+}
+
+.generate-button:active {
+  transform: translateY(0);
+  background: #cfe3ff;
+}
+
+.generate-button:focus-visible {
+  outline: 3px solid rgba(45, 115, 246, 0.28);
+  outline-offset: 2px;
 }
 
 .generate-button svg {
   width: 15px;
+  color: #2d73f6;
 }
 
 .generate-button.loading {
@@ -1927,6 +1949,96 @@ input[type="range"] {
 @keyframes mentor-mark-drop {
   0%, 100% { opacity: .66; transform: translateY(-1px) scale(.9); }
   50% { opacity: 1; transform: translateY(1px) scale(1.04); }
+}
+
+/* 关键追问：轨道烧瓶标志（品牌目录 assets/brand/orbit-flask-2026-10-04） */
+.mentor-mark-orbit::after {
+  box-shadow: 0 10px 22px rgba(31, 91, 236, .14);
+}
+
+.mentor-mark-orbit .mentor-mark-aura {
+  background:
+    radial-gradient(circle at 35% 42%, rgba(116, 173, 251, .42), transparent 58%),
+    radial-gradient(circle at 68% 58%, rgba(45, 115, 246, .3), transparent 64%);
+}
+
+.mentor-mark-orbit .mentor-mark-glyph {
+  filter: drop-shadow(0 6px 10px rgba(26, 65, 163, .12));
+}
+
+.mentor-mark-orbit:hover .mentor-mark-glyph,
+.mentor-mark-orbit:focus-visible .mentor-mark-glyph {
+  filter: drop-shadow(0 10px 16px rgba(28, 70, 173, .2));
+  transform: translateY(-1px);
+}
+
+.mentor-orbit-flask {
+  transform-box: fill-box;
+  transform-origin: 50% 60%;
+  transition: transform .36s cubic-bezier(.2, .8, .2, 1);
+}
+
+.mentor-orbit-liquid {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.mentor-orbit-bubble {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.mentor-orbit-spark {
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+
+.mentor-mark-orbit:hover .mentor-orbit-flask,
+.mentor-mark-orbit:focus-visible .mentor-orbit-flask {
+  transform: scale(1.03);
+}
+
+.mentor-mark-orbit:hover .mentor-orbit-liquid,
+.mentor-mark-orbit:focus-visible .mentor-orbit-liquid {
+  animation: mentor-orbit-liquid 1.8s ease-in-out infinite;
+}
+
+.mentor-mark-orbit:hover .mentor-orbit-bubble,
+.mentor-mark-orbit:focus-visible .mentor-orbit-bubble {
+  animation: mentor-orbit-bubble 1.45s ease-in-out infinite;
+}
+
+.mentor-mark-orbit:hover .bubble-two,
+.mentor-mark-orbit:focus-visible .bubble-two { animation-delay: .36s; }
+
+.mentor-mark-orbit:hover .mentor-orbit-spark,
+.mentor-mark-orbit:focus-visible .mentor-orbit-spark {
+  opacity: 1;
+  animation: mentor-orbit-spark 1.6s linear infinite;
+}
+
+@keyframes mentor-orbit-liquid {
+  0%, 100% { transform: translateY(0) skewX(0deg); }
+  50% { transform: translateY(-20px) skewX(-3deg); }
+}
+
+@keyframes mentor-orbit-bubble {
+  0%, 100% { opacity: .78; transform: translateY(0) scale(.86); }
+  45% { opacity: 1; transform: translateY(-46px) scale(1.12); }
+}
+
+@keyframes mentor-orbit-spark {
+  to { stroke-dashoffset: -100; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mentor-orbit-flask,
+  .mentor-orbit-liquid,
+  .mentor-orbit-bubble,
+  .mentor-orbit-spark {
+    animation: none;
+    transition: none;
+  }
 }
 
 .mentor-head > div:nth-child(2) {
@@ -6815,7 +6927,7 @@ body.fullscreen-lock {
   min-width: 156px;
   font-size: 14px;
   border-radius: 13px;
-  box-shadow: 0 12px 26px rgba(29, 82, 224, 0.32);
+  box-shadow: 0 10px 22px rgba(45, 115, 246, 0.2);
 }
 
 .demo-mode .generate-button.loading {
