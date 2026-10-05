@@ -211,7 +211,7 @@ try {
         .some(node => node.scrollWidth > node.clientWidth + 2),
       unsafeNodes: document.querySelectorAll('.ai-message.assistant img, .ai-message.assistant svg, .ai-message.assistant script').length,
       unsafeExecuted: Boolean(window.fixtureUnsafe),
-      provider: document.querySelector('.ai-tutor-identity .online')?.textContent || '',
+      provider: (node => node && !node.hidden ? node.textContent : '')(document.querySelector('.ai-tutor-identity .online')),
       pending: Boolean(document.querySelector('.ai-message.pending')),
       busy: document.querySelector('#aiTutorWorkspace').getAttribute('aria-busy'),
       sendEnabled: !document.querySelector('#aiTutorSendButton').disabled
@@ -260,7 +260,7 @@ try {
       if (['default_question', 'personal_cleared'].includes(name)) {
         assert.equal(calls.length, 0); assert.equal(report.gatewayCalls, 1);
         assert.equal(ui.error, false); assert.match(ui.final, /40 m/);
-        assert.match(ui.provider, /公益默认服务/);
+        assert.equal(ui.provider, '', name); // 默认（公益）模式不显示状态行
       }
       if (name === 'default_unavailable') {
         assert.equal(calls.length, 0); assert.equal(report.gatewayCalls, 1);

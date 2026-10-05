@@ -228,8 +228,10 @@
     document.querySelectorAll(".mentor-card .online, .ai-tutor-identity .online").forEach((node) => {
       const label = node.childNodes[node.childNodes.length - 1];
       if (label && label.nodeType === Node.TEXT_NODE) {
-        label.textContent = ready ? " 个人密钥模式" : " 公益默认服务";
+        label.textContent = ready ? " 个人密钥模式" : "";
       }
+      // 默认（公益）模式不显示状态行；配置个人密钥后显示“个人密钥模式”
+      node.hidden = !ready;
       node.title = ready
         ? `个人密钥优先 · ${DEEPSEEK_MODEL_LABEL} · 最高思考 max`
         : `使用后台公益密钥 · ${DEEPSEEK_MODEL_LABEL} · 最高思考 max；右键烧瓶可配置个人密钥`;
