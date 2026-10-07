@@ -9895,3 +9895,45 @@ body.ai-tutor-route .scene *, body.ai-tutor-route .scene *::before, body.ai-tuto
     left: 26px;
   }
 }
+
+/* ===== 中等宽度修正（2026-10-07）：901–1179px（如 1024×768 平板横屏）
+   桌面最小宽度 1180px 会让整页横向滚动、右侧按钮移出屏幕 ===== */
+@media (min-width: 901px) and (max-width: 1179px) {
+  body {
+    min-width: 0;
+  }
+}
+
+/* 901–1100px：实验卡内部已是上下排列，两栏会把实验卡压到 540px 左右，读数面板和标注互相遮挡；
+   改为实验卡在上、解题路径在下 */
+@media (min-width: 901px) and (max-width: 1100px) {
+  .content-grid,
+  .demo-mode .content-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "experiment"
+      "tutor"
+      "insight";
+  }
+}
+
+/* 1101–1179px：保留两栏，实验卡宽度（约 740–820px）与 1180px 桌面布局相当 */
+@media (min-width: 1101px) and (max-width: 1179px) {
+  .content-grid,
+  .demo-mode .content-grid {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+}
+
+/* 561–1100px：教材图示与结论卡上下排列时，固定高度的场景只给图示留下约 100px，标注缩成 3–5px；
+   场景加高，让图示按原比例显示 */
+@media (min-width: 561px) and (max-width: 1100px) {
+  .scene.subject-generic-physics,
+  .scene.subject-generic-physics:has(.edu-diagram) {
+    min-height: 560px;
+  }
+
+  .generic-physics-lab {
+    grid-template-rows: minmax(300px, 1fr) auto;
+  }
+}

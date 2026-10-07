@@ -90,6 +90,13 @@ bank.forEach((item, index) => {
   }
   localItems.push({ item, index, values: plan.values });
 });
+// AI 改写核对：改写成模板题后，题中每个条件都必须来自原题；AI 补造的条件不能通过
+const mappedItems = bank.map((item, index) => ({ item, index })).filter(({ item }) => item.mapped);
+const mappedResults = await planPage.evaluate(items => items.map(item => mappedPlanFitsOriginal(item.q, item.mapped)), mappedItems.map(({ item }) => item));
+mappedItems.forEach(({ item, index }, i) => {
+  if (mappedResults[i] !== item.mappedAccepted) failures.push(`#${index + 1} ${item.q.slice(0, 36)}：AI 改写核对结果为 ${mappedResults[i]}，应为 ${item.mappedAccepted}（${item.note || ''}）`);
+});
+if (planErrors.length) failures.push(`规划页面错误 ${planErrors[0]}`);
 await planContext.close();
 
 // 2. 页面层：真正点“生成实验”后，状态与滑块必须保留题目数值，结果与规划一致
