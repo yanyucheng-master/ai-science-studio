@@ -680,6 +680,8 @@
       try {
         payload = await response.json();
       } catch {
+        // 网关休眠或故障时返回 HTML 或空内容：提示“服务暂不可用”，不要说成“返回格式不符合约定”
+        if (!response.ok) throw new TutorRequestError(response.status === 429 ? "RATE_LIMITED" : "AI_UNAVAILABLE", response.status);
         throw new TutorRequestError("INVALID_AI_RESPONSE", response.status);
       }
       if (!response.ok) {
@@ -1522,7 +1524,8 @@
     return null;
   }
 
-  async function resolveUnmatchedQuestion({ question, preferredSubject = "", localMessage = "" }) {
+  // acceptPlan：由页面核对 AI 改写后的模板题是否仍符合原题全部条件；不符合时改走导师讲解
+  async function resolveUnmatchedQuestion({ question, preferredSubject = "", localMessage = "", acceptPlan = null }) {
     const cleanQuestion = text(question);
     if (!cleanQuestion) return { mode: "unavailable" };
     host().setMentorSummary?.("本地模板暂未匹配，正在请 AI 判断题型与所需条件……");
@@ -1533,7 +1536,7 @@
       }, GENERATE_TIMEOUT_MS);
       if (response.mode === "experiment") {
         const mapped = planToQuestion(response.plan);
-        if (mapped) {
+        if (mapped && (typeof acceptPlan !== "function" || acceptPlan(mapped, response) !== false)) {
           host().setMentorSummary?.(`AI 已识别为“${response.title || "已有实验模板"}”，将由本地计算引擎生成。`);
           return { mode: "experiment", ...mapped, response };
         }
