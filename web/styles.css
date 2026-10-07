@@ -9605,3 +9605,293 @@ body.ai-tutor-route .scene *, body.ai-tutor-route .scene *::before, body.ai-tuto
   align-self: flex-end;
   margin-bottom: 3px;
 }
+
+/* ===== 实验动画显示修正（2026-10-06） ===== */
+/* 刹车刻度尺：刻度由脚本按与车头、停止线相同的换算定位；左右各让出路面 1px 边框，与路面内部坐标对齐 */
+.ruler {
+  right: 1px;
+  left: 1px;
+  display: block;
+  height: 18px;
+}
+
+.ruler span {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.road-distance-marks {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+}
+
+.road-distance-marks i {
+  position: absolute;
+  top: 0;
+  bottom: 1px;
+  width: 1px;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, .3);
+}
+
+.ruler .ruler-last::after {
+  position: absolute;
+  top: 5px;
+  left: 100%;
+  white-space: pre;
+  content: " m";
+}
+
+/* 远山只露出地平线以上的部分，不再压到路面和停止点上 */
+.mountain {
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.mountain-one {
+  bottom: 22px;
+}
+
+.mountain-two {
+  bottom: -3px;
+}
+
+@media (max-width: 560px) {
+  /* 窄屏：模型说明移到右上角一行，不再盖住第三个读数 */
+  .brake-model-indicator {
+    top: 12px;
+    right: 12px;
+    min-width: 0;
+    padding: 5px 10px;
+    gap: 6px;
+    grid-auto-flow: column;
+    align-items: baseline;
+  }
+
+  .brake-model-indicator strong {
+    font-size: 12px;
+  }
+
+  /* 窄屏：播放条收紧，全屏按钮不再被挤出卡片 */
+  .transport {
+    padding: 0 2px;
+    gap: 6px;
+  }
+
+  .timeline {
+    min-width: 0;
+  }
+
+  .timecode {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 400px) {
+  /* 极窄屏：右上角留给模型说明，装饰性的引擎标签不再显示 */
+  .scene-badge {
+    display: none;
+  }
+}
+
+/* ===== 窄屏布局修正（2026-10-06）：读数、按钮和标注在 320–1100px 宽度下都完整可见 ===== */
+@media (max-width: 1100px) {
+  /* 平板宽度：欧姆定律电路的读数卡不再被截断 */
+  body.subject-circuit-active .scene.subject-circuit {
+    min-height: 480px;
+  }
+}
+
+/* 木板—滑块紧凑模式（由脚本按实验区宽度切换） */
+.board-slider-world.board-slider-compact .board-slider-block {
+  width: 52px;
+  height: 44px;
+}
+
+.board-slider-world.board-slider-compact .board-slider-block strong {
+  align-self: center;
+  font-size: 11px;
+}
+
+.board-slider-world.board-slider-compact .board-slider-block small {
+  display: none;
+}
+
+.board-slider-world.board-slider-compact .block-friction-vector {
+  top: -20px;
+  right: 50%;
+  gap: 3px;
+  font-size: 8.5px;
+}
+
+.board-slider-world.board-slider-compact .block-friction-vector i,
+.board-slider-world.board-slider-compact .board-friction-vector i {
+  width: 22px;
+}
+
+.board-slider-world.board-slider-compact .block-speed-vector {
+  top: -34px;
+  left: 50%;
+}
+
+.board-slider-world.board-slider-compact .block-speed-vector i {
+  width: calc(14px + 18px * var(--board-block-speed, 1));
+}
+
+.board-slider-world.board-slider-compact .board-speed-vector {
+  bottom: -36px;
+  left: 6px;
+}
+
+.board-slider-world.board-slider-compact .board-speed-vector i {
+  width: calc(14px + 18px * var(--board-board-speed, .1));
+}
+
+/* 速度数值已在上方读数面板中显示，紧凑模式只保留箭头 */
+.board-slider-world.board-slider-compact .block-speed-vector span,
+.board-slider-world.board-slider-compact .board-speed-vector span {
+  display: none;
+}
+
+.board-slider-world.board-slider-compact .board-friction-vector {
+  gap: 3px;
+  font-size: 8.5px;
+}
+
+.board-slider-world.board-slider-compact .board-slider-origin span {
+  top: auto;
+  bottom: -14px;
+}
+
+@media (max-width: 560px) {
+  /* 函数切线：读数面板等分放在全屏按钮右侧；动点坐标已在面板和图中标出，窄屏不再重复 */
+  .scene.subject-math .metric-panel {
+    right: 12px;
+    left: 58px;
+  }
+
+  .scene.subject-math .metric-panel div {
+    min-width: 0;
+    flex: 1 1 0;
+    padding-right: 6px;
+    padding-left: 8px;
+  }
+
+  .scene.subject-math .metric-panel strong {
+    font-size: 16px;
+  }
+
+  .subject-math .math-label,
+  .scene.subject-math .scene-tip {
+    display: none;
+  }
+
+  /* 通电螺线管：操作按钮换行排列，文字保持横排；按钮占几行，线圈区域就让出几行 */
+  .scene.subject-solenoid .solenoid-stage {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .subject-solenoid .solenoid-layout {
+    height: auto;
+    min-height: 0;
+    flex: 1 1 auto;
+  }
+
+  .subject-solenoid .solenoid-lab {
+    min-height: 0;
+  }
+
+  .subject-solenoid .solenoid-control-strip {
+    height: auto;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .subject-solenoid .solenoid-control-strip button {
+    flex: 0 0 auto;
+    height: 32px;
+    padding: 0 11px;
+    white-space: nowrap;
+  }
+
+  /* 化学：烧杯随宽度缩放；反应完成度移到右上角，不再压住杯口 */
+  .chem-beaker {
+    width: min(274px, calc(100% + 40px));
+  }
+
+  .subject-chemistry .chem-label {
+    top: 12px;
+    right: 12px;
+    min-width: 0;
+    padding: 5px 10px;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .subject-chemistry .chem-label strong {
+    font-size: 14px;
+  }
+
+  /* 典型题模板：场景加高，读数卡完整显示；电路说明条单独占一行，不压电路图 */
+  .scene.subject-generic-physics,
+  .scene.subject-generic-physics:has(.edu-diagram) {
+    min-height: 470px;
+  }
+
+  .generic-circuit-badge {
+    right: 10px;
+    text-align: center;
+    line-height: 1.35;
+  }
+
+  .generic-edu-circuit {
+    top: 44px;
+    height: calc(100% - 44px);
+  }
+}
+
+/* ===== 窄屏布局修正（2026-10-07）：标签、工具条和读数互不遮挡 ===== */
+@media (max-width: 800px) {
+  /* 木板—滑块：判定卡与运动轨道争抢宽度会把木板压得很短；滑落结论在公式卡和步骤中已给出 */
+  .board-slider-live-card {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  /* 欧姆定律电路：顶部说明条单独占一行，开关标注不再被它压住 */
+  body.subject-circuit-active .scene.subject-circuit {
+    min-height: 510px;
+  }
+
+  .scene.subject-circuit .circuit-board .edu-circuit-svg {
+    top: 40px;
+    height: calc(100% - 44px);
+  }
+}
+
+@media (max-width: 700px) {
+  /* 函数切线：动点坐标已在图中标出，读数面板与坐标标签不再重叠 */
+  .subject-math .math-label {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  /* 顶部一行留给读数面板 / 图示工具条和全屏按钮，装饰性的引擎标签不显示（与 ≤400px 一致）；
+     标签隐藏后全屏按钮靠左，读数面板（原有规则 left: 58px）和图示工具条都从按钮右侧开始 */
+  .scene.subject-math .scene-badge,
+  .scene.subject-generic-physics:has(.edu-diagram) .scene-badge {
+    display: none;
+  }
+
+  .generic-physics-visual:has(.edu-diagram) .diagram-mobile-toolbar {
+    left: 26px;
+  }
+}
