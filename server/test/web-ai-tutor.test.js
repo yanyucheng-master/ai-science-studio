@@ -18,13 +18,14 @@ function loadTutor(fetchImpl = () => { throw new Error('Unexpected network reque
   const sandbox = {
     document: { querySelector: () => node, querySelectorAll: () => [], addEventListener() {} },
     localStorage: { getItem: () => options.noKey ? null : 'test-only' },
-    AbortController, TextDecoder, Response, fetch: fetchImpl, setTimeout, clearTimeout,
+    AbortController, TextDecoder, TextEncoder, Response, fetch: fetchImpl, setTimeout, clearTimeout,
     location: { hostname: 'localhost' }, addEventListener() {}
   };
   sandbox.window = sandbox;
   vm.runInNewContext(source.replace(/\n  syncApiKeyUi\(\);\n  updateRoute\(\);/, `
     globalThis.tutorTest = { readSseChat, extractJsonObject, fallbackChatFromText,
-      completeTutorChat, apiRequest, state };`), sandbox);
+      completeTutorChat, apiRequest, state, contextScope, gatewayChatRequest,
+      selectResponseLevel, getAnswerPresentation, softValidateChat };`), sandbox);
   return sandbox.tutorTest;
 }
 
@@ -254,3 +255,73 @@ for (const gateway of [false, true]) {
     assert.equal(result, 'AI_TIMEOUT');
   });
 }
+
+
+test('web: changed parameters and original question invalidate a problem but animation progress does not', () => {
+  const tutor=loadTutor();
+  const initial={mode:'experiment',subject:'物理',templateId:'brake',originalQuestion:'20m/s 刹车',parameters:{initialSpeed:20,deceleration:5},currentStep:'1',deterministicResult:{time:0}};
+  assert.notEqual(tutor.contextScope(initial),tutor.contextScope({...initial,parameters:{...initial.parameters,initialSpeed:10}}));
+  assert.notEqual(tutor.contextScope(initial),tutor.contextScope({...initial,originalQuestion:'10m/s 刹车'}));
+  assert.equal(tutor.contextScope(initial),tutor.contextScope({...initial,currentStep:'4',deterministicResult:{time:4},parameters:{deceleration:5,initialSpeed:20}}));
+});
+
+test('web: Chinese history is budgeted by complete UTF-8 request bytes and keeps the latest round', () => {
+  const tutor=loadTutor();
+  const history=Array.from({length:6},(_,i)=>({role:i%2?'assistant':'user',content:i%2?'推导'.repeat(900):'请继续第'+i+'轮'}));
+  const body={sessionId:'qa',message:'求完整答案',responseLevel:'steps',history,context:{mode:'question',originalQuestion:'袋中取球概率题'}};
+  const request=tutor.gatewayChatRequest(body);
+  assert.ok(new TextEncoder().encode(JSON.stringify(request)).length<=14*1024);
+  assert.ok(request.history.length<history.length);
+  assert.equal(request.history.at(-1).content,history.at(-1).content);
+  assert.equal(body.history.length,6);
+  assert.equal(request.context.originalQuestion,body.context.originalQuestion);
+  assert.match(request.message,/回答规范/);
+});
+
+test('web: malformed successful gateway objects are rejected while clarification remains valid', async () => {
+  for (const value of [{},[],null,{mode:'unknown',summary:'不能当作正确回答'}]) {
+    const tutor=loadTutor(async()=>new Response(JSON.stringify(value)),{noKey:true});
+    await assert.rejects(tutor.apiRequest('/api/v1/tutor/chat',{message:'请解释',responseLevel:'explain'},1000),{code:'INVALID_AI_RESPONSE'});
+  }
+  const tutor=loadTutor(async()=>new Response(JSON.stringify({mode:'clarification',summary:'缺少温度，请补充。',steps:[],formulas:[],finalAnswer:null})),{noKey:true});
+  assert.equal((await tutor.apiRequest('/api/v1/tutor/chat',{message:'求解',responseLevel:'steps'},1000)).mode,'clarification');
+});
+
+test('web: explicit full answers and focused follow-ups use the appropriate response depth', () => {
+  const tutor=loadTutor();
+  assert.equal(tutor.selectResponseLevel('请给完整步骤和最终答案，不要只给提示'),'steps');
+  assert.equal(tutor.selectResponseLevel('只解释为什么加速度为负，不要重新计算距离'),'explain');
+  assert.equal(tutor.selectResponseLevel('只给一个提示，不要给答案'),'hint');
+  assert.equal(tutor.selectResponseLevel('检查我的思路哪里错了'),'check');
+  assert.equal(tutor.selectResponseLevel('生成一道变式并给出答案'),'variant');
+  assert.equal(tutor.selectResponseLevel('袋中3红2蓝，取2球恰有1红的概率是多少？'),'steps');
+});
+
+test('web: compact presentation keeps distinct sub-answers and collapses an exact repeated conclusion', () => {
+  const tutor=loadTutor();
+  const result=tutor.getAnswerPresentation({...answer,summary:'重复开场',steps:['列式：总取法为10。','结论：概率为3/5，无单位。'],finalAnswer:'概率为3/5，无单位。'},{responseLevel:'steps'});
+  assert.equal(result.lead,'');assert.equal(result.result,'');assert.equal(result.steps.length,2);
+  const multiple=tutor.getAnswerPresentation({...answer,steps:['第一问距离40m。'],finalAnswer:'第一问40m；第二问4s。'},{responseLevel:'steps'});
+  assert.match(multiple.result,/4s/);
+});
+
+test('web: null or empty gateway error bodies preserve HTTP failure classification', async () => {
+  for (const status of [503,429]) for (const value of [null,{}]) {
+    const tutor=loadTutor(async()=>new Response(JSON.stringify(value),{status}),{noKey:true});
+    await assert.rejects(tutor.apiRequest('/api/v1/tutor/chat',{message:'求解',responseLevel:'steps'},1000),
+      {code:status===429?'RATE_LIMITED':'AI_UNAVAILABLE',status});
+  }
+});
+
+test('web: the captured chemistry reply retains its complete conclusion instead of clipped LaTeX', async () => {
+  const fixture=JSON.parse(await readFile(new URL('./fixtures/ai-quality/limiting_reagent.json',import.meta.url),'utf8'));
+  const tutor=loadTutor();
+  const last=fixture.payload.steps.at(-1);
+  assert.equal(last.length,500);
+  assert.ok(fixture.payload.finalAnswer.length>last.length);
+  const reply=tutor.softValidateChat(fixture.payload,'steps');
+  const display=tutor.getAnswerPresentation(reply,{responseLevel:'steps'});
+  assert.equal(display.steps.at(-1),fixture.payload.finalAnswer);
+  assert.equal(display.result,'');
+  assert.match(display.steps.at(-1),/1\.68/);
+});

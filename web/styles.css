@@ -9895,3 +9895,21 @@ body.ai-tutor-route .scene *, body.ai-tutor-route .scene *::before, body.ai-tuto
     left: 26px;
   }
 }
+
+/* AI answers: compact steps, visible conclusions, locally rendered textbook mathematics. */
+.ai-message.assistant .ai-message-bubble { font-size: 14px; line-height: 1.8; }
+.solution-section:first-of-type { margin-top: 7px; padding-top: 0; border-top: 0; }
+.solution-section h4 { color: #274063; font-size: 12px; }
+.solution-section li::marker { color: #3a6fd9; font-weight: 600; }
+.solution-section ol { gap: 10px; }
+.ai-step-title { color: #244a80; }
+.solution-section .ai-final-step { padding: 7px 10px; color: #234a78; border-radius: 8px; background: #f0f6ff; }
+.ai-step-result { margin-top: 5px !important; font-weight: 600; }
+.ai-final-step .ai-step-title { color: #245fc8; }
+.ai-formula-line { display: block; min-height: 0; margin-top: 6px; padding: 8px 10px; max-width: 100%; overflow-x: auto; font-size: 14px; border: 1px solid #dce8ff; background: #f6f9ff; }
+.ai-formula-line .katex { font-size: 1.08em; }
+.ai-inline-math { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle; padding: 2px 0; }
+.ai-inline-math .katex { font-size: 1.02em; }
+.ai-display-math { display: inline-block; }
+.ai-rich-math .katex { font-variant-numeric: normal; }
+.ai-answer-section h4 { margin-bottom: 7px; }

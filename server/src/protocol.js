@@ -535,7 +535,7 @@ export function validateTutorChatResponse(raw, request) {
   }
   const summary = sanitizeText(raw.summary, 1000);
   const steps = Array.isArray(raw.steps)
-    ? raw.steps.slice(0, 8).map((step) => sanitizeText(step, 500)).filter(Boolean)
+    ? raw.steps.slice(0, 8).map((step) => sanitizeText(step, 1200)).filter(Boolean)
     : [];
   if (!summary && steps.length === 0) {
     return null;

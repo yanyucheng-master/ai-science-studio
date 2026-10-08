@@ -67,6 +67,11 @@ const server = createServer(async (req, res) => {
     return;
   }
   const name = path === '/' ? 'index.html' : path.slice(1);
+  if (name.startsWith('vendor/katex/')) {
+    const body = await readFile(resolve(root, 'web', name));
+    res.writeHead(200, { 'Content-Type': name.endsWith('.css') ? 'text/css' : name.endsWith('.js') ? 'text/javascript' : 'application/octet-stream' });
+    res.end(body); return;
+  }
   if (!webFiles.has(name)) { res.writeHead(204); res.end(); return; }
   let body = await readFile(resolve(root, 'web', name), 'utf8');
   if (name === 'ai-tutor.js') {
@@ -130,9 +135,9 @@ try {
       text: document.querySelector('#aiTutorMessages').innerText,
       error: Boolean(document.querySelector('.ai-message.error')),
       steps: document.querySelectorAll('.ai-answer-section ol li').length,
-      fractions: document.querySelectorAll('.ai-safe-fraction').length,
-      subscripts: document.querySelectorAll('.ai-message.assistant sub').length,
-      final: document.querySelector('.final-section')?.innerText || '',
+      fractions: document.querySelectorAll('.ai-safe-fraction, .katex .mfrac').length,
+      subscripts: document.querySelectorAll('.ai-message.assistant sub, .ai-message.assistant .katex .msupsub').length,
+      final: document.querySelector('.ai-final-step')?.innerText || '',
       pending: Boolean(document.querySelector('.ai-message.pending')),
       busy: document.querySelector('#aiTutorWorkspace').getAttribute('aria-busy'),
       sendEnabled: !document.querySelector('#aiTutorSendButton').disabled

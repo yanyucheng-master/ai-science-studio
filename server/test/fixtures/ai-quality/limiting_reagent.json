@@ -1,0 +1,29 @@
+{
+  "question": "将0.10mol CaCO3加入含0.15mol HCl的溶液中，充分反应，忽略CO2的溶解。写出反应方程式，判断限量反应物，求剩余CaCO3的物质的量及标准状况CO2体积。气体摩尔体积取22.4L/mol。",
+  "expected": "CaCO3+2HCl→CaCl2+H2O+CO2；HCl限量；剩余CaCO3为0.025mol；CO2为0.075mol、1.68L。",
+  "payload": {
+    "mode": "steps",
+    "summary": "",
+    "steps": [
+      "写方程式并确定计量比：\\(\\mathrm{CaCO_3}+2\\mathrm{HCl}\\rightarrow \\mathrm{CaCl_2}+\\mathrm{H_2O}+\\mathrm{CO_2}\\uparrow\\)，故 \\(n(\\mathrm{CaCO_3}):n(\\mathrm{HCl})=1:2\\)。",
+      "判断限量反应物：0.10 mol \\(\\mathrm{CaCO_3}\\) 完全反应需 \\(2\\times0.10\\,\\mathrm{mol}=0.20\\,\\mathrm{mol}\\) \\(\\mathrm{HCl}\\)，而实际只有 0.15 mol，故 \\(\\mathrm{HCl}\\) 不足，为限量反应物。",
+      "计算并汇总：\\(n(\\mathrm{CaCO_3})_{\\text{消耗}}=\\frac{0.15}{2}\\,\\mathrm{mol}=0.075\\,\\mathrm{mol}\\)，剩余 \\(n(\\mathrm{CaCO_3})=0.10\\,\\mathrm{mol}-0.075\\,\\mathrm{mol}=0.025\\,\\mathrm{mol}\\)；\\(n(\\mathrm{CO_2})=0.075\\,\\mathrm{mol}\\)，\\(V(\\mathrm{CO_2})=0.075\\,\\mathrm{mol}\\times22.4\\,\\mathrm{L\\cdot mol^{-1}}=1.68\\,\\mathrm{L}\\)。反应方程式为 \\(\\mathrm{CaCO_3}+2\\mathrm{HCl}\\rightarrow \\mathrm{CaCl_2}+\\mathrm{H_2O}+\\mathrm{CO_2}\\uparrow\\)，\\(\\mathrm{HCl}\\) 为限量反应物，剩余 \\(\\mathrm{CaCO_3}\\) 的物质的量为 \\(0.025\\,\\mathrm{mol}\\)，标准状况下 \\("
+    ],
+    "formulas": [
+      "\\(\\mathrm{CaCO_3}+2\\mathrm{HCl}\\rightarrow \\mathrm{CaCl_2}+\\mathrm{H_2O}+\\mathrm{CO_2}\\uparrow\\)",
+      "\\(n(\\mathrm{CaCO_3})_{\\text{消耗}}=\\frac{n(\\mathrm{HCl})}{2}\\)",
+      "\\(V(\\mathrm{CO_2})=n(\\mathrm{CO_2})V_{\\mathrm{m}}\\)"
+    ],
+    "finalAnswer": "计算并汇总：\\(n(\\mathrm{CaCO_3})_{\\text{消耗}}=\\frac{0.15}{2}\\,\\mathrm{mol}=0.075\\,\\mathrm{mol}\\)，剩余 \\(n(\\mathrm{CaCO_3})=0.10\\,\\mathrm{mol}-0.075\\,\\mathrm{mol}=0.025\\,\\mathrm{mol}\\)；\\(n(\\mathrm{CO_2})=0.075\\,\\mathrm{mol}\\)，\\(V(\\mathrm{CO_2})=0.075\\,\\mathrm{mol}\\times22.4\\,\\mathrm{L\\cdot mol^{-1}}=1.68\\,\\mathrm{L}\\)。反应方程式为 \\(\\mathrm{CaCO_3}+2\\mathrm{HCl}\\rightarrow \\mathrm{CaCl_2}+\\mathrm{H_2O}+\\mathrm{CO_2}\\uparrow\\)，\\(\\mathrm{HCl}\\) 为限量反应物，剩余 \\(\\mathrm{CaCO_3}\\) 的物质的量为 \\(0.025\\,\\mathrm{mol}\\)，标准状况下 \\(\\mathrm{CO_2}\\) 体积为 \\(1.68\\,\\mathrm{L}\\)。",
+    "checks": [
+      "方程式两侧原子数守恒：Ca、C 各 1，Cl 2，H 2，O 3。",
+      "以 HCl 为限量计算：0.15 mol HCl 只需 0.075 mol CaCO3，小于初始 0.10 mol，故 CaCO3 有剩余，结论自洽。",
+      "体积计算量纲为 mol × L·mol^{-1}=L，且 0.075×22.4=1.68。"
+    ],
+    "followUp": "",
+    "warnings": [
+      "AI 讲解可能存在误差，请结合教材与教师要求核对。"
+    ],
+    "source": "deepseek"
+  }
+}
