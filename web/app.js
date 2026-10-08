@@ -6474,7 +6474,9 @@ function detectSubjectStrict(question) {
   if (/化学|反应物|生成物|充分反应|恰好反应|完全反应|化学方程式|浓度|溶液|铁粉|硫酸铜|CuSO|Fe\b|生成铜|生成 Cu|物质的量|\dmol/i.test(question)) return "化学";
   if (isPhysicsBoardSliderQuestion(question)) return "物理";
   if (/(?:f|F)(?:阻)?\s*(?:=|＝)\s*-?\s*k\s*v|阻力.{0,12}(?:速度|速率).{0,8}成正比|(?:质量|m\s*(?:=|＝)).{0,12}(?:kg|千克|吨).{0,24}(?:初速度|速度)|(?:动摩擦因数|摩擦系数|车轮抱死)/i.test(question)) return "物理";
-  if (/函数|抛物线|斜率|切线|导数|数学|y\s*(?:=|＝)|ln\s*x|sin\s*x|cos\s*x|e\^x|exp\s*\(|sqrt|√/i.test(question)) return "数学";
+  if (/遗传|基因|表现型|杂合|纯合|孟德尔|配子|有丝分裂|减数分裂|DNA/i.test(question)) return "生物";
+  if (/重力|斜面|弹簧|简谐|动量|碰撞|磁场|电场|电容|电荷|受力|牛顿|机械能|千克|\bkg\b|m\s*\/\s*s/i.test(question)) return "物理";
+  if (/概率|随机|排列|组合|数列|方程|不等式|几何|三角形|圆锥|函数|抛物线|斜率|切线|导数|数学|y\s*(?:=|＝)|ln\s*x|sin\s*x|cos\s*x|e\^x|exp\s*\(|sqrt|√/i.test(question)) return "数学";
   if (identifyExtraPhysicsTemplate(question)) return "物理";
   if (/汽车|车辆|速度|加速度|减速度|刹车|制动|停止|运动|受力|落下|物理|螺线管|电磁铁|磁极|安培定则|线圈|匝|铁芯|磁感线|平抛|水平抛|水平速度|落地|水平位移|欧姆|电压|电阻|电流|纯电阻|电路|Ω/.test(question)) return "物理";
   if (/细胞|生物|植物|动物|亚显微|细胞壁|细胞膜|细胞核|液泡|叶绿体|线粒体|细胞质|内质网|高尔基体|核糖体|DNA/.test(question)) return "生物";

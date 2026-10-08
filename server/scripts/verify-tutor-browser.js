@@ -108,6 +108,11 @@ const server = createServer(async (req, res) => {
     return;
   }
   const name = path === '/' ? 'index.html' : path.slice(1);
+  if (name.startsWith('vendor/katex/')) {
+    const body = await readFile(resolve(root, 'web', name));
+    res.writeHead(200, { 'Content-Type': name.endsWith('.css') ? 'text/css' : name.endsWith('.js') ? 'text/javascript' : 'application/octet-stream' });
+    res.end(body); return;
+  }
   if (!webFiles.has(name)) { res.writeHead(204); res.end(); return; }
   let body = await readFile(resolve(root, 'web', name), 'utf8');
   if (name === 'ai-tutor.js') {
@@ -196,8 +201,8 @@ try {
       text: document.querySelector('#aiTutorMessages').innerText,
       error: Boolean(document.querySelector('.ai-message.error')),
       steps: document.querySelectorAll('.ai-answer-section ol li').length,
-      fractions: document.querySelectorAll('.ai-safe-fraction').length,
-      subscripts: document.querySelectorAll('.ai-message.assistant sub').length,
+      fractions: document.querySelectorAll('.ai-safe-fraction, .katex .mfrac').length,
+      subscripts: document.querySelectorAll('.ai-message.assistant sub, .ai-message.assistant .katex .msupsub').length,
       final: document.querySelector('.ai-final-step')?.innerText || '',
       appendedResults: document.querySelectorAll('.ai-step-result').length,
       oldSections: document.querySelectorAll('.final-section, .check-section').length,
@@ -234,7 +239,7 @@ try {
       assert.equal(ui.bodySize, 14, name);
       assert.ok(ui.formulaSize <= ui.bodySize, name);
       assert.equal(ui.horizontalOverflow, false, name);
-      if (ui.formulas) assert.equal(ui.formulaBackground, 'rgba(0, 0, 0, 0)', name);
+      if (ui.formulas) assert.equal(ui.formulaBackground, 'rgb(246, 249, 255)', name);
       if (name !== 'hint' && name !== 'default_clarification') assert.equal(ui.followUps, 0, name);
       for (const call of calls) {
         assert.equal(call.model, 'deepseek-flash', name);

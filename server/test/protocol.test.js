@@ -412,3 +412,13 @@ test('rejects finite but renderer-hostile visual magnitudes', () => {
   });
   assert.deepEqual(result, { kind: 'none', title: '' });
 });
+
+test('retains the complete captured chemical conclusion including LaTeX beyond 500 characters', async () => {
+  const {readFile}=await import('node:fs/promises');
+  const fixture=JSON.parse(await readFile(new URL('./fixtures/ai-quality/limiting_reagent.json',import.meta.url),'utf8'));
+  const raw={...fixture.payload,steps:[...fixture.payload.steps.slice(0,-1),fixture.payload.finalAnswer]};
+  const request=sanitizeTutorChatRequest({message:'请完整解答。',responseLevel:'steps',context:{mode:'question',subject:'化学',originalQuestion:fixture.question}});
+  const result=validateTutorChatResponse(raw,request);
+  assert.ok(result);
+  assert.equal(result.steps.at(-1),fixture.payload.finalAnswer);
+});

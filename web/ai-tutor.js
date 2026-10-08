@@ -13,30 +13,22 @@
   const CHAT_TIMEOUT_MS = 540000;
   const GENERATE_TIMEOUT_MS = 540000;
   const MAX_HISTORY_ITEMS = 12;
+  const MAX_CHAT_REQUEST_BYTES = 14 * 1024;
 
-  const CHAT_SYSTEM_PROMPT = `你是“大师实验室”的中学数理化生 AI 导师。只返回 JSON 对象，禁止 Markdown 代码块、HTML、URL、代码和隐藏推理过程。
-
-教学原则：
-1. 只回答中学数学、物理、化学、生物学习问题；无关请求 mode=refusal。
-2. 默认分层引导。responseLevel=hint 时只给关键线索和一个追问，finalAnswer 必须为 null；不要直接交出完整答案。
-3. responseLevel=explain 时解释当前概念或步骤；responseLevel=steps 时给出可核查分步解答；responseLevel=check 时检查思路；responseLevel=variant 时给变式。
-4. context.mode=experiment 时，deterministicResult 与 formula 是本地确定性结果，不得改写冲突。
-5. context.mode=question 且条件不足时 mode=clarification，禁止自行补造数值。
-6. 涉及计算时在输出前独立检查公式适用条件、单位、量纲、代入与边界，发现错误先纠正；精简展示不等于省略验证。
-7. 数学书写必须符合中文教材习惯：formulas 中凡表示相除都使用 \\frac{分子}{分母}，禁止使用斜杠；下标写成 v_{0}、R_{2}，幂写成 v^{2}；速度、加速度等单位优先写成 m·s^{-1}、m·s^{-2}。steps、finalAnswer 和 checks 中出现公式时遵循同一规则。
-
-8. originalQuestion 中的显式条件不可改写。不得引入题目未给出的力、接触面、反应物、边界条件或数值；摩擦方向按接触面间的相对运动或趋势判断。
-9. 最新 message 优先于历史；只补充或解释某一步时只回答该子问题，不得重新讲完整原题。
-10. 完整解答必须覆盖全部小问，保留决定答案的条件、关键方程、代入、最终数值和单位；分段、计数与概率问题核对各分支之和，函数和临界值必须代回核对。
-11. steps 是回答主体，每步完成一个必要的解题动作；简单题通常 2 至 4 步，复杂题按需要最多 8 步，不机械扩写。所有必要条件与小问结论必须写在 steps 中，不能只写在 summary 或 checks 中。把最终答案融入最后一步，不另加只复述答案的步骤；finalAnswer 必须取最后一步中已出现的完整结论文字，以兼容协议并避免重复。
-12. formulas 只列本题真正需要的、不重复的核心关系；简单题通常 1 至 2 条，复杂题按需要列出；概念题没有必要公式时返回空数组，不凑公式。
-13. 有 steps 时 summary 通常返回空字符串，不添加开场复述；hint、clarification、refusal 或不需要分步的概念解释可用 summary 承载主要内容。禁止向学生提及 context.mode、parameters、deterministicResult 等内部字段。
-14. checks 仅承载已完成的内部复核，不作为展示栏目，也不要把重复的量纲、代回或结果自检机械塞进 steps。用户明确要求检查、证明或能量核对时，相关核验就是解题任务，必须在 steps 中回答。
-15. followUp 默认返回空字符串；仅 hint、variant、条件不足时的必要澄清，或用户明确要求追问、变式、练习时给出。warnings 仅说明真正影响答案的条件不足、矛盾、适用范围或漏答，不重复通用 AI 免责声明。
-
+  const CHAT_SYSTEM_PROMPT = `你是“大师实验室”的中学数理化生 AI 导师。只返回一个 JSON 对象，不输出 HTML、URL、代码或内部推理过程。
+教学与核验规则：
+1. 原题及最新请求是约束，最新请求优先于历史。完整解题必须覆盖所有小问；只解释某一步时仅回答该子问题。
+2. 学科题目没有实验模板也必须正常解答。不得把“无模板”说成“无法解题”；题设充分就作答，缺少必要条件或条件矛盾才用 clarification，明确指出缺失条件并追问，不补造数值、接触面、反应物或模型。
+3. hint 只给一条关键线索和必要追问，不给完整答案；explain 解释指定概念；steps 完整解答；check 核对学生思路；variant 给请求的变式。无关请求用 refusal。
+4. 精简展示不等于省略验证。输出前独立复核公式适用条件、计算、单位、量纲、边界及所有小问。分类或概率核对各分支之和；函数与临界值代回；化学先配平并核对限量反应物；遗传题区分基因型与表现型。复核不成立时先纠正，不用泛泛的“检查无误”代替实际核算。
+5. 实验参数和原题条件不得改写；deterministicResult 可能是当前动画时刻，求最终值应按原题参数与公式计算，不把初始位移或当前速度当最终答案。摩擦方向按接触面间相对运动或趋势判断。
+6. 格式简要：steps 是主体，每步做一个必要动作，以“列式：”“代入：”“结论：”等短标题开始。简单题通常 2 至 4 步，复杂题按小问最多 8 步，不机械凑步数。所有小问的答案必须出现在 steps；有物理量时标明单位，纯数学不补“无单位”说明；计算放在前面的步骤，最后一步只列各小问的简短结论，避免再重复推导。
+7. 有 steps 时 summary 留空。finalAnswer 只能逐字复制最后一步中的结论，不得再写一段同义总结；hint、clarification、refusal 的 finalAnswer 为 null。checks 仅承载已完成的内部复核，不另写展示段落；用户要求证明或核验时，将相关工作放入 steps。
+8. formulas 只列 1 至 3 条真正关键且不重复的关系，概念题可为空。行内公式用 \\( ... \\) 包围，formulas 项只写 LaTeX 本体。分式用 \\frac{分子}{分母}，根号用 \\sqrt{}，下标和幂用 v_{0}、v^{2}；单位用 \\mathrm{m}\\cdot\\mathrm{s}^{-1} 等规范写法。化学式用 \\ce{}。化学式应整体放在同一数学片段内，勿仅把下标单独围起来。不要输出未闭合括号或不完整公式，不用斜杠代替教材分式。
+9. followUp 默认返回空字符串，仅 hint、variant、必要澄清或用户要求时给出。warnings 只写影响答案的条件矛盾、适用范围或不确定性，不重复通用免责声明，不向学生提及内部字段。
 返回结构：
-{"mode":"hint|explain|steps|answer|clarification|refusal","summary":"无必要开场时为空","steps":["必要步骤，最后一步包含最终答案"],"formulas":["不重复的核心公式"],"finalAnswer":"完整结论；hint 时为 null","checks":["内部复核，不展示"],"followUp":"默认空字符串","parameterPatch":null,"warnings":[]}
-注意：即使 responseLevel 是 variant 或 check，mode 也只能取上述枚举，不要返回 mode=variant 或 mode=check。`;
+{"mode":"hint|explain|steps|answer|clarification|refusal","summary":"","steps":["必要步骤，最后一步含所有最终结论"],"formulas":["关键 LaTeX 公式"],"finalAnswer":"最后一步的原文结论或 null","checks":["实际复核"],"followUp":"","parameterPatch":null,"warnings":[]}
+mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可在实验变式中建议一个已有参数，不能自动应用。`;
 
   const GENERATE_SYSTEM_PROMPT = `你是“大师实验室”的理科题目解析器。只返回 JSON 对象，禁止 Markdown 代码块。
 支持模板 ID：brake, fe_cuso4, tangent, cell, solenoid, board_slider, projectile, ohm_circuit, lever, lens, buoyancy, friction, lamp_power, series_circuit, heat_balance, liquid_pressure, efficiency, sound。
@@ -65,7 +57,7 @@
     },
     steps: {
       level: "steps",
-      message: "请分步解答，保留必要条件、关键公式和代入，将各小问的最终答案及单位写入最后一步。"
+      message: "请完整解答，保留必要条件、关键公式与代入；最后一步写出全部小问的结论和单位。"
     }
   };
 
@@ -167,6 +159,9 @@
       AI_AUTH_FAILED: "个人 API 密钥无效或已失效，请右键烧瓶图标重新配置；本次不会切换到公益默认服务。",
       AI_RATE_LIMITED: "AI 请求较多，请稍后再试。",
       RATE_LIMITED: "AI 请求较多，请稍后再试。",
+      BODY_TOO_LARGE: "题目或对话内容过长，请精简本次提问或清空对话后重试。",
+      MESSAGE_TOO_LONG: "本次提问过长，请精简后发送；原题和已有对话已保留。",
+      INVALID_MATH: "本次公式未通过排版校验，请重试以重新生成完整公式。",
       AI_BUSY: "公益后台的 AI 并发容量已满，请稍后重试。",
       AI_TIMEOUT: "这道题分析时间较长，本次请求已超时。你可以重试，或先请求一个简短提示。",
       AI_UNAVAILABLE: hasBrowserApiKey()
@@ -347,19 +342,26 @@
   }
 
   function softValidateChat(raw, responseLevel) {
-    if (!raw || typeof raw !== "object") return null;
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
     const mode = normalizeChatMode(raw.mode, responseLevel);
     const summary = text(raw.summary || raw.message || raw.answer || raw.finalAnswer || raw.content).slice(0, 1000);
-    const steps = asTextList(raw.steps, 8, 500);
+    const steps = asTextList(raw.steps, 8, 1200);
+    const finalAnswer = responseLevel === "hint" ? null :
+      (text(raw.finalAnswer || raw.answer || (mode === "steps" ? steps.at(-1) : "")).slice(0, 1200) || null);
+    // Some deployed gateways clip a step to 500 characters while retaining the
+    // complete finalAnswer. Restore it only when it is the exact same prefix.
+    if (steps.length && finalAnswer?.startsWith(steps.at(-1)) && finalAnswer.length > steps.at(-1).length) {
+      steps[steps.length - 1] = finalAnswer;
+    }
     if (!summary && !steps.length) return null;
     const warnings = asTextList(raw.warnings, 4, 300);
     return {
       schemaVersion: "1.0",
       mode,
-      summary: summary || steps[0] || "",
+      summary: steps.length && !["clarification", "refusal"].includes(mode) ? "" : summary,
       steps,
       formulas: asTextList(raw.formulas, 8, 300),
-      finalAnswer: responseLevel === "hint" ? null : (text(raw.finalAnswer || raw.answer).slice(0, 1200) || null),
+      finalAnswer,
       checks: asTextList(raw.checks, 6, 400),
       followUp: text(raw.followUp).slice(0, 500),
       parameterPatch: null,
@@ -542,7 +544,9 @@
         if (response.status === 429) {
           throw new TutorRequestError("AI_RATE_LIMITED", response.status);
         }
-        throw new TutorRequestError(payload.error || "AI_UNAVAILABLE", response.status);
+        const code = payload && typeof payload.error === "string" ? payload.error :
+          (response.status === 429 ? "RATE_LIMITED" : "AI_UNAVAILABLE");
+        throw new TutorRequestError(code, response.status);
       }
       let content = "";
       let reasoning = "";
@@ -649,6 +653,46 @@
     return validated;
   }
 
+  function selectResponseLevel(message) {
+    const value = text(message).replace(/不要(?:只|仅)(?:给|给我)?(?:提示|线索)/g, "");
+    if (/(?:只|仅).{0,6}(?:解释|说明|分析原因)/.test(value)) return "explain";
+    if (/只.{0,8}(?:提示|线索)|不要.{0,6}(?:答案|解答)|先.{0,4}提示/.test(value)) return "hint";
+    if (/检查|核对|是否正确|哪里错|纠错/.test(value)) return "check";
+    if (/变式|类似题|再出.{0,4}题/.test(value)) return "variant";
+    if (/完整|分步|步骤|解答|求解|计算|求出|答案|证明|推导/.test(value)) return "steps";
+    if (/为什么|解释|含义|理解|区别|原因|只|仅/.test(value)) return "explain";
+    return "steps";
+  }
+
+  function gatewayChatRequest(body) {
+    const rule = body.responseLevel === "hint"
+      ? "只给一条关键提示，勿给最终答案。"
+      : body.responseLevel === "explain"
+      ? "只解释本次指定的概念或子问题，不重讲整题。"
+      : "覆盖本次要求的全部小问；条件充分即解答，条件不足则指出缺失条件，勿补造数值。";
+    const message = body.message + "\n\n【回答规范】" + rule +
+      "输出前复核条件、计算、单位和边界。用必要的紧凑步骤，以短动作标题开始，不添加开场总结；计算放在前面的步骤，最后一步仅汇总各小问的简短结论，有物理量时写单位，纯数学不补“无单位”说明；finalAnswer 逐字复制该步结论，勿同义重写。核心公式用 LaTeX，行内公式用 \\( \\) 包围，分式用 \\frac，根号用 \\sqrt，下标和幂用花括号；化学式应整体放在同一数学片段内，勿只包住下标；formulas 不带分隔符且只列真正关键的关系。followUp 除提示、变式或必要澄清外留空。";
+    if (message.length > 2000) throw new TutorRequestError("MESSAGE_TOO_LONG");
+    const request = { ...body, message, history: (body.history || []).map(item => ({ ...item })) };
+    while (request.history.length && new TextEncoder().encode(JSON.stringify(request)).length > MAX_CHAT_REQUEST_BYTES) {
+      request.history.shift();
+      if (request.history[0]?.role === "assistant") request.history.shift();
+    }
+    if (new TextEncoder().encode(JSON.stringify(request)).length > MAX_CHAT_REQUEST_BYTES) throw new TutorRequestError("BODY_TOO_LARGE");
+    return request;
+  }
+
+  function validateGatewayChat(raw, responseLevel) {
+    if (!raw || typeof raw !== "object" || Array.isArray(raw) ||
+      !["hint", "explain", "steps", "answer", "clarification", "refusal"].includes(raw.mode)) {
+      throw new TutorRequestError("INVALID_AI_RESPONSE");
+    }
+    const value = softValidateChat(raw, responseLevel);
+    if (!value) throw new TutorRequestError("INVALID_AI_RESPONSE");
+    return { ...value, source: text(raw.source) || "gateway", model: raw.model || value.model,
+      parameterPatch: raw.parameterPatch || null };
+  }
+
   async function apiRequest(path, body, timeoutMs) {
     if (hasBrowserApiKey()) {
       if (path === "/api/v1/tutor/chat") return browserTutorChat(body);
@@ -656,6 +700,7 @@
         return browserGenerate(body.question, body.preferredSubject || "");
       }
     }
+    if (path === "/api/v1/tutor/chat") body = gatewayChatRequest(body);
     if (state.controller) state.controller.abort();
     const controller = new AbortController();
     state.controller = controller;
@@ -685,9 +730,11 @@
         throw new TutorRequestError("INVALID_AI_RESPONSE", response.status);
       }
       if (!response.ok) {
-        throw new TutorRequestError(payload.error || "AI_UNAVAILABLE", response.status);
+        const code = payload && typeof payload.error === "string" ? payload.error :
+          (response.status === 429 ? "RATE_LIMITED" : "AI_UNAVAILABLE");
+        throw new TutorRequestError(code, response.status);
       }
-      return payload;
+      return path === "/api/v1/tutor/chat" ? validateGatewayChat(payload, body.responseLevel) : payload;
     } catch (error) {
       if (controller.signal.aborted) {
         throw new TutorRequestError(controller.signal.reason === "timeout" ? "AI_TIMEOUT" : "ABORTED");
@@ -760,7 +807,7 @@
   }
 
   function openStandalone(context = currentHostContext()) {
-    state.context = context;
+    adoptContext(context);
     if (!window.location.hash.startsWith("#/ai-tutor")) {
       window.location.hash = "#/ai-tutor";
     } else {
@@ -777,10 +824,10 @@
 
   function contextScope(context) {
     if (!context || typeof context !== "object") return "";
-    if (context.mode === "experiment" && context.templateId) {
-      return `experiment:${context.subject || "science"}:${context.templateId}`;
-    }
-    return `question:${context.subject || "science"}:${text(context.originalQuestion)}`;
+    const parameters = Object.entries(context.parameters || {}).sort(([a], [b]) => a.localeCompare(b));
+    // Animation time and teaching step changes do not change the problem.
+    return JSON.stringify([context.mode, context.subject, context.templateId,
+      text(context.originalQuestion), parameters]);
   }
 
   function resetConversation(statusMessage = "对话已清空，可以从当前题目重新开始") {
@@ -802,7 +849,7 @@
     const previousScope = contextScope(state.context);
     const nextScope = contextScope(next);
     if (options.resetOnScopeChange !== false && previousScope && nextScope && previousScope !== nextScope && state.messages.length) {
-      resetConversation("题目或实验已切换，已开始新的导师会话");
+      resetConversation("题目或参数已切换，旧回答已停止，已开始新的导师会话");
     }
     state.context = next;
     return next;
@@ -925,7 +972,7 @@
     const elapsed = state.pendingNode.querySelector(".ai-thinking-elapsed");
     const liveThinking = state.pendingNode.querySelector(".ai-thinking-badge")?.tagName === "BUTTON";
     if (badge) badge.textContent = liveThinking ? "思考中" : "正在生成";
-    if (elapsed) elapsed.textContent = thinkingElapsedLabel(elapsedSeconds, true);
+    if (elapsed) elapsed.textContent = liveThinking ? thinkingElapsedLabel(elapsedSeconds, true) : "已等待 " + elapsedSeconds + " 秒";
   }
 
   function addPendingMessage(responseLevel = "hint") {
@@ -942,7 +989,7 @@
     const bubble = createElement("div", "ai-message-bubble ai-thinking-card");
     const header = createElement("div", "ai-thinking-header");
     header.append(createElement("span", "ai-message-source", "大师 · AI 导师"));
-    const useThinking = responseLevel === "steps" || responseLevel === "check";
+    const useThinking = hasBrowserApiKey() && (responseLevel === "steps" || responseLevel === "check");
     const badge = createElement(useThinking ? "button" : "span", "ai-thinking-badge");
     if (useThinking) {
       badge.type = "button";
@@ -986,7 +1033,7 @@
     copyNode.append(createElement("strong", "", copy.title));
     copyNode.append(createElement("p", "ai-thinking-stage", useThinking
       ? "思维链已折叠，点击“思考中”可查看实时过程。"
-      : "正在快速整理回答。"));
+      : "正在等待 AI 回答，可随时停止。"));
     const meta = createElement("div", "ai-thinking-meta");
     meta.append(
       createElement("span", "ai-thinking-elapsed", "刚刚开始"),
@@ -1133,6 +1180,11 @@
     const basePattern = /[A-Za-zΑ-Ωα-ω]/;
     for (let index = 0; index < source.length;) {
       const base = source[index];
+      if (base === "\\" && source[index + 1] === "_") {
+        container.append(document.createTextNode("_"));
+        index += 2;
+        continue;
+      }
       if (base === "^") {
         const superscript = readScriptToken(source, index + 1);
         if (superscript) {
@@ -1246,7 +1298,7 @@
     container.append(fraction);
   }
 
-  function appendMathContent(container, value, options = {}) {
+  function appendLegacyMathContent(container, value, options = {}) {
     const source = normalizeMathSource(value);
     container.classList.add("ai-rich-math");
     let cursor = 0;
@@ -1265,6 +1317,41 @@
     }
   }
 
+  function appendKatex(container, source, inline = true) {
+    const node = createElement("span", inline ? "ai-inline-math" : "ai-display-math");
+    if (!window.katex) return false;
+    try {
+      window.katex.render(source, node, { throwOnError: true, trust: false,
+        strict: "ignore", output: "htmlAndMathml", maxExpand: 1000, maxSize: 10, displayMode: false });
+    } catch {
+      throw new TutorRequestError("INVALID_MATH");
+    }
+    container.append(node);
+    return true;
+  }
+
+  function appendMathContent(container, value, options = {}) {
+    const source = text(value);
+    if ((source.match(/\\\(/g) || []).length !== (source.match(/\\\)/g) || []).length ||
+      (source.match(/\\\[/g) || []).length !== (source.match(/\\\]/g) || []).length) throw new TutorRequestError("INVALID_MATH");
+    container.classList.add("ai-rich-math");
+    const hasDelimitedMath = source.includes("\\(") || source.includes("\\[") || source.includes("$");
+    if (options.aggressiveFractions && !hasDelimitedMath && window.katex && !/<\/?(?:img|svg|script|iframe|div|span)\b/i.test(source)) {
+      const formula = source.replace(/^\s*(?:\$\$?|\\\(|\\\[)/, "").replace(/(?:\$\$?|\\\)|\\\])\s*$/, "");
+      appendKatex(container, formula, false);
+      return;
+    }
+    const pattern = /\\\(([\s\S]*?)\\\)|\\\[([\s\S]*?)\\\]|\$\$([\s\S]*?)\$\$|\$([^$\n]+)\$/g;
+    let cursor = 0;
+    for (const match of source.matchAll(pattern)) {
+      appendLegacyMathContent(container, source.slice(cursor, match.index), options);
+      const formula = match[1] ?? match[2] ?? match[3] ?? match[4];
+      if (!appendKatex(container, formula)) appendLegacyMathContent(container, formula, options);
+      cursor = match.index + match[0].length;
+    }
+    appendLegacyMathContent(container, source.slice(cursor), options);
+  }
+
   function createMathElement(tagName, className, value, options = {}) {
     const node = createElement(tagName, className);
     appendMathContent(node, value, options);
@@ -1281,13 +1368,23 @@
     container.append(line);
   }
 
+  function createStepElement(className, step) {
+    const item = createElement("li", className);
+    const title = step.match(/^(条件|分析|列式|代入|求解|计算|分类|核对|检验|结论|答案|取正方向)\s*[:：]/);
+    if (title) {
+      item.append(createElement("strong", "ai-step-title", title[0]));
+      appendMathContent(item, step.slice(title[0].length));
+    } else appendMathContent(item, step);
+    return item;
+  }
+
   function answerTextKey(value) {
     return normalizeMathSource(text(value)).replace(/[\s，,。.;；:：]/g, "");
   }
 
   function getAnswerPresentation(payload, options = {}) {
     const level = options.responseLevel || payload.mode;
-    const steps = asTextList(payload.steps, 8, 500).map(stripStepNumber);
+    const steps = asTextList(payload.steps, 8, 1200).map(stripStepNumber);
     const summary = text(payload.summary);
     let lead = !steps.length || ["clarification", "refusal"].includes(payload.mode) ? summary : "";
     let result = level === "hint" || payload.mode === "hint" ? "" : text(payload.finalAnswer);
@@ -1344,7 +1441,7 @@
       const list = createElement("ol");
       display.steps.forEach((step, index) => {
         const last = index === display.steps.length - 1;
-        const item = createMathElement("li", last ? "ai-final-step" : "", step);
+        const item = createStepElement(last ? "ai-final-step" : "", step);
         if (last && display.result) item.append(createMathElement("p", "ai-step-result", display.result));
         list.append(item);
       });
@@ -1429,7 +1526,7 @@
       message: content,
       responseLevel,
       history,
-      context: state.context
+      context: JSON.parse(JSON.stringify(state.context))
     };
     state.lastRequest = {
       message: content,
@@ -1555,13 +1652,10 @@
       addMessage("user", cleanQuestion);
       host().setMentorSummary?.("当前题目暂无可视化实验模板，已转入 AI 导师核对题设并分步讲解。");
       const tutorial = await sendChat(
-        "请先逐字核对原题全部显式条件，说明考查目标，并给出适合零基础学生理解的第一步。不得补造题目未给出的条件，也不要把其他接触面的摩擦因数移用到本题。",
-        "explain",
+        "请完整解答原题，覆盖所有小问，用必要的紧凑步骤列式、代入并得出结论和单位；无实验模板也正常解答，缺少必要条件时明确追问，勿补造题设。",
+        "steps",
         { silentUser: true }
       );
-      if (!tutorial && localMessage) {
-        elements.status.textContent = localMessage;
-      }
       return { mode: tutorial ? "explanation" : "unavailable", response, tutorial };
     } catch (error) {
       adoptContext({
@@ -1615,7 +1709,7 @@
     if (!message) return;
     elements.input.value = "";
     state.context = state.context || currentHostContext();
-    sendChat(message, "hint");
+    sendChat(message, selectResponseLevel(message));
   });
   elements.input.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && !event.shiftKey) {
