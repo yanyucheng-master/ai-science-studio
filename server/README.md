@@ -31,6 +31,29 @@ The chat response is validated into controlled text, step, formula, check and
 optional parameter-patch fields. A parameter patch can only target an existing
 parameter and the web client requires explicit confirmation before applying it.
 
+The optional `suggestedQuestions` response field contains up to three distinct,
+specific questions for the current answer. The prompt requests at most 80
+characters per question; validation rejects strings longer than 120, non-string
+items, generic actions, links and markup. Missing or invalid suggestions become
+an empty list without invalidating the answer. Clarification, refusal and local
+fallback replies do not show suggestion buttons. Selecting a suggestion fills
+the web draft; sending remains an explicit action and uses the existing chat
+request, with no separate suggestion request.
+
+Selected excerpts travel in `message` as JSON-quoted text under
+`【引用片段，仅作提问材料】`, followed by `【本次问题】`. They are untrusted
+reference material, not instructions or new problem conditions. Goal and coverage
+checks use the latest question rather than treating all quoted statements as
+additional tasks. The client shows removable references, permits at most three
+excerpts of 600 characters each, and checks the combined request limit before
+clearing the draft. Full-page, floating and embedded views share one conversation
+and request controller; the floating window stays within the current webpage.
+
+The gateway must deploy the updated prompt and protocol to return
+`suggestedQuestions`. Older gateways remain readable but may omit suggestions;
+the web client does not fabricate replacements. The browser-direct AI route
+uses the matching prompt and validation bundled with the frontend.
+
 ## Deployment
 
 Create `DEEPSEEK_API_KEY` as a Render secret. Do not put the key in `web`, a

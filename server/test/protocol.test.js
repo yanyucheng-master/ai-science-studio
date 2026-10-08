@@ -4,6 +4,7 @@ import {
   findMissingTutorCoverage,
   findDeterministicTutorIssues,
   findTutorTopicMismatches,
+  latestTutorQuestion,
   sanitizeTutorChatRequest,
   validateExperimentPlan,
   validateModelResponse,
@@ -11,6 +12,33 @@ import {
   validateTutorResponse,
   validateVisualSpec
 } from '../src/protocol.js';
+
+test('optional follow-up suggestions cannot turn malformed metadata into an invalid answer', () => {
+  const request = sanitizeTutorChatRequest({ message: '为什么分母不能为零？', responseLevel: 'explain', context: { mode: 'question' } });
+  const question = '分母趋近于零时，分式的值会怎样变化？';
+  const result = validateTutorChatResponse({ mode: 'explain', summary: '除法中的除数不能为零。',
+    suggestedQuestions: [null, {}, 'Yes', '查看完整步骤', '<img src=x>', 'https://example.com', question, ` ${question} `] }, request);
+  assert.equal(result.summary, '除法中的除数不能为零。');
+  assert.deepEqual(result.suggestedQuestions, [question]);
+  const legacy = validateTutorChatResponse({ mode: 'explain', summary: '除数不能为零。' }, request);
+  assert.deepEqual(legacy.suggestedQuestions, []);
+  const clarification = validateTutorChatResponse({ mode: 'clarification', summary: '请提供分式。', suggestedQuestions: [question] }, request);
+  assert.deepEqual(clarification.suggestedQuestions, []);
+});
+
+test('quoted old goals do not expand a targeted follow-up into the full original problem', () => {
+  const request = sanitizeTutorChatRequest({
+    message: '【引用片段，仅作提问材料】\n1. AI 回答："求加速度、所需时间、产生的热量，并核对能量关系。"\n【本次问题】\n请解释这里为什么用能量守恒。\n\n【回答规范】覆盖全部小问。',
+    responseLevel: 'explain', history: [{ role: 'assistant', content: '先分析摩擦力。' }],
+    context: { mode: 'question', originalQuestion: '求加速度、所需时间、产生的热量，并核对能量关系。' }
+  });
+  assert.equal(latestTutorQuestion(request), '请解释这里为什么用能量守恒。');
+  const missing = findMissingTutorCoverage(request, { summary: '需要把机械能和内能一同考虑。', steps: [], formulas: [] });
+  assert.ok(!missing.includes('产生的热量'));
+  assert.ok(!missing.includes('所需时间'));
+  const focused = { ...request, context: { ...request.context, originalQuestion: '小球在光滑圆形轨道上运动，求多个位置的速度。' } };
+  assert.deepEqual(findTutorTopicMismatches(focused, { summary: '没有非保守力做功时机械能守恒。' }), []);
+});
 
 test('rejects a tutor reply that silently changes the scientific model', () => {
   const request = sanitizeTutorChatRequest({
@@ -63,6 +91,10 @@ test('rejects an induction answer whose numeric acceleration drops the circuit r
   assert.equal(validateTutorChatResponse(wrong, request), null);
   assert.deepEqual(findDeterministicTutorIssues(request, correct), []);
   assert.ok(validateTutorChatResponse(correct, request));
+  const excerptRequest = { ...request, responseLevel: 'explain', history: [{ role: 'assistant', content: correct.finalAnswer }],
+    message: '【引用片段，仅作提问材料】\n1. AI 回答："加速度可能为负。"\n【本次问题】\n为什么这里加速度为负？' };
+  assert.deepEqual(findDeterministicTutorIssues(excerptRequest, { summary: '加速度方向与所选正方向相反，所以取负号。' }), []);
+  assert.deepEqual(findDeterministicTutorIssues(excerptRequest, wrong), ['INDUCTION_ROD_ACCELERATION_MISMATCH']);
 });
 
 test('accepts explain mode for explain-level tutor replies', () => {

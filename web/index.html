@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" href="assets/brand/orbit-flask-2026-10-04/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="vendor/katex/katex.min.css?v=0.19.0">
-  <link rel="stylesheet" href="styles.css?v=20261008-ai-quality-1">
+  <link rel="stylesheet" href="styles.css?v=20261009-ai-workspace-1">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -58,6 +58,9 @@
           <p class="subheading">今天想把哪一道题“动”起来？</p>
         </div>
         <div class="top-actions">
+          <button class="ai-entry-button" id="aiTutorEntryButton" type="button" aria-label="进入 AI 导师全屏问答" aria-controls="aiTutorWorkspace" title="AI 导师 · 全屏问答">
+            <span class="ai-wordmark" aria-hidden="true">AI</span>
+          </button>
           <button class="icon-button" id="announcementsButton" type="button" aria-label="查看更新公告" aria-haspopup="dialog" aria-controls="announcementsDialog" aria-expanded="false" title="更新公告">
             <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8 13h4"/></svg>
             <i id="announcementsDot" aria-hidden="true" hidden></i>
@@ -712,8 +715,9 @@
           </section>
         </aside>
 
-        <section class="ai-tutor-workspace card" id="aiTutorWorkspace" aria-hidden="true">
+        <section class="ai-tutor-workspace card" id="aiTutorWorkspace" aria-hidden="true" aria-labelledby="aiTutorHeading">
           <header class="ai-tutor-header">
+            <button class="ai-tutor-drag" id="aiTutorDragHandle" type="button" aria-label="移动 AI 小窗：拖动或使用方向键，Shift 加方向键快速移动" title="拖动小窗 · 方向键也可移动" hidden>⠿</button>
             <div class="ai-tutor-identity">
               <div class="mentor-mark mentor-mark-large ai-tutor-avatar mentor-mark-orbit" role="img" aria-label="大师实验室 AI 导师标志，右键可配置 API 密钥" title="右键配置 DeepSeek API 密钥" tabindex="0">
                 <span class="mentor-mark-aura" aria-hidden="true"></span>
@@ -751,13 +755,14 @@
               </div>
               <div>
                 <span class="online"><i></i> AI 导师在线</span>
-                <h2>把疑问拆成下一步</h2>
-                <p id="aiTutorStatus">结合当前题目给提示、追问与分步讲解</p>
+                <h2 id="aiTutorHeading">把疑问拆成下一步</h2>
+                <p id="aiTutorStatus" role="status">结合当前题目给提示、追问与分步讲解</p>
               </div>
             </div>
             <div class="ai-tutor-header-actions">
               <button class="ai-tutor-back" id="aiTutorBackButton" type="button">返回实验</button>
-              <button id="aiTutorPageButton" type="button">独立问答</button>
+              <button id="aiTutorFloatButton" type="button" aria-pressed="false" title="在本页打开可拖动小窗">小窗</button>
+              <button id="aiTutorPageButton" type="button">全屏</button>
               <button class="icon-button" id="aiTutorCloseButton" type="button" aria-label="收起 AI 导师">
                 <svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
               </button>
@@ -770,28 +775,27 @@
             <p id="aiTutorContextText">生成实验后，我会读取题目、参数、公式和当前解题步骤；不会读取页面中的其他信息。</p>
           </div>
 
-          <div class="ai-tutor-messages" id="aiTutorMessages" aria-live="polite">
-            <div class="ai-tutor-empty" id="aiTutorEmpty">
-              <strong>先说说你卡在哪里</strong>
-              <p>我会先给线索，再根据你的需要展开步骤，不会用一整屏答案把思考淹没。</p>
+          <div class="ai-tutor-conversation">
+            <div class="ai-tutor-messages" id="aiTutorMessages" tabindex="0" aria-label="AI 对话记录">
+              <div class="ai-tutor-empty" id="aiTutorEmpty">
+                <strong>先说说你卡在哪里</strong>
+                <p>输入题目，或选中讲解里的文字与公式引用追问。回答后还可以选择 AI 建议的具体方向。</p>
+              </div>
             </div>
+            <button class="ai-jump-latest" id="aiTutorLatestButton" type="button" hidden>↓ 回到最新消息</button>
           </div>
 
-          <div class="ai-tutor-quick-actions" aria-label="AI 导师快捷操作">
-            <button type="button" data-ai-action="hint">给我一点提示</button>
-            <button type="button" data-ai-action="explain">解释当前步骤</button>
-            <button type="button" data-ai-action="check">检查我的思路</button>
-            <button type="button" data-ai-action="variant">生成一道变式</button>
-            <button type="button" data-ai-action="steps">查看完整步骤</button>
-          </div>
+          <button class="ai-selection-action" id="aiTutorQuoteSelection" type="button" hidden>＋ 引用追问</button>
 
           <form class="ai-tutor-composer" id="aiTutorForm">
             <label for="aiTutorInput">向大师 AI 导师提问</label>
-            <div>
-              <textarea id="aiTutorInput" rows="2" maxlength="2000" placeholder="例如：为什么这里不能直接代入？"></textarea>
+            <section class="ai-quote-list" id="aiTutorQuotes" aria-label="本次提问引用" hidden></section>
+            <div class="ai-composer-input">
+              <textarea id="aiTutorInput" rows="2" maxlength="2000" aria-describedby="aiTutorInputHint aiTutorInputCount" placeholder="写下问题，也可以先选中文字引用追问…"></textarea>
               <button class="ai-tutor-stop" id="aiTutorStopButton" type="button">停止</button>
               <button class="ai-tutor-send" id="aiTutorSendButton" type="submit">发送</button>
             </div>
+            <p class="ai-composer-hint"><span id="aiTutorInputHint">Enter 发送 · Shift + Enter 换行</span><span id="aiTutorInputCount"></span></p>
           </form>
 
           <footer class="ai-tutor-footer">
@@ -902,7 +906,7 @@
   <script src="app.js?v=20261008-ai-quality-1"></script>
   <script src="vendor/katex/katex.min.js?v=0.19.0"></script>
   <script src="vendor/katex/mhchem.min.js?v=0.19.0"></script>
-  <script src="ai-tutor.js?v=20261008-ai-quality-1"></script>
+  <script src="ai-tutor.js?v=20261009-ai-workspace-1"></script>
   <script src="announcements.js?v=20261008-announcements-2"></script>
 </body>
 </html>

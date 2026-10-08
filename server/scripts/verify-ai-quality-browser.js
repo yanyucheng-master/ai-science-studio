@@ -87,7 +87,10 @@ try{
         await generate(q1);await page.locator('#mentorExpandButton').click();
         if(name==='composer_full'){
           await page.locator('#aiTutorInput').fill('请给完整步骤和最终答案，不要只给提示');await page.locator('#aiTutorSendButton').click();
-        }else await page.locator('[data-ai-action="steps"]').click();
+        }else {
+          await page.locator('#aiTutorInput').fill('请完整解答，写出必要步骤和最终结论。');
+          await page.locator('#aiTutorSendButton').click();
+        }
         if(hold){
           await page.waitForFunction(()=>document.querySelector('#aiTutorWorkspace').getAttribute('aria-busy')==='true');
           if(name==='parameters_pending')await page.locator('.parameters input[type=range]').first().evaluate(input=>{input.value='10';input.dispatchEvent(new Event('input',{bubbles:true}))});
@@ -98,7 +101,8 @@ try{
         }
         await complete();
         if(name==='long_history')for(let round=0;round<3;round++){
-          await page.locator('[data-ai-action="steps"]').click();await page.waitForFunction(()=>document.querySelector('#aiTutorWorkspace').getAttribute('aria-busy')!=='true');
+          await page.locator('#aiTutorInput').fill('请完整解答，写出必要步骤和最终结论。');
+          await page.locator('#aiTutorSendButton').click();await page.waitForFunction(()=>document.querySelector('#aiTutorWorkspace').getAttribute('aria-busy')!=='true');
         }
       }
       const ui=await page.evaluate(()=>({status:document.querySelector('#aiTutorStatus').textContent,context:document.querySelector('#aiTutorContextTitle').textContent,
