@@ -140,7 +140,10 @@
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 8000);
       try {
-        const response = await fetch(new URL("announcements.json", document.baseURI), { cache: "no-store", signal: controller.signal });
+        const feedUrl = new URL("announcements.json", document.baseURI);
+        // Render's CDN may cache the feed despite the browser's no-store mode.
+        feedUrl.searchParams.set("updated", String(Date.now()));
+        const response = await fetch(feedUrl, { cache: "no-store", signal: controller.signal });
         if (!response.ok) throw new Error("Announcement request failed");
         const next = validateFeed(await response.json());
         if (JSON.stringify(next) !== JSON.stringify(announcements)) {

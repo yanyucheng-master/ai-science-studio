@@ -123,7 +123,9 @@ try {
   assert.equal(await page.evaluate(() => localStorage.getItem('announcement.qa.keep')), 'untouched');
   pass('keyboard activation, focus trapping, single/all read and persistence');
 
-  feed.announcements.unshift({ id: 'qa-new', revision: 1, date: '2026-10-02', title: '本地测试：新增公告', summary: '仅用于检查新公告提示。', details: ['该内容不写入真实公告文件。'] });
+  const newestFeedDate = Math.max(0, ...originalFeed.announcements.map(item => Date.parse(item.date)));
+  const newAnnouncementDate = new Date(newestFeedDate + 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  feed.announcements.unshift({ id: 'qa-new', revision: 1, date: newAnnouncementDate, title: '本地测试：新增公告', summary: '仅用于检查新公告提示。', details: ['该内容不写入真实公告文件。'] });
   const beforePoll = feedRequests;
   await page.clock.fastForward(5 * 60 * 1000 + 1);
   await countIs(page, `${total + 1} 条公告 · 1 条未读`);

@@ -2,6 +2,28 @@
 
 铃铛读取 `web/announcements.json`，按日期从新到旧显示真实的功能更新。初始公告依据本次首页改动及 Git 提交 `21105dd`（2026-09-29）、`0e09a53`（2026-09-22）编写。公告文件随网站部署生效；本地修改不代表线上已经发布。
 
+## 每轮更新必须同步公告
+
+每轮正式发布都要在公告中写明本次已经完成的改动，并与源码在同一轮提交、推送。按发布批次汇总，标题、摘要和正文以用户可感知的变化为主；内部维护如实注明，不写虚构功能、未完成计划或未经验证的承诺。历史补录使用实际更新日期。
+
+发布前人工对照完整差异检查公告覆盖情况，保留既有公告与标识。仅提高修订号、调整条目顺序或修改 JSON 排版，不能代替一条真实更新记录。主分支与公网分支各自检查，分支独有的变化不能混写成两边均已完成。
+
+2026-10-08 补录了 10 月 4 日的品牌图标、10 月 5 日的解题过程与界面、10 月 7 日的题目条件校验，并记录 10 月 8 日的 AI 对话、公式及公告刷新改进。
+
+在仓库根目录执行静态发布核查：
+
+```powershell
+# 按明确允许清单暂存后，检查待提交内容。
+node server/scripts/check-announcement-release.js --base HEAD --staged
+
+# fetch 并核对基线后，分别检查完整待推送范围。
+node server/scripts/check-announcement-release.js --base origin/master --committed
+# 在公网分支 worktree 中执行：
+node server/scripts/check-announcement-release.js --base origin/codex/public-demo-byo-key --committed
+```
+
+也可在 `server` 目录运行 `npm run check:announcements -- --base HEAD --staged`。工具只读取 Git 中的公告及文件变化，检查格式、日期顺序、标识、修订号和更新记录是否存在；不会运行测试、浏览器、构建或 AI 请求。遗漏记录或修改旧公告却未提高 `revision` 时返回非零状态。内容是否真实、是否覆盖全部改动仍需人工审核，检查失败时补齐后再发布。
+
 ## 发布下一条公告
 
 在 `announcements` 数组里加入一项，保留 `version: 1`：
@@ -25,13 +47,15 @@
 
 - 有未读公告时才显示红点。打开铃铛不直接清空未读；展开公告标记单条，或点击“全部标为已读”。
 - 已读记录保存在当前浏览器的 `masterLab.announcementReads.v1`，同源标签页同步；不同设备、浏览器和隐私窗口分别记录。
-- 首次加载、打开公告、返回页面或窗口重新获得焦点时检查更新；页面可见时每 5 分钟检查一次。请求 8 秒未完成会显示失败并允许重试。
+- 首次加载、打开公告、返回页面或窗口重新获得焦点时检查更新；页面可见时每 5 分钟检查一次。每次请求附加当前刷新时间并使用 `cache: no-store`，减少浏览器及 CDN 旧缓存造成的延迟。请求 8 秒未完成会显示失败并允许重试。
 - 加载失败时保留本页上次成功加载的内容并显示提示；首次加载失败不伪装成“没有公告”。浏览器禁止存储时，本页仍可阅读并更新红点。
-- `render.yaml` 为公告 JSON 配置禁用缓存的响应头。新公告需要部署到正式站点；无需更改 API 服务或数据库。
+- `render.yaml` 声明了公告 JSON 的禁用缓存响应头；手动创建的 Render 服务仍需在控制台单独核对配置。2026-10-08 实际响应为 `public, max-age=0, s-maxage=300`，不能把仓库声明当作线上已生效。当前刷新时间参数用于避开这类 CDN 旧缓存；新公告仍需部署到正式站点，无需更改 API 服务或数据库。
 - 正式站点监听 `codex/public-demo-byo-key`，仅推送 `master` 不会上线。发布前按 [Render 公网发布](render-publish.md) 核对部署分支和实际响应头。
 
 ## 本地验证
 
-在 `server` 目录执行 `npm run test:announcements`。沿用项目已有浏览器脚本的设置方式：可通过 `PLAYWRIGHT_MODULE` 指定已安装的 Playwright，通过 `BROWSER_CHANNEL` 指定浏览器（默认 Edge）。脚本只运行本地网页和测试公告，不请求真实 AI 服务或读取密钥。
+日常发布默认只做上述静态核查，不运行本地测试或浏览器回归，保留 GitHub 原有自动 CI。
+
+用户明确要求公告功能验证时，在 `server` 目录执行 `npm run test:announcements`。沿用项目已有浏览器脚本的设置方式：可通过 `PLAYWRIGHT_MODULE` 指定已安装的 Playwright，通过 `BROWSER_CHANNEL` 指定浏览器（默认 Edge）。脚本只运行本地网页和测试公告，不请求真实 AI 服务或读取密钥。
 
 报告和桌面、移动端截图写入 `artifacts/announcement-qa/`。
