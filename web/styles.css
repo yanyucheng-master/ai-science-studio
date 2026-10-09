@@ -9893,19 +9893,21 @@ body.ai-tutor-route .scene *, body.ai-tutor-route .scene *::before, body.ai-tuto
 /* One conversation, three views: embedded, focused page and movable in-page window. */
 .ai-entry-button {
   display: inline-grid;
-  width: 52px;
+  width: 44px;
   height: 44px;
-  padding: 0 8px;
+  padding: 0;
   place-items: center;
-  color: #1b3965;
-  border: 1px solid #d7e5f8;
+  color: #2d73f6;
+  border: 1px solid #c6dbfb;
   border-radius: 14px;
-  background: rgba(255, 255, 255, .9);
-  box-shadow: 0 4px 16px rgba(47, 89, 157, .05);
-  transition: color .18s, border-color .18s, background .18s;
+  background: linear-gradient(160deg, #f5f9ff 0%, #e1edff 100%);
+  box-shadow: 0 4px 14px rgba(45, 115, 246, .08), inset 0 1px 0 rgba(255, 255, 255, .9);
+  transition: color .18s, border-color .18s, background .18s, box-shadow .18s, transform .18s;
 }
-.ai-wordmark { font-family: Georgia, "Times New Roman", serif; font-size: 30px; font-weight: 700; letter-spacing: -4px; transform: skew(-7deg); padding-right: 4px; line-height: 1; }
-.ai-entry-button:hover { color: #2469d9; border-color: #a8c9f8; background: #edf5ff; }
+/* Original geometric wordmark drawn as SVG paths, so it renders the same without web fonts. */
+.ai-wordmark { display: block; width: 26px; height: auto; overflow: visible; }
+.ai-entry-button:hover { color: #1f62e0; border-color: #9cc2f8; background: linear-gradient(160deg, #ebf3ff 0%, #d3e5ff 100%); box-shadow: 0 6px 18px rgba(45, 115, 246, .16), inset 0 1px 0 rgba(255, 255, 255, .9); transform: translateY(-1px); }
+.ai-entry-button:active { transform: translateY(0); }
 .ai-entry-button:focus-visible,
 .ai-tutor-workspace button:focus-visible,
 .ai-tutor-messages:focus-visible { outline: 2px solid #3174e8; outline-offset: 3px; }
@@ -10086,4 +10088,5 @@ body.ai-tutor-detached .generation-overlay { z-index: 10040; }
 }
 @media (prefers-reduced-motion: reduce) {
   .ai-entry-button { transition: none; }
+  .ai-entry-button:hover { transform: none; }
 }
