@@ -2639,6 +2639,7 @@ function switchBiologyCellLevel(level) {
   if (next === state.cellLevel) return;
   clearReasoningTimers();
   switchBiologyCellType(state.cellType, { level: next, keepSelection: true, keepView: true });
+  if (state.hasGenerated) dispatchAIContextChanged("parameters");
   setReasoningStep(2, `<span>学段切换</span>已切换到${CELL_LEVEL_LABELS[next]}（${CELL_LEVEL_SOURCES[next]}），共 ${currentCellOrganelles().length} 个结构。`);
   showToast(`已切换到${CELL_LEVEL_LABELS[next]}`);
 }
@@ -4179,11 +4180,23 @@ function planFitsQuestion(plan, text) {
   }
 }
 
-// AI 把题目改写成本地模板题后，必须仍与原题的全部条件一致才生成实验
+// AI 改写题的规划不受当前页面学科、模板影响；核对与生成用同一份上下文
+const MAPPED_PLAN_CONTEXT = Object.freeze({ subject: "", physicsTemplate: "", presetQuestion: "" });
+
+// AI 把题目改写成本地模板题后，必须仍与原题的全部条件一致才生成实验：
+// 原题的每个量都要被模板用到；改写题里的每个量也必须是原题给出的（逐个配对），AI 补造的条件一律不认
 function mappedPlanFitsOriginal(originalQuestion, mappedQuestion) {
-  const plan = planLocalExperiment(mappedQuestion, { subject: "", physicsTemplate: "", presetQuestion: "" });
-  if (!plan.ok) return false;
-  return planFitsQuestion(plan, originalQuestion).ok;
+  const guard = questionGuard();
+  if (!guard) return false;
+  const plan = planLocalExperiment(mappedQuestion, MAPPED_PLAN_CONTEXT);
+  if (!plan.ok || !planFitsQuestion(plan, originalQuestion).ok) return false;
+  const stated = guard.extractQuantities(originalQuestion);
+  return guard.extractQuantities(mappedQuestion).every(token => {
+    const index = stated.findIndex(item => item.cls === token.cls && guard.approx(Math.abs(item.value), Math.abs(token.value)));
+    if (index < 0) return false;
+    stated.splice(index, 1);
+    return true;
+  });
 }
 
 window.planLocalExperiment = planLocalExperiment;
@@ -4986,13 +4999,16 @@ function renderProjectile(values) {
   attr("#projectileVxLabel", { x: g.dx + 8, y: -6 });
   attr("#projectileVyLabel", { x: -24, y: g.dy + 14, visibility: g.dy > 0 ? "visible" : "hidden" });
   attr("#projectileVLabel", { x: g.dx + 8, y: g.dy + 12, visibility: g.dy > 0 ? "visible" : "hidden" });
-  $("#projectileVelocityNote").textContent = `vₓ = ${smartNumber(g.vx)} m/s    vᵧ = ${Number(g.vy).toFixed(1)} m/s ↓    |v| = ${Number(Math.hypot(g.vx, g.vy)).toFixed(1)} m/s`;
+  // 实时读数被四舍五入时写“≈”，能精确写出时写“=”，与结论的写法一致
+  const shown = (value, places) => `${Math.abs(Number(value.toFixed(places)) - value) > 1e-9 * Math.max(1, Math.abs(value)) ? "≈" : "="} ${Number(value).toFixed(places)}`;
+  const speed = Math.hypot(g.vx, g.vy);
+  $("#projectileVelocityNote").textContent = `vₓ = ${smartNumber(g.vx)} m/s    vᵧ ${shown(g.vy, 1)} m/s ↓    |v| ${shown(speed, 1)} m/s`;
   $("#projectileMobileVectors").textContent = $("#projectileVelocityNote").textContent;
   elements.projectileHeightText.textContent = `${smartNumber(model.height)} m`;
   // 实时读数的位数随本题答案而定，播放到终点时与结论完全一致
   const tPlaces = exactPlaces(model.fallTime, 4);
   const xPlaces = exactPlaces(model.range, 4);
-  elements.projectileResultText.textContent = `t = ${Number(g.t).toFixed(tPlaces === null ? 2 : clamp(tPlaces, 2, 4))}s，x = ${Number(model.x).toFixed(xPlaces === null ? 1 : clamp(xPlaces, 1, 4))}m`;
+  elements.projectileResultText.textContent = `t ${shown(g.t, tPlaces === null ? 2 : clamp(tPlaces, 2, 4))}s，x ${shown(model.x, xPlaces === null ? 1 : clamp(xPlaces, 1, 4))}m`;
   elements.projectileTimeText.textContent = `${smartNumber(model.fallTime, 2)}s`;
   elements.projectileRangeText.textContent = `${smartNumber(model.range, 1)}m`;
   elements.projectileVyText.textContent = `${smartNumber(model.verticalSpeed, 1)}m/s`;
@@ -5778,7 +5794,7 @@ function updateParameters(reset = true, options = {}) {
     }
   }
   if (reset) resetExperiment();
-  if (state.hasGenerated) dispatchAIContextChanged();
+  if (state.hasGenerated) dispatchAIContextChanged(options.syncQuestion ? "parameters" : "context");
 }
 
 const AI_TEMPLATE_ID_MAP = Object.freeze({
@@ -5835,8 +5851,8 @@ function currentAIParameters(templateId = currentAITemplateId()) {
   return parameterNames ? { [parameterNames[0]]: state.p1, [parameterNames[1]]: state.p2 } : {};
 }
 
-function dispatchAIContextChanged() {
-  window.dispatchEvent(new CustomEvent("masterlab:context-changed"));
+function dispatchAIContextChanged(reason = "context") {
+  window.dispatchEvent(new CustomEvent("masterlab:context-changed", { detail: { reason } }));
 }
 
 function buildMasterLabAIContext() {
@@ -5885,7 +5901,7 @@ function applyAIParameterPatch(patch) {
   if (templateId === "cell" && patch.parameterKey === "cellType") {
     switchBiologyCellType(Number(patch.nextValue) === 0 ? "animal" : "plant");
     saveCurrentSubjectSnapshot();
-    dispatchAIContextChanged();
+    dispatchAIContextChanged("parameters");
     showToast("已按确认切换细胞模型");
     return { ok: true };
   }
@@ -6986,13 +7002,13 @@ async function generateExperiment(options = {}) {
     return;
   }
 
-  const plan = planLocalExperiment(question);
+  const plan = options.mapped ? planLocalExperiment(question, MAPPED_PLAN_CONTEXT) : planLocalExperiment(question);
   const detected = plan.subject;
   if (!plan.ok) {
     const remote = await handOffUnmatchedQuestion(plan.parse, displayQuestion, detected, allowAiFallback);
     if (remote?.mode === "experiment") {
       $("#questionInput").value = remote.question;
-      await generateExperiment({ questionOverride: remote.question, displayQuestion, allowAiFallback: false });
+      await generateExperiment({ questionOverride: remote.question, displayQuestion, allowAiFallback: false, mapped: true });
     }
     return;
   }
@@ -7168,6 +7184,7 @@ $("#generateButton").addEventListener("click", () => generateExperiment());
 $(".reasoning-steps").addEventListener("click", event => {
   const step = event.target.closest(".reason-step");
   if (!step) return;
+  if (window.getSelection()?.toString().trim()) return;
   activateReasoningStep(Number(step.dataset.step), { manual: true });
 });
 
@@ -7465,6 +7482,7 @@ $("#challengeButton").addEventListener("click", () => {
     elements.mentorMessage.innerHTML = `我已把题目改成初速度 <strong>${smartNumber(nextV)}m/s</strong>、加速度 <strong>−${smartNumber(nextA)}m/s²</strong>。先别急着播放，预测一下停止距离为什么会变成 <strong>${aboutText(next.stopDistance)}${smartNumber(next.stopDistance)}m</strong>？`;
     showMentorChallengeFeedback(previous, next);
     syncFavoriteState();
+    dispatchAIContextChanged("parameters");
     showToast(`变式题已同步：停止距离 ${aboutText(next.stopDistance)}${smartNumber(next.stopDistance)}m`);
     return;
   }
@@ -7499,6 +7517,7 @@ $("#challengeButton").addEventListener("click", () => {
   if (state.subject === "生物") {
     const nextType = state.cellType === "animal" ? "plant" : "animal";
     switchBiologyCellType(nextType);
+    dispatchAIContextChanged("parameters");
     const label = CELL_TYPE_LABELS[nextType];
     setReasoningStep(4, `<span>对比迁移</span>已切换到${label}，观察它与${nextType === "animal" ? "植物" : "动物"}细胞的结构差异。`);
     elements.mentorMessage.innerHTML = nextType === "animal"

@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" href="assets/brand/orbit-flask-2026-10-04/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="vendor/katex/katex.min.css?v=0.19.0">
-  <link rel="stylesheet" href="styles.css?v=20261009-ai-wordmark-1">
+  <link rel="stylesheet" href="styles.css?v=20261009-release-1">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -772,10 +772,22 @@
           <div class="ai-tutor-context" id="aiTutorContext">
             <span>当前上下文</span>
             <strong id="aiTutorContextTitle">等待选择题目</strong>
-            <p id="aiTutorContextText">生成实验后，我会读取题目、参数、公式和当前解题步骤；不会读取页面中的其他信息。</p>
+            <p id="aiTutorContextText">生成实验后，可结合题目、参数、公式和当前解题步骤讨论，也可选择实验文字引用追问。</p>
+            <div class="ai-context-controls"><small id="aiTutorContextMode">跟随当前实验</small><button id="aiTutorAttachContext" type="button" hidden>关联当前题目</button></div>
           </div>
 
+          <div class="ai-session-toolbar">
+            <button id="aiTutorHistoryButton" type="button" aria-expanded="false" aria-controls="aiTutorHistoryPanel">最近会话</button>
+            <button id="aiTutorNewButton" type="button">新对话</button>
+            <span id="aiTutorStorageStatus" role="status">会话与草稿仅保存在此浏览器</span>
+          </div>
+          <div class="ai-session-undo" id="aiTutorUndoBar" role="status" hidden><span>已清空当前对话</span><button id="aiTutorUndoButton" type="button">撤销清空</button></div>
+
           <div class="ai-tutor-conversation">
+            <section class="ai-session-panel" id="aiTutorHistoryPanel" aria-label="本机最近会话" hidden>
+              <p>最多保存 6 个会话，每个会话最近 60 条记录；内容过多时优先保留最近会话。恢复会话不会改变实验。</p>
+              <div id="aiTutorHistoryList"></div>
+            </section>
             <div class="ai-tutor-messages" id="aiTutorMessages" tabindex="0" aria-label="AI 对话记录">
               <div class="ai-tutor-empty" id="aiTutorEmpty">
                 <strong>先说说你卡在哪里</strong>
@@ -788,11 +800,11 @@
           <button class="ai-selection-action" id="aiTutorQuoteSelection" type="button" hidden>＋ 引用追问</button>
 
           <form class="ai-tutor-composer" id="aiTutorForm">
-            <label for="aiTutorInput">向大师 AI 导师提问</label>
+            <div class="ai-composer-heading"><label for="aiTutorInput">向大师 AI 导师提问</label><div class="ai-response-controls"><button class="ai-hint-chip" id="aiTutorHintChip" type="button" hidden aria-label="提示优先中：之后的追问会继续只给提示。点击恢复自动判断" title="之后的追问会继续只给提示；点击恢复自动判断，或直接要求完整解答">提示优先中 <span aria-hidden="true">×</span></button><label class="ai-response-mode">回答方式 <select id="aiTutorResponseMode"><option value="auto">自动</option><option value="hint">只给提示</option><option value="steps">完整讲解</option></select></label></div></div>
             <section class="ai-quote-list" id="aiTutorQuotes" aria-label="本次提问引用" hidden></section>
             <div class="ai-composer-input">
               <textarea id="aiTutorInput" rows="2" maxlength="2000" aria-describedby="aiTutorInputHint aiTutorInputCount" placeholder="写下问题，也可以先选中文字引用追问…"></textarea>
-              <button class="ai-tutor-stop" id="aiTutorStopButton" type="button">停止</button>
+              <button class="ai-tutor-stop" id="aiTutorStopButton" type="button" disabled>停止</button>
               <button class="ai-tutor-send" id="aiTutorSendButton" type="submit">发送</button>
             </div>
             <p class="ai-composer-hint"><span id="aiTutorInputHint">Enter 发送 · Shift + Enter 换行</span><span id="aiTutorInputCount"></span></p>
@@ -902,11 +914,11 @@
   </dialog>
 
   <script src="science-motion.js?v=20260922-motion-1"></script>
-  <script src="physics-extra.js?v=20261007-question-accuracy-1"></script>
-  <script src="app.js?v=20261008-ai-quality-1"></script>
+  <script src="physics-extra.js?v=20261009-release-1"></script>
+  <script src="app.js?v=20261009-release-1"></script>
   <script src="vendor/katex/katex.min.js?v=0.19.0"></script>
   <script src="vendor/katex/mhchem.min.js?v=0.19.0"></script>
-  <script src="ai-tutor.js?v=20261009-ai-workspace-1"></script>
+  <script src="ai-tutor.js?v=20261009-ai-continuity-3"></script>
   <script src="announcements.js?v=20261008-announcements-2"></script>
 </body>
 </html>

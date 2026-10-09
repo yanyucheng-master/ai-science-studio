@@ -160,3 +160,30 @@ test('extra templates: conditions outside the drawn model are handed to AI', () 
     assert.equal(templates[id].parseQuestion(question).ok, false, `${id} should refuse: ${question}`);
   }
 });
+
+// 验收复核（2026-10-07）：题中条件与模板图示不符时交给 AI；“正常发光”作为条件时就是额定状态
+test('extra templates: spring-scale readings, voltmeter targets and normal glow follow the question', () => {
+  const refusals = [
+    ['buoyancy', '一个物体浸没在水中，弹簧测力计示数为 12N，排开水的体积为 300cm³，求物体受到的浮力。（g 取 10N/kg）'],
+    ['seriesCircuit', 'R1=4Ω 与 R2=8Ω 串联接在 6V 电源上，电压表测电源电压，求电压表示数。'],
+    ['seriesCircuit', '定值电阻 R1=4Ω 与滑动变阻器串联，电源电压为 6V，当滑片移到最右端时变阻器接入 8Ω，求电流和电压表示数。'],
+    ['lampPower', '小灯泡正常发光时电压为 3.8V，电流为 0.3A，求额定功率。'],
+    ['lampPower', '标有“2.5V 0.3A”的小灯泡接入电路，判断它能否正常发光。']
+  ];
+  for (const [id, question] of refusals) {
+    assert.equal(templates[id].parseQuestion(question).ok, false, `${id} should refuse: ${question}`);
+  }
+
+  const weight = contentOf('buoyancy', '重 12N 的物体浸没在水中，排开水的体积为 300cm³，求浮力。（g 取 10N/kg）');
+  assert.match(weight.model.conclusion, /物重 G = 12N/);
+
+  const voltmeter = contentOf('seriesCircuit', 'R1=4Ω 与 R2=8Ω 串联接在 6V 电源上，电压表测 R2 两端电压，求电压表示数。');
+  assert.equal(voltmeter.model.readout, 'I = 0.5A');
+
+  const normal = contentOf('lampPower', '小灯泡正常发光时电压为 2.5V，电流为 0.3A，求额定功率。');
+  assert.match(normal.model.conclusion, /正常发光，等于额定功率/);
+  assert.equal(normal.model.facts[2].value, '正常发光');
+
+  const askedNormal = contentOf('lampPower', '额定电压为 2.5V 的小灯泡两端电压为 2V 时电流为 0.28A，求实际功率，并判断灯泡能否正常发光。');
+  assert.equal(askedNormal.model.facts[2].value, '比正常发光暗');
+});

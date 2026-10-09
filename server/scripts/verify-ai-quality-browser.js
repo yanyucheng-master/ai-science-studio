@@ -128,7 +128,7 @@ try{
         else {assert.match(ui.answer,/9:3:3:1/);assert.match(ui.context,/生物/)}
       }
       if(name==='text_safety'){assert.equal(ui.unsafe,false);assert.equal(ui.unsafeElements,0)}
-      if(name==='long_history'){assert.equal(calls.length,4);assert.ok(calls.every(call=>call.bytes<=14*1024));assert.ok(calls[3].body.history.length<6)}
+      if(name==='long_history'){assert.equal(calls.length,4);assert.ok(calls.every(call=>call.bytes<=14*1024));assert.ok(calls[3].body.history.length>=2&&calls[3].body.history.at(-1).role==='assistant'&&calls[3].body.history.every(item=>item.content.length<=1600))}
       assert.deepEqual(ui.subjects,['数学','生物','物理','化学']);
       await page.locator('#aiTutorWorkspace').screenshot({path:resolve(output,name+'.png')});
       reports.push({name,passed:true,ui,calls:calls.map(call=>({kind:call.kind,bytes:call.bytes,responseLevel:call.body.responseLevel,historyCount:call.body.history?.length}))});

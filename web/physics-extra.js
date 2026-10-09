@@ -935,7 +935,12 @@
           if (!Number.isFinite(density)) return miss("当前浮力模板需要液体密度（水、酒精、煤油可直接识别）。");
           const gravity = guard().gravityOf(source);
           if (!Number.isFinite(gravity.value)) return miss("题目中的 g 取值无法识别。");
-          const fixed = { g: gravity.value, weightSource: tokensOf(tokens, "force").length ? "given" : "assumed" };
+          // 题中的力只有写明是物重时才按物重演示；弹簧测力计示数、拉力等不是物重，不能当作 G
+          const forces = tokensOf(tokens, "force");
+          if (forces.some(token => !/重|G/.test(lastLabel(source, token, /物重|重力|重|G|示数|读数|拉力|F示|F拉|F/, 12)))) {
+            return miss("当前浮力模板只能把写明的物重作为 G；弹簧测力计示数或拉力需要按称重法另行分析。");
+          }
+          const fixed = { g: gravity.value, weightSource: forces.length ? "given" : "assumed" };
           // 题目点名的金属块（浸没时 V物 = V排）按教材密度表算出物重，演示与题中物体一致
           const metal = source.match(/(铝|铁|钢|铜|铅)(?:块|球|柱|锭|片|圆柱体|立方体|制|质)/);
           if (metal && fixed.weightSource === "assumed") {
@@ -1045,8 +1050,10 @@
         values(source, tokens) {
           const volts = tokensOf(tokens, "voltage");
           const amps = tokensOf(tokens, "current");
+          // “正常发光”要是题目给出的条件；“判断能否正常发光”是所问的内容，不算
+          const normal = source.split(/[，,。；;？?！!]/).some(clause => /正常发光|正常工作/.test(clause) && !/能否|是否|能不能|会不会|判断|吗|求|如何|怎样/.test(clause));
           if (/标有|铭牌/.test(source)) {
-            if (!/正常发光|正常工作/.test(source)) return miss("铭牌上是额定值，灯泡不正常发光时实际电流未知，模板不能计算实际功率。");
+            if (!normal) return miss("铭牌上是额定值，灯泡不正常发光时实际电流未知，模板不能计算实际功率。");
             if (volts.length !== 1 || amps.length !== 1) return miss("当前小灯泡功率模板需要铭牌上的额定电压和额定电流。");
             if (Math.abs(volts[0].value - 2.5) > 1e-9) return miss("当前小灯泡功率模板按额定电压 2.5V 的小灯泡演示。");
             return { ok: true, p1: volts[0].value, p2: amps[0].value, fixed: { ratedStated: true, nameplate: true } };
@@ -1057,12 +1064,14 @@
           const actual = volts.filter(token => !isRated(token));
           if (rated.length > 1 || actual.length > 1) return miss("当前小灯泡功率模板需要灯泡两端的电压和通过的电流。");
           if (rated.length && Math.abs(rated[0].value - 2.5) > 1e-9) return miss("当前小灯泡功率模板按额定电压 2.5V 的小灯泡演示。");
-          if (!actual.length && !/正常发光|正常工作/.test(source)) return miss("需要灯泡两端的实际电压。");
+          if (!actual.length && !normal) return miss("需要灯泡两端的实际电压。");
           const u = actual.length ? actual[0].value : rated[0].value;
+          // 正常发光时灯泡两端的电压就是额定电压
+          if (normal && Math.abs(u - 2.5) > 1e-9) return miss("当前小灯泡功率模板按额定电压 2.5V 的小灯泡演示。");
           const asks = guard().askItems(source);
           if (asks.some(item => /额定功率/.test(item)) && Math.abs(u - 2.5) > 1e-9) return miss("实际电压不等于额定电压时，模板不能直接给出额定功率。");
-          if (!rated.length && asks.some(item => /亮|暗|发光/.test(item))) return miss("题目没有给出额定电压，无法判断亮度与正常发光相比如何。");
-          return { ok: true, p1: u, p2: amps[0].value, fixed: { ratedStated: rated.length > 0 } };
+          if (!rated.length && !normal && asks.some(item => /亮|暗|发光/.test(item))) return miss("题目没有给出额定电压，无法判断亮度与正常发光相比如何。");
+          return { ok: true, p1: u, p2: amps[0].value, fixed: { ratedStated: rated.length > 0 || normal } };
         },
         used: (u, i, fixed) => [{ cls: "voltage", value: u }, { cls: "current", value: i }, { cls: "voltage", value: fixed.rated }],
         asks: { supported: /功率|亮度|亮暗|明暗|发光|亮/, unsupported: /电阻|电能|电流(?:是|为)?多|电压(?:是|为)?多/ }
@@ -1195,6 +1204,10 @@
           if (volts.length !== 1 || ohms.length !== 2) return miss("当前串联电路模板需要电源电压以及 R₁、R₂ 的阻值。");
           const voltLabel = lastLabel(source, volts[0], /电压表|示数|电源|总电压|两端|接在|接入|电压|U/, 14);
           if (!voltLabel || /电压表|示数/.test(voltLabel)) return miss("当前串联电路模板需要电源（总）电压。");
+          // 模板电路图的电压表并联在 R₂ 两端：题目提到电压表时，必须写明它测的是 R₂（滑动变阻器）
+          if (/电压表/.test(source) && !/电压表[^。；？，,]{0,12}(?:R2|R₂|滑动变阻器|变阻器|滑变)|(?:R2|R₂|滑动变阻器|变阻器|滑变)[^。；？，,]{0,12}电压表/.test(source)) {
+            return miss("模板电路图中电压表测 R₂ 两端电压，题目中电压表的测量对象与此不同或没有说明。");
+          }
           const role = token => {
             const label = lastLabel(source, token, /R1|R2|定值电阻|滑动变阻器|变阻器|滑变/, 14);
             return /R2|变阻器|滑变/.test(label) ? "r2" : label ? "r1" : "";

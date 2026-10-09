@@ -2114,6 +2114,10 @@ input[type="range"] {
   background: #27c896;
 }
 
+.online[hidden] {
+  display: none;
+}
+
 .mentor-head h3 {
   margin: 0;
   font-size: 13px;
@@ -2328,8 +2332,8 @@ body.ai-tutor-route .ai-tutor-workspace {
   min-width: 150px;
   padding: 13px 15px;
   color: #3f536f;
-  font-size: 11px;
-  line-height: 1.65;
+  font-size: 14px;
+  line-height: 1.8;
   border: 1px solid #dce7f7;
   border-radius: 16px 16px 16px 5px;
   background: #fff;
@@ -2369,34 +2373,44 @@ body.ai-tutor-route .ai-tutor-workspace {
 .ai-answer-section h4 {
   margin: 0 0 6px;
   color: #2859b8;
-  font-size: 10px;
+  font-size: 12px;
 }
+
+.solution-section:first-of-type {
+  margin-top: 7px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.solution-section h4 { color: #274063; }
+.solution-section li::marker { color: #3a6fd9; font-weight: 600; }
+.ai-answer-section .ai-step-result { margin-top: 4px; font-weight: 600; }
+.formula-section h4 { color: #697b93; font-size: 11px; }
 
 .ai-answer-section ol {
   display: grid;
   margin: 0;
   padding-left: 20px;
-  gap: 5px;
+  gap: 10px;
 }
 
-.ai-answer-section li { line-height: 1.72; }
+.ai-answer-section li { line-height: 1.85; overflow-wrap: anywhere; }
 
 .ai-answer-section p { margin: 0; }
 
 .ai-formula-line {
   display: flex;
-  min-height: 34px;
-  margin-top: 6px;
-  padding: 7px 10px;
+  min-height: 0;
+  margin-top: 5px;
+  padding: 3px 0;
   gap: 4px;
   align-items: center;
   flex-wrap: wrap;
-  color: #164fc6;
+  color: #465e7e;
   font-family: Cambria, "Times New Roman", "Microsoft YaHei UI", sans-serif;
-  font-size: 16px;
-  line-height: 1.45;
-  border-radius: 10px;
-  background: #eff5ff;
+  font-size: 14px;
+  line-height: 1.6;
+  background: transparent;
 }
 
 .ai-rich-math {
@@ -2448,7 +2462,8 @@ body.ai-tutor-route .ai-tutor-workspace {
   margin-top: 10px;
   gap: 3px;
   color: #8b6c54;
-  font-size: 9px;
+  font-size: 12px;
+  line-height: 1.6;
 }
 
 .ai-parameter-patch {
@@ -9073,7 +9088,7 @@ body.fullscreen-lock {
   font-size: 19px;
 }
 
-.awaiting-generation .mentor-actions {
+.awaiting-generation .mentor-actions button:not(.mentor-open-page) {
   opacity: 0.55;
   pointer-events: none;
 }
@@ -10089,4 +10104,104 @@ body.ai-tutor-detached .generation-overlay { z-index: 10040; }
 @media (prefers-reduced-motion: reduce) {
   .ai-entry-button { transition: none; }
   .ai-entry-button:hover { transform: none; }
+}
+
+/* Local conversations and explicit context boundaries. */
+.ai-context-controls { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; }
+.ai-context-controls small { color: #657d9f; font-size: 10px; }
+.ai-context-controls button, .ai-session-toolbar button, .ai-session-delete, .ai-session-undo button { padding: 5px 9px; color: #3465a2; font: inherit; font-size: 11px; border: 1px solid #d5e2f4; border-radius: 7px; background: #f4f8ff; cursor: pointer; }
+.ai-session-toolbar { display: flex; flex-shrink: 0; flex-wrap: wrap; align-items: center; gap: 7px; margin-top: 9px; }
+.ai-session-toolbar > span { flex: 1; min-width: 110px; color: #7c8da6; font-size: 10px; text-align: right; }
+.ai-session-toolbar > .is-error { color: #a35b18; }
+.ai-session-panel { position: absolute; inset: 0 0 auto; z-index: 20; box-sizing: border-box; max-height: 100%; overflow-y: auto; overscroll-behavior: contain; padding: 10px; border: 1px solid #dce7f5; border-radius: 12px; background: #f6f9ff; box-shadow: 0 8px 24px #22466c1a; }
+.ai-session-panel > p { margin: 0 0 7px; color: #7c8da6; font-size: 10px; }
+.ai-session-item { display: flex; gap: 8px; align-items: center; padding: 5px 0; }
+.ai-session-open { flex: 1; min-width: 0; padding: 7px; color: #304967; border: 0; border-radius: 8px; background: #fff; text-align: left; cursor: pointer; }
+.ai-session-open:hover { background: #e9f2ff; }
+.ai-session-open strong { display: block; overflow: hidden; font-size: 12px; font-weight: 500; white-space: nowrap; text-overflow: ellipsis; }
+.ai-session-open small { display: block; margin-top: 4px; color: #7c8da6; font-size: 10px; }
+.ai-session-delete { flex-shrink: 0; background: transparent; }
+.ai-session-undo { display: flex; flex-shrink: 0; align-items: center; justify-content: space-between; gap: 10px; padding: 5px 8px; margin-top: 7px; color: #56749a; font-size: 11px; border-radius: 8px; background: #edf5ff; }
+.ai-context-change { margin: 16px 0; padding: 10px 13px; color: #577498; border: 1px dashed #bfd1e9; border-radius: 10px; background: #f4f8ff; }
+.ai-context-change strong, .ai-context-change span, .ai-context-change small { display: block; }
+.ai-context-change strong { margin-bottom: 5px; font-size: 11px; }
+.ai-context-change span { font-size: 12px; overflow-wrap: anywhere; }
+.ai-context-change small { margin-top: 5px; font-size: 10px; color: #7b8da8; }
+.ai-message-context { margin-top: 12px; color: #7b8da8; font-size: 10px; }
+.ai-message-context summary { cursor: pointer; }
+.ai-message-context p { max-height: 120px; overflow-y: auto; white-space: pre-wrap; }
+.ai-quote-context { display: block; margin-top: 4px; color: #8b6c3a; font-size: 10px; }
+.ai-tutor-composer > .ai-composer-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; padding: 0; color: #647894; font-size: 10px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.ai-response-mode { display: flex; align-items: center; gap: 6px; }
+.ai-response-mode select { max-width: 105px; min-height: 28px; padding: 3px 5px; color: #3b608f; font: inherit; font-size: 11px; border: 1px solid #cfdef4; border-radius: 7px; background: #fff; }
+.ai-response-mode select:focus-visible, .ai-message-context summary:focus-visible { outline: 2px solid #3174e8; outline-offset: 2px; }
+.ai-selection-action { z-index: 10060; }
+.ai-selection-action[hidden] { display: none !important; }
+.reasoning-steps .reason-step { user-select: text; }
+.formula-spotlight ::selection, .reason-step ::selection, #sceneTip ::selection, #problemText::selection { background: #cde2ff; color: #183c73; }
+.ai-tutor-workspace.is-compact-height .ai-session-toolbar > span:not(.is-error) { display: none; }
+.ai-tutor-workspace.is-compact-height .ai-tutor-context { display: block; margin-top: 4px; padding: 4px 8px; }
+.ai-tutor-workspace.is-compact-height .ai-tutor-context > span,
+.ai-tutor-workspace.is-compact-height .ai-tutor-context > strong,
+.ai-tutor-workspace.is-compact-height .ai-tutor-context > p { display: none; }
+.ai-tutor-workspace.is-compact-height .ai-context-controls { margin: 0; }
+@media (max-height: 500px) {
+  .ai-session-toolbar { margin-top: 4px; }
+  .ai-tutor-workspace.is-fullscreen .ai-composer-heading { gap: 4px; }
+}
+@media (max-height: 420px) {
+  .ai-tutor-workspace.is-fullscreen, .ai-tutor-workspace.is-floating { overflow-y: auto; }
+}
+
+/* Fullscreen tutor stays a flex column so the message list scrolls and the composer remains visible. */
+body.ai-tutor-route .ai-tutor-workspace.is-fullscreen { display: flex; }
+
+/* Visible hint preference in automatic answer mode. */
+.ai-response-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; }
+.ai-hint-chip { display: inline-flex; align-items: center; gap: 5px; min-height: 28px; padding: 3px 10px; color: #1a56d6; font: inherit; font-size: 11px; font-weight: 600; white-space: nowrap; border: 1px solid #c6dbfb; border-radius: 999px; background: #eaf3ff; cursor: pointer; }
+.ai-hint-chip span { font-size: 13px; line-height: 1; }
+.ai-hint-chip:hover { border-color: #9cc2f8; background: #dcebff; }
+.ai-hint-chip:focus-visible { outline: 2px solid #3174e8; outline-offset: 2px; }
+.ai-hint-chip[hidden] { display: none; }
+
+/* ===== 中等宽度修正（2026-10-07）：901–1179px（如 1024×768 平板横屏）
+   桌面最小宽度 1180px 会让整页横向滚动、右侧按钮移出屏幕 ===== */
+@media (min-width: 901px) and (max-width: 1179px) {
+  body {
+    min-width: 0;
+  }
+}
+
+/* 901–1100px：实验卡内部已是上下排列，两栏会把实验卡压到 540px 左右，读数面板和标注互相遮挡；
+   改为实验卡在上、解题路径在下 */
+@media (min-width: 901px) and (max-width: 1100px) {
+  .content-grid,
+  .demo-mode .content-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "experiment"
+      "tutor"
+      "insight";
+  }
+}
+
+/* 1101–1179px：保留两栏，实验卡宽度（约 740–820px）与 1180px 桌面布局相当 */
+@media (min-width: 1101px) and (max-width: 1179px) {
+  .content-grid,
+  .demo-mode .content-grid {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+}
+
+/* 561–1100px：教材图示与结论卡上下排列时，固定高度的场景只给图示留下约 100px，标注缩成 3–5px；
+   场景加高，让图示按原比例显示 */
+@media (min-width: 561px) and (max-width: 1100px) {
+  .scene.subject-generic-physics,
+  .scene.subject-generic-physics:has(.edu-diagram) {
+    min-height: 560px;
+  }
+
+  .generic-physics-lab {
+    grid-template-rows: minmax(300px, 1fr) auto;
+  }
 }
