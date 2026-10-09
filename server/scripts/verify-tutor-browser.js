@@ -189,13 +189,18 @@ try {
     await page.locator('#mentorOpenPageButton').click();
     await page.waitForURL('**/#/ai-tutor');
     if (scenario === 'timeout') await page.clock.install();
-    await page.locator(`[data-ai-action="${scenario === 'hint' ? 'hint' : 'steps'}"]`).click();
+    await page.locator('#aiTutorInput').fill(scenario === 'hint'
+      ? '请只给我一个关键提示，不要给最终答案。'
+      : '请完整解答，保留必要条件、公式、代入和最终结论。');
+    await page.locator('#aiTutorSendButton').click();
     if (scenario === 'timeout' || scenario === 'stop') {
       await page.waitForFunction(() => document.querySelector('.ai-thinking-trace-text')?.textContent.includes('本地测试'));
       if (scenario === 'timeout') await page.clock.fastForward(540001);
       else await page.locator('#aiTutorStopButton').click();
     }
     await page.waitForFunction(() => document.querySelector('#aiTutorWorkspace')?.getAttribute('aria-busy') === 'false');
+    // Empty drafts now disable Send; a new draft should become sendable again.
+    await page.locator('#aiTutorInput').fill('为什么这一步成立？');
     const ui = await page.evaluate(() => ({
       status: document.querySelector('#aiTutorStatus').textContent,
       text: document.querySelector('#aiTutorMessages').innerText,
