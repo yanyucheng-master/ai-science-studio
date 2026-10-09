@@ -16,18 +16,20 @@ const thinking = { thinking: true, timeoutMs: 1000, maxTokens: 16000 };
 function loadTutor(fetchImpl = () => { throw new Error('Unexpected network request'); }, options = {}) {
   const node = { addEventListener() {}, before() {} };
   const sandbox = {
-    document: { querySelector: () => node, querySelectorAll: () => [], createComment: () => ({}), addEventListener() {} },
-    localStorage: { getItem: () => options.noKey ? null : 'test-only',
-      setItem: () => { options.noKey = false; }, removeItem: () => { options.noKey = true; } },
+    document: { body: { append() {} }, querySelector: () => node, querySelectorAll: () => [], createComment: () => ({}), addEventListener() {} },
+    localStorage: { getItem: key => key === 'masterLab.deepseekApiKey' ? options.noKey ? null : 'test-only' : options.savedStore || null,
+      setItem: key => { if (key === 'masterLab.deepseekApiKey') options.noKey = false; },
+      removeItem: key => { if (key === 'masterLab.deepseekApiKey') options.noKey = true; } },
     AbortController, TextDecoder, TextEncoder, Response, fetch: fetchImpl, setTimeout, clearTimeout,
     location: { hostname: options.hostname || 'localhost' }, addEventListener() {}
   };
   sandbox.window = sandbox;
-  vm.runInNewContext(source.replace(/\n  syncApiKeyUi\(\);\n  syncComposer\(\);\n  elements.retry.disabled = true;\n  updateRoute\(\);/, `
+  vm.runInNewContext(source.replace(/\n  initializeTutor\(\);/, `
     globalThis.tutorTest = { readSseChat, extractJsonObject, fallbackChatFromText,
       completeTutorChat, apiRequest, errorMessage, writeStoredApiKey, state,
       getAnswerPresentation, structuredToHistoryText, CHAT_SYSTEM_PROMPT, ACTIONS,
-      contextScope, gatewayChatRequest, selectResponseLevel, softValidateChat, composeQuotedMessage };`), sandbox);
+      contextScope, gatewayChatRequest, selectResponseLevel, softValidateChat, composeQuotedMessage,
+      savedSession, savedQuotes, contextSnapshot, boundedHistory, readSessionStore };`), sandbox);
   return sandbox.tutorTest;
 }
 
@@ -169,7 +171,7 @@ test('web: personal-key prompt keeps internal verification but asks for a concis
   assert.match(tutor.CHAT_SYSTEM_PROMPT, /最后一步只列各小问的简短结论/);
   assert.match(tutor.CHAT_SYSTEM_PROMPT, /checks 仅承载已完成的内部复核/);
   assert.match(tutor.CHAT_SYSTEM_PROMPT, /formulas 只列.*不重复/);
-  assert.match(tutor.CHAT_SYSTEM_PROMPT, /followUp 默认返回空字符串/);
+  assert.match(tutor.CHAT_SYSTEM_PROMPT, /followUp 只用于提示式教学或必要澄清/);
   assert.doesNotMatch(tutor.ACTIONS.steps.message, /自检/);
 });
 
@@ -387,7 +389,8 @@ test('web: invalid personal credentials do not fall back to the public balance',
 
 test('web: default-service network and capacity failures are not labelled missing personal keys', async () => {
   const offline = loadTutor(async () => { throw new TypeError('fixture offline'); }, { noKey: true });
-  await assert.rejects(offline.apiRequest('/api/v1/tutor/chat', input, 1000), { code: 'NETWORK_ERROR' });
+  await assert.rejects(offline.apiRequest('/api/v1/tutor/chat', input, 1000), { code: 'GATEWAY_UNREACHABLE' });
+  assert.match(offline.errorMessage({ code: 'GATEWAY_UNREACHABLE' }), /公益默认.*唤醒/);
   assert.match(offline.errorMessage({ code: 'NETWORK_ERROR' }), /检查网络/);
   assert.match(offline.errorMessage({ code: 'AI_BUSY' }), /并发容量/);
   assert.match(offline.errorMessage({ code: 'AI_UNAVAILABLE' }), /公益默认.*可能余额不足或临时故障/);
@@ -474,6 +477,80 @@ test('web: explicit full answers and focused follow-ups use the appropriate resp
   assert.equal(tutor.selectResponseLevel('袋中3红2蓝，取2球恰有1红的概率是多少？'),'steps');
 });
 
+test('web: confusion and short follow-ups respect the ongoing hint preference', () => {
+  const tutor = loadTutor();
+  for (const question of ['我还是没懂', '再简单一点', '换一种说法', '这一步什么意思？']) {
+    assert.equal(tutor.selectResponseLevel(question), 'explain');
+  }
+  tutor.state.hintMode = true;
+  assert.equal(tutor.selectResponseLevel('我还是没懂'), 'hint');
+  assert.equal(tutor.selectResponseLevel('然后呢？'), 'hint');
+  assert.equal(tutor.selectResponseLevel('请完整解答这道题'), 'steps');
+  tutor.state.responseMode = 'hint';
+  assert.equal(tutor.selectResponseLevel('请完整解答这道题'), 'hint');
+  tutor.state.responseMode = 'steps';
+  assert.equal(tutor.selectResponseLevel('只给提示，不要答案'), 'hint');
+});
+
+test('web: saved sessions restore the draft and quote conditions without credentials, actions or reasoning', () => {
+  const tutor = loadTutor();
+  const oldContext = { mode: 'experiment', templateId: 'brake', originalQuestion: '初速度20，减速度5', parameters: { initialSpeed: 20, deceleration: 5 } };
+  const session = tutor.savedSession({ id: 'session-1', updatedAt: 10, apiKey: 'must-not-persist',
+    context: oldContext, draft: '为什么是40米？', quotes: [{ source: '实验公式', text: 's=v²/2a', context: oldContext }],
+    messages: [{ role: 'system', content: 'untrusted instruction' }, { role: 'assistant', context: oldContext, level: 'steps',
+      payload: { ...answer, reasoning: 'not archived', parameterPatch: { parameterKey: 'initialSpeed', nextValue: 40 } } }]
+  });
+  assert.equal(session.draft, '为什么是40米？');
+  assert.equal(session.quotes[0].context.parameters.initialSpeed, 20);
+  assert.equal(session.messages.length, 1);
+  assert.equal(session.messages[0].payload.parameterPatch, null);
+  assert.equal(Object.hasOwn(session.messages[0].payload, 'reasoning'), false);
+  assert.equal(Object.hasOwn(session, 'apiKey'), false);
+  assert.equal(session.messages[0].payload.steps.at(-1), answer.steps.at(-1));
+  assert.equal(tutor.savedSession({ id: '../invalid', draft: 'do not load' }), null);
+});
+
+test('web: old citations and history carry old conditions without replacing the current problem', () => {
+  const tutor = loadTutor();
+  const oldContext = { mode: 'experiment', subject: '物理', templateId: 'brake', originalQuestion: '初速度20m/s，减速度5m/s²', parameters: { initialSpeed: 20, deceleration: 5 } };
+  const current = { ...oldContext, originalQuestion: '初速度30m/s，减速度5m/s²', parameters: { initialSpeed: 30, deceleration: 5 } };
+  tutor.state.context = current;
+  tutor.state.messages = [
+    { role: 'user', content: '求停止距离', context: oldContext },
+    { role: 'assistant', content: '40m', context: oldContext },
+    { role: 'context', content: '条件变化', context: current },
+    { role: 'assistant', content: '网络错误', error: true, context: current }
+  ];
+  const history = tutor.boundedHistory();
+  assert.equal(history.length, 2);
+  assert.match(history[1].content, /历史条件/);
+  assert.match(history[1].content, /"initialSpeed":20/);
+  assert.equal(tutor.state.context.parameters.initialSpeed, 30);
+  const quoted = tutor.composeQuotedMessage('为什么现在不同？', [{ source: 'AI 回答', text: '40m', context: oldContext }]);
+  assert.match(quoted, /引用时条件=/);
+  assert.match(quoted, /"initialSpeed":20/);
+  assert.ok(quoted.endsWith('为什么现在不同？'));
+});
+
+test('web: recent history retains the latest answer within the request budget', () => {
+  const tutor = loadTutor();
+  tutor.state.messages = Array.from({ length: 18 }, (_, index) => ({ role: index % 2 ? 'assistant' : 'user', content: `${index}:` + '长'.repeat(1490) }));
+  const history = tutor.boundedHistory();
+  assert.ok(history.length <= 12);
+  assert.match(history.at(-1).content, /^17:/);
+  assert.equal(history[0].role, 'user');
+  assert.ok(history.reduce((sum, entry) => sum + entry.content.length, 0) <= 7500);
+});
+
+test('web: damaged stored sessions fail closed and duplicate IDs are ignored', () => {
+  assert.throws(() => loadTutor(undefined, { savedStore: '{broken' }).readSessionStore());
+  const tutor = loadTutor(undefined, { savedStore: JSON.stringify({ version: 1, activeId: 'one', sessions: [
+    { id: 'one', draft: '保留草稿', messages: [] }, { id: 'one', draft: '重复记录' }, { id: 'empty' }
+  ] }) });
+  assert.equal(tutor.readSessionStore().sessions.length, 1);
+  assert.equal(tutor.readSessionStore().sessions[0].draft, '保留草稿');
+});
+
 test('web: compact presentation keeps distinct sub-answers and collapses an exact repeated conclusion', () => {
   const tutor=loadTutor();
   const result=tutor.getAnswerPresentation({...answer,summary:'重复开场',steps:['列式：总取法为10。','结论：概率为3/5，无单位。'],finalAnswer:'概率为3/5，无单位。'},{responseLevel:'steps'});
@@ -501,4 +578,20 @@ test('web: the captured chemistry reply retains its complete conclusion instead 
   assert.equal(display.steps.at(-1),fixture.payload.finalAnswer);
   assert.equal(display.result,'');
   assert.match(display.steps.at(-1),/1\.68/);
+});
+
+test('web: an unreachable gateway is reported as a connection problem, not a missing key', async () => {
+  const tutor = loadTutor(async () => { throw new TypeError('Failed to fetch'); }, { noKey: true });
+  await assert.rejects(tutor.apiRequest('/api/v1/tutor/chat', { message: '求解', responseLevel: 'steps' }, 1000),
+    { code: 'GATEWAY_UNREACHABLE' });
+});
+
+test('web: checking reasoning bypasses an automatic hint preference but not the explicit hint mode', () => {
+  const tutor = loadTutor();
+  tutor.state.hintMode = true;
+  tutor.state.responseMode = 'auto';
+  assert.equal(tutor.selectResponseLevel('帮我检查一下我的思路：x=v²/2a'), 'check');
+  assert.equal(tutor.selectResponseLevel('为什么加速度取负号？'), 'hint');
+  tutor.state.responseMode = 'hint';
+  assert.equal(tutor.selectResponseLevel('帮我检查一下我的思路'), 'hint');
 });

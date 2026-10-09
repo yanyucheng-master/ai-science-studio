@@ -49,6 +49,32 @@ excerpts of 600 characters each, and checks the combined request limit before
 clearing the draft. Full-page, floating and embedded views share one conversation
 and request controller; the floating window stays within the current webpage.
 
+Parameter changes within an experiment retain the discussion and insert a
+condition-change entry. Each displayed message and quote keeps a snapshot of its
+question and parameters. Outdated requests are invalidated, and old parameter
+patches cannot be applied to a different context. History from earlier conditions
+is labeled `【历史条件，仅供对比】`; the current request context remains authoritative.
+Switching to a different question archives the previous conversation. Restoring
+a saved conversation does not change the experiment; users can explicitly attach
+it to the current question.
+
+The browser stores recent conversations and drafts under
+`masterLab.tutorSessions.v1`, retaining at most six sessions and the last 60
+entries per session within a bounded storage budget. It persists validated
+display data and quote context, not API credentials, provider reasoning or
+executable parameter patches. Stored data is validated again before controlled
+DOM/math rendering. Storage failures remain visible and do not block the current
+chat. Clearing the current conversation offers a 15-second undo.
+
+The composer offers automatic, hint-only and full-explanation preferences.
+Confusion such as “没看懂” selects a focused explanation, while an ongoing hint
+preference remains active until explicitly changed. Quoted experiment text can
+start a focused question without any prior chat history. Both routes use matching
+prompts for these cases. Request history retains the newest messages within its
+budget, independently of the longer local display archive. These source changes
+require functional acceptance; local tests and browser regression are not part
+of the default static publication checks.
+
 The gateway must deploy the updated prompt and protocol to return
 `suggestedQuestions`. Older gateways remain readable but may omit suggestions;
 the web client does not fabricate replacements. The browser-direct AI route

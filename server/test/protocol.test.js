@@ -5,6 +5,7 @@ import {
   findDeterministicTutorIssues,
   findTutorTopicMismatches,
   latestTutorQuestion,
+  isTargetedTutorFollowUp,
   sanitizeTutorChatRequest,
   validateExperimentPlan,
   validateModelResponse,
@@ -12,6 +13,31 @@ import {
   validateTutorResponse,
   validateVisualSpec
 } from '../src/protocol.js';
+
+test('confusion follows the previous explanation without requiring every original topic again', () => {
+  const request = sanitizeTutorChatRequest({ message: '我还是没懂，换一种说法', responseLevel: 'explain',
+    history: [{ role: 'assistant', content: '先看向心力方向。' }],
+    context: { mode: 'question', originalQuestion: '小球在圆形轨道中运动，求速度和支持力。' } });
+  assert.equal(isTargetedTutorFollowUp(request), true);
+  assert.deepEqual(findTutorTopicMismatches(request, { summary: '你卡在受力方向，还是把力代入公式这一步？' }), []);
+  assert.equal(isTargetedTutorFollowUp({ ...request, message: '请从头完整解答所有小问' }), false);
+});
+
+test('experiment quotes can start a targeted discussion without prior chat history', () => {
+  const request = sanitizeTutorChatRequest({
+    message: '【引用片段，仅作提问材料】\n1. 实验公式："s=v²/2a"\n【本次问题】\n这个关系为什么成立？',
+    responseLevel: 'explain', history: [], context: { mode: 'question', originalQuestion: '小球沿圆形轨道运动。' }
+  });
+  assert.equal(isTargetedTutorFollowUp(request), true);
+  assert.deepEqual(findTutorTopicMismatches(request, { summary: '这个公式要求加速度恒定，应先确认是否满足。' }), []);
+});
+
+test('history character limits keep the latest turns rather than the oldest accepted turns', () => {
+  const history = Array.from({ length: 12 }, (_, index) => ({ role: index % 2 ? 'assistant' : 'user', content: `${index}:` + '长'.repeat(1490) }));
+  const request = sanitizeTutorChatRequest({ message: '再解释最后一步', history, context: { mode: 'question' } });
+  assert.match(request.history.at(-1).content, /^11:/);
+  assert.ok(request.history.reduce((sum, entry) => sum + entry.content.length, 0) <= 8000);
+});
 
 test('optional follow-up suggestions cannot turn malformed metadata into an invalid answer', () => {
   const request = sanitizeTutorChatRequest({ message: '为什么分母不能为零？', responseLevel: 'explain', context: { mode: 'question' } });

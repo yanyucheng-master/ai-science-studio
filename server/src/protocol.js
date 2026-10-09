@@ -154,8 +154,8 @@ export function findTutorTopicMismatches(request, response) {
   if (!request || !response || request.context?.mode !== 'question') {
     return [];
   }
-  const quotedFollowUp = request.message?.startsWith('【引用片段，仅作提问材料】\n') && isTargetedTutorFollowUp(request);
-  const question = quotedFollowUp ? latestTutorQuestion(request) : request.context.originalQuestion || '';
+  const targetedFollowUp = isTargetedTutorFollowUp(request);
+  const question = targetedFollowUp ? latestTutorQuestion(request) : request.context.originalQuestion || '';
   const responseText = tutorResponseText(response);
   return TUTOR_TOPIC_ANCHORS
     .filter((anchor) => anchor.requested.test(question) && !anchor.answered.test(responseText))
@@ -189,11 +189,11 @@ export function findDeterministicTutorIssues(request, response) {
   const question = request.context.originalQuestion || '';
   // A conceptual excerpt question need not repeat the whole numeric answer.
   // Keep numeric checking when either the latest question or answer includes it.
-  const quotedFollowUp = request.message?.startsWith('【引用片段，仅作提问材料】\n') && isTargetedTutorFollowUp(request);
+  const targetedFollowUp = isTargetedTutorFollowUp(request);
   const answerText = tutorResponseText(response);
   const numericAcceleration = /a\s*\\?\(\s*v\s*\\?\)\s*=\s*(?:\(|\\frac\{)?\s*-?\d|加速度.{0,12}(?:为|是|=)\s*-?\d/i.test(answerText);
-  if (quotedFollowUp && ['hint', 'explain'].includes(request.responseLevel) && !numericAcceleration) return [];
-  if (quotedFollowUp && !/加速度|a\s*\(\s*v\s*\)/i.test(latestTutorQuestion(request) + answerText)) return [];
+  if (targetedFollowUp && ['hint', 'explain'].includes(request.responseLevel) && !numericAcceleration) return [];
+  if (targetedFollowUp && !/加速度|a\s*\(\s*v\s*\)/i.test(latestTutorQuestion(request) + answerText)) return [];
   if (!/(?:金属棒|导体棒)/.test(question) || !/a\s*\(\s*v\s*\)/i.test(question) || !/(?:磁场|磁感应强度)/.test(question)) {
     return [];
   }
@@ -229,11 +229,12 @@ export function latestTutorQuestion(request) {
 }
 
 export function isTargetedTutorFollowUp(request) {
-  if (!Array.isArray(request?.history) || !request.history.length) return false;
   const latest = latestTutorQuestion(request);
   const hasQuote = request.message?.startsWith('【引用片段，仅作提问材料】\n');
-  if (hasQuote && !/完整.{0,6}(?:解答|原题|整题)|所有小问/.test(latest)) return true;
-  return /(?:只|仅)(?:补|解释|回答|计算|核对)|补充|漏了|不要重复|上一(?:步|次|个回答)|这一(?:步|问)|刚才/.test(latest);
+  if (/完整.{0,6}(?:解答|原题|整题)|所有小问|从头.{0,6}(?:讲|解)/.test(latest)) return false;
+  if (hasQuote) return true;
+  if (!Array.isArray(request?.history) || !request.history.length) return false;
+  return /(?:只|仅)(?:补|解释|回答|计算|核对)|补充|漏了|不要重复|上一(?:步|次|条|个回答)|这一?(?:步|问)|刚才|没(?:看|听|弄|想)?懂|不(?:太)?(?:明白|理解|懂)|换(?:个|一种|种).{0,5}(?:说法|解释)|(?:详细|简单)(?:一点|点|些)|再(?:讲|解释)|什么意思|卡(?:在|住)/.test(latest);
 }
 
 export function findMissingTutorCoverage(request, response) {
@@ -285,16 +286,15 @@ function sanitizeChatHistory(rawHistory) {
   }
   const history = [];
   let totalCharacters = 0;
-  for (const item of rawHistory.slice(-MAX_CHAT_HISTORY_ITEMS)) {
+  for (const item of rawHistory.slice(-MAX_CHAT_HISTORY_ITEMS).reverse()) {
     if (!isPlainObject(item) || !['user', 'assistant'].includes(item.role)) {
       continue;
     }
     const content = sanitizeText(item.content, 1600);
-    if (!content || totalCharacters + content.length > MAX_CHAT_HISTORY_CHARS) {
-      continue;
-    }
+    if (!content) continue;
+    if (totalCharacters + content.length > MAX_CHAT_HISTORY_CHARS) break;
     totalCharacters += content.length;
-    history.push({ role: item.role, content });
+    history.unshift({ role: item.role, content });
   }
   return history;
 }
