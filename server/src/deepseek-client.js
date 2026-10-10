@@ -295,6 +295,10 @@ export class DeepSeekClient {
     const controller = new AbortController();
     const timeoutMs = options.timeoutMs ?? this.timeoutMs;
     const timer = setTimeout(() => controller.abort(), timeoutMs);
+    // A browser that has gone away releases its concurrency slot at once.
+    const abandon = () => controller.abort();
+    options.signal?.addEventListener('abort', abandon, { once: true });
+    if (options.signal?.aborted) controller.abort();
     try {
       const response = await this.fetchImpl(`${this.baseUrl}/chat/completions`, {
         method: 'POST',
@@ -362,6 +366,18 @@ export class DeepSeekClient {
       }
       return parsed;
     } catch (error) {
+      // Failures classified above keep their reason, even if the browser left
+      // or the deadline passed while they were being read.
+      if (error instanceof Error && error.reason) {
+        throw error;
+      }
+      if (options.signal?.aborted) {
+        const goneError = new Error('Client disconnected before the answer arrived');
+        goneError.code = 'AI_CLIENT_GONE';
+        goneError.reason = 'CLIENT_GONE';
+        goneError.retryable = false;
+        throw goneError;
+      }
       if (controller.signal.aborted || (error instanceof Error && error.name === 'AbortError')) {
         const timeoutError = new Error(`DeepSeek request timed out after ${timeoutMs}ms`);
         timeoutError.code = 'AI_TIMEOUT';
@@ -369,12 +385,10 @@ export class DeepSeekClient {
         timeoutError.retryable = false;
         throw timeoutError;
       }
-      if (!(error instanceof Error) || !error.reason) {
-        throw networkError(error);
-      }
-      throw error;
+      throw networkError(error);
     } finally {
       clearTimeout(timer);
+      options.signal?.removeEventListener('abort', abandon);
     }
   }
 }

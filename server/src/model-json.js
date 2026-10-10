@@ -29,22 +29,44 @@ const LATEX_NRT_WORDS = new Set([
 // ("\ne=1.6×10^-19" may be a line break before e). They count as LaTeX only in
 // a string that is clearly written with single backslashes.
 const AMBIGUOUS_NRT_WORDS = new Set(['ne', 'neg', 'ni', 'not', 'nu', 'rm', 'ring', 'tan', 'tanh', 'tau', 'to', 'top', 'tt']);
-// Commands that may follow a doubled backslash. In a single-backslash string,
-// "\\" before anything else is a LaTeX row break (cases, aligned).
+// Commands that may follow a doubled backslash. Inside an environment, "\\"
+// before anything else is a LaTeX row break (cases, aligned, array).
 const COMMON_COMMANDS = new Set([
   ...LATEX_NRT_WORDS, ...AMBIGUOUS_NRT_WORDS,
-  'alpha', 'approx', 'angle', 'arccos', 'arcsin', 'arctan', 'bar', 'because', 'begin', 'beta', 'bf', 'bigcirc',
-  'binom', 'bm', 'boldsymbol', 'bot', 'boxed', 'cap', 'cdot', 'cdots', 'ce', 'cfrac', 'chi', 'circ', 'cos', 'cot',
-  'cup', 'dagger', 'ddot', 'deg', 'degree', 'Delta', 'delta', 'dfrac', 'displaystyle', 'div', 'dot', 'dots',
-  'downarrow', 'ell', 'emptyset', 'end', 'epsilon', 'equiv', 'eta', 'exp', 'forall', 'frac', 'Gamma', 'gamma',
-  'ge', 'geq', 'geqslant', 'gg', 'hat', 'hbar', 'in', 'infty', 'int', 'iota', 'kappa', 'Lambda', 'lambda',
-  'land', 'langle', 'lceil', 'ldots', 'le', 'left', 'leftarrow', 'Leftarrow', 'leftrightarrow',
-  'Leftrightarrow', 'leq', 'leqslant', 'lfloor', 'lg', 'lim', 'll', 'ln', 'log', 'longrightarrow', 'lor', 'max',
-  'mathbf', 'mathrm', 'mathit', 'mid', 'min', 'mp', 'mu', 'Omega', 'omega', 'operatorname', 'overline',
-  'overrightarrow', 'parallel', 'partial', 'perp', 'Phi', 'phi', 'Pi', 'pi', 'pm', 'prime', 'prod', 'propto',
-  'Psi', 'psi', 'pu', 'qquad', 'quad', 'Rightarrow', 'Sigma', 'sigma', 'sim', 'simeq', 'sin', 'sqrt', 'square',
-  'subset', 'subseteq', 'sum', 'supset', 'supseteq', 'Theta', 'underline', 'uparrow', 'upsilon', 'varepsilon',
-  'varphi', 'vec', 'vee', 'wedge', 'widehat', 'xi', 'xrightarrow', 'zeta'
+  'alpha', 'beta', 'gamma', 'delta', 'epsilon', 'varepsilon', 'zeta', 'eta', 'vartheta', 'iota', 'kappa', 'lambda',
+  'mu', 'xi', 'pi', 'varpi', 'varrho', 'sigma', 'varsigma', 'upsilon', 'phi', 'varphi', 'chi', 'psi', 'omega',
+  'Gamma', 'Delta', 'Theta', 'Lambda', 'Xi', 'Pi', 'Sigma', 'Upsilon', 'Phi', 'Psi', 'Omega',
+  'acute', 'aleph', 'amalg', 'angle', 'approx', 'approxeq', 'arccos', 'arcsin', 'arctan', 'arg', 'ast', 'asymp',
+  'backsim', 'backslash', 'bar', 'barwedge', 'because', 'begin', 'bf', 'big', 'Big', 'bigcap', 'bigcirc', 'bigcup',
+  'bigg', 'Bigg', 'biggl', 'biggr', 'bigl', 'Bigl', 'bigodot', 'bigoplus', 'bigotimes', 'bigr', 'Bigr', 'bigstar',
+  'bigsqcup', 'biguplus', 'bigvee', 'bigwedge', 'binom', 'blacksquare', 'blacktriangle', 'bm', 'bmod', 'boldsymbol',
+  'bot', 'Box', 'boxdot', 'boxed', 'boxminus', 'boxplus', 'boxtimes', 'breve', 'bullet', 'cancel', 'bcancel', 'cap',
+  'cdot', 'cdotp', 'cdots', 'ce', 'cfrac', 'check', 'checkmark', 'circ', 'circledcirc', 'clubsuit', 'color',
+  'colorbox', 'complement', 'cong', 'coprod', 'cos', 'cosh', 'cot', 'coth', 'csc', 'cup', 'dagger', 'ddagger',
+  'dashv', 'ddot', 'dddot', 'ddots', 'deg', 'degree', 'det', 'dfrac', 'diamond', 'Diamond', 'diamondsuit', 'dim',
+  'displaystyle', 'div', 'divideontimes', 'dot', 'doteq', 'dotplus', 'dots', 'dotsb', 'dotsc', 'downarrow',
+  'Downarrow', 'downharpoonleft', 'downharpoonright', 'ell', 'emph', 'emptyset', 'end', 'enspace', 'eqref',
+  'equiv', 'exists', 'exp', 'fbox', 'flat', 'forall', 'frac', 'frown', 'gcd', 'ge', 'geq', 'geqq', 'geqslant', 'gets',
+  'gg', 'grave', 'gt', 'gtrsim', 'hat', 'hbar', 'heartsuit', 'hline', 'hom', 'hookleftarrow', 'hookrightarrow',
+  'hphantom', 'hslash', 'hspace', 'huge', 'Huge', 'iff', 'iiint', 'iint', 'Im', 'imath', 'impliedby', 'implies', 'in',
+  'inf', 'infty', 'int', 'intercal', 'jmath', 'kern', 'ker', 'land', 'langle', 'large', 'Large', 'LARGE', 'lbrace',
+  'lbrack', 'lceil', 'ldots', 'le', 'leadsto', 'left', 'leftarrow', 'Leftarrow', 'leftharpoondown',
+  'leftharpoonup', 'leftleftarrows', 'leftrightarrow', 'Leftrightarrow', 'leftrightarrows',
+  'leftrightharpoons', 'leq', 'leqq', 'leqslant', 'lesssim', 'lfloor', 'lg', 'lgroup', 'lim', 'liminf', 'limits',
+  'limsup', 'll', 'ln', 'lnot', 'log', 'longleftarrow', 'Longleftarrow', 'longleftrightarrow',
+  'Longleftrightarrow', 'longmapsto', 'longrightarrow', 'Longrightarrow', 'lor', 'lozenge', 'lparen', 'lt',
+  'lVert', 'lvert', 'ltimes', 'mapsto', 'mathbb', 'mathbf', 'mathcal', 'mathfrak', 'mathit', 'mathop', 'mathrel',
+  'mathring', 'mathrm', 'mathscr', 'mathsf', 'mathtt', 'max', 'measuredangle', 'mho', 'mid', 'min', 'mkern',
+  'mod', 'models', 'mp', 'odot', 'oint', 'ominus', 'operatorname', 'oplus', 'oslash', 'otimes', 'over',
+  'overbrace', 'overgroup', 'overleftarrow', 'overleftrightarrow', 'overline', 'overrightarrow', 'overset',
+  'parallel', 'partial', 'perp', 'phantom', 'pm', 'pmod', 'pod', 'Pr', 'prec', 'preceq', 'prime', 'prod', 'propto',
+  'pu', 'qquad', 'quad', 'Re', 'Rightarrow', 'scriptscriptstyle', 'scriptsize', 'scriptstyle', 'searrow', 'sec',
+  'setminus', 'sharp', 'sim', 'simeq', 'sin', 'sinh', 'small', 'smallsetminus', 'smile', 'space', 'spadesuit',
+  'sphericalangle', 'sqcap', 'sqcup', 'sqrt', 'square', 'stackrel', 'star', 'subset', 'subseteq', 'subsetneq',
+  'succ', 'succeq', 'sum', 'sup', 'supset', 'supseteq', 'supsetneq', 'swarrow', 'tag', 'underbrace', 'undergroup',
+  'underline', 'underset', 'uparrow', 'Uparrow', 'updownarrow', 'Updownarrow', 'uplus', 'Vert', 'vert', 'vdash',
+  'vdots', 'vec', 'vee', 'veebar', 'vphantom', 'wedge', 'widecheck', 'widehat', 'widetilde', 'wp', 'xcancel',
+  'xleftarrow', 'xLeftarrow', 'xleftrightarrow', 'xlongequal', 'xrightarrow', 'xRightarrow', 'xrightleftharpoons'
 ]);
 
 function letterRun(source, start) {
@@ -79,23 +101,88 @@ function writtenWithSingleBackslashes(body) {
   return false;
 }
 
+// "\" followed by one of these is valid LaTeX (\ , \{, \|, \&, \( ...).
+const CONTROL_SYMBOL = /[\s,;:!>{}|#$%&_()[\]]/;
+
+// Where \begin{...} and \end{...} start, however many backslashes are written,
+// and whether each environment writes a row break as "\\\\" (correctly
+// escaped) somewhere. Answers mix styles from one formula to the next.
+function environmentMarks(body) {
+  const marks = [];
+  const open = [];
+  for (const match of body.matchAll(/(?<!\\)\\+(begin|end)\s*\{/g)) {
+    if (match[1] === 'begin') {
+      const mark = { at: match.index, begin: true, doubled: false };
+      open.push(mark);
+      marks.push(mark);
+    } else {
+      const begin = open.pop();
+      if (begin) begin.doubled = /\\{4}/.test(body.slice(begin.at, match.index));
+      marks.push({ at: match.index, begin: false });
+    }
+  }
+  for (const begin of open) begin.doubled = /\\{4}/.test(body.slice(begin.at));
+  return marks;
+}
+
+// Decides whether a doubled backslash is a LaTeX row break ("\\" in the decoded
+// text) rather than an escaped backslash ("\" in the decoded text, starting a
+// command, a control space or a math delimiter).
+function doubledIsRowBreak({ single, depth, doubledBreaks, after, word }) {
+  if (after === ')' || after === ']') return false;
+  if (after === undefined) return single || depth > 0;
+  if (depth === 0) {
+    // Outside an environment, \cong, "\ " and \( are meant; only a string written
+    // with single backslashes uses "\\" before something that is not LaTeX.
+    return single && (word.length === 1 || (word.length === 0 && !CONTROL_SYMBOL.test(after)));
+  }
+  if (word.length > 1 && COMMON_COMMANDS.has(word)) return false;
+  // A formula that writes commands with one backslash writes row breaks with two.
+  if (single && !doubledBreaks) return true;
+  // An environment that writes row breaks as "\\\\" only means a row break where
+  // "\" + next cannot be LaTeX, such as a digit, a sign or a lone letter.
+  if (word.length > 1) return false;
+  return word.length === 1 || after === '&' || after === '(' || after === '[' || !CONTROL_SYMBOL.test(after);
+}
+
 function normalizeStringBody(body) {
   const single = writtenWithSingleBackslashes(body);
-  if (!single && !/[\u0000-\u001f]/.test(body)) return body;
+  const marks = environmentMarks(body);
+  if (!single && !marks.length && !/[\u0000-\u001f]/.test(body)) return body;
+  const environments = [];
+  let nextMark = 0;
   let output = '';
   for (let index = 0; index < body.length; index += 1) {
+    while (nextMark < marks.length && marks[nextMark].at < index) {
+      if (marks[nextMark].begin) environments.push(marks[nextMark].doubled);
+      else environments.pop();
+      nextMark += 1;
+    }
+    const depth = environments.length;
     const char = body[index];
     if (char === '\\') {
       const next = body[index + 1];
       if (next === '\\') {
-        // A doubled backslash is an escaped backslash, except that a
-        // single-backslash string uses it for LaTeX row breaks.
-        const after = body[index + 2];
-        const word = letterRun(body, index + 2);
-        const rowBreak = single && (after === undefined || /[\s\d&\\]/.test(after) ||
-          (word.length > 0 && (word.length === 1 || !COMMON_COMMANDS.has(word))));
-        output += rowBreak ? '\\\\\\\\' : '\\\\';
-        index += 1;
+        let run = 2;
+        while (body[index + run] === '\\') run += 1;
+        const after = body[index + run];
+        let rowBreak;
+        if (run === 2) {
+          rowBreak = doubledIsRowBreak({ single, depth, doubledBreaks: environments.at(-1), after, word: letterRun(body, index + 2) });
+          output += rowBreak ? '\\\\\\\\' : '\\\\';
+        } else if (run === 3 && single) {
+          // A row break followed by a single-backslash command (\\\frac).
+          output += '\\\\\\\\';
+        } else {
+          // Correctly escaped backslashes; an odd one left over starts the next
+          // escape and is read on its own below.
+          output += '\\\\'.repeat(Math.floor(run / 2));
+          rowBreak = run % 2 === 0 && (run / 2) % 2 === 0;
+        }
+        // The client reads "\\(" and "\\[" as math delimiters and KaTeX reads
+        // "\\[" as a spacing argument: separate a row break from what follows.
+        if (rowBreak && depth > 0 && (after === '(' || after === '[')) output += ' ';
+        index += (run === 3 && single ? 2 : run - (run % 2)) - 1;
         continue;
       }
       if (next === '"' || next === '/') {

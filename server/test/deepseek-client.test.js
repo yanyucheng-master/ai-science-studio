@@ -414,3 +414,20 @@ test('unmatched HarmonyOS questions ask the model for a standalone explanation, 
   assert.match(request.messages[0].content, /不会再调用导师接口/);
   assert.match(request.messages[0].content, /最终数值和单位/);
 });
+
+test('a browser that leaves mid-answer abandons the upstream call and frees its slot', async () => {
+  let calls = 0;
+  const gone = new AbortController();
+  const client = new DeepSeekClient({
+    apiKey: 'test-only',
+    fetchImpl: (_url, options) => new Promise((_resolve, reject) => {
+      calls += 1;
+      options.signal.addEventListener('abort', () => reject(new DOMException('aborted', 'AbortError')));
+      setTimeout(() => gone.abort(), 5);
+    })
+  });
+  await assert.rejects(client.chat({ responseLevel: 'explain', message: '为什么', history: [], context: { mode: 'question', subject: '物理', originalQuestion: '圆形轨道题' } }, { signal: gone.signal }),
+    { code: 'AI_CLIENT_GONE', reason: 'CLIENT_GONE', attempts: 1 });
+  assert.equal(calls, 1);
+  assert.equal(client.activeRequests, 0);
+});

@@ -138,12 +138,13 @@ function tutorResponseText(response, { visibleOnly = false } = {}) {
 
 const TUTOR_TOPIC_ANCHORS = Object.freeze([
   { requested: /圆形轨道/, answered: /圆形轨道|圆周运动/ },
-  { requested: /金属棒|导体棒/, answered: /金属棒|导体棒/ },
+  { requested: /金属棒|导体棒/, answered: /棒/ },
   { requested: /匀强磁场|磁感应强度/, answered: /磁场|磁感应强度|安培力|感应电动势/ },
   { requested: /电源.{0,12}内阻|内阻.{0,12}电源/, answered: /内阻/ },
   { requested: /凸透镜/, answered: /凸透镜|薄透镜|透镜成像/ },
   { requested: /子弹/, answered: /子弹/ },
-  { requested: /弹簧/, answered: /弹簧|弹性势能/ },
+  // A spring scale is a measuring instrument, not a spring the problem is about.
+  { requested: /弹簧(?!测力计|秤)/, answered: /弹簧|弹性势能/ },
   { requested: /\|x.{0,20}\|=a|绝对值/, answered: /绝对值|\|x/ },
   // Element symbols are case-sensitive: physics writes μmg, and 15N is a force
   // unless the question is about isotope-labelled DNA.
@@ -153,11 +154,16 @@ const TUTOR_TOPIC_ANCHORS = Object.freeze([
   { requested: /(?:DNA|同位素|标记)[\s\S]*15N|15N[\s\S]*(?:DNA|同位素|标记)/i, answered: /15N/i }
 ]);
 
-// LaTeX-formatted answers write 15N as ^{15}\mathrm{N} and Mg as \ce{Mg}.
+// Answers write 15N as ^{15}\mathrm{N}, {}^{15}_{7}N, $^{15}$N or ¹⁵N, and Mg as \ce{Mg}.
+const SUPERSCRIPT_DIGITS = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 function plainScienceText(value) {
   return String(value || '')
+    .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, (digit) => String(SUPERSCRIPT_DIGITS.indexOf(digit)))
+    .replace(/\\[()[\]]|\$/g, '')
+    .replace(/\\(?:mathrm|text|textrm|mathbf|bm|ce|pu)\{([^{}]*)\}/g, '$1')
     .replace(/\\(?:mathrm|text|textrm|mathbf|bm|ce|pu)\{([^{}]*)\}/g, '$1')
     .replace(/\^\{?(\d+)\}?/g, '$1')
+    .replace(/_\{?\d+\}?/g, '')
     .replace(/\\[,;:! ]/g, '')
     .replace(/[\s{}]/g, '');
 }
@@ -166,14 +172,16 @@ export function findTutorTopicMismatches(request, response) {
   if (!request || !response || request.context?.mode !== 'question') {
     return [];
   }
+  // Only a full solution must name the original problem's objects; a hint,
+  // explanation or answer to one sub-question may rightly leave them out.
+  if (request.responseLevel !== 'steps' || isTargetedTutorFollowUp(request)) {
+    return [];
+  }
   const originalQuestion = request.context.originalQuestion || '';
-  // A targeted follow-up must still stay on the original problem's topic, but
-  // notation in the student's latest message alone cannot add a topic.
-  const latest = isTargetedTutorFollowUp(request) ? latestTutorQuestion(request) : '';
   const responseText = tutorResponseText(response);
   const plainResponse = plainScienceText(responseText);
   return TUTOR_TOPIC_ANCHORS
-    .filter((anchor) => anchor.requested.test(originalQuestion) && (!latest || anchor.requested.test(latest)))
+    .filter((anchor) => anchor.requested.test(originalQuestion))
     .filter((anchor) => !anchor.answered.test(responseText) && !anchor.answered.test(plainResponse))
     .map((anchor) => anchor.requested.source);
 }
@@ -194,6 +202,58 @@ function readQuestionNumber(question, pattern) {
   return Number.isFinite(value) ? value : null;
 }
 
+// "a(v) = 2 - 0.5v" or "a = \frac{2-0.5v}{1}": a right-hand side that starts
+// with a number and still depends on v.
+function statedNumericAccelerations(text) {
+  const pattern = /(?<![A-Za-z\\])a\s*(?:(?:\\left)?\(\s*v\s*(?:\\right)?\))?\s*[=＝]\s*((?:\(|\\d?frac\{)?\s*[-−]?\s*\d(?:(?![$;,])[ -~]|[−＝×·])*?)(?=\\\)|\\\]|[$;,]|[^ -~−＝×·]|$)/g;
+  return [...String(text || '').matchAll(pattern)]
+    .filter((match) => /v/.test(match[1].replace(/\\[A-Za-z]+/g, '')))
+    .map((match) => ({ statement: match[0], expression: match[1] }));
+}
+
+// The value at v of plain arithmetic in v ("5-0.4v", "(1.0-0.08v)/0.20",
+// "5-\frac{2}{5}v"); NaN for anything else. A trailing unit is ignored.
+function linearValueAt(expression, v) {
+  let source = String(expression);
+  for (let pass = 0; pass < 3; pass += 1) source = source.replace(/\\d?frac\{([^{}]*)\}\{([^{}]*)\}/g, '(($1)/($2))');
+  source = source.replace(/\\(?:left|right)/g, '').replace(/\\(?:cdot|times)|[×·]/g, '*').replace(/[−–]/g, '-');
+  source = source.replace(/(?:\\|[A-Za-uw-z]).*$/s, '').replace(/\s+/g, '');
+  const tokens = source.match(/\d+(?:\.\d+)?|\.\d+|[v()+\-*/]|./g) || [];
+  let index = 0;
+  const peek = () => tokens[index];
+  const factor = () => {
+    const token = tokens[index++];
+    if (token === '-') return -factor();
+    if (token === '+') return factor();
+    if (token === 'v') return v;
+    if (token === '(') {
+      const value = sum();
+      return tokens[index++] === ')' ? value : NaN;
+    }
+    return /^(?:\d|\.\d)/.test(token || '') ? Number(token) : NaN;
+  };
+  const product = () => {
+    let value = factor();
+    while (peek() !== undefined && !['+', '-', ')'].includes(peek())) {
+      const operator = peek() === '*' || peek() === '/' ? tokens[index++] : '*';
+      const next = factor();
+      value = operator === '/' ? value / next : value * next;
+    }
+    return value;
+  };
+  const sum = () => {
+    let value = product();
+    while (peek() === '+' || peek() === '-') value = tokens[index++] === '+' ? value + product() : value - product();
+    return value;
+  };
+  const value = sum();
+  return index === tokens.length && Number.isFinite(value) ? value : NaN;
+}
+
+function closeTo(actual, expected) {
+  return Math.abs(actual - expected) <= 0.02 * Math.abs(expected) + 1e-9;
+}
+
 function stableDecimal(value) {
   return Number(Number(value).toFixed(8));
 }
@@ -203,13 +263,14 @@ export function findDeterministicTutorIssues(request, response) {
     return [];
   }
   const question = request.context.originalQuestion || '';
-  // A conceptual excerpt question need not repeat the whole numeric answer.
-  // Keep numeric checking when either the latest question or answer includes it.
-  const targetedFollowUp = isTargetedTutorFollowUp(request);
-  const answerText = tutorResponseText(response);
-  const numericAcceleration = /a\s*\\?\(\s*v\s*\\?\)\s*=\s*(?:\(|\\frac\{)?\s*-?\d|加速度.{0,12}(?:为|是|=)\s*-?\d/i.test(answerText);
-  if (['hint', 'explain'].includes(request.responseLevel) && !numericAcceleration) return [];
-  if (targetedFollowUp && !/加速度|a\s*\(\s*v\s*\)/i.test(latestTutorQuestion(request) + answerText)) return [];
+  // Numbers are compared only where the answer states a numeric a(v) of its
+  // own: not "a = 0 at terminal speed", a symbolic a(v), a variant with new
+  // numbers, or the student's own a(v) quoted back for checking.
+  if (request.responseLevel === 'variant') return [];
+  const studentText = canonicalMathText(`${latestTutorQuestion(request)}\n${(request.history || []).filter((item) => item.role === 'user').map((item) => item.content).join('\n')}`);
+  const stated = statedNumericAccelerations(tutorResponseText(response))
+    .filter(({ statement }) => !studentText.includes(canonicalMathText(statement)));
+  if (!stated.length) return [];
   if (!/(?:金属棒|导体棒)/.test(question) || !/a\s*\(\s*v\s*\)/i.test(question) || !/(?:磁场|磁感应强度)/.test(question)) {
     return [];
   }
@@ -223,6 +284,16 @@ export function findDeterministicTutorIssues(request, response) {
   }
   const accelerationIntercept = stableDecimal(force / mass);
   const accelerationSlope = stableDecimal(magneticField ** 2 * length ** 2 / (resistance * mass));
+  // Every side of every stated a(v) that is plain arithmetic must be the same
+  // line, however it is written; otherwise fall back to the textual form.
+  const sides = stated.flatMap(({ expression }) => expression.split(/[=＝]/))
+    .map((side) => [linearValueAt(side, 0), linearValueAt(side, 1)])
+    .filter(([atZero, atOne]) => Number.isFinite(atZero) && Number.isFinite(atOne));
+  if (sides.length) {
+    return sides.every(([atZero, atOne]) => closeTo(atZero, accelerationIntercept) && closeTo(atZero - atOne, accelerationSlope))
+      ? []
+      : ['INDUCTION_ROD_ACCELERATION_MISMATCH'];
+  }
   const text = canonicalMathText(tutorResponseText(response));
   const slopeTerm = canonicalMathText(`${accelerationSlope}v`);
   const interceptTerm = canonicalMathText(`${accelerationIntercept}-`);
@@ -246,14 +317,19 @@ export function latestTutorQuestion(request) {
 
 // Same wording as the web client's request for a full solution (selectResponseLevel).
 const FULL_SOLUTION_REQUEST = /完整.{0,8}(?:解答|讲解|步骤|答案|过程|原题|整题)|(?:直接|给我|查看).{0,4}答案|所有小问|从头.{0,6}(?:讲|解)/;
+// "只补充第(3)问的完整步骤" asks for one sub-question in full, not the whole problem.
+const SUB_QUESTION_SCOPE = /第\s*[（(]?\s*[0-9一二三四五六七八九十]+\s*[)）]?\s*小?[问题]|这[一两几]?小?问(?!题)|(?:只|仅)(?:补|讲|解|算)|补充|漏了/;
+// Clauses the student declines ("不要重复第一问。"); 分别 and 区别 are not negations.
+const DECLINED_CLAUSE = /(?:不要|无需|不必|不用|(?<![分区识类辨性特告级个])别).{0,40}?(?:[，,。；;？?！!]|$)/g;
 
 export function isTargetedTutorFollowUp(request) {
   const latest = latestTutorQuestion(request);
   const hasQuote = request?.message?.startsWith('【引用片段，仅作提问材料】\n');
-  const affirmative = latest.replace(/(?:不要|无需|不必|不用|别).{0,40}?(?:[，,。；;]|$)/g, '');
-  if (FULL_SOLUTION_REQUEST.test(affirmative)) return false;
+  const affirmative = latest.replace(DECLINED_CLAUSE, '');
+  if (FULL_SOLUTION_REQUEST.test(affirmative) && !SUB_QUESTION_SCOPE.test(affirmative)) return false;
   if (hasQuote) return true;
   if (!Array.isArray(request?.history) || !request.history.length) return false;
+  if (SUB_QUESTION_SCOPE.test(affirmative)) return true;
   return /(?:只|仅)(?:补|解释|回答|计算|核对)|补充|漏了|不要重复|上一(?:步|次|条|个回答)|这一?(?:步|问)|刚才|没(?:看|听|弄|想)?懂|不(?:太)?(?:明白|理解|懂)|换(?:个|一种|种).{0,5}(?:说法|解释)|(?:详细|简单)(?:一点|点|些)|再(?:讲|解释)|什么意思|卡(?:在|住)/.test(latest);
 }
 
@@ -266,7 +342,7 @@ export function findMissingTutorCoverage(request, response) {
   const rawRequestText = request.responseLevel === 'steps' && !targetedFollowUp
     ? `${request.context?.originalQuestion || ''}\n${latestMessage}`
     : latestMessage;
-  const requestText = rawRequestText.replace(/(?:不要|无需|不必|不用).{0,40}?(?:[，,。；;]|$)/g, '');
+  const requestText = rawRequestText.replace(DECLINED_CLAUSE, '');
   // Hidden verification or an omitted opening summary cannot satisfy a
   // student's requested sub-question. Count only the rendered solution.
   const responseText = tutorResponseText(response, { visibleOnly: true });

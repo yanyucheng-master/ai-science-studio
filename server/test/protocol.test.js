@@ -532,3 +532,52 @@ test('a hint or explanation for the induction-rod problem need not state a(v) nu
   const hint = sanitizeTutorChatRequest({ message: '请只给我一个关键提示', responseLevel: 'hint', context: { mode: 'question', originalQuestion } });
   assert.deepEqual(findDeterministicTutorIssues(hint, { summary: '先写出安培力与速度的关系，再用牛顿第二定律。' }), []);
 });
+
+// Second adversarial review (2026-10-10).
+test('a full-solution request for one named sub-question stays targeted', () => {
+  const history = [{ role: 'assistant', content: '第(1)(2)问已解出。' }];
+  for (const message of ['第(3)问漏了，只补充第(3)问的完整步骤', '第三小题的完整过程是什么？',
+    '【引用片段，仅作提问材料】\n2. 由动能定理得 v=4 m/s\n【本次问题】\n这一问的完整过程']) {
+    assert.equal(isTargetedTutorFollowUp({ message, history }), true, message);
+  }
+  for (const message of ['不要讲第(1)问，给我完整解答', '这问题的完整解答', '请分别给出完整步骤', '不要只给结论？给我完整步骤',
+    '【引用片段，仅作提问材料】\n2. 由动能定理得 v=4 m/s\n【本次问题】\n请分别列出完整步骤']) {
+    assert.equal(isTargetedTutorFollowUp({ message, history }), false, message);
+  }
+});
+
+test('the induction-rod check compares only an a(v) the answer states with numbers', () => {
+  const originalQuestion = '质量0.20kg、长度0.50m的金属棒在磁场B=0.80T中运动，回路电阻R=2.0Ω，拉力F=1.0N，求a(v)。';
+  const at = (responseLevel, message = '请讲解', history = []) => sanitizeTutorChatRequest({ message, responseLevel, history,
+    context: { mode: 'question', subject: '物理', originalQuestion } });
+  const terminal = { summary: '速度最大时安培力与拉力平衡，加速度为 0。', steps: ['当 a=0 时 v 最大，v_m=12.5 m/s。'] };
+  const symbolic = { steps: [String.raw`\(a(v)=\frac{F}{m}-\frac{B^{2}L^{2}v}{mR}\)`] };
+  for (const level of ['hint', 'explain', 'check', 'steps']) {
+    assert.deepEqual(findDeterministicTutorIssues(at(level), terminal), [], level);
+    assert.deepEqual(findDeterministicTutorIssues(at(level), symbolic), [], level);
+  }
+  assert.deepEqual(findDeterministicTutorIssues(at('variant'), { steps: ['新题：a(v)=3-0.2v'] }), []);
+  const check = at('check', '我算的 a(v) = 5 - 0.5v，对吗？');
+  assert.deepEqual(findDeterministicTutorIssues(check, { summary: '你写的 a(v)=5-0.5v 斜率有误，请重新计算 B²L²/(mR)。' }), []);
+  assert.deepEqual(findDeterministicTutorIssues(check, { summary: '应为 a(v)=5-0.3v。' }), ['INDUCTION_ROD_ACCELERATION_MISMATCH']);
+  assert.deepEqual(findDeterministicTutorIssues(at('explain'), { steps: [String.raw`\(a=5-0.4v\)`] }), []);
+  assert.deepEqual(findDeterministicTutorIssues(at('explain'), { steps: [String.raw`\(a=5-0.6v\)`] }), ['INDUCTION_ROD_ACCELERATION_MISMATCH']);
+});
+
+test('topic anchors judge full solutions only and accept common notations', () => {
+  const request = (responseLevel, originalQuestion, message = '请完整解答') => sanitizeTutorChatRequest({ message, responseLevel,
+    context: { mode: 'question', originalQuestion } });
+  const spring = '用弹簧测力计水平拉动木块做匀速直线运动，示数为 2N，求摩擦力。';
+  assert.deepEqual(findTutorTopicMismatches(request('hint', spring, '给我一点提示'), { summary: '匀速说明受力平衡。' }), []);
+  assert.deepEqual(findTutorTopicMismatches(request('explain', spring, '为什么相等'), { summary: '二力平衡。' }), []);
+  assert.deepEqual(findTutorTopicMismatches(request('steps', spring), { steps: ['匀速时二力平衡，f=F=2N。'] }), []);
+  const launcher = '轻弹簧一端固定，另一端连接质量为 1kg 的物块，压缩 0.1m 后由静止释放，求物块离开时的速度。';
+  assert.equal(findTutorTopicMismatches(request('steps', launcher), { steps: ['由动能定理得 v=1m/s。'] }).length, 1);
+  assert.deepEqual(findTutorTopicMismatches(request('steps', launcher), { steps: ['弹性势能全部转化为动能，v=1m/s。'] }), []);
+  const rod = '导体棒在匀强磁场中切割磁感线，求感应电动势。';
+  assert.deepEqual(findTutorTopicMismatches(request('steps', rod), { steps: ['棒切割磁感线，磁场中 E=BLv。'] }), []);
+  const dna = request('steps', '用 15N 标记的 DNA 在 14N 培养基中复制两次，求含 15N 的 DNA 比例。');
+  for (const notation of ['含 ¹⁵N 的 DNA 占 1/2', String.raw`含 \({}^{15}_{7}\mathrm{N}\) 的 DNA 占一半`, '含 $^{15}$N 的 DNA 占一半', String.raw`含 \(^{15}\)N 的 DNA 占一半`]) {
+    assert.deepEqual(findTutorTopicMismatches(dna, { steps: [notation] }), [], notation);
+  }
+});

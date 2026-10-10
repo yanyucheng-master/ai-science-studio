@@ -133,3 +133,42 @@ test('an unclosed fence followed by long whitespace does not stall the event loo
   assert.equal(parseModelJson('```json\n' + ' '.repeat(200000) + 'x'), null);
   assert.ok(Date.now() - started < 1000, `took ${Date.now() - started}ms`);
 });
+
+// Second adversarial review (2026-10-10): a row break before a sign, a Chinese
+// character or a bracket, and mixed strings whose correct escapes were doubled.
+test('single-backslash row breaks before signs, CJK text and brackets stay row breaks', () => {
+  const raw = String.raw`{"s":"\(\begin{cases}x=1\\-y=2\\+z=3\\①式\\(a+b)=3\\[x]=1\\|x|<1\\中\end{cases}\)"}`;
+  assert.equal(parseModelJson(raw).s, String.raw`\(\begin{cases}x=1\\-y=2\\+z=3\\①式\\ (a+b)=3\\ [x]=1\\|x|<1\\中\end{cases}\)`);
+  const array = parseModelJson(String.raw`{"s":"\(\left\{\begin{array}{l}F-f=ma\\mg-N=0\end{array}\right.\)"}`).s;
+  assert.equal(array, String.raw`\(\left\{\begin{array}{l}F-f=ma\\mg-N=0\end{array}\right.\)`);
+});
+
+test('correct escapes in a mixed string are not turned into row breaks', () => {
+  const raw = String.raw`{"s":"速度 \\(v=2\\ \\mathrm{m/s}\\)，\\(\\triangle ABC\\cong\\triangle DEF\\)，\\(\\odot O\\)，\\(x\\in\\mathbb{R}\\)，由 \(a=\frac{F}{m}\)"}`;
+  assert.equal(parseModelJson(raw).s, String.raw`速度 \(v=2\ \mathrm{m/s}\)，\(\triangle ABC\cong\triangle DEF\)，\(\odot O\)，\(x\in\mathbb{R}\)，由 \(a=\frac{F}{m}\)`);
+  const rows = String.raw`{"s":"\\(\\begin{cases}x+y=3\\\\x-y=1\\\\2x=4\\end{cases}\\)，再由 \(v=at\)"}`;
+  assert.equal(parseModelJson(rows).s, String.raw`\(\begin{cases}x+y=3\\x-y=1\\2x=4\end{cases}\)，再由 \(v=at\)`);
+  const spaced = String.raw`{"s":"\\(\\begin{cases}v=2\\ \\mathrm{m/s}\\\\a=1\\end{cases}\\)，\(\frac{1}{2}\)"}`;
+  assert.equal(parseModelJson(spaced).s, String.raw`\(\begin{cases}v=2\ \mathrm{m/s}\\a=1\end{cases}\)，\(\frac{1}{2}\)`);
+});
+
+test('an under-escaped row break inside a correctly escaped environment becomes a row break', () => {
+  const raw = String.raw`{"s":"\\(\\begin{cases}x=1\\y=2\\2x=3\\-z=0\\end{cases}\\)","t":"\\(\\begin{aligned}a&=b\\&=c\\end{aligned}\\)"}`;
+  const parsed = parseModelJson(raw);
+  assert.equal(parsed.s, String.raw`\(\begin{cases}x=1\\y=2\\2x=3\\-z=0\end{cases}\)`);
+  assert.equal(parsed.t, String.raw`\(\begin{aligned}a&=b\\&=c\end{aligned}\)`);
+  const value = { s: String.raw`\(\begin{cases}x=1\\ (y)=2\end{cases}\)`, t: String.raw`\(\left\{x\right\}\ \{y\}\)` };
+  assert.deepEqual(parseModelJson(JSON.stringify(value)), value);
+});
+
+test('each environment keeps its own row-break style within one answer', () => {
+  const raw = String.raw`{"s":"由 \\(\\begin{cases}x+y=5\\\\x-y=1\\end{cases}\\) 得 \(\begin{cases}ax+by=2\\bx+ay=4\\mg=\rho Vg\\ -x+y=1\end{cases}\)"}`;
+  assert.equal(parseModelJson(raw).s, String.raw`由 \(\begin{cases}x+y=5\\x-y=1\end{cases}\) 得 \(\begin{cases}ax+by=2\\bx+ay=4\\mg=\rho Vg\\ -x+y=1\end{cases}\)`);
+});
+
+test('a long run of backslashes does not stall the event loop', () => {
+  const started = Date.now();
+  const raw = `{"s":"${'\\\\'.repeat(40000)}x${'\\\\'.repeat(40000)}\\begin{cases}a\\\\b\\end{cases}"}`;
+  assert.equal(parseModelJson(raw).s.slice(-30), String.raw`\\\begin{cases}a\\b\end{cases}`);
+  assert.ok(Date.now() - started < 1000, `took ${Date.now() - started}ms`);
+});

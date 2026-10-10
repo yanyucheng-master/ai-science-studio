@@ -143,8 +143,8 @@ export function createMasterLabServer(options = {}) {
     const url = new URL(request.url || '/', 'http://localhost');
     let status = 500;
     let aiFailure = null;
-    // Retries stop once the browser has gone away, so they do not spend the
-    // public balance on an answer nobody will read.
+    // Once the browser has gone away the upstream call is abandoned and no
+    // retry starts: no answer nobody will read holds one of the two AI slots.
     const clientGone = new AbortController();
     response.on('close', () => {
       if (!response.writableEnded) clientGone.abort();
