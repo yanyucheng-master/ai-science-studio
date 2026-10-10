@@ -89,8 +89,20 @@ function sendJson(response, status, payload, requestId) {
   response.end(body);
 }
 
+// Failure codes for logs and error bodies: no request, answer or provider text.
+function aiFailureOf(error) {
+  return {
+    code: typeof error?.code === 'string' ? error.code : 'AI_ERROR',
+    ...(typeof error?.reason === 'string' ? { reason: error.reason } : {}),
+    ...(Number.isInteger(error?.attempts) ? { attempts: error.attempts } : {})
+  };
+}
+
 function aiErrorStatus(error) {
   if (error?.code === 'AI_AUTH_FAILED') return { status: 503, error: 'AI_NOT_CONFIGURED' };
+  // The model answered but the answer was unusable (empty, unparseable or cut
+  // off): this is not an outage or an exhausted balance.
+  if (error?.code === 'INVALID_AI_RESPONSE') return { status: 502, error: 'INVALID_AI_RESPONSE' };
   if (error?.code === 'AI_RATE_LIMITED') return { status: 429, error: 'AI_RATE_LIMITED' };
   if (error?.code === 'AI_BUSY') return { status: 429, error: 'AI_BUSY' };
   if (error?.code === 'AI_TIMEOUT') return { status: 504, error: 'AI_TIMEOUT' };
@@ -128,6 +140,7 @@ export function createMasterLabServer(options = {}) {
     const method = request.method || 'GET';
     const url = new URL(request.url || '/', 'http://localhost');
     let status = 500;
+    let aiFailure = null;
 
     try {
       if (!applyCors(request, response, allowedOrigins)) {
@@ -189,8 +202,10 @@ export function createMasterLabServer(options = {}) {
               sendJson(response, status, { ...validated, source: 'deepseek', requestId }, requestId);
               return;
             }
-          } catch {
-            // Fall through to deterministic local matching. Request bodies and model errors are not logged.
+            aiFailure = { code: 'INVALID_AI_RESPONSE', reason: 'UNUSABLE_ANSWER' };
+          } catch (error) {
+            // Fall through to deterministic local matching. Only the failure code is logged, never request or answer text.
+            aiFailure = aiFailureOf(error);
           }
         }
         const fallback = localGenerateFallback(input.question);
@@ -217,8 +232,10 @@ export function createMasterLabServer(options = {}) {
               sendJson(response, status, { ...validated, source: 'deepseek', requestId }, requestId);
               return;
             }
-          } catch {
-            // Use local teaching guidance after the single automatic retry fails.
+            aiFailure = { code: 'INVALID_AI_RESPONSE', reason: 'UNUSABLE_ANSWER' };
+          } catch (error) {
+            // Use local teaching guidance after the automatic retries fail.
+            aiFailure = aiFailureOf(error);
           }
         }
         const fallback = localTutorFallback(plan);
@@ -251,13 +268,15 @@ export function createMasterLabServer(options = {}) {
           const validated = validateTutorChatResponse(raw, input);
           if (!validated) {
             status = 502;
-            sendJson(response, status, { error: 'INVALID_AI_RESPONSE' }, requestId);
+            aiFailure = { code: 'INVALID_AI_RESPONSE', reason: 'UNUSABLE_ANSWER' };
+            sendJson(response, status, { error: 'INVALID_AI_RESPONSE', reason: aiFailure.reason }, requestId);
             return;
           }
           status = 200;
           sendJson(response, status, { ...validated, source: 'deepseek', requestId }, requestId);
           return;
         } catch (error) {
+          aiFailure = aiFailureOf(error);
           const fallback = localTutorChatFallback(input);
           if (fallback) {
             status = 200;
@@ -266,7 +285,7 @@ export function createMasterLabServer(options = {}) {
           }
           const mapped = aiErrorStatus(error);
           status = mapped.status;
-          sendJson(response, status, { error: mapped.error }, requestId);
+          sendJson(response, status, { error: mapped.error, ...(aiFailure.reason ? { reason: aiFailure.reason } : {}) }, requestId);
           return;
         }
       }
@@ -278,7 +297,7 @@ export function createMasterLabServer(options = {}) {
       status = code === 'BODY_TOO_LARGE' ? 413 : code === 'INVALID_JSON' || code === 'EMPTY_BODY' ? 400 : 500;
       sendJson(response, status, { error: status === 500 ? 'INTERNAL_ERROR' : code }, requestId);
     } finally {
-      console.info(JSON.stringify({ requestId, method, path: url.pathname, status, durationMs: Date.now() - startedAt }));
+      console.info(JSON.stringify({ requestId, method, path: url.pathname, status, durationMs: Date.now() - startedAt, ...(aiFailure ? { aiError: aiFailure } : {}) }));
     }
   });
 }

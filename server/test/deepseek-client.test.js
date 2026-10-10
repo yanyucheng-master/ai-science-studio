@@ -107,7 +107,10 @@ test('preserves timeout classification when the response body stalls after HTTP 
   assert.equal(calls, 1);
 });
 
-test('does not retry an empty model answer', async () => {
+// 2026-10-10: live production showed about half of the tutor answers failing as
+// unusable content (empty or unparseable). Such answers are retried at most twice,
+// then reported as INVALID_AI_RESPONSE with a reason code instead of an outage.
+test('retries an empty model answer at most twice, then reports it', async () => {
   let calls = 0;
   const client = new DeepSeekClient({
     apiKey: 'test-only',
@@ -117,11 +120,12 @@ test('does not retry an empty model answer', async () => {
       return jsonResponse('');
     }
   });
-  await assert.rejects(() => client.generate('测试题目'), /empty content/);
-  assert.equal(calls, 1);
+  await assert.rejects(() => client.generate('测试题目'), { code: 'INVALID_AI_RESPONSE', reason: 'EMPTY_CONTENT', attempts: 3 });
+  assert.equal(calls, 3);
+  assert.equal(client.activeRequests, 0);
 });
 
-test('does not retry invalid model JSON', async () => {
+test('retries unparseable model JSON at most twice, then reports it', async () => {
   let calls = 0;
   const client = new DeepSeekClient({
     apiKey: 'test-only',
@@ -131,8 +135,33 @@ test('does not retry invalid model JSON', async () => {
       return jsonResponse('not-json');
     }
   });
-  await assert.rejects(() => client.generate('测试题目'), /invalid JSON/);
-  assert.equal(calls, 1);
+  await assert.rejects(() => client.generate('测试题目'), { code: 'INVALID_AI_RESPONSE', reason: 'INVALID_JSON', attempts: 3 });
+  assert.equal(calls, 3);
+});
+
+test('an unusable first answer is replaced by the next usable one', async () => {
+  let calls = 0;
+  const client = new DeepSeekClient({
+    apiKey: 'test-only',
+    timeoutMs: 1000,
+    fetchImpl: async () => {
+      calls += 1;
+      return calls === 1 ? jsonResponse('') : jsonResponse('{"mode":"explanation","title":"答案","answer":"解释","plan":null,"visual":{"kind":"none","title":""}}');
+    }
+  });
+  assert.equal((await client.generate('测试题目')).mode, 'explanation');
+  assert.equal(calls, 2);
+});
+
+test('LaTeX written with single backslashes reaches the student intact', async () => {
+  // Raw model output: \( \frac \times \theta \nu \mathrm are not escaped for JSON.
+  const content = String.raw`{"mode":"steps","summary":"","steps":["列式：\(v^{2}-v_{0}^{2}=2as\)，得 \(s=\frac{v_{0}^{2}}{2a}\)","代入：\(s=\frac{20^{2}}{2\times 5}=40\ \mathrm{m}\)，\(\theta\)、\(\nu\) 与此无关"],"formulas":["s=\frac{v_{0}^{2}}{2a}"],"finalAnswer":"刹车距离为 \(40\ \mathrm{m}\)","checks":[],"followUp":"","parameterPatch":null,"warnings":[]}`;
+  const client = new DeepSeekClient({ apiKey: 'test-only', timeoutMs: 1000, fetchImpl: async () => jsonResponse(content) });
+  const result = await client.chat({ responseLevel: 'steps', history: [], message: '求刹车距离', context: { mode: 'question', subject: '物理', originalQuestion: '刹车题' } });
+  assert.equal(result.steps[0], String.raw`列式：\(v^{2}-v_{0}^{2}=2as\)，得 \(s=\frac{v_{0}^{2}}{2a}\)`);
+  assert.equal(result.steps[1], String.raw`代入：\(s=\frac{20^{2}}{2\times 5}=40\ \mathrm{m}\)，\(\theta\)、\(\nu\) 与此无关`);
+  assert.equal(result.formulas[0], String.raw`s=\frac{v_{0}^{2}}{2a}`);
+  assert.equal(result.finalAnswer, String.raw`刹车距离为 \(40\ \mathrm{m}\)`);
 });
 
 test('uses maximum thinking for every tutor level without changing teaching depth', async () => {
@@ -228,7 +257,7 @@ test('parameter suggestions use the same fixed maximum-thinking profile', async 
   assert.deepEqual(request.thinking, { type: 'enabled' });
 });
 
-for (const finishReason of ['length', 'content_filter', 'aborted', 'insufficient_system_resource', undefined]) {
+for (const finishReason of ['length', 'content_filter', 'aborted', undefined]) {
   test(`rejects incomplete upstream output even when JSON is valid (${finishReason})`, async () => {
     let calls = 0;
     const client = new DeepSeekClient({
@@ -247,6 +276,27 @@ for (const finishReason of ['length', 'content_filter', 'aborted', 'insufficient
     assert.equal(client.activeRequests, 0);
   });
 }
+
+// Provider overload is transient, unlike a cut-off answer, so it may be retried.
+test('retries an answer stopped by provider overload', async () => {
+  let calls = 0;
+  const client = new DeepSeekClient({
+    apiKey: 'test-only',
+    fetchImpl: async () => {
+      calls += 1;
+      return calls < 3 ? jsonResponse('{"mode":"explanation"}', 'insufficient_system_resource')
+        : jsonResponse('{"mode":"explanation","title":"答案","answer":"解释","plan":null,"visual":{"kind":"none","title":""}}');
+    }
+  });
+  assert.equal((await client.generate('测试')).mode, 'explanation');
+  assert.equal(calls, 3);
+  assert.equal(client.activeRequests, 0);
+});
+
+test('reason codes identify cut-off answers without retrying them', async () => {
+  const client = new DeepSeekClient({ apiKey: 'test-only', fetchImpl: async () => jsonResponse('{"mode":"explanation"}', 'length') });
+  await assert.rejects(client.generate('测试'), { code: 'INVALID_AI_RESPONSE', reason: 'TRUNCATED', retryable: false, attempts: 1 });
+});
 
 test('rejects a different upstream model without retrying or accepting its answer', async () => {
   let calls = 0;

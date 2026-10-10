@@ -155,7 +155,8 @@ export function findTutorTopicMismatches(request, response) {
   if (!request || !response || request.context?.mode !== 'question') {
     return [];
   }
-  const question = request.context.originalQuestion || '';
+  const targetedFollowUp = isTargetedTutorFollowUp(request);
+  const question = targetedFollowUp ? latestTutorQuestion(request) : request.context.originalQuestion || '';
   const responseText = tutorResponseText(response);
   return TUTOR_TOPIC_ANCHORS
     .filter((anchor) => anchor.requested.test(question) && !anchor.answered.test(responseText))
@@ -187,6 +188,13 @@ export function findDeterministicTutorIssues(request, response) {
     return [];
   }
   const question = request.context.originalQuestion || '';
+  // A conceptual excerpt question need not repeat the whole numeric answer.
+  // Keep numeric checking when either the latest question or answer includes it.
+  const targetedFollowUp = isTargetedTutorFollowUp(request);
+  const answerText = tutorResponseText(response);
+  const numericAcceleration = /a\s*\\?\(\s*v\s*\\?\)\s*=\s*(?:\(|\\frac\{)?\s*-?\d|加速度.{0,12}(?:为|是|=)\s*-?\d/i.test(answerText);
+  if (targetedFollowUp && ['hint', 'explain'].includes(request.responseLevel) && !numericAcceleration) return [];
+  if (targetedFollowUp && !/加速度|a\s*\(\s*v\s*\)/i.test(latestTutorQuestion(request) + answerText)) return [];
   if (!/(?:金属棒|导体棒)/.test(question) || !/a\s*\(\s*v\s*\)/i.test(question) || !/(?:磁场|磁感应强度)/.test(question)) {
     return [];
   }
@@ -209,15 +217,36 @@ export function findDeterministicTutorIssues(request, response) {
   return [];
 }
 
+// Quoted answer text is supporting material, not an additional set of goals.
+export function latestTutorQuestion(request) {
+  let message = typeof request?.message === 'string' ? request.message : '';
+  const boundary = '\n【本次问题】\n';
+  const questionIndex = message.lastIndexOf(boundary);
+  if (message.startsWith('【引用片段，仅作提问材料】\n') && questionIndex >= 0) {
+    message = message.slice(questionIndex + boundary.length);
+  }
+  const rulesIndex = message.lastIndexOf('\n\n【回答规范】');
+  return (rulesIndex >= 0 ? message.slice(0, rulesIndex) : message).trim();
+}
+
+export function isTargetedTutorFollowUp(request) {
+  const latest = latestTutorQuestion(request);
+  const hasQuote = request?.message?.startsWith('【引用片段，仅作提问材料】\n');
+  if (/完整.{0,6}(?:解答|原题|整题)|所有小问|从头.{0,6}(?:讲|解)/.test(latest)) return false;
+  if (hasQuote) return true;
+  if (!Array.isArray(request?.history) || !request.history.length) return false;
+  return /(?:只|仅)(?:补|解释|回答|计算|核对)|补充|漏了|不要重复|上一(?:步|次|条|个回答)|这一?(?:步|问)|刚才|没(?:看|听|弄|想)?懂|不(?:太)?(?:明白|理解|懂)|换(?:个|一种|种).{0,5}(?:说法|解释)|(?:详细|简单)(?:一点|点|些)|再(?:讲|解释)|什么意思|卡(?:在|住)/.test(latest);
+}
+
 export function findMissingTutorCoverage(request, response) {
   if (!request || !response || !['steps', 'explain', 'check'].includes(request.responseLevel)) {
     return [];
   }
-  const targetedFollowUp = Array.isArray(request.history) && request.history.length > 0 &&
-    /(?:只|仅)(?:补|解释|回答|计算|核对)|补充|漏了|不要重复|上一(?:步|次|个回答)|这一(?:步|问)|刚才/.test(request.message || '');
+  const targetedFollowUp = isTargetedTutorFollowUp(request);
+  const latestMessage = latestTutorQuestion(request);
   const rawRequestText = request.responseLevel === 'steps' && !targetedFollowUp
-    ? `${request.context?.originalQuestion || ''}\n${request.message || ''}`
-    : request.message || '';
+    ? `${request.context?.originalQuestion || ''}\n${latestMessage}`
+    : latestMessage;
   const requestText = rawRequestText.replace(/(?:不要|无需|不必|不用).{0,40}?(?:[，,。；;]|$)/g, '');
   // Hidden verification or an omitted opening summary cannot satisfy a
   // student's requested sub-question. Count only the rendered solution.
@@ -258,18 +287,19 @@ function sanitizeChatHistory(rawHistory) {
   if (!Array.isArray(rawHistory)) {
     return [];
   }
+  // The newest turns carry the student's current context: fill the budget from
+  // the end, then restore chronological order.
   const history = [];
   let totalCharacters = 0;
-  for (const item of rawHistory.slice(-MAX_CHAT_HISTORY_ITEMS)) {
+  for (const item of rawHistory.slice(-MAX_CHAT_HISTORY_ITEMS).reverse()) {
     if (!isPlainObject(item) || !['user', 'assistant'].includes(item.role)) {
       continue;
     }
     const content = sanitizeText(item.content, 1600);
-    if (!content || totalCharacters + content.length > MAX_CHAT_HISTORY_CHARS) {
-      continue;
-    }
+    if (!content) continue;
+    if (totalCharacters + content.length > MAX_CHAT_HISTORY_CHARS) break;
     totalCharacters += content.length;
-    history.push({ role: item.role, content });
+    history.unshift({ role: item.role, content });
   }
   return history;
 }
@@ -532,13 +562,27 @@ export function sanitizeTutorChatRequest(raw) {
   };
 }
 
+function sanitizeSuggestedQuestions(value, mode) {
+  if (!Array.isArray(value) || ['clarification', 'refusal'].includes(mode)) return [];
+  const seen = new Set();
+  return value.filter(item => {
+    if (typeof item !== 'string') return false;
+    const question = item.trim();
+    const key = question.replace(/[\s？?。.!！]/g, '').toLowerCase();
+    if (question.length < 4 || question.length > 120 || /[<>\n\r]|https?:\/\/|```/i.test(question) ||
+      /^(yes|no|是|好的|继续|继续讲解|给我一点提示|解释当前步骤|检查我的思路|生成一道变式|查看完整步骤)$/.test(key) || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).slice(0, 3).map(item => item.trim());
+}
+
 export function validateTutorChatResponse(raw, request) {
   if (!isPlainObject(raw) || !CHAT_RESPONSE_MODES.includes(raw.mode)) {
     return null;
   }
   const summary = sanitizeText(raw.summary, 1000);
   const steps = Array.isArray(raw.steps)
-    ? raw.steps.slice(0, 8).map((step) => sanitizeText(step, 500)).filter(Boolean)
+    ? raw.steps.slice(0, 8).map((step) => sanitizeText(step, 1200)).filter(Boolean)
     : [];
   if (!summary && steps.length === 0) {
     return null;
@@ -564,6 +608,7 @@ export function validateTutorChatResponse(raw, request) {
     finalAnswer: request.responseLevel === 'hint' ? null : sanitizeText(raw.finalAnswer, 1200) || null,
     checks,
     followUp: sanitizeText(raw.followUp, 500),
+    suggestedQuestions: sanitizeSuggestedQuestions(raw.suggestedQuestions, raw.mode),
     parameterPatch: validateChatPatch(raw.parameterPatch, request.context),
     warnings
   };

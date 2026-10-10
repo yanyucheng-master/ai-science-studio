@@ -328,3 +328,58 @@ test('disabled quotas allow more than ten same-address POSTs without calling AI'
   }, { rateLimiter });
   assert.equal(rateLimiter.entries.size, 0);
 });
+
+// 2026-10-10: production returned 503 AI_UNAVAILABLE ("余额不足或临时故障") for unusable model
+// output. Unusable answers are now 502 INVALID_AI_RESPONSE with a reason code, and logs carry
+// only failure codes, never the question or answer text.
+test('unusable tutor answers are reported as such, with a reason and content-free logs', async () => {
+  const logs = [];
+  const originalInfo = console.info;
+  console.info = (line) => logs.push(String(line));
+  let calls = 0;
+  const deepSeekClient = new DeepSeekClient({
+    apiKey: 'test-only',
+    timeoutMs: 1000,
+    fetchImpl: async () => {
+      calls += 1;
+      return { ok: true, status: 200, async json() { return { model: 'deepseek-flash', choices: [{ message: { content: '秘密答案 not-json' }, finish_reason: 'stop' }] }; } };
+    }
+  });
+  try {
+    await withServer(async (baseUrl) => {
+      const response = await fetch(`${baseUrl}/api/v1/tutor/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: '学生的私人问题', responseLevel: 'steps', context: { mode: 'question', subject: '物理', originalQuestion: '求自由落体时间' } })
+      });
+      assert.equal(response.status, 502);
+      assert.deepEqual(await response.json(), { error: 'INVALID_AI_RESPONSE', reason: 'INVALID_JSON' });
+    }, { deepSeekClient });
+  } finally {
+    console.info = originalInfo;
+  }
+  assert.equal(calls, 3);
+  const entry = logs.map((line) => JSON.parse(line)).find((item) => item.path === '/api/v1/tutor/chat');
+  assert.deepEqual(entry.aiError, { code: 'INVALID_AI_RESPONSE', reason: 'INVALID_JSON', attempts: 3 });
+  assert.equal(logs.join('\n').includes('秘密答案') || logs.join('\n').includes('学生的私人问题'), false);
+});
+
+test('a tutor answer with single-backslash LaTeX is served instead of an outage', async () => {
+  const content = String.raw`{"mode":"steps","summary":"","steps":["列式：\(h=\frac{1}{2}gt^{2}\)","结论：\(t=3\ \mathrm{s}\)"],"formulas":["h=\frac{1}{2}gt^{2}"],"finalAnswer":"结论：\(t=3\ \mathrm{s}\)","checks":[],"followUp":"","suggestedQuestions":["若高度变为 80m，落地时间是多少？"],"parameterPatch":null,"warnings":[]}`;
+  const deepSeekClient = new DeepSeekClient({
+    apiKey: 'test-only',
+    timeoutMs: 1000,
+    fetchImpl: async () => ({ ok: true, status: 200, async json() { return { model: 'deepseek-flash', choices: [{ message: { content }, finish_reason: 'stop' }] }; } })
+  });
+  await withServer(async (baseUrl) => {
+    const response = await fetch(`${baseUrl}/api/v1/tutor/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: '请完整解答', responseLevel: 'steps', context: { mode: 'question', subject: '物理', originalQuestion: '物体从 45m 高处自由下落，g 取 10m/s²，求落地时间。' } })
+    });
+    assert.equal(response.status, 200);
+    const body = await response.json();
+    assert.equal(body.steps[0], String.raw`列式：\(h=\frac{1}{2}gt^{2}\)`);
+    assert.deepEqual(body.suggestedQuestions, ['若高度变为 80m，落地时间是多少？']);
+  }, { deepSeekClient });
+});

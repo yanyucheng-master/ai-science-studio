@@ -31,6 +31,14 @@ The chat response is validated into controlled text, step, formula, check and
 optional parameter-patch fields. A parameter patch can only target an existing
 parameter and the web client requires explicit confirmation before applying it.
 
+The chat protocol matches the public web client (`codex/public-demo-byo-key`):
+up to three sanitized `suggestedQuestions` (empty for clarification, refusal and
+local fallback), steps up to 1200 characters, and quoted excerpts under
+`【引用片段，仅作提问材料】` followed by `【本次问题】`. Goal, topic and coverage
+checks use only the latest question, so quoted text is never treated as new
+tasks. When history exceeds its 8000-character budget, the newest turns are
+kept. Clients that send no quotes or suggestions are unaffected.
+
 ## Deployment
 
 Create `DEEPSEEK_API_KEY` as a Render secret. Do not put the key in `web`, a
@@ -48,9 +56,27 @@ bodies. All requests send `thinking: {"type":"enabled"}` and
 depth remains independent: hint mode still withholds the final answer.
 
 The output budget is 32768 tokens, not a claim of unlimited reasoning. Upstream
-requests have a 240-second deadline; timeout, incomplete output and wrong-model
-responses are never retried or silently downgraded. At most two upstream calls
-are concurrent. `RATE_LIMIT_MAX=0` disables per-address rate quotas without
+requests have a 240-second deadline; timeout, cut-off (`length`), filtered and
+wrong-model responses are never retried or silently downgraded. Network and
+retryable HTTP errors get one retry. An answer that arrives but is unusable —
+empty content, JSON that cannot be parsed even after repair, or
+`insufficient_system_resource` — may be retried twice, and no retry starts more
+than 120 seconds after the first call. At most two upstream calls are
+concurrent; retries stay within the same slot.
+
+The model writes LaTeX inside JSON strings and often uses single backslashes
+(`\(`, `\frac`, `\mathrm`). `src/model-json.js` keeps genuine JSON escapes and
+turns LaTeX backslashes into literal ones before parsing, including commands
+such as `\frac`, `\times` and `\nu` that would otherwise become control
+characters. On 2026-10-10 this caused about half of the public demo's tutor
+answers to fail as `AI_UNAVAILABLE`.
+
+AI failures carry a `reason` code (for example `INVALID_JSON`,
+`EMPTY_CONTENT`, `TRUNCATED`, `MODEL_MISMATCH`, `HTTP_500`, `TIMEOUT`). An
+unusable answer is returned as `502 INVALID_AI_RESPONSE` rather than
+`503 AI_UNAVAILABLE`, which clients present as an outage. Request logs add only
+`aiError: {code, reason, attempts}`; question, answer and provider text are
+never logged. `RATE_LIMIT_MAX=0` disables per-address rate quotas without
 retaining address counters. There is no daily quota; capacity, request-size,
 response-validation and timeout protections remain enabled. This public demo
 can exhaust the owner's finite API balance. It is not authentication or a
