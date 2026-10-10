@@ -145,21 +145,36 @@ const TUTOR_TOPIC_ANCHORS = Object.freeze([
   { requested: /子弹/, answered: /子弹/ },
   { requested: /弹簧/, answered: /弹簧|弹性势能/ },
   { requested: /\|x.{0,20}\|=a|绝对值/, answered: /绝对值|\|x/ },
-  { requested: /镁|Mg/i, answered: /镁|Mg/i },
-  { requested: /铝|Al/i, answered: /铝|Al/i },
+  // Element symbols are case-sensitive: physics writes μmg, and 15N is a force
+  // unless the question is about isotope-labelled DNA.
+  { requested: /镁|(?<![A-Za-z])Mg(?![a-z])/, answered: /镁|(?<![A-Za-z])Mg(?![a-z])/ },
+  { requested: /铝|(?<![A-Za-z])Al(?![a-z])/, answered: /铝|(?<![A-Za-z])Al(?![a-z])/ },
   { requested: /DNA/i, answered: /DNA/i },
-  { requested: /15N/i, answered: /15N/i }
+  { requested: /(?:DNA|同位素|标记)[\s\S]*15N|15N[\s\S]*(?:DNA|同位素|标记)/i, answered: /15N/i }
 ]);
+
+// LaTeX-formatted answers write 15N as ^{15}\mathrm{N} and Mg as \ce{Mg}.
+function plainScienceText(value) {
+  return String(value || '')
+    .replace(/\\(?:mathrm|text|textrm|mathbf|bm|ce|pu)\{([^{}]*)\}/g, '$1')
+    .replace(/\^\{?(\d+)\}?/g, '$1')
+    .replace(/\\[,;:! ]/g, '')
+    .replace(/[\s{}]/g, '');
+}
 
 export function findTutorTopicMismatches(request, response) {
   if (!request || !response || request.context?.mode !== 'question') {
     return [];
   }
-  const targetedFollowUp = isTargetedTutorFollowUp(request);
-  const question = targetedFollowUp ? latestTutorQuestion(request) : request.context.originalQuestion || '';
+  const originalQuestion = request.context.originalQuestion || '';
+  // A targeted follow-up must still stay on the original problem's topic, but
+  // notation in the student's latest message alone cannot add a topic.
+  const latest = isTargetedTutorFollowUp(request) ? latestTutorQuestion(request) : '';
   const responseText = tutorResponseText(response);
+  const plainResponse = plainScienceText(responseText);
   return TUTOR_TOPIC_ANCHORS
-    .filter((anchor) => anchor.requested.test(question) && !anchor.answered.test(responseText))
+    .filter((anchor) => anchor.requested.test(originalQuestion) && (!latest || anchor.requested.test(latest)))
+    .filter((anchor) => !anchor.answered.test(responseText) && !anchor.answered.test(plainResponse))
     .map((anchor) => anchor.requested.source);
 }
 
@@ -193,7 +208,7 @@ export function findDeterministicTutorIssues(request, response) {
   const targetedFollowUp = isTargetedTutorFollowUp(request);
   const answerText = tutorResponseText(response);
   const numericAcceleration = /a\s*\\?\(\s*v\s*\\?\)\s*=\s*(?:\(|\\frac\{)?\s*-?\d|加速度.{0,12}(?:为|是|=)\s*-?\d/i.test(answerText);
-  if (targetedFollowUp && ['hint', 'explain'].includes(request.responseLevel) && !numericAcceleration) return [];
+  if (['hint', 'explain'].includes(request.responseLevel) && !numericAcceleration) return [];
   if (targetedFollowUp && !/加速度|a\s*\(\s*v\s*\)/i.test(latestTutorQuestion(request) + answerText)) return [];
   if (!/(?:金属棒|导体棒)/.test(question) || !/a\s*\(\s*v\s*\)/i.test(question) || !/(?:磁场|磁感应强度)/.test(question)) {
     return [];
@@ -229,10 +244,14 @@ export function latestTutorQuestion(request) {
   return (rulesIndex >= 0 ? message.slice(0, rulesIndex) : message).trim();
 }
 
+// Same wording as the web client's request for a full solution (selectResponseLevel).
+const FULL_SOLUTION_REQUEST = /完整.{0,8}(?:解答|讲解|步骤|答案|过程|原题|整题)|(?:直接|给我|查看).{0,4}答案|所有小问|从头.{0,6}(?:讲|解)/;
+
 export function isTargetedTutorFollowUp(request) {
   const latest = latestTutorQuestion(request);
   const hasQuote = request?.message?.startsWith('【引用片段，仅作提问材料】\n');
-  if (/完整.{0,6}(?:解答|原题|整题)|所有小问|从头.{0,6}(?:讲|解)/.test(latest)) return false;
+  const affirmative = latest.replace(/(?:不要|无需|不必|不用|别).{0,40}?(?:[，,。；;]|$)/g, '');
+  if (FULL_SOLUTION_REQUEST.test(affirmative)) return false;
   if (hasQuote) return true;
   if (!Array.isArray(request?.history) || !request.history.length) return false;
   return /(?:只|仅)(?:补|解释|回答|计算|核对)|补充|漏了|不要重复|上一(?:步|次|条|个回答)|这一?(?:步|问)|刚才|没(?:看|听|弄|想)?懂|不(?:太)?(?:明白|理解|懂)|换(?:个|一种|种).{0,5}(?:说法|解释)|(?:详细|简单)(?:一点|点|些)|再(?:讲|解释)|什么意思|卡(?:在|住)/.test(latest);

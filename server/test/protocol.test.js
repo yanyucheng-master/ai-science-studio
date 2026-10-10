@@ -494,3 +494,41 @@ test('rejects finite but renderer-hostile visual magnitudes', () => {
   });
   assert.deepEqual(result, { kind: 'none', title: '' });
 });
+
+// Adversarial review (2026-10-10): topic checks, full-solution requests and hints.
+test('physics notation in a follow-up does not add chemistry or isotope topics', () => {
+  const friction = sanitizeTutorChatRequest({ message: '没看懂，为什么摩擦力是 μmg？', responseLevel: 'explain',
+    history: [{ role: 'assistant', content: '先求摩擦力。' }],
+    context: { mode: 'question', originalQuestion: '质量为 2kg 的木块在粗糙水平面上滑动，动摩擦因数为 0.2，求加速度。' } });
+  assert.deepEqual(findTutorTopicMismatches(friction, { summary: '滑动摩擦力 f=μN，水平面上 N 等于重力。' }), []);
+  const force = sanitizeTutorChatRequest({ message: '请完整解答', responseLevel: 'steps',
+    context: { mode: 'question', originalQuestion: '质量为3kg的物体在F=15N的水平拉力作用下由静止开始运动，求加速度。' } });
+  assert.deepEqual(findTutorTopicMismatches(force, { steps: [String.raw`列式：\(a=\frac{15\,\mathrm{N}}{3\,\mathrm{kg}}=5\ \mathrm{m}\cdot\mathrm{s}^{-2}\)`] }), []);
+});
+
+test('topic checks still hold for chemistry and labelled-DNA questions, including LaTeX answers', () => {
+  const magnesium = sanitizeTutorChatRequest({ message: '请完整解答', responseLevel: 'steps',
+    context: { mode: 'question', originalQuestion: '2.4g Mg 与足量盐酸反应，求生成氢气的质量。' } });
+  assert.equal(findTutorTopicMismatches(magnesium, { steps: ['铁与盐酸反应生成氢气。'] }).length, 1);
+  assert.deepEqual(findTutorTopicMismatches(magnesium, { steps: [String.raw`\(\ce{Mg + 2HCl -> MgCl2 + H2}\)`] }), []);
+  const dna = sanitizeTutorChatRequest({ message: '请完整解答', responseLevel: 'steps',
+    context: { mode: 'question', originalQuestion: '用 15N 标记的 DNA 在 14N 培养基中复制两次，求含 15N 的 DNA 比例。' } });
+  assert.deepEqual(findTutorTopicMismatches(dna, { steps: [String.raw`含 \(^{15}\mathrm{N}\) 的 DNA 占 \(\frac{1}{2}\)`] }), []);
+  assert.ok(findTutorTopicMismatches(dna, { steps: ['比例为二分之一。'] }).length > 0);
+});
+
+test('a full-solution request is never narrowed by confusion words or a quote', () => {
+  const history = [{ role: 'assistant', content: '先分析受力。' }];
+  for (const message of ['没看懂，请给出完整步骤', '再讲一遍完整步骤', '给我完整答案', '我卡住了，完整讲解一下',
+    '【引用片段，仅作提问材料】\n1. 题目："求加速度和时间"\n【本次问题】\n给出完整步骤']) {
+    assert.equal(isTargetedTutorFollowUp({ message, history }), false, message);
+  }
+  assert.equal(isTargetedTutorFollowUp({ message: '不要重复完整步骤，只解释这一步', history }), true);
+  assert.equal(isTargetedTutorFollowUp({ message: '没看懂，换个说法', history }), true);
+});
+
+test('a hint or explanation for the induction-rod problem need not state a(v) numerically', () => {
+  const originalQuestion = '金属棒质量0.2kg，长度0.5m，处于B=0.8T的匀强磁场中，电阻R=2Ω，用F=0.4N的恒力拉动，求a(v)。';
+  const hint = sanitizeTutorChatRequest({ message: '请只给我一个关键提示', responseLevel: 'hint', context: { mode: 'question', originalQuestion } });
+  assert.deepEqual(findDeterministicTutorIssues(hint, { summary: '先写出安培力与速度的关系，再用牛顿第二定律。' }), []);
+});

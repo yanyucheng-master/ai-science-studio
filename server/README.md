@@ -60,21 +60,26 @@ requests have a 240-second deadline; timeout, cut-off (`length`), filtered and
 wrong-model responses are never retried or silently downgraded. Network and
 retryable HTTP errors get one retry. An answer that arrives but is unusable —
 empty content, JSON that cannot be parsed even after repair, or
-`insufficient_system_resource` — may be retried twice, and no retry starts more
-than 120 seconds after the first call. At most two upstream calls are
+`insufficient_system_resource` (after a 2 s, then 4 s pause) — may be retried
+twice, and no such retry starts more than 120 seconds after the first call. No
+retry starts once the browser has disconnected. At most two upstream calls are
 concurrent; retries stay within the same slot.
 
 The model writes LaTeX inside JSON strings and often uses single backslashes
 (`\(`, `\frac`, `\mathrm`). `src/model-json.js` keeps genuine JSON escapes and
-turns LaTeX backslashes into literal ones before parsing, including commands
-such as `\frac`, `\times` and `\nu` that would otherwise become control
-characters. On 2026-10-10 this caused about half of the public demo's tutor
-answers to fail as `AI_UNAVAILABLE`.
+turns LaTeX backslashes into literal ones before parsing. `\b` or `\f` before a
+letter is always LaTeX; `\n`, `\r` and `\t` count as LaTeX when they start a
+known command (`\nu`, `\rho`, `\times`), and short ones such as `\ne` only in a
+string that is evidently written with single backslashes. In such a string a
+doubled backslash before anything but a command name is a LaTeX row break
+(`cases`, `aligned`). On 2026-10-10 single-backslash answers caused about half
+of the public demo's tutor answers to fail as `AI_UNAVAILABLE`.
 
 AI failures carry a `reason` code (for example `INVALID_JSON`,
 `EMPTY_CONTENT`, `TRUNCATED`, `MODEL_MISMATCH`, `HTTP_500`, `TIMEOUT`). An
 unusable answer is returned as `502 INVALID_AI_RESPONSE` rather than
-`503 AI_UNAVAILABLE`, which clients present as an outage. Request logs add only
+`503 AI_UNAVAILABLE`, which clients present as an outage; provider overload
+that outlasts its retries is `429 AI_BUSY`. Request logs add only
 `aiError: {code, reason, attempts}`; question, answer and provider text are
 never logged. `RATE_LIMIT_MAX=0` disables per-address rate quotas without
 retaining address counters. There is no daily quota; capacity, request-size,

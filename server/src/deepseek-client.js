@@ -71,12 +71,12 @@ const CHAT_SYSTEM_PROMPT = `你是“大师实验室”的中学数理化生 AI 
 10. requestedGoals 是题目或最新追问要求覆盖的小问清单。responseLevel=steps 时必须在 steps 中逐项作答，并在 checks 中逐项完成内部复核，不得只完成前半题。
 11. explicitConstraints 是从原题提取的硬约束，必须逐条遵守；如果与历史回答冲突，以 explicitConstraints 为准并主动纠正旧回答。
 12. 摩擦力方向必须依据接触面间的相对运动或相对运动趋势判断，不能依据物体相对地面的速度判断。提到方向后，必须核对它与加速度方向及摩擦功正负是否自洽。局部追问中不要引入回答该问题不需要的新方向或新数值。
-13. responseLevel=steps 时，finalAnswer 必须是非空字符串，按原题顺序列出每个小问的最终结论、数值和单位；summary 或 checks 不能代替 finalAnswer。
+13. responseLevel=steps 且是完整解题（不是局部追问或引用追问）时，finalAnswer 必须是非空字符串，按原题顺序列出每个小问的最终结论、数值和单位；summary 或 checks 不能代替 finalAnswer。
 14. 分段、分类、计数或概率问题必须核对“各分支数量之和”与最终总数一致；同一回答中的公式、文字说明和最终答案不得互相矛盾。
 15. 不得偷换题设模型或术语，例如“圆形轨道内侧”不能改写为“轻杆模型”。只展开决定答案的步骤，避免与题目无关的延伸结论。
-16. steps 是回答主体，每步完成一个必要的解题动作；简单题通常 2 至 4 步，复杂题按需要最多 8 步，不机械扩写。每个小问至少在 steps 中计算一次，并在 checks 中用代回、守恒、边界或数量求和中的一种方法完成内部复核。
+16. steps 是回答主体，每步完成一个必要的解题动作；简单题通常 2 至 4 步，复杂题按需要最多 8 步，不机械扩写。完整解题时每个小问至少在 steps 中计算一次，并在 checks 中用代回、守恒、边界或数量求和中的一种方法完成内部复核；局部追问、引用追问和 hint 只处理本次问题，hint 不泄露最终答案。
 17. 若同时求函数关系和稳定值、平衡值或临界值，必须把最终数值代回最终函数并写出等式；代回不满足零、守恒或边界条件时必须先纠正系数，禁止只写“代回正确”。
-18. 数学书写必须符合中文教材习惯：formulas 中凡表示相除都使用 \\frac{分子}{分母}，禁止使用斜杠；根号用 \\sqrt{}；下标写成 v_{0}、R_{2}，幂写成 v^{2}；单位写成 \\mathrm{m}\\cdot\\mathrm{s}^{-1} 等规范形式；化学式用 \\ce{} 并整体放在同一数学片段内。steps、finalAnswer 和 checks 中的行内公式用 \\( ... \\) 包围，formulas 项只写 LaTeX 本体；不要输出未闭合括号或不完整公式。
+18. 数学书写必须符合中文教材习惯：formulas 中凡表示相除都使用 \\frac{分子}{分母}，禁止使用斜杠；下标写成 v_{0}、R_{2}，幂写成 v^{2}；速度、加速度等单位优先写成 m·s^{-1}、m·s^{-2}。steps、finalAnswer 和 checks 中出现公式时遵循同一规则。
 19. 精简展示不等于省略验证：所有必要条件与小问结论必须写在 steps 中，不能只写在 summary 或 checks 中。把最终答案融入最后一步，不另加只复述答案的步骤；finalAnswer 必须取最后一步中已出现的完整结论文字，以兼容协议并避免重复。
 20. formulas 只列本题真正需要的、不重复的核心关系；简单题通常 1 至 2 条，复杂题按需要列出；概念题没有必要公式时返回空数组，不凑公式。
 21. 有 steps 时 summary 通常返回空字符串，不添加开场复述；hint、clarification、refusal 或不需要分步的概念解释可用 summary 承载主要内容。禁止向学生提及 context.mode、parameters、deterministicResult 等内部字段。
@@ -154,9 +154,19 @@ export function shouldUseThinkingMode(_input) {
   return true;
 }
 
-// Total attempts for one answer, and the window in which a retry may start.
+// Total attempts for one answer, the window in which a retry for unusable
+// content may start, and the pause before retrying after provider overload.
 const MAX_ATTEMPTS = 3;
 const RETRY_WINDOW_MS = 120000;
+const OVERLOAD_RETRY_DELAY_MS = 2000;
+
+// Keeps the original error (and its message), classified as a network failure.
+function networkError(cause) {
+  const error = cause instanceof Error ? cause : new Error('DeepSeek connection failed');
+  error.code ??= 'AI_UPSTREAM_ERROR';
+  error.reason = 'NETWORK';
+  return error;
+}
 
 function answerError(message, reason, retryable) {
   const error = new Error(message);
@@ -175,34 +185,40 @@ export class DeepSeekClient {
     this.fetchImpl = options.fetchImpl ?? globalThis.fetch;
     this.activeRequests = 0;
     this.maxConcurrentRequests = options.maxConcurrentRequests ?? config.maxConcurrentAiRequests;
+    this.overloadRetryDelayMs = options.overloadRetryDelayMs ?? OVERLOAD_RETRY_DELAY_MS;
   }
 
   get configured() {
     return typeof this.apiKey === 'string' && this.apiKey.length > 0;
   }
 
-  async generate(question, preferredSubject = '') {
+  async generate(question, preferredSubject = '', options = {}) {
     return this.#requestJson([
       { role: 'system', content: GENERATE_SYSTEM_PROMPT },
       {
         role: 'user',
         content: JSON.stringify({ question, preferredSubject }, null, 0)
       }
-    ]);
+    ], options);
   }
 
-  async tutor(plan, message) {
+  async tutor(plan, message, options = {}) {
     return this.#requestJson([
       { role: 'system', content: TUTOR_SYSTEM_PROMPT },
       {
         role: 'user',
         content: JSON.stringify({ plan, question: message }, null, 0)
       }
-    ]);
+    ], options);
   }
 
-  async chat(input) {
+  async chat(input, options = {}) {
     const history = input.history.map((item) => ({ role: item.role, content: item.content }));
+    // The history budget can start at an answer; keep that answer, but let the
+    // conversation open with the student's question as chat models expect.
+    if (history[0]?.role === 'assistant') {
+      history.unshift({ role: 'user', content: input.context?.originalQuestion || '（继续之前的讨论）' });
+    }
     const guardrails = buildTutorGuardrails(input);
     const requestEnvelope = {
       originalQuestion: input.context.originalQuestion,
@@ -224,7 +240,7 @@ export class DeepSeekClient {
           `structuredInput: ${JSON.stringify(requestEnvelope, null, 0)}`
         ].join('\n')
       }
-    ]);
+    ], options);
   }
 
   async #requestJson(messages, options = {}) {
@@ -250,11 +266,21 @@ export class DeepSeekClient {
           if (lastError.retryable === false) {
             break;
           }
-          // Upstream HTTP and network errors keep a single retry; unusable
-          // answer content (empty, unparseable, provider overload) may retry
-          // twice. No new attempt starts once the retry window has passed.
+          // Network and HTTP errors keep their single retry. Unusable answer
+          // content (empty, unparseable, provider overload) may retry twice,
+          // but only within the retry window. A client that has gone away
+          // gets no further paid attempts.
           const contentFailure = lastError.code === 'INVALID_AI_RESPONSE';
-          if ((!contentFailure && attempt >= 1) || Date.now() - startedAt > RETRY_WINDOW_MS) {
+          if (contentFailure ? Date.now() - startedAt > RETRY_WINDOW_MS : attempt >= 1) {
+            break;
+          }
+          if (options.signal?.aborted) {
+            break;
+          }
+          if (lastError.reason === 'UPSTREAM_OVERLOADED' && attempt + 1 < MAX_ATTEMPTS) {
+            await new Promise((resolve) => setTimeout(resolve, this.overloadRetryDelayMs * (attempt + 1)));
+          }
+          if (options.signal?.aborted) {
             break;
           }
         }
@@ -302,8 +328,12 @@ export class DeepSeekClient {
       let payload;
       try {
         payload = await response.json();
-      } catch {
-        throw answerError('DeepSeek returned invalid response JSON', 'BAD_PAYLOAD', true);
+      } catch (error) {
+        // A connection dropped while reading is a network failure; only a body
+        // that arrived but is not JSON counts as an unusable answer.
+        if (controller.signal.aborted || error?.name === 'AbortError') throw error;
+        if (error instanceof SyntaxError) throw answerError('DeepSeek returned invalid response JSON', 'BAD_PAYLOAD', true);
+        throw networkError(error);
       }
       const choice = payload?.choices?.[0];
       const finishReason = choice?.finish_reason;
@@ -338,6 +368,9 @@ export class DeepSeekClient {
         timeoutError.reason = 'TIMEOUT';
         timeoutError.retryable = false;
         throw timeoutError;
+      }
+      if (!(error instanceof Error) || !error.reason) {
+        throw networkError(error);
       }
       throw error;
     } finally {

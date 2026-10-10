@@ -383,3 +383,20 @@ test('a tutor answer with single-backslash LaTeX is served instead of an outage'
     assert.deepEqual(body.suggestedQuestions, ['若高度变为 80m，落地时间是多少？']);
   }, { deepSeekClient });
 });
+
+test('provider overload that outlasts its retries is reported as temporary capacity', async () => {
+  const deepSeekClient = new DeepSeekClient({
+    apiKey: 'test-only',
+    overloadRetryDelayMs: 1,
+    fetchImpl: async () => ({ ok: true, status: 200, async json() { return { model: 'deepseek-flash', choices: [{ message: { content: '{}' }, finish_reason: 'insufficient_system_resource' }] }; } })
+  });
+  await withServer(async (baseUrl) => {
+    const response = await fetch(`${baseUrl}/api/v1/tutor/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: '请完整解答', responseLevel: 'steps', context: { mode: 'question', subject: '物理', originalQuestion: '求自由落体时间' } })
+    });
+    assert.equal(response.status, 429);
+    assert.deepEqual(await response.json(), { error: 'AI_BUSY', reason: 'UPSTREAM_OVERLOADED' });
+  }, { deepSeekClient });
+});

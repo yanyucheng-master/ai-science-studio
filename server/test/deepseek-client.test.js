@@ -278,19 +278,87 @@ for (const finishReason of ['length', 'content_filter', 'aborted', undefined]) {
 }
 
 // Provider overload is transient, unlike a cut-off answer, so it may be retried.
-test('retries an answer stopped by provider overload', async () => {
+test('retries an answer stopped by provider overload after a pause', async () => {
   let calls = 0;
+  const times = [];
   const client = new DeepSeekClient({
     apiKey: 'test-only',
+    overloadRetryDelayMs: 20,
     fetchImpl: async () => {
       calls += 1;
+      times.push(Date.now());
       return calls < 3 ? jsonResponse('{"mode":"explanation"}', 'insufficient_system_resource')
         : jsonResponse('{"mode":"explanation","title":"答案","answer":"解释","plan":null,"visual":{"kind":"none","title":""}}');
     }
   });
   assert.equal((await client.generate('测试')).mode, 'explanation');
   assert.equal(calls, 3);
+  assert.ok(times[1] - times[0] >= 15 && times[2] - times[1] >= 35, JSON.stringify(times));
   assert.equal(client.activeRequests, 0);
+});
+
+test('a dropped connection while reading is a network error with one retry', async () => {
+  let calls = 0;
+  const client = new DeepSeekClient({
+    apiKey: 'test-only',
+    fetchImpl: async () => {
+      calls += 1;
+      return { ok: true, status: 200, async json() { throw new TypeError('terminated'); } };
+    }
+  });
+  await assert.rejects(client.generate('测试'), { code: 'AI_UPSTREAM_ERROR', reason: 'NETWORK', attempts: 2 });
+  assert.equal(calls, 2);
+});
+
+test('network errors keep their single retry even after the content retry window', async () => {
+  let calls = 0;
+  let now = 0;
+  const realNow = Date.now;
+  Date.now = () => now;
+  try {
+    const client = new DeepSeekClient({
+      apiKey: 'test-only',
+      fetchImpl: async () => {
+        calls += 1;
+        now += 130000;
+        if (calls === 1) throw new TypeError('fetch failed');
+        return jsonResponse('{"mode":"explanation","title":"答案","answer":"解释","plan":null,"visual":{"kind":"none","title":""}}');
+      }
+    });
+    assert.equal((await client.generate('测试')).mode, 'explanation');
+    assert.equal(calls, 2);
+  } finally {
+    Date.now = realNow;
+  }
+});
+
+test('no new paid attempt starts after the client has gone away', async () => {
+  let calls = 0;
+  const gone = new AbortController();
+  const client = new DeepSeekClient({
+    apiKey: 'test-only',
+    fetchImpl: async () => {
+      calls += 1;
+      gone.abort();
+      return jsonResponse('');
+    }
+  });
+  await assert.rejects(client.generate('测试', '', { signal: gone.signal }), { reason: 'EMPTY_CONTENT', attempts: 1 });
+  assert.equal(calls, 1);
+});
+
+test('a history that starts with an answer still opens with the student question', async () => {
+  let request;
+  const client = new DeepSeekClient({
+    apiKey: 'test-only',
+    fetchImpl: async (_url, options) => {
+      request = JSON.parse(options.body);
+      return jsonResponse('{"mode":"explain","summary":"换个角度看","steps":[],"formulas":[],"finalAnswer":null,"checks":[],"followUp":"","parameterPatch":null,"warnings":[]}');
+    }
+  });
+  await client.chat({ responseLevel: 'explain', message: '没看懂', history: [{ role: 'assistant', content: '先看受力。' }], context: { mode: 'question', subject: '物理', originalQuestion: '圆形轨道题' } });
+  assert.deepEqual(request.messages.slice(1, 3).map((item) => item.role), ['user', 'assistant']);
+  assert.equal(request.messages[1].content, '圆形轨道题');
 });
 
 test('reason codes identify cut-off answers without retrying them', async () => {

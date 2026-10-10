@@ -102,6 +102,8 @@ function aiErrorStatus(error) {
   if (error?.code === 'AI_AUTH_FAILED') return { status: 503, error: 'AI_NOT_CONFIGURED' };
   // The model answered but the answer was unusable (empty, unparseable or cut
   // off): this is not an outage or an exhausted balance.
+  // Provider overload is a temporary capacity limit, not a malformed answer.
+  if (error?.reason === 'UPSTREAM_OVERLOADED') return { status: 429, error: 'AI_BUSY' };
   if (error?.code === 'INVALID_AI_RESPONSE') return { status: 502, error: 'INVALID_AI_RESPONSE' };
   if (error?.code === 'AI_RATE_LIMITED') return { status: 429, error: 'AI_RATE_LIMITED' };
   if (error?.code === 'AI_BUSY') return { status: 429, error: 'AI_BUSY' };
@@ -141,6 +143,13 @@ export function createMasterLabServer(options = {}) {
     const url = new URL(request.url || '/', 'http://localhost');
     let status = 500;
     let aiFailure = null;
+    // Retries stop once the browser has gone away, so they do not spend the
+    // public balance on an answer nobody will read.
+    const clientGone = new AbortController();
+    response.on('close', () => {
+      if (!response.writableEnded) clientGone.abort();
+    });
+    const aiOptions = { signal: clientGone.signal };
 
     try {
       if (!applyCors(request, response, allowedOrigins)) {
@@ -195,7 +204,7 @@ export function createMasterLabServer(options = {}) {
         }
         if (deepSeek.configured) {
           try {
-            const raw = await deepSeek.generate(input.question, input.preferredSubject);
+            const raw = await deepSeek.generate(input.question, input.preferredSubject, aiOptions);
             const validated = validateModelResponse(raw);
             if (validated) {
               status = 200;
@@ -225,7 +234,7 @@ export function createMasterLabServer(options = {}) {
         }
         if (deepSeek.configured) {
           try {
-            const raw = await deepSeek.tutor(plan, message);
+            const raw = await deepSeek.tutor(plan, message, aiOptions);
             const validated = validateTutorResponse(raw, plan);
             if (validated) {
               status = 200;
@@ -264,7 +273,7 @@ export function createMasterLabServer(options = {}) {
           return;
         }
         try {
-          const raw = await deepSeek.chat(input);
+          const raw = await deepSeek.chat(input, aiOptions);
           const validated = validateTutorChatResponse(raw, input);
           if (!validated) {
             status = 502;
