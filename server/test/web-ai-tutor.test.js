@@ -393,7 +393,7 @@ test('web: damaged stored sessions fail closed and duplicate IDs are ignored', (
 test('web: compact presentation keeps distinct sub-answers and collapses an exact repeated conclusion', () => {
   const tutor=loadTutor();
   const result=tutor.getAnswerPresentation({...answer,summary:'重复开场',steps:['列式：总取法为10。','结论：概率为3/5，无单位。'],finalAnswer:'概率为3/5，无单位。'},{responseLevel:'steps'});
-  assert.equal(result.lead,'');assert.equal(result.result,'');assert.equal(result.steps.length,2);
+  assert.equal(result.layout,'steps');assert.equal(result.paragraphs.length,0);assert.equal(result.result,'');assert.equal(result.steps.length,2);
   const multiple=tutor.getAnswerPresentation({...answer,steps:['第一问距离40m。'],finalAnswer:'第一问40m；第二问4s。'},{responseLevel:'steps'});
   assert.match(multiple.result,/4s/);
 });
@@ -433,4 +433,57 @@ test('web: checking reasoning bypasses an automatic hint preference but not the 
   assert.equal(tutor.selectResponseLevel('为什么加速度取负号？'), 'hint');
   tutor.state.responseMode = 'hint';
   assert.equal(tutor.selectResponseLevel('帮我检查一下我的思路'), 'hint');
+});
+
+test('web: concept, method and greeting messages get an explanation while value questions keep steps', () => {
+  const tutor = loadTutor();
+  for (const question of ['什么是加速度？', '楞次定律是什么', '摩擦力的方向怎么判断？', '惯性和质量有什么关系', '你好']) {
+    assert.equal(tutor.selectResponseLevel(question), 'explain', question);
+  }
+  for (const question of ['这道题的答案是什么？', '小球从 20 m 高处落下，落地时速度方向是什么', '求物体受到的摩擦力是多少']) {
+    assert.equal(tutor.selectResponseLevel(question), 'steps', question);
+  }
+});
+
+test('web: explanations and hints read as prose while full solutions stay numbered', () => {
+  const tutor = loadTutor();
+  const explain = tutor.softValidateChat({ mode: 'explain', summary: '加速度描述速度变化的快慢。\n它等于速度变化量与所用时间之比。',
+    steps: [], formulas: [], finalAnswer: null }, 'explain');
+  const prose = tutor.getAnswerPresentation(explain, { responseLevel: 'explain' });
+  assert.equal(prose.layout, 'prose');
+  assert.equal(prose.paragraphs.length, 2);
+  assert.equal(prose.steps.length, 0);
+  const equationBlock = '\\[\\begin{cases}\n2x+y=5\\\\\nx-y=1\n\\end{cases}\\]';
+  const multiline = tutor.getAnswerPresentation({ mode: 'explain',
+    summary: '把两个关系放在一起：' + equationBlock + '\n再观察未知量的系数。', steps: [], finalAnswer: null },
+    { responseLevel: 'explain' });
+  assert.deepEqual(Array.from(multiline.paragraphs), ['把两个关系放在一起：' + equationBlock, '再观察未知量的系数。'],
+    'paragraph breaks must not split a complete multiline LaTeX equation');
+  // An older gateway prompt may still send titled steps for an explanation.
+  const legacy = tutor.softValidateChat({ mode: 'explain', summary: '先看方向。',
+    steps: ['分析：减速时加速度与速度反向。', '结论：取初速度方向为正，a 为负。'], finalAnswer: '取初速度方向为正，a 为负。' }, 'explain');
+  const legacyDisplay = tutor.getAnswerPresentation(legacy, { responseLevel: 'explain' });
+  assert.equal(legacyDisplay.layout, 'prose');
+  assert.deepEqual(Array.from(legacyDisplay.paragraphs), ['先看方向。', '减速时加速度与速度反向。', '取初速度方向为正，a 为负。']);
+  assert.equal(legacyDisplay.result, '');
+  const hint = tutor.getAnswerPresentation({ mode: 'hint', summary: '先判断末速度是否为零。', steps: [], finalAnswer: null }, { responseLevel: 'hint' });
+  assert.equal(hint.layout, 'hint');
+  assert.equal(hint.result, '');
+  const clarification = tutor.getAnswerPresentation({ mode: 'clarification', summary: '缺少质量，请补充。', steps: [] }, { responseLevel: 'hint' });
+  assert.equal(clarification.layout, 'prose');
+  const full = tutor.getAnswerPresentation(answer, { responseLevel: 'steps' });
+  assert.equal(full.layout, 'steps');
+  assert.equal(full.steps.length, 2);
+  const short = tutor.getAnswerPresentation({ mode: 'answer', summary: '惯性大小只由质量决定。', steps: [], finalAnswer: null }, { responseLevel: 'steps' });
+  assert.equal(short.layout, 'prose');
+  assert.equal(short.steps.length, 0);
+});
+
+test('web: gateway format rules follow the requested depth', () => {
+  const tutor = loadTutor(undefined, { noKey: true });
+  const request = level => tutor.gatewayChatRequest({ message: '问题', responseLevel: level, history: [], context: {} }).message;
+  assert.match(request('explain'), /自然段/);
+  assert.doesNotMatch(request('explain'), /短动作标题/);
+  assert.match(request('hint'), /一两句话/);
+  assert.match(request('steps'), /短动作标题/);
 });
