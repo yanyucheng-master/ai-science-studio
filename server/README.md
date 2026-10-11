@@ -79,6 +79,16 @@ The gateway must deploy the updated prompt and protocol to return
 `suggestedQuestions`. Older gateways remain readable but may omit suggestions;
 the web client does not fabricate replacements. The browser-direct AI route
 uses the matching prompt and validation bundled with the frontend.
+`web/tutor-checks.js` mirrors the topic, induction-rod and coverage checks in
+`src/protocol.js` for the browser-direct route; `test/web-tutor-checks.test.js`
+compares both implementations, so change them together. Numeric checks apply
+when a turn asks for the full calculation or the reply states a numeric result;
+a hint that withholds the answer is not rejected for lacking it. The direct route
+regenerates once after a topic or numeric check fails; the gateway returns an
+error instead. Missing coverage adds a reminder on either route. In hint mode,
+the web client filters explicit conclusions and detected numeric results before
+display, including common values and simple numeric fractions. These presentation
+checks do not establish that an arbitrary natural-language reply contains no spoilers.
 
 ## Deployment
 

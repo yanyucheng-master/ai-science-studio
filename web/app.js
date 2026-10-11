@@ -5856,7 +5856,11 @@ function dispatchAIContextChanged(reason = "context") {
 }
 
 function buildMasterLabAIContext() {
-  const inputQuestion = $("#questionInput")?.value.trim() || "";
+  const questionInput = $("#questionInput");
+  // The prefilled sample is not the student's problem until it has been generated;
+  // otherwise a question asked from the home-page AI entry would be tied to it.
+  const untouchedSample = !state.hasGenerated && questionInput && questionInput.value === questionInput.defaultValue;
+  const inputQuestion = untouchedSample ? "" : questionInput?.value.trim() || "";
   const generatedQuestion = state.generatedQuestion || "";
   const currentExperimentIsActive = state.hasGenerated && generatedQuestion && inputQuestion === generatedQuestion;
   if (!currentExperimentIsActive) {

@@ -10215,3 +10215,39 @@ body.ai-tutor-route .ai-tutor-workspace.is-fullscreen { display: flex; }
 .ai-hint-card p { margin: 0; line-height: 1.8; }
 .ai-hint-label { justify-self: start; padding: 0 8px; color: #1a56d6; font-size: 11px; font-weight: 700; line-height: 20px; border-radius: 999px; background: #dcebff; }
 .ai-hint-card + .ai-follow-up { margin-top: 8px !important; }
+
+/* AI tutor 2026-10-11: readable control sizes (body text is 14px). */
+.ai-message-source { font-size: 11px; }
+.ai-tutor-send, .ai-tutor-stop { font-size: 13px; }
+.ai-tutor-footer, .ai-tutor-footer button { font-size: 12px; }
+.ai-tutor-footer span { font-size: 11px; }
+.ai-thinking-badge, .ai-thinking-meta, .ai-thinking-phase, .ai-thinking-long-wait { font-size: 11px; }
+.ai-thinking-badge .ai-thinking-caret { font-size: 11px; }
+.ai-thinking-stage { font-size: 12px; }
+.ai-tutor-context p { font-size: 12px; }
+.ai-tutor-context span, .ai-context-controls small { font-size: 11px; }
+.ai-tutor-composer > label, .ai-tutor-composer > .ai-composer-heading { font-size: 12px; }
+.ai-composer-hint { font-size: 11px; }
+.ai-suggestions-label, .ai-quote-source, .ai-quote-context, .ai-message-context, .ai-context-change small,
+.ai-session-open small, .ai-session-toolbar > span, .ai-session-panel > p { font-size: 11px; }
+.ai-parameter-patch span { font-size: 11px; }
+.ai-parameter-patch p, .ai-parameter-patch button { font-size: 12px; }
+.ai-tutor-header-actions > button:not(.icon-button) { font-size: 12px; }
+.ai-tutor-workspace.is-floating .ai-tutor-identity p { font-size: 11px; }
+
+/* Hint notes, answer tools, quote origins and the streaming preview. */
+.ai-hint-note { margin: 2px 0 0 !important; color: #6a7f9c; font-size: 12px; }
+.ai-answer-tools { display: flex; justify-content: flex-end; gap: 6px; margin-top: 8px; }
+.ai-copy-answer { padding: 3px 10px; color: #3465a2; font: inherit; font-size: 12px; border: 1px solid #d5e2f4; border-radius: 7px; background: #f4f8ff; cursor: pointer; }
+.ai-copy-answer:hover { background: #e7f0ff; }
+.ai-quote-jump { margin-left: 6px; padding: 0 7px; color: #2d73f6; font: inherit; font-size: 11px; line-height: 18px; border: 1px solid #c6dbfb; border-radius: 999px; background: #fff; cursor: pointer; }
+.ai-message.user .ai-quote-jump { color: #fff; border-color: rgba(255, 255, 255, .55); background: rgba(255, 255, 255, .14); }
+.ai-copy-answer:focus-visible, .ai-quote-jump:focus-visible { outline: 2px solid #3174e8; outline-offset: 2px; }
+.ai-message.is-highlighted .ai-message-bubble { box-shadow: 0 0 0 3px #9cc2f8, 0 8px 18px rgba(46, 82, 132, .07); transition: box-shadow .3s; }
+.ai-stream-preview { margin-top: 10px; padding: 9px 11px; color: #3f536f; font-size: 13px; line-height: 1.75; border: 1px dashed #c6dbfb; border-radius: 10px; background: #fbfdff; overflow-wrap: anywhere; }
+.ai-stream-preview-label { display: block; margin-bottom: 4px; color: #6a7f9c; font-size: 11px; }
+.ai-stream-preview-body p { margin: 0; }
+.ai-stream-preview-body p + p { margin-top: 6px; }
+.ai-stream-preview-body ol { display: grid; gap: 6px; margin: 4px 0 0; padding-left: 20px; }
+.ai-tutor-header-actions > button:not(.icon-button) { white-space: nowrap; }
+.ai-tutor-identity .online { font-size: 11px; }
