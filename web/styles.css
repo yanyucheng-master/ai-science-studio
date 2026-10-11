@@ -10205,3 +10205,13 @@ body.ai-tutor-route .ai-tutor-workspace.is-fullscreen { display: flex; }
     grid-template-rows: minmax(300px, 1fr) auto;
   }
 }
+
+/* AI answers read like a tutor talking: paragraphs for explanations, a tip card for hints,
+   numbered steps only for full solutions, checks and variants. */
+.ai-answer-prose { display: grid; gap: 8px; overflow-wrap: anywhere; }
+.ai-answer-prose p { margin: 0; line-height: 1.85; }
+.ai-answer-prose .ai-answer-conclusion { padding: 7px 10px; color: #234a78; font-weight: 600; border-radius: 8px; background: #f0f6ff; }
+.ai-hint-card { display: grid; gap: 4px; padding: 9px 12px 10px; color: #2f4f78; border: 1px solid #d6e6ff; border-radius: 10px; background: linear-gradient(160deg, #f7faff 0%, #edf4ff 100%); overflow-wrap: anywhere; }
+.ai-hint-card p { margin: 0; line-height: 1.8; }
+.ai-hint-label { justify-self: start; padding: 0 8px; color: #1a56d6; font-size: 11px; font-weight: 700; line-height: 20px; border-radius: 999px; background: #dcebff; }
+.ai-hint-card + .ai-follow-up { margin-top: 8px !important; }
