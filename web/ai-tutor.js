@@ -97,6 +97,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     pendingExpanded: false,
     requestSerial: 0,
     lastRequest: null,
+    lastOutcome: "",
     lastError: null,
     floating: false,
     floatingPosition: null,
@@ -117,7 +118,10 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     storageFailed: false,
     writerId: globalThis.crypto?.randomUUID?.() || `tab-${Date.now()}-${Math.random()}`,
     undo: null,
-    undoTimer: null
+    undoTimer: null,
+    prewarmedAt: 0,
+    floatingSaveTimer: null,
+    previewUnits: 0
   };
 
   const elements = {
@@ -153,6 +157,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     historyPanel: document.querySelector("#aiTutorHistoryPanel"),
     historyList: document.querySelector("#aiTutorHistoryList"),
     newConversation: document.querySelector("#aiTutorNewButton"),
+    exportConversation: document.querySelector("#aiTutorExportButton"),
     storageStatus: document.querySelector("#aiTutorStorageStatus"),
     responseMode: document.querySelector("#aiTutorResponseMode"),
     hintChip: document.querySelector("#aiTutorHintChip"),
@@ -235,12 +240,22 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     if (!Array.isArray(value)) return [];
     return value.filter(quote => recordObject(quote) && text(quote.text) && quote.text.length <= MAX_QUOTE_LENGTH)
       .slice(0, MAX_QUOTES).map(quote => ({ text: quote.text.trim(), source: text(quote.source, "引用文字").slice(0, 80),
-        ...(recordObject(quote.context) ? { context: contextSnapshot(quote.context) } : {}) }));
+        ...(recordObject(quote.context) ? { context: contextSnapshot(quote.context) } : {}),
+        ...(validMessageId(quote.origin) ? { origin: quote.origin } : {}) }));
+  }
+
+  function validMessageId(value) {
+    return typeof value === "string" && /^m-[a-z0-9-]{1,40}$/.test(value);
+  }
+
+  function newMessageId() {
+    return `m-${Date.now().toString(36)}-${Math.floor(randomUnit() * 1e8).toString(36)}`;
   }
 
   function savedMessage(value) {
     if (!recordObject(value) || !["user", "assistant", "context"].includes(value.role)) return null;
     const context = contextSnapshot(value.context);
+    const id = validMessageId(value.id) ? { id: value.id } : {};
     if (value.role === "context") {
       return text(value.content) ? { role: "context", content: value.content.slice(0, 1200), context,
         previousContext: contextSnapshot(value.previousContext) } : null;
@@ -249,18 +264,37 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       const message = text(value.text || value.content).slice(0, 2000);
       if (!message) return null;
       const quotes = savedQuotes(value.quotes);
-      return { role: "user", text: message, quotes, context,
+      return { role: "user", text: message, quotes, context, ...id,
         content: composeQuotedMessage(message, quotes, context) };
     }
-    if (value.error === true) return { role: "assistant", content: text(value.content).slice(0, 1000), error: true, context };
+    if (value.error === true) return { role: "assistant", content: text(value.content).slice(0, 1000), error: true, context, ...id };
     const level = ["hint", "explain", "steps", "check", "variant"].includes(value.level) ? value.level : "explain";
-    const payload = softValidateChat(value.payload, level);
+    const payload = softValidateChat(value.payload, level, { context, message: text(value.question) });
     if (!payload) return null;
     // Persist display data only. Never restore executable patches or provider reasoning.
     payload.source = value.payload.source === "local_fallback" ? "local_fallback" : "saved";
     const message = text(value.question).slice(0, 2000);
-    return { role: "assistant", payload, context, level, question: message,
+    return { role: "assistant", payload, context, level, question: message, ...id,
       content: structuredToHistoryText(payload, { responseLevel: level, message }) };
+  }
+
+  // The last request is kept so a failed or interrupted answer can be retried after
+  // a reload with its original conditions and history boundary.
+  function savedRetry(value) {
+    if (!recordObject(value)) return null;
+    const message = text(value.message).slice(0, 2000);
+    const responseLevel = ["hint", "explain", "steps", "check", "variant"].includes(value.responseLevel) ? value.responseLevel : "";
+    if (!message || !responseLevel) return null;
+    const raw = recordObject(value.request) && typeof value.request.message === "string" ? value.request : null;
+    const request = raw ? {
+      message: raw.message.slice(0, 2000),
+      responseLevel,
+      history: (Array.isArray(raw.history) ? raw.history : []).slice(-MAX_HISTORY_ITEMS)
+        .filter(item => recordObject(item) && ["user", "assistant"].includes(item.role) && typeof item.content === "string")
+        .map(item => ({ role: item.role, content: item.content.slice(0, 1600) })),
+      context: contextSnapshot(raw.context)
+    } : null;
+    return { message, responseLevel, quotes: savedQuotes(value.quotes), request };
   }
 
   function savedSession(value) {
@@ -269,7 +303,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     const draft = typeof value.draft === "string" ? value.draft.slice(0, 2000) : "";
     const quotes = savedQuotes(value.quotes);
     if (!messages.length && !draft.trim() && !quotes.length) return null;
-    return { id: value.id, context: contextSnapshot(value.context), messages, draft, quotes,
+    return { id: value.id, context: contextSnapshot(value.context), messages, draft, quotes, retry: savedRetry(value.retry),
       responseMode: ["hint", "steps"].includes(value.responseMode) ? value.responseMode : "auto",
       hintMode: value.hintMode === true, updatedAt: Number.isFinite(value.updatedAt) ? value.updatedAt : 0,
       writer: text(value.writer).slice(0, 100) };
@@ -292,7 +326,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
 
   function currentSessionSnapshot() {
     return savedSession({ id: state.sessionId, context: state.context, messages: state.messages,
-      draft: elements.input.value, quotes: state.quotes, responseMode: state.responseMode,
+      draft: elements.input.value, quotes: state.quotes, responseMode: state.responseMode, retry: state.lastRequest,
       hintMode: state.hintMode, updatedAt: Date.now(), writer: state.writerId });
   }
 
@@ -360,6 +394,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     clearPending();
     setBusy(false);
     state.lastRequest = null;
+    state.lastOutcome = "";
     state.lastError = null;
     elements.retry.disabled = true;
   }
@@ -383,12 +418,18 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       if (entry.role === "context") addContextChange(entry.previousContext, entry.context, entry.content);
       else addMessage(entry.role, entry.role === "user" ? entry.text : entry.error ? entry.content : entry.payload,
         { quotes: entry.quotes, context: entry.context, error: entry.error, source: entry.payload?.source,
-          responseLevel: entry.level, message: entry.question });
+          responseLevel: entry.level, message: entry.question, id: entry.id });
     }
     state.restoring = false;
     renderQuotes();
     updateContext(state.context);
-    setBusy(false, initial ? "已恢复上次会话与草稿，使用保存的题目条件" : "已恢复会话，使用保存的题目条件");
+    // An unanswered last question (failed, or interrupted by a reload) can be retried as sent.
+    const last = state.messages.filter(item => item.role !== "context").at(-1);
+    state.lastRequest = session.retry;
+    state.lastOutcome = session.retry ? (last?.role === "assistant" && !last.error ? "answered" : "failed") : "";
+    setBusy(false, state.lastOutcome === "failed"
+      ? "上次的提问没有得到回答，可点“重试上一问”按原条件继续"
+      : initial ? "已恢复上次会话与草稿，使用保存的题目条件" : "已恢复会话，使用保存的题目条件");
     scrollToLatest(true);
     if (!initial) persistConversation();
   }
@@ -476,10 +517,20 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     elements.workspace.classList.toggle("is-busy", isBusy);
     elements.workspace.setAttribute("aria-busy", String(isBusy));
     elements.stop.disabled = !isBusy;
-    elements.retry.disabled = isBusy || !state.lastRequest;
+    syncRetryButton(isBusy);
     elements.messages.querySelectorAll(".ai-suggested-question").forEach(button => { button.disabled = isBusy; });
     syncComposer();
     if (message) elements.status.textContent = message;
+  }
+
+  // Before an answer arrives the button retries; afterwards it regenerates the answer.
+  function syncRetryButton(isBusy = elements.workspace.classList.contains("is-busy")) {
+    const answered = state.lastOutcome === "answered";
+    elements.retry.textContent = answered ? "重新回答" : "重试上一问";
+    elements.retry.title = answered
+      ? "按上一问原来的题目条件和对话位置，重新生成一次回答"
+      : "按原来的题目条件重新发送上一问";
+    elements.retry.disabled = isBusy || !state.lastRequest;
   }
 
   function errorMessage(error) {
@@ -492,7 +543,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       BODY_TOO_LARGE: "题目或对话内容过长，请精简本次提问或清空对话后重试。",
       MESSAGE_TOO_LONG: "本次提问过长，请精简后发送；原题和已有对话已保留。",
       INVALID_MATH: "本次公式未通过排版校验，请重试以重新生成完整公式。",
-      AI_BUSY: "公益后台的 AI 并发容量已满，请稍后重试。",
+      AI_BUSY: "公益后台的 AI 正忙，已自动排队重试 3 次仍未轮到，请稍后点“重试上一问”。",
       AI_TIMEOUT: "这道题分析时间较长，本次请求已超时。你可以重试，或先请求一个简短提示。",
       AI_UNAVAILABLE: hasBrowserApiKey()
         ? "个人 AI 接口暂时不可用，题目和实验状态已保留；不会自动使用公益余额。"
@@ -500,6 +551,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       INVALID_AI_RESPONSE: "AI 返回格式不符合约定，已拦截显示。请再试一次，或换个问法。",
       ORIGIN_NOT_ALLOWED: "当前网页地址尚未加入 AI 服务允许列表。",
       ABORTED: "已停止本次回答。",
+      ANSWER_CHECK_FAILED: "AI 的回答没有通过题意或数值核对，已拦截显示。可以点“重试上一问”，或换个问法。",
       GATEWAY_UNREACHABLE: "暂时连不上公益默认 AI 服务（免费后台闲置后首次唤醒约需一分钟，或当前网络无法访问），题目和对话已保留，请稍后点“重试上一问”。",
       NETWORK_ERROR: "暂时无法连接 AI 服务，请检查网络后重试。免费后台闲置后首次唤醒可能需要约一分钟。"
     };
@@ -690,7 +742,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     }).slice(0, 3).map(item => item.trim());
   }
 
-  function softValidateChat(raw, responseLevel) {
+  function softValidateChat(raw, responseLevel, request = null) {
     if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
     const mode = normalizeChatMode(raw.mode, responseLevel);
     const summary = text(raw.summary || raw.message || raw.answer || raw.finalAnswer || raw.content).slice(0, 1000);
@@ -706,7 +758,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     const warnings = asTextList(raw.warnings, 4, 300);
     // Explanations and hints are prose: keep their own summary even if the model also sent steps.
     const proseSummary = ["hint", "explain"].includes(responseLevel) ? text(raw.summary).slice(0, 1000) : "";
-    return {
+    const value = {
       schemaVersion: "1.0",
       mode,
       summary: !steps.length || ["clarification", "refusal"].includes(mode) ? summary : proseSummary,
@@ -719,11 +771,105 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       parameterPatch: null,
       warnings,
       source: "deepseek-browser",
-      model: DEEPSEEK_MODEL
+      model: DEEPSEEK_MODEL,
+      ...(raw.hintTrimmed === true ? { hintTrimmed: true } : {})
+    };
+    return responseLevel === "hint" ? enforceHintBoundary(value, raw, request) : value;
+  }
+
+  // Keep explicit conclusions and numeric results out of hints. A familiar number
+  // is not evidence that a result is a given: compare the whole stated condition.
+  const HINT_RESULT_NUMBER = /(?:=|＝|≈|得到|得出|求得|求出|解得|算得|算出|可得|等于|得|为|是|约)\s*[:：]?\s*[−-]?\s*(\d+(?:\.\d+)?)/g;
+  // A number with a unit is a quantity; one the problem did not give is a computed result.
+  const HINT_QUANTITY = /(\d+(?:\.\d+)?)\s*(?:m\/s²|m\/s\^?2|m\/s|km\/h|m²|m³|cm|mm|km|m|s|N|J|W|kg|g|mol|A|V|Ω|Pa|℃|°C|K|L|mL|%)(?![A-Za-z])/g;
+  const HINT_UNIT = /^(?:m|cm|mm|km|s|N|J|W|kg|g|mol|A|V|Ω|Pa|℃|°C|K|L|mL|%)(?![A-Za-z])/;
+  const HINT_ASSIGNMENT = /([A-Za-z](?:_\{?[A-Za-z0-9]+\}?|[₀-₉])?|[\u4e00-\u9fa5]{1,12})(?:=|＝|≈|为|是)([−+-]?√?\d+(?:\.\d+)?(?:\/\d+(?:\.\d+)?)?)(?=$|[，。；！？,;!?:：=＝≈)\]}\n]|(?:m|cm|mm|km|s|N|J|W|kg|g|mol|A|V|Ω|Pa|℃|°C|K|L|mL|%)(?![A-Za-z]))/g;
+  const HINT_TRIMMED_NOTICE = "已按“只给提示”隐藏后续内容；需要完整解答时可直接说明，或选择“完整讲解”。";
+  const HINT_WITHHELD = "这次回复包含了计算结果，已按“只给提示”隐藏。可以先说说你打算从哪个条件或公式入手，或选择“完整讲解”查看解答。";
+
+  function numberKey(value) {
+    return String(Number(Number(value).toFixed(6)));
+  }
+
+  function hintNumericText(value) {
+    return normalizeMathSource(String(value ?? ""))
+      .replace(/\\frac\{\s*([−+-]?\d+(?:\.\d+)?)\s*\}\{\s*(\d+(?:\.\d+)?)\s*\}/g, "$1/$2")
+      .replace(/\\sqrt\{\s*(\d+(?:\.\d+)?)\s*\}/g, "√$1")
+      .replace(/\s+/g, "");
+  }
+
+  function hintGivenConditions(request) {
+    const sources = [request?.context?.originalQuestion,
+      window.MasterLabTutorChecks?.latestQuestion?.(request) ?? request?.message,
+      ...Object.entries(request?.context?.parameters || {}).map(([key, value]) => `${PARAMETER_NAMES[key] || key}=${value}`)];
+    const numbers = new Set();
+    const assignments = new Set();
+    sources.forEach(source => (normalizeMathSource(String(source ?? "")).match(/\d+(?:\.\d+)?/g) || [])
+      .forEach(number => numbers.add(numberKey(number))));
+    sources.forEach(source => {
+      for (const match of hintNumericText(source).matchAll(HINT_ASSIGNMENT)) assignments.add(`${match[1]}=${match[2]}`);
+    });
+    // Stopping is a usable given in a braking-distance hint, not a global exemption for zero.
+    const question = text(request?.context?.originalQuestion);
+    if (/刹车|停止|停下|静止/.test(question) && !/(?:求|计算|多少).{0,8}(?:末速度|最终速度)/.test(question)) {
+      assignments.add("末速度=0");
+      numbers.add("0");
+    }
+    return { numbers, assignments };
+  }
+
+  function hintLeaks(value, givens, answerKey) {
+    const source = stripStepNumber(text(value).replace(/\*\*|__/g, ""));
+    if (!source) return false;
+    if (/^(?:最终)?(?:结论|答案|结果)\s*(?:[:：=＝]|为|是)/.test(source)) return true;
+    if (answerKey.length >= 2 && answerTextKey(source).includes(answerKey)) return true;
+    for (const match of hintNumericText(source).matchAll(HINT_ASSIGNMENT)) {
+      if (!givens.assignments.has(`${match[1]}=${match[2]}`)) return true;
+    }
+    const normalized = normalizeMathSource(source);
+    for (const match of normalized.matchAll(HINT_RESULT_NUMBER)) {
+      const tail = normalized.slice(match.index + match[0].length).trimStart();
+      // A symbolic coefficient such as -2ax belongs to a formula, not a scalar result.
+      const factor = tail.replace(/^[×·*]\s*/, "");
+      if (/^[A-Za-z]/.test(factor) && !HINT_UNIT.test(factor)) continue;
+      if (/^(?:得到|得出|求得|求出|解得|算得|算出|可得|得)/.test(match[0]) ||
+          !givens.numbers.has(numberKey(match[1]))) return true;
+    }
+    for (const match of normalized.matchAll(HINT_QUANTITY)) {
+      if (!givens.numbers.has(numberKey(match[1]))) return true;
+    }
+    return false;
+  }
+
+  function enforceHintBoundary(value, raw, request) {
+    if (["clarification", "refusal"].includes(value.mode)) return value;
+    const givens = hintGivenConditions(request);
+    const answerKey = answerTextKey(text(raw?.finalAnswer) || text(raw?.answer));
+    const leaks = item => hintLeaks(item, givens, answerKey);
+    const clues = [...answerParagraphs(value.summary),
+      ...value.steps.map(stripStepNumber)];
+    const firstLeak = clues.findIndex(leaks);
+    // A hint is one or two short clues: stop before the first revealed result.
+    const kept = (firstLeak < 0 ? clues : clues.slice(0, firstLeak)).slice(0, 2)
+      .map(clue => clue.replace(STEP_TITLE_PATTERN, ""));
+    const formulas = value.formulas.filter(formula => !leaks(formula)).slice(0, 2);
+    const followUp = leaks(value.followUp) ? "" : value.followUp;
+    const suggestedQuestions = value.suggestedQuestions.filter(question => !leaks(question));
+    const warnings = value.warnings.filter(warning => !leaks(warning));
+    const trimmed = kept.length < clues.length || formulas.length < value.formulas.length ||
+      followUp !== value.followUp || suggestedQuestions.length < value.suggestedQuestions.length || warnings.length < value.warnings.length;
+    return {
+      ...value,
+      mode: "hint",
+      summary: kept.length ? kept.join("\n") : HINT_WITHHELD,
+      steps: [],
+      finalAnswer: null,
+      formulas, followUp, suggestedQuestions, warnings,
+      ...(trimmed || value.hintTrimmed ? { hintTrimmed: true } : {})
     };
   }
 
-  function fallbackChatFromText(rawText, responseLevel) {
+  function fallbackChatFromText(rawText, responseLevel, request = null) {
     const source = text(rawText);
     // A broken JSON document is not a readable answer, especially for full steps.
     if (responseLevel === "steps" || /```|^\s*[\[{]|[\[{]\s*"|"(?:mode|summary|steps|finalAnswer)"\s*:/.test(source)) return null;
@@ -738,7 +884,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       checks: [],
       followUp: "",
       warnings: ["模型未按约定 JSON 返回，已转为可读文本。"]
-    }, responseLevel);
+    }, responseLevel, request);
   }
 
   function softValidateGenerate(raw) {
@@ -903,7 +1049,8 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       let content = "";
       let reasoning = "";
       if (useStream) {
-        const streamed = await readSseChat(response, controller, ({ reasoning: next }) => {
+        const streamed = await readSseChat(response, controller, ({ reasoning: next, content: partial, kind }) => {
+          if (kind === "content") { options.onContent?.(partial); return; }
           state.pendingReasoning = next;
           options.onReasoning?.(next);
         });
@@ -951,14 +1098,16 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     const requestOptions = {
       ...options,
       stream: Boolean(options.thinking),
-      onReasoning: (value) => updatePendingReasoning(value)
+      onReasoning: (value) => updatePendingReasoning(value),
+      // A hint is shown only after its boundary check, never while it streams.
+      onContent: request.responseLevel === "hint" ? null : (value) => updatePendingPreview(value)
     };
     try {
       const raw = await callDeepSeek(messages, requestOptions);
-      const validated = withReasoning(softValidateChat(raw, request.responseLevel));
+      const validated = withReasoning(softValidateChat(raw, request.responseLevel, request));
       if (validated) return validated;
       if (!options.thinking) {
-        const fallback = withReasoning(fallbackChatFromText([raw.summary, raw.message, raw.answer, raw.content].filter(Boolean).join("\n"), request.responseLevel));
+        const fallback = withReasoning(fallbackChatFromText([raw.summary, raw.message, raw.answer, raw.content].filter(Boolean).join("\n"), request.responseLevel, request));
         if (fallback) return fallback;
       }
     } catch (error) {
@@ -967,6 +1116,33 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       throw error;
     }
     throw new TutorRequestError("INVALID_AI_RESPONSE");
+  }
+
+  // The direct connection applies the gateway's content checks (tutor-checks.js):
+  // an off-topic or numerically wrong reply is regenerated once within two minutes,
+  // then reported; a missing requested part becomes a visible reminder.
+  function answerCheckIssues(request, payload) {
+    const checks = window.MasterLabTutorChecks;
+    if (!checks || !payload) return [];
+    return [...checks.topicMismatches(request, payload), ...checks.deterministicIssues(request, payload)];
+  }
+
+  function withCoverageReminder(request, payload) {
+    const missing = window.MasterLabTutorChecks?.missingCoverage(request, payload) || [];
+    const reminder = `完整性提醒：当前回答未明确覆盖${missing.join("、")}，请补充后再作为完整解答。`;
+    if (missing.length && !payload.warnings.includes(reminder)) payload.warnings = [...payload.warnings, reminder];
+    return payload;
+  }
+
+  async function checkedTutorChat(messages, request, options) {
+    const startedAt = Date.now();
+    for (let attempt = 1; ; attempt += 1) {
+      const payload = await completeTutorChat(messages, request, options);
+      if (!answerCheckIssues(request, payload).length) return withCoverageReminder(request, payload);
+      if (attempt >= 2 || Date.now() - startedAt > 120000) throw new TutorRequestError("ANSWER_CHECK_FAILED");
+      clearPendingPreview();
+      setPendingStage("回答没有通过题意或数值核对，正在重新生成……");
+    }
   }
 
   async function browserTutorChat(request) {
@@ -989,7 +1165,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
         ].join("\n")
       }
     ];
-    return completeTutorChat(messages, request, {
+    return checkedTutorChat(messages, request, {
       thinking: true,
       timeoutMs: CHAT_TIMEOUT_MS
     });
@@ -1117,8 +1293,9 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       const copy = createElement("div", "ai-quote-copy");
       const excerpt = createElement("blockquote", "");
       appendQuotedText(excerpt, quote.text);
-      copy.append(createElement("span", "ai-quote-source", `引用 ${index + 1} · ${quote.source}`),
-        excerpt);
+      const label = createElement("span", "ai-quote-source", `引用 ${index + 1} · ${quote.source}`);
+      if (quote.origin) label.append(createQuoteJump(quote.origin));
+      copy.append(label, excerpt);
       if (quote.context && contextScope(quote.context) !== contextScope(state.context)) {
         const conditions = createElement("small", "ai-quote-context", "引用使用先前条件，发送时会一并标明");
         conditions.title = quote.context.originalQuestion;
@@ -1137,6 +1314,25 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     });
     syncComposer();
     scheduleConversationSave();
+  }
+
+  // “原文” scrolls back to the answer or question a quote was taken from.
+  function createQuoteJump(origin) {
+    const button = createElement("button", "ai-quote-jump", "原文");
+    button.type = "button";
+    button.title = "回到引用的原回答";
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      const row = [...elements.messages.querySelectorAll(".ai-message")].find(node => node.dataset.messageId === origin);
+      if (!row) { notify("原回答不在当前对话中"); return; }
+      state.followLatest = false;
+      row.scrollIntoView({ block: "center", behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ? "auto" : "smooth" });
+      row.classList.remove("is-highlighted");
+      void row.offsetWidth;
+      row.classList.add("is-highlighted");
+      window.setTimeout(() => row.classList.remove("is-highlighted"), 1800);
+    });
+    return button;
   }
 
   function hideSelectionAction() {
@@ -1162,7 +1358,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     fragment.querySelectorAll("sup, sub").forEach(node => {
       node.replaceWith(document.createTextNode(`${node.tagName === "SUP" ? "^" : "_"}{${node.textContent}}`));
     });
-    fragment.querySelectorAll("button, .ai-message-source, .ai-message-context, .ai-reasoning-block, .ai-suggested-questions, .step-index, h4").forEach(node => node.remove());
+    fragment.querySelectorAll("button, .ai-message-source, .ai-quote-source, .ai-message-context, .ai-reasoning-block, .ai-suggested-questions, .ai-answer-tools, .step-index, h4").forEach(node => node.remove());
     fragment.querySelectorAll("li, p, .ai-formula-line, section, br").forEach(node => node.append(document.createTextNode("\n")));
     return fragment.textContent.replace(/[\t ]+/g, " ").replace(/\n\s*\n/g, "\n").trim();
   }
@@ -1186,18 +1382,23 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       hideSelectionAction();
       return;
     }
+    const sentQuote = !external ? start?.closest(".ai-sent-quote") : null;
+    const quoteOrigin = sentQuote?.contains(range.endContainer) ? sentQuote._quote : null;
     const selected = selectedPlainText(range, root);
     if (!selected) { hideSelectionAction(); return; }
     const rect = range.getBoundingClientRect();
     const bounds = root.getBoundingClientRect();
     const scrollBounds = external || root.id === "aiTutorContext" ? bounds : elements.messages.getBoundingClientRect();
     if (!rect.width || rect.bottom < scrollBounds.top || rect.top > scrollBounds.bottom) { hideSelectionAction(); return; }
-    const source = external ? (root.matches(".reason-step") ? `实验步骤 · 第 ${root.dataset.step} 步` :
+    const source = quoteOrigin ? quoteOrigin.source :
+      external ? (root.matches(".reason-step") ? `实验步骤 · 第 ${root.dataset.step} 步` :
       root.matches(".formula-spotlight") ? "实验公式" : root.id === "problemText" ? "实验题目" :
       root.id === "sceneTip" ? "实验结果" : root.id === "mentorMessage" ? "实验提示" : "实验数据") :
       root.id === "aiTutorContext" ? "当前题目" : root.closest(".ai-message.user") ? "我的提问" : "AI 回答";
+    const messageRow = external ? null : root.closest(".ai-message");
     state.selection = { text: selected, source, external,
-      context: contextSnapshot(external ? currentHostContext() : root.closest(".ai-message")?._tutorContext || state.context) };
+      origin: quoteOrigin ? quoteOrigin.origin : messageRow?.dataset.messageId,
+      context: contextSnapshot(quoteOrigin?.context || (external ? currentHostContext() : messageRow?._tutorContext || state.context)) };
     const button = elements.quoteSelection;
     button.hidden = false;
     const viewport = viewportBounds();
@@ -1217,7 +1418,8 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     }
     if (state.quotes.length >= MAX_QUOTES) { notify(`一次最多引用 ${MAX_QUOTES} 段，可先移除不需要的引用`); return; }
     if (!state.quotes.some(item => item.text === quote.text && item.source === quote.source && contextScope(item.context) === contextScope(quote.context))) {
-      state.quotes.push({ text: quote.text, source: quote.source, context: quote.context });
+      state.quotes.push({ text: quote.text, source: quote.source, context: quote.context,
+        ...(validMessageId(quote.origin) ? { origin: quote.origin } : {}) });
     }
     hideSelectionAction();
     window.getSelection()?.removeAllRanges();
@@ -1247,12 +1449,12 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     } else elements.latest.hidden = false;
   }
 
-  function validateGatewayChat(raw, responseLevel) {
+  function validateGatewayChat(raw, responseLevel, request = null) {
     if (!raw || typeof raw !== "object" || Array.isArray(raw) ||
       !["hint", "explain", "steps", "answer", "clarification", "refusal"].includes(raw.mode)) {
       throw new TutorRequestError("INVALID_AI_RESPONSE");
     }
-    const value = softValidateChat(raw, responseLevel);
+    const value = softValidateChat(raw, responseLevel, request);
     if (!value) throw new TutorRequestError("INVALID_AI_RESPONSE");
     return { ...value, source: text(raw.source) || "gateway", model: raw.model || value.model,
       parameterPatch: raw.parameterPatch || null };
@@ -1294,12 +1496,14 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
         if (!response.ok) throw new TutorRequestError(response.status === 429 ? "RATE_LIMITED" : "AI_UNAVAILABLE", response.status);
         throw new TutorRequestError("INVALID_AI_RESPONSE", response.status);
       }
+      // A JSON reply, even an error such as AI_BUSY, means the service is awake.
+      markServiceAwake();
       if (!response.ok) {
         const code = payload && typeof payload.error === "string" ? payload.error :
           (response.status === 429 ? "RATE_LIMITED" : "AI_UNAVAILABLE");
         throw new TutorRequestError(code, response.status);
       }
-      return path === "/api/v1/tutor/chat" ? validateGatewayChat(payload, body.responseLevel) : payload;
+      return path === "/api/v1/tutor/chat" ? validateGatewayChat(payload, body.responseLevel, body) : payload;
     } catch (error) {
       if (controller.signal.aborted) {
         throw new TutorRequestError(controller.signal.reason === "timeout" ? "AI_TIMEOUT" : "ABORTED");
@@ -1366,6 +1570,33 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     elements.workspace.style.left = `${x}px`;
     elements.workspace.style.top = `${y}px`;
     state.floatingPosition = { left: x, top: y };
+    window.clearTimeout(state.floatingSaveTimer);
+    state.floatingSaveTimer = window.setTimeout(saveFloatingLayout, 400);
+  }
+
+  // The in-page window reopens where the student left it, at the size they chose,
+  // pulled back inside the viewport when the window is smaller than before.
+  const FLOATING_STORAGE = "masterLab.tutorFloating.v1";
+
+  function readFloatingLayout() {
+    try {
+      const value = JSON.parse(localStorage.getItem(FLOATING_STORAGE) || "null");
+      if (!recordObject(value) || !Number.isFinite(value.left) || !Number.isFinite(value.top)) return null;
+      const size = key => Number.isFinite(value[key]) && value[key] >= 200 && value[key] <= 4000 ? Math.round(value[key]) : 0;
+      return { left: value.left, top: value.top, width: size("width"), height: size("height") };
+    } catch {
+      return null;
+    }
+  }
+
+  function saveFloatingLayout() {
+    if (!state.floating || !state.floatingPosition || state.drag) return;
+    const rect = elements.workspace.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    try {
+      localStorage.setItem(FLOATING_STORAGE, JSON.stringify({ ...state.floatingPosition,
+        width: Math.round(rect.width), height: Math.round(rect.height) }));
+    } catch { /* layout memory is a convenience */ }
   }
 
   function clampFloating() {
@@ -1383,7 +1614,15 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     else if (!detached && elements.workspace.previousSibling !== workspaceAnchor) workspaceAnchor.after(elements.workspace);
     const selectionParent = state.route ? elements.workspace : document.body;
     if (elements.quoteSelection.parentNode !== selectionParent) selectionParent.append(elements.quoteSelection);
-    if (state.floating && !elements.workspace.classList.contains("is-floating")) elements.workspace.style.removeProperty("height");
+    if (state.floating && !elements.workspace.classList.contains("is-floating")) {
+      elements.workspace.style.removeProperty("height");
+      const saved = readFloatingLayout();
+      if (saved) {
+        if (saved.width) elements.workspace.style.width = `${saved.width}px`;
+        if (saved.height) elements.workspace.style.height = `${saved.height}px`;
+        state.floatingPosition = { left: saved.left, top: saved.top };
+      }
+    }
     elements.workspace.classList.toggle("is-floating", state.floating);
     elements.workspace.classList.toggle("is-fullscreen", state.route);
     document.body.classList.toggle("ai-tutor-detached", detached);
@@ -1445,6 +1684,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
 
   function openWorkspace(scroll = true) {
     state.open = true;
+    prewarmService();
     elements.grid?.classList.add("ai-tutor-open");
     elements.workspace.setAttribute("aria-hidden", "false");
     updateContext(state.context || currentHostContext());
@@ -1497,6 +1737,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     cancelConversationRequest();
     state.messages = [];
     state.lastRequest = null;
+    state.lastOutcome = "";
     state.lastError = null;
     state.quotes = [];
     state.followLatest = true;
@@ -1572,6 +1813,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     state.pendingNode = null;
     state.pendingStartedAt = 0;
     state.pendingExpanded = false;
+    state.previewUnits = 0;
   }
 
   function thinkingCopy(responseLevel) {
@@ -1682,10 +1924,125 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     if (badge) badge.textContent = liveThinking ? "思考中" : "正在生成";
     if (elapsed) elapsed.textContent = liveThinking ? thinkingElapsedLabel(elapsedSeconds, true) : "已等待 " + elapsedSeconds + " 秒";
     const stage = state.pendingNode.querySelector(".ai-thinking-stage");
-    if (stage && !liveThinking && !hasBrowserApiKey() && elapsedSeconds * 1000 >= COLD_START_NOTICE_MS && !stage.dataset.coldStart) {
-      stage.dataset.coldStart = "true";
-      stage.textContent = "AI 服务空闲后首次唤醒约需 30–60 秒，可以继续等待，也可随时停止。";
+    if (stage && !liveThinking && !hasBrowserApiKey() && elapsedSeconds * 1000 >= COLD_START_NOTICE_MS && !stage.dataset.notice) {
+      stage.dataset.notice = "wait";
+      // Answers normally take 10–30 seconds; only an idle service needs waking.
+      stage.textContent = serviceLikelyAwake()
+        ? "AI 正在思考，通常需要 10–30 秒，完整解答可能更久；可以继续等待，也可随时停止。"
+        : "AI 服务空闲后首次唤醒约需 30–60 秒，可以继续等待，也可随时停止。";
     }
+  }
+
+  // Streaming JSON is read incrementally: only complete strings are shown, so a
+  // paragraph or step appears once it has fully arrived.
+  function readJsonString(source, start) {
+    let value = "";
+    for (let index = start; index < source.length; index += 1) {
+      const character = source[index];
+      if (character === "\"") return { value, closed: true, end: index + 1 };
+      if (character !== "\\") { value += character; continue; }
+      const next = source[index + 1];
+      if (next === undefined) break;
+      if (next === "u") {
+        const hex = source.slice(index + 2, index + 6);
+        if (!/^[0-9a-fA-F]{4}$/.test(hex)) break;
+        value += String.fromCharCode(Number.parseInt(hex, 16));
+        index += 5;
+        continue;
+      }
+      value += ({ n: "\n", t: "\t", r: "\r", b: "\b", f: "\f" })[next] ?? next;
+      index += 1;
+    }
+    return { value, closed: false, end: source.length };
+  }
+
+  function partialChatContent(source) {
+    const result = { paragraphs: [], steps: [] };
+    const summary = /"summary"\s*:\s*"/.exec(source);
+    if (summary) {
+      const read = readJsonString(source, summary.index + summary[0].length);
+      const complete = read.closed ? read.value : read.value.slice(0, read.value.lastIndexOf("\n") + 1);
+      // Stop before a paragraph whose formula is still open (it continues later).
+      const paragraphs = answerParagraphs(complete);
+      const open = paragraphs.findIndex(paragraph => (paragraph.match(/\\\(/g) || []).length !== (paragraph.match(/\\\)/g) || []).length ||
+        (paragraph.match(/\\\[/g) || []).length !== (paragraph.match(/\\\]/g) || []).length);
+      result.paragraphs = open < 0 ? paragraphs : paragraphs.slice(0, open);
+    }
+    const steps = /"steps"\s*:\s*\[/.exec(source);
+    if (steps) {
+      let index = steps.index + steps[0].length;
+      while (index < source.length) {
+        while (/[\s,]/.test(source[index] || "")) index += 1;
+        if (source[index] !== "\"") break;
+        const read = readJsonString(source, index + 1);
+        if (!read.closed) break;
+        if (read.value.trim()) result.steps.push(stripStepNumber(read.value));
+        index = read.end;
+      }
+    }
+    return result;
+  }
+
+  function clearPendingPreview() {
+    state.pendingNode?.querySelector(".ai-stream-preview")?.remove();
+    state.previewUnits = 0;
+  }
+
+  function updatePendingPreview(content) {
+    const bubble = state.pendingNode?.querySelector(".ai-thinking-card");
+    if (!bubble) return;
+    const partial = partialChatContent(String(content || ""));
+    const units = partial.paragraphs.length + partial.steps.length;
+    if (!units || units === state.previewUnits) return;
+    state.previewUnits = units;
+    let preview = bubble.querySelector(".ai-stream-preview");
+    if (!preview) {
+      preview = createElement("div", "ai-stream-preview");
+      bubble.querySelector(".ai-thinking-trace")?.before(preview);
+    }
+    const body = createElement("div", "ai-stream-preview-body");
+    partial.paragraphs.forEach(paragraph => body.append(createMathElement("p", "", paragraph)));
+    if (partial.steps.length) {
+      const list = createElement("ol");
+      partial.steps.forEach(step => list.append(createStepElement("", step)));
+      body.append(list);
+    }
+    preview.replaceChildren(createElement("span", "ai-stream-preview-label", "已收到的内容 · 完成后会再核对"), body);
+    scrollToLatest();
+  }
+
+  function setPendingStage(message) {
+    const stage = state.pendingNode?.querySelector(".ai-thinking-stage");
+    if (!stage) return;
+    stage.dataset.notice = "custom";
+    stage.textContent = message;
+  }
+
+  // Render's free instance sleeps after about 15 idle minutes. Remember the last
+  // sign of life so a normal wait is not reported as a cold start.
+  const SERVICE_AWAKE_STORAGE = "masterLab.aiServiceAwakeAt";
+  const SERVICE_AWAKE_MS = 14 * 60 * 1000;
+
+  function markServiceAwake() {
+    try { localStorage.setItem(SERVICE_AWAKE_STORAGE, String(Date.now())); } catch { /* optional hint only */ }
+  }
+
+  function serviceLikelyAwake() {
+    try {
+      return Date.now() - Number(localStorage.getItem(SERVICE_AWAKE_STORAGE) || 0) < SERVICE_AWAKE_MS;
+    } catch {
+      return false;
+    }
+  }
+
+  // Wake the free service when the student shows intent (opens the tutor or starts
+  // typing a question), not on every page view.
+  function prewarmService() {
+    if (hasBrowserApiKey() || serviceLikelyAwake() || Date.now() - state.prewarmedAt < 5 * 60 * 1000) return;
+    state.prewarmedAt = Date.now();
+    fetch(`${API_BASE_URL}/health`, { cache: "no-store" })
+      .then(response => { if (response.ok) markServiceAwake(); })
+      .catch(() => { /* the request itself reports connection problems */ });
   }
 
   function addPendingMessage(responseLevel = "hint") {
@@ -2082,9 +2439,12 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     container.append(line);
   }
 
+  // Any short Chinese lead-in such as “设首项：” or “由和求首项：” is a step title.
+  const STEP_HEADING_PATTERN = /^[\u4e00-\u9fa5][\u4e00-\u9fa5\d（）()]{1,9}\s*[:：]/;
+
   function createStepElement(className, step) {
     const item = createElement("li", className);
-    const title = step.match(/^(条件|分析|列式|代入|求解|计算|分类|核对|检验|结论|答案|取正方向)\s*[:：]/);
+    const title = step.match(STEP_HEADING_PATTERN);
     if (title) {
       item.append(createElement("strong", "ai-step-title", title[0]));
       appendMathContent(item, step.slice(title[0].length));
@@ -2169,9 +2529,11 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       }
     }
     const seen = new Set();
+    // Paragraph answers already show their formulas inline; list only the ones they omit.
+    const proseKey = layout === "steps" ? "" : answerTextKey(paragraphs.join("") + text(result));
     const formulas = asTextList(payload.formulas, 8, 300).filter((formula) => {
       const key = answerTextKey(formula);
-      if (!key || seen.has(key)) return false;
+      if (!key || seen.has(key) || (proseKey && proseKey.includes(key))) return false;
       seen.add(key);
       return true;
     });
@@ -2205,6 +2567,9 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       const card = createElement("div", "ai-hint-card");
       card.append(createElement("span", "ai-hint-label", "提示"));
       display.paragraphs.forEach(paragraph => card.append(createMathElement("p", "", paragraph)));
+      if (payload.hintTrimmed && text(payload.summary) !== HINT_WITHHELD) {
+        card.append(createElement("p", "ai-hint-note", HINT_TRIMMED_NOTICE));
+      }
       bubble.append(card);
     } else if (display.layout === "prose" && (display.paragraphs.length || display.result)) {
       const prose = createElement("div", "ai-answer-prose");
@@ -2253,6 +2618,81 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     }
   }
 
+  function conditionsText(context) {
+    const parameters = Object.entries(context?.parameters || {})
+      .map(([key, value]) => `${PARAMETER_NAMES[key] || key} ${value}`).join("；");
+    return [context?.originalQuestion ? `题目：${context.originalQuestion}` : "",
+      parameters ? `参数：${parameters}` : ""].filter(Boolean).join("\n");
+  }
+
+  // Plain text for copying: paragraphs, numbered steps and LaTeX kept readable.
+  function answerPlainText(payload, options = {}) {
+    const display = getAnswerPresentation(payload, options);
+    const lines = [...display.paragraphs];
+    display.steps.forEach((step, index) => lines.push(`${index + 1}. ${step}`));
+    if (display.result) lines.push(display.result);
+    if (display.formulas.length) lines.push(`关键公式：${display.formulas.map(formula => `\\(${formula}\\)`).join("；")}`);
+    if (display.followUp) lines.push(display.followUp);
+    display.warnings.forEach(warning => lines.push(`注意：${warning}`));
+    const conditions = conditionsText(options.context);
+    return lines.join("\n") + (conditions ? `\n\n${conditions}` : "");
+  }
+
+  async function copyText(value, message) {
+    try {
+      await navigator.clipboard.writeText(value);
+    } catch {
+      const area = createElement("textarea");
+      area.value = value;
+      area.setAttribute("readonly", "");
+      area.style.position = "fixed";
+      area.style.opacity = "0";
+      document.body.append(area);
+      area.select();
+      const copied = document.execCommand?.("copy");
+      area.remove();
+      if (!copied) { notify("浏览器不允许复制，请手动选择文字"); return; }
+    }
+    notify(message);
+  }
+
+  // A Markdown record of the conversation with each answer's problem and conditions.
+  function exportConversation() {
+    const records = state.messages;
+    if (!records.length) { notify("当前对话还没有内容可以导出"); return; }
+    const now = new Date();
+    const stamp = now.toLocaleString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+    const lines = ["# 大师实验室 · AI 导师对话", "", `导出时间：${stamp}`, ""];
+    const mainConditions = conditionsText(state.context);
+    if (mainConditions) lines.push("## 题目与条件", "", ...mainConditions.split("\n"), "");
+    lines.push("## 对话", "");
+    const mainScope = contextScope(state.context);
+    for (const item of records) {
+      if (item.role === "context") { lines.push(`> 条件已更新：${item.content}`, ""); continue; }
+      if (item.role === "user") {
+        (item.quotes || []).forEach(quote => lines.push(`> 引用 · ${quote.source}：${quote.text.replace(/\n+/g, " ")}`));
+        lines.push(`**你**：${item.text}`, "");
+        continue;
+      }
+      if (item.error) { lines.push(`**大师 · AI 导师**：（未完成）${item.content}`, ""); continue; }
+      const own = contextScope(item.context) !== mainScope ? conditionsText(item.context) : "";
+      lines.push("**大师 · AI 导师**：", "", answerPlainText(item.payload, { responseLevel: item.level, message: item.question }));
+      if (own) lines.push("", `（本条回答使用的条件）`, ...own.split("\n"));
+      lines.push("");
+    }
+    const pad = value => String(value).padStart(2, "0");
+    const name = `大师实验室-AI对话-${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}.md`;
+    const url = URL.createObjectURL(new Blob([lines.join("\n")], { type: "text/markdown;charset=utf-8" }));
+    const link = createElement("a");
+    link.href = url;
+    link.download = name;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    notify("对话已导出为 Markdown 文件");
+  }
+
   function renderPatch(patch, context) {
     const originalScope = contextScope(context);
     const card = createElement("div", "ai-parameter-patch");
@@ -2286,33 +2726,46 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     const row = createElement("div", `ai-message ${role}${options.error ? " error" : ""}`);
     const bubble = createElement("div", "ai-message-bubble");
     const context = contextSnapshot(options.context || state.context);
+    const id = validMessageId(options.id) ? options.id : newMessageId();
+    row.dataset.messageId = id;
     row._tutorContext = context;
     bubble.append(createElement("span", "ai-message-source", role === "user" ? "你" : options.source === "local_fallback" ? "大师 · 本地提示" : "大师 · AI 导师"));
     if (role === "user") {
-      (options.quotes || []).forEach(quote => {
+      savedQuotes(options.quotes).forEach(quote => {
         const cited = createElement("blockquote", "ai-sent-quote");
+        // Citing this quote again keeps its original source and conditions.
+        cited._quote = { source: quote.source, context: quote.context || context, origin: quote.origin };
         const excerpt = createElement("div", "");
         appendQuotedText(excerpt, quote.text);
-        cited.append(createElement("span", "ai-quote-source", quote.source), excerpt);
+        const label = createElement("span", "ai-quote-source", quote.source);
+        cited.append(label, excerpt);
+        if (quote.origin) label.append(createQuoteJump(quote.origin));
         bubble.append(cited);
       });
       bubble.append(createElement("p", "", text(payload)));
-      state.messages.push({ role, text: text(payload), quotes: savedQuotes(options.quotes), context,
+      state.messages.push({ role, text: text(payload), quotes: savedQuotes(options.quotes), context, id,
         content: composeQuotedMessage(text(payload), options.quotes, context) });
     } else if (options.error) {
       bubble.append(createElement("p", "", text(payload)));
-      state.messages.push({ role, content: text(payload), error: true, context });
+      state.messages.push({ role, content: text(payload), error: true, context, id });
     } else {
       if (payload.reasoning) {
         bubble.append(createReasoningToggle(payload.reasoning, payload.thinkingSeconds));
       }
       renderAssistantPayload(bubble, payload, { ...options, context });
+      const tools = createElement("div", "ai-answer-tools");
+      const copy = createElement("button", "ai-copy-answer", "复制");
+      copy.type = "button";
+      copy.title = "复制这条回答，公式保留 LaTeX 写法";
+      copy.addEventListener("click", () => copyText(answerPlainText(payload, { ...options, context }), "已复制这条回答"));
+      tools.append(copy);
+      bubble.append(tools);
       if (context.originalQuestion) {
         const detail = createElement("details", "ai-message-context");
         detail.append(createElement("summary", "", "本条回答的题目与条件"), createElement("p", "", context.originalQuestion));
         bubble.append(detail);
       }
-      state.messages.push({ role, content: structuredToHistoryText(payload, options), payload, context,
+      state.messages.push({ role, content: structuredToHistoryText(payload, options), payload, context, id,
         level: options.responseLevel || "explain", question: text(options.message) });
     }
     row.append(bubble);
@@ -2341,32 +2794,71 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     return history;
   }
 
+  const BUSY_RETRY_DELAYS_MS = [4000, 6000, 9000];
+
+  function waitForQueue(ms) {
+    const controller = new AbortController();
+    state.controller = controller;
+    return new Promise((resolve, reject) => {
+      const timer = window.setTimeout(resolve, ms);
+      controller.signal.addEventListener("abort", () => {
+        window.clearTimeout(timer);
+        reject(new TutorRequestError("ABORTED"));
+      }, { once: true });
+    }).finally(() => { if (state.controller === controller) state.controller = null; });
+  }
+
+  // The public service answers two questions at a time and rejects the rest with
+  // AI_BUSY. Wait and resubmit a few times instead of showing an error at once.
+  async function requestWithQueue(path, body, timeoutMs, onQueue) {
+    for (let attempt = 0; ; attempt += 1) {
+      try {
+        return await apiRequest(path, body, timeoutMs);
+      } catch (error) {
+        if (error?.code !== "AI_BUSY" || attempt >= BUSY_RETRY_DELAYS_MS.length) throw error;
+        onQueue?.(attempt + 1);
+        await waitForQueue(BUSY_RETRY_DELAYS_MS[attempt]);
+      }
+    }
+  }
+
+  function cloneRequest(request) {
+    return JSON.parse(JSON.stringify(request));
+  }
+
   async function sendChat(message, responseLevel = "hint", options = {}) {
     const question = text(message);
     if (!question || state.controller || elements.workspace.classList.contains("is-busy")) return null;
-    const quotes = (options.quotes || []).map(quote => ({ ...quote }));
-    const content = composeQuotedMessage(question, quotes);
+    // A retry or re-answer resends the original request: same conditions, same
+    // history boundary, so the question is not repeated inside its own history.
+    const replay = options.replay?.request ? options.replay : null;
+    const quotes = (replay ? replay.quotes || [] : options.quotes || []).map(quote => ({ ...quote }));
+    const content = replay ? replay.request.message : composeQuotedMessage(question, quotes);
     if (content.length + (hasBrowserApiKey() ? 0 : gatewayAnswerRules(responseLevel).length) > 2000) {
       notify("问题和引用内容过长，请先精简；草稿已保留");
       return null;
     }
     const requestSerial = ++state.requestSerial;
     openWorkspace(false);
-    const hostContext = currentHostContext();
-    updateContext(state.followHost && contextScope(hostContext) === contextScope(state.context) ? hostContext : state.context || hostContext);
-    if (!state.context.originalQuestion && !state.messages.length) {
-      updateContext({ ...state.context, originalQuestion: question });
-      state.followHost = false;
-      updateContext(state.context);
+    let request;
+    if (replay) {
+      request = { ...cloneRequest(replay.request), sessionId: state.sessionId, responseLevel };
+    } else {
+      const hostContext = currentHostContext();
+      updateContext(state.followHost && contextScope(hostContext) === contextScope(state.context) ? hostContext : state.context || hostContext);
+      if (!state.context.originalQuestion && !state.messages.length) {
+        updateContext({ ...state.context, originalQuestion: question });
+        state.followHost = false;
+        updateContext(state.context);
+      }
+      request = {
+        sessionId: state.sessionId,
+        message: content,
+        responseLevel,
+        history: boundedHistory(),
+        context: JSON.parse(JSON.stringify(state.context))
+      };
     }
-    const history = boundedHistory();
-    const request = {
-      sessionId: state.sessionId,
-      message: content,
-      responseLevel,
-      history,
-      context: JSON.parse(JSON.stringify(state.context))
-    };
     // Validate the entire request before consuming the user's draft.
     try {
       if (!hasBrowserApiKey()) gatewayChatRequest(request);
@@ -2379,12 +2871,9 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       state.quotes = [];
       renderQuotes();
     }
-    if (!options.silentUser) addMessage("user", question, { quotes });
-    state.lastRequest = {
-      message: question,
-      responseLevel,
-      options: { silentUser: true, quotes }
-    };
+    if (!options.silentUser && !replay) addMessage("user", question, { quotes });
+    state.lastRequest = { message: question, responseLevel, quotes, request: cloneRequest(request) };
+    state.lastOutcome = "pending";
     state.lastError = null;
     // A check keeps an ongoing hint preference; any other answer depth ends it.
     state.hintMode = responseLevel === "hint" || (responseLevel === "check" && state.hintMode);
@@ -2393,16 +2882,21 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     setBusy(true, responseLevel === "steps" || responseLevel === "check" ? "正在严谨核对步骤，这可能需要更长时间" :
       responseLevel === "explain" ? "正在结合当前题目组织讲解" : "正在结合当前题目整理提示");
     try {
-      const payload = await apiRequest("/api/v1/tutor/chat", request, CHAT_TIMEOUT_MS);
+      const payload = await requestWithQueue("/api/v1/tutor/chat", request, CHAT_TIMEOUT_MS, attempt => {
+        setPendingStage(`公益 AI 正在处理其他同学的问题，已自动排队，第 ${attempt} 次重新提交……`);
+        elements.status.textContent = "AI 服务繁忙，正在自动排队";
+      });
       if (requestSerial !== state.requestSerial) return null;
       clearPending();
       addMessage("assistant", payload, { source: payload.source, responseLevel, message: question, context: request.context });
+      state.lastOutcome = "answered";
       elements.status.textContent = payload.source === "local_fallback" ? "AI 未连接，当前显示本地教学提示" : "回答完成，可继续追问";
       return payload;
     } catch (error) {
       if (requestSerial !== state.requestSerial) return null;
       clearPending();
       state.lastError = error;
+      state.lastOutcome = "failed";
       addMessage("assistant", errorMessage(error), { error: true });
       elements.status.textContent = "本次回答未完成，题目与实验状态已保留";
       return null;
@@ -2483,15 +2977,19 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     if (!cleanQuestion) return { mode: "unavailable" };
     host().setMentorSummary?.("本地模板暂未匹配，正在请 AI 判断题型与所需条件……");
     const wakeNotice = hasBrowserApiKey() ? 0 : window.setTimeout(() => {
-      host().setMentorSummary?.("AI 服务可能正在唤醒，空闲后首次请求约需 30–60 秒，请稍候……");
+      host().setMentorSummary?.(serviceLikelyAwake()
+        ? "AI 仍在判断题型与所需条件，请稍候……"
+        : "AI 服务可能正在唤醒，空闲后首次请求约需 30–60 秒，请稍候……");
     }, COLD_START_NOTICE_MS);
     try {
       let response;
       try {
-        response = await apiRequest("/api/v1/experiment/generate", {
+        response = await requestWithQueue("/api/v1/experiment/generate", {
           question: cleanQuestion,
           preferredSubject
-        }, GENERATE_TIMEOUT_MS);
+        }, GENERATE_TIMEOUT_MS, attempt => {
+          host().setMentorSummary?.(`公益 AI 正在处理其他同学的问题，已自动排队，第 ${attempt} 次重新提交……`);
+        });
       } finally {
         window.clearTimeout(wakeNotice);
       }
@@ -2532,7 +3030,8 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       addMessage("user", cleanQuestion);
       addMessage("assistant", errorMessage(error), { error: true });
       // Retry goes straight to the tutor explanation; the failed step was only template routing.
-      state.lastRequest = { message: UNMATCHED_TUTORIAL_REQUEST, responseLevel: "steps", options: { silentUser: true } };
+      state.lastRequest = { message: UNMATCHED_TUTORIAL_REQUEST, responseLevel: "steps", quotes: [], request: null };
+      state.lastOutcome = "failed";
       state.lastError = error;
       setBusy(false, "题目已保留，可点“重试上一问”让 AI 直接讲解");
       host().setMentorSummary?.("AI 服务暂未完成分析，题目已保留，可在问答页点“重试上一问”。");
@@ -2543,6 +3042,11 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
   function askQuickAction(actionName) {
     const action = ACTIONS[actionName];
     if (!action) return false;
+    // Quick actions refer to “this problem”; without one there is nothing to hint at.
+    if (!text(currentHostContext().originalQuestion)) {
+      notify("请先输入题目并生成实验，再请 AI 导师提示");
+      return true;
+    }
     state.followHost = true;
     adoptContext(currentHostContext());
     openWorkspace(true);
@@ -2564,6 +3068,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
   elements.stop?.addEventListener("click", stopRequest);
   elements.clear?.addEventListener("click", clearConversationWithUndo);
   elements.newConversation?.addEventListener("click", startNewConversation);
+  elements.exportConversation?.addEventListener("click", exportConversation);
   elements.historyButton?.addEventListener("click", () => {
     persistConversation();
     elements.historyPanel.hidden = !elements.historyPanel.hidden;
@@ -2585,6 +3090,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     elements.input.focus({ preventScroll: true });
   });
   elements.hintChip?.addEventListener("click", clearHintPreference);
+  document.querySelector("#questionInput")?.addEventListener("focus", prewarmService);
   elements.responseMode?.addEventListener("change", () => {
     state.responseMode = elements.responseMode.value;
     state.hintMode = state.responseMode === "hint";
@@ -2593,7 +3099,8 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
   });
   elements.retry?.addEventListener("click", () => {
     if (!state.lastRequest || state.controller) return;
-    sendChat(state.lastRequest.message, state.lastRequest.responseLevel, state.lastRequest.options || {});
+    sendChat(state.lastRequest.message, state.lastRequest.responseLevel,
+      { silentUser: true, quotes: state.lastRequest.quotes, replay: state.lastRequest });
   });
   elements.form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -2647,8 +3154,10 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     placeFloating(state.drag.left + event.clientX - state.drag.x, state.drag.top + event.clientY - state.drag.y);
   });
   function finishDrag() {
+    if (!state.drag) return;
     state.drag = null;
     elements.workspace.classList.remove("is-dragging");
+    saveFloatingLayout();
   }
   for (const event of ["pointerup", "pointercancel", "lostpointercapture"]) elements.header.addEventListener(event, finishDrag);
   elements.drag.addEventListener("keydown", event => {
@@ -2751,7 +3260,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     syncApiKeyUi();
     initializeSessions();
     syncComposer();
-    elements.retry.disabled = true;
+    syncRetryButton(false);
     updateRoute();
   }
   initializeTutor();

@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 
 const source = (await readFile(new URL('../../web/ai-tutor.js', import.meta.url), 'utf8')).replaceAll('\r\n', '\n');
+const checksSource = await readFile(new URL('../../web/tutor-checks.js', import.meta.url), 'utf8');
 const answer = {
   mode: 'steps', summary: '用匀变速公式求刹车距离。',
   steps: ['末速度为零。', '代入初速度和减速度得到 40 m。'],
@@ -24,12 +25,14 @@ function loadTutor(fetchImpl = () => { throw new Error('Unexpected network reque
     location: { hostname: options.hostname || 'localhost' }, addEventListener() {}
   };
   sandbox.window = sandbox;
+  vm.runInNewContext(checksSource, sandbox);
   vm.runInNewContext(source.replace(/\n  initializeTutor\(\);/, `
     globalThis.tutorTest = { readSseChat, extractJsonObject, fallbackChatFromText,
       completeTutorChat, apiRequest, errorMessage, writeStoredApiKey, state,
       getAnswerPresentation, structuredToHistoryText, CHAT_SYSTEM_PROMPT, ACTIONS,
       contextScope, gatewayChatRequest, selectResponseLevel, softValidateChat, composeQuotedMessage,
-      savedSession, savedQuotes, contextSnapshot, boundedHistory, readSessionStore };`), sandbox);
+      savedSession, savedQuotes, contextSnapshot, boundedHistory, readSessionStore,
+      requestWithQueue, BUSY_RETRY_DELAYS_MS, partialChatContent, checkedTutorChat, answerPlainText };`), sandbox);
   return sandbox.tutorTest;
 }
 
@@ -396,7 +399,7 @@ test('web: default-service network and capacity failures are not labelled missin
   await assert.rejects(offline.apiRequest('/api/v1/tutor/chat', input, 1000), { code: 'GATEWAY_UNREACHABLE' });
   assert.match(offline.errorMessage({ code: 'GATEWAY_UNREACHABLE' }), /公益默认.*唤醒/);
   assert.match(offline.errorMessage({ code: 'NETWORK_ERROR' }), /检查网络/);
-  assert.match(offline.errorMessage({ code: 'AI_BUSY' }), /并发容量/);
+  assert.match(offline.errorMessage({ code: 'AI_BUSY' }), /正忙.*自动排队/);
   assert.match(offline.errorMessage({ code: 'AI_UNAVAILABLE' }), /公益默认.*可能余额不足或临时故障/);
   const busy = loadTutor(async () => new Response('{"error":"AI_BUSY"}', { status: 429 }), { noKey: true });
   await assert.rejects(busy.apiRequest('/api/v1/tutor/chat', input, 1000), { code: 'AI_BUSY' });
@@ -651,4 +654,163 @@ test('web: gateway format rules follow the requested depth', () => {
   assert.doesNotMatch(request('explain'), /短动作标题/);
   assert.match(request('hint'), /一两句话/);
   assert.match(request('steps'), /短动作标题/);
+});
+
+test('web: a hint never displays a revealed result even when the model sends a full solution', () => {
+  const tutor = loadTutor();
+  const request = { message: '先给我一个提示', responseLevel: 'hint',
+    context: { mode: 'question', originalQuestion: '一辆汽车以 20m/s 的速度行驶，刹车加速度大小为 5m/s²，求刹车距离。', parameters: {} } };
+  const leaked = tutor.softValidateChat({ mode: 'steps', summary: '',
+    steps: ['分析：末速度为 0，题目没有给时间。', '列式：由 \\(v^{2}-v_{0}^{2}=-2ax\\) 得 \\(x=\\frac{v_{0}^{2}}{2a}\\)。',
+      '代入：\\(x=\\frac{20^{2}}{2\\times 5}=40\\,\\mathrm{m}\\)。', '结论：刹车距离为 40 m。'],
+    formulas: ['v^{2}-v_{0}^{2}=-2ax', 'x=\\frac{20^{2}}{2\\times5}=40\\,\\mathrm{m}'], finalAnswer: '刹车距离为 40 m。',
+    followUp: '你算出 40 m 了吗？', suggestedQuestions: ['为什么刹车距离是 40 m？', '为什么这里不用含时间的公式？'] }, 'hint', request);
+  const display = tutor.getAnswerPresentation(leaked, { responseLevel: 'hint' });
+  const shown = [...display.paragraphs, ...display.steps, display.result, ...display.formulas, display.followUp,
+    ...leaked.suggestedQuestions].join('\n');
+  assert.equal(display.layout, 'hint');
+  assert.doesNotMatch(shown, /40/, 'the computed result is not displayed anywhere');
+  assert.equal(display.paragraphs.length, 2, 'a hint keeps at most two clues before the first result');
+  assert.equal(leaked.hintTrimmed, true);
+  assert.equal(leaked.finalAnswer, null);
+  assert.deepEqual(Array.from(leaked.formulas), ['v^{2}-v_{0}^{2}=-2ax'], 'only the formula without a computed value is kept');
+  assert.equal(display.formulas.length, 0, 'a formula already written in the clue is not repeated');
+  assert.deepEqual(Array.from(leaked.suggestedQuestions), ['为什么这里不用含时间的公式？']);
+  // A compliant hint is left as written; numbers from the problem are allowed.
+  const clean = tutor.softValidateChat({ mode: 'hint', summary: '初速度 20 m/s、末速度为 0，题目没给时间，想想哪条公式不含 t。',
+    steps: [], formulas: [], finalAnswer: null, followUp: '哪条运动学公式不含时间？' }, 'hint', request);
+  assert.equal(clean.hintTrimmed, undefined);
+  assert.match(clean.summary, /20 m\/s/);
+  assert.equal(clean.followUp, '哪条运动学公式不含时间？');
+  // When every clue reveals the result, nothing of it is shown.
+  const allLeak = tutor.softValidateChat({ mode: 'hint', summary: '刹车距离 x=40 m。', steps: [], finalAnswer: null }, 'hint', request);
+  assert.doesNotMatch(allLeak.summary, /40/);
+  assert.match(allLeak.summary, /已按“只给提示”隐藏/);
+});
+
+test('web: hint conclusions stay hidden when a result is common or repeats a given number', () => {
+  const tutor = loadTutor();
+  const request = { message: '只给提示', responseLevel: 'hint',
+    context: { mode: 'question', originalQuestion: '解方程 x+2=4。', parameters: {} } };
+  for (const result of ['0', '1', '2', '9.8', '10', '-2', '1/2', '\\frac{1}{2}', '\\sqrt{2}']) {
+    const equation = `x=${result}`;
+    for (const step of [`结论：${equation}`, `**答案：**${equation}`, equation]) {
+      const payload = tutor.softValidateChat({ mode: 'hint', summary: '',
+        steps: ['先考虑如何把未知量留在一边。', step], finalAnswer: null,
+        formulas: [equation], followUp: `为什么 ${equation}？`,
+        suggestedQuestions: [`能否解释 ${equation}？`], warnings: [`结果：${equation}`] }, 'hint', request);
+      const display = tutor.getAnswerPresentation(payload, { responseLevel: 'hint' });
+      assert.deepEqual(Array.from(display.paragraphs), ['先考虑如何把未知量留在一边。'], step);
+      assert.equal(display.formulas.length, 0, equation);
+      assert.equal(display.followUp, '', equation);
+      assert.equal(payload.suggestedQuestions.length, 0, equation);
+      assert.equal(display.warnings.length, 0, equation);
+      assert.equal(payload.hintTrimmed, true, equation);
+    }
+  }
+  // Results in summary go through the same filter, without relying on finalAnswer.
+  const resultInSummary = tutor.softValidateChat({ mode: 'hint', summary: 'x=2', steps: [], finalAnswer: null }, 'hint', request);
+  assert.match(resultInSummary.summary, /已按“只给提示”隐藏/);
+  assert.doesNotMatch(resultInSummary.summary, /x=2/);
+});
+
+test('web: hint filters preserve explicit givens and symbolic coefficients', () => {
+  const tutor = loadTutor();
+  const request = { message: '先给提示', responseLevel: 'hint', context: {
+    mode: 'question', originalQuestion: '已知 a=2，b=3，求 a+b。', parameters: {} } };
+  const given = tutor.softValidateChat({ mode: 'hint', summary: '先看已知条件：a=2，b=3。',
+    steps: [], formulas: [], finalAnswer: null }, 'hint', request);
+  assert.equal(given.summary, '先看已知条件：a=2，b=3。');
+  assert.equal(given.hintTrimmed, undefined);
+  const symbolic = tutor.softValidateChat({ mode: 'hint', summary: '先选不含时间的关系。',
+    steps: [], formulas: ['v^{2}-v_{0}^{2}=-2ax', 'v^{2}-v_{0}^{2}=-2\\cdot a x'], finalAnswer: null }, 'hint', request);
+  assert.equal(symbolic.formulas.length, 2);
+  assert.equal(symbolic.hintTrimmed, undefined);
+  const derived = tutor.softValidateChat({ mode: 'hint', summary: '解得 2。', steps: [], finalAnswer: null }, 'hint', request);
+  assert.match(derived.summary, /已按“只给提示”隐藏/);
+});
+
+test('web: direct answers get the gateway content checks and one regeneration', async () => {
+  const context = { mode: 'question', subject: '物理',
+    originalQuestion: '质量0.20kg、长度0.50m的金属棒在磁场B=0.80T中运动，回路电阻R=2.0Ω，拉力F=1.0N，求a(v)。', parameters: {} };
+  const wrong = { mode: 'steps', summary: '', steps: ['金属棒受安培力。', 'a(v)=(1.0-0.16v)/0.20'], formulas: [], finalAnswer: 'a(v)=(1.0-0.16v)/0.20' };
+  const correct = { ...wrong, steps: ['金属棒受安培力 F=B²L²v/R。', 'a(v)=(1.0-0.08v)/0.20=5-0.4v'], finalAnswer: 'a(v)=5-0.4v' };
+  const replies = [wrong, correct];
+  let calls = 0;
+  const tutor = loadTutor(async () => { calls += 1; return jsonResponse(JSON.stringify(replies.shift())); });
+  const request = { message: '请完整解答。', responseLevel: 'steps', history: [], context };
+  const answer = await tutor.checkedTutorChat([], request, { thinking: false, timeoutMs: 1000 });
+  assert.equal(calls, 2, 'a numerically wrong reply is regenerated once');
+  assert.match(answer.finalAnswer, /5-0\.4v/);
+  const failing = loadTutor(async () => jsonResponse(JSON.stringify(wrong)));
+  await assert.rejects(failing.checkedTutorChat([], request, { thinking: false, timeoutMs: 1000 }), { code: 'ANSWER_CHECK_FAILED' });
+  // A hint that withholds the number passes, and a missing requested part becomes a reminder.
+  const hint = loadTutor(async () => jsonResponse(JSON.stringify({ mode: 'hint', summary: '先写出安培力与速度的关系。', steps: [], finalAnswer: null })));
+  const clue = await hint.checkedTutorChat([], { ...request, message: '先给我一个提示', responseLevel: 'hint' }, { thinking: false, timeoutMs: 1000 });
+  assert.match(clue.summary, /安培力/);
+  const partial = loadTutor(async () => jsonResponse(JSON.stringify({ mode: 'explain', summary: '先分析受力。', steps: [], finalAnswer: null })));
+  const reminded = await partial.checkedTutorChat([], { message: '请解释加速度怎么变化', responseLevel: 'explain', history: [],
+    context: { mode: 'question', originalQuestion: '木块在粗糙水平面上滑动。', parameters: {} } }, { thinking: false, timeoutMs: 1000 });
+  assert.ok(reminded.warnings.some(warning => /完整性提醒：.*加速度/.test(warning)));
+});
+
+test('web: a busy public service is retried automatically before reporting an error', async () => {
+  const replies = [
+    new Response(JSON.stringify({ error: 'AI_BUSY' }), { status: 429, headers: { 'Content-Type': 'application/json' } }),
+    new Response(JSON.stringify({ mode: 'explain', summary: '加速度描述速度变化的快慢。', steps: [] }), { headers: { 'Content-Type': 'application/json' } })
+  ];
+  const tutor = loadTutor(async () => replies.shift(), { noKey: true });
+  tutor.BUSY_RETRY_DELAYS_MS.splice(0, 3, 0, 0, 0);
+  const waits = [];
+  const answer = await tutor.requestWithQueue('/api/v1/tutor/chat', { message: '什么是加速度？', responseLevel: 'explain', history: [], context: {} },
+    1000, attempt => waits.push(attempt));
+  assert.deepEqual(waits, [1]);
+  assert.match(answer.summary, /速度变化/);
+  const alwaysBusy = loadTutor(async () => new Response(JSON.stringify({ error: 'AI_BUSY' }), { status: 429, headers: { 'Content-Type': 'application/json' } }), { noKey: true });
+  alwaysBusy.BUSY_RETRY_DELAYS_MS.splice(0, 3, 0, 0, 0);
+  await assert.rejects(alwaysBusy.requestWithQueue('/api/v1/tutor/chat', { message: '问题', responseLevel: 'explain', history: [], context: {} }, 1000),
+    { code: 'AI_BUSY' });
+});
+
+test('web: a saved session keeps the original request so a failed answer can be retried after reload', () => {
+  const tutor = loadTutor();
+  const request = { sessionId: 'abc', message: '求刹车距离', responseLevel: 'steps',
+    history: [{ role: 'user', content: '上一问' }, { role: 'assistant', content: '上一答' }, { role: 'system', content: '不可恢复' }],
+    context: { mode: 'question', originalQuestion: '刹车题', parameters: { initialSpeed: 20 } } };
+  const session = tutor.savedSession({ id: 'session-1', messages: [{ role: 'user', text: '求刹车距离', id: 'm-a1' }],
+    retry: { message: '求刹车距离', responseLevel: 'steps', quotes: [], request } });
+  assert.equal(session.retry.request.message, '求刹车距离');
+  assert.equal(session.retry.request.history.length, 2, 'only user and assistant history is restored');
+  assert.equal(session.retry.request.context.parameters.initialSpeed, 20);
+  assert.equal(session.messages[0].id, 'm-a1');
+  assert.equal(tutor.savedSession({ id: 'session-2', messages: [{ role: 'user', text: '问' }], retry: { message: '', responseLevel: 'steps' } }).retry, null);
+});
+
+test('web: quotes keep their original source, conditions and origin answer', () => {
+  const tutor = loadTutor();
+  const context = { mode: 'experiment', subject: '物理', templateId: 'brake', originalQuestion: '刹车题', parameters: { initialSpeed: 20 } };
+  const [quote] = tutor.savedQuotes([{ text: '刹车距离为 40 m', source: 'AI 回答', context, origin: 'm-k3x-9' }]);
+  assert.equal(quote.origin, 'm-k3x-9');
+  assert.equal(quote.context.parameters.initialSpeed, 20);
+  assert.equal(tutor.savedQuotes([{ text: '文字', source: 'AI 回答', origin: 'javascript:alert(1)' }])[0].origin, undefined);
+});
+
+test('web: the streaming preview shows only paragraphs and steps that have fully arrived', () => {
+  const tutor = loadTutor();
+  const partial = tutor.partialChatContent('{"mode":"explain","summary":"第一段讲完。\\n第二段写到 \\\\(a=\\\\frac{\\\\Delta v}{');
+  assert.deepEqual(Array.from(partial.paragraphs), ['第一段讲完。']);
+  const steps = tutor.partialChatContent('{"mode":"steps","summary":"","steps":["列式：v²=2ax。","代入：x=40 m。","结论：刹');
+  assert.deepEqual(Array.from(steps.steps), ['列式：v²=2ax。', '代入：x=40 m。']);
+  const escaped = tutor.partialChatContent('{"summary":"引号 \\"内容\\" 与 \\u4e2d 文。\\n');
+  assert.deepEqual(Array.from(escaped.paragraphs), ['引号 "内容" 与 中 文。']);
+});
+
+test('web: copied answers keep readable formulas and the conditions they used', () => {
+  const tutor = loadTutor();
+  const copied = tutor.answerPlainText(answer, { responseLevel: 'steps',
+    context: { mode: 'experiment', originalQuestion: '刹车题', parameters: { initialSpeed: 20, deceleration: 5 } } });
+  assert.match(copied, /^1\. 末速度为零。/m);
+  assert.match(copied, /关键公式：\\\(s = \\frac\{v_\{0\}\^\{2\}\}\{2a\}\\\)/);
+  assert.match(copied, /题目：刹车题/);
+  assert.match(copied, /参数：初速度 20；减速度 5/);
 });

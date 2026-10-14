@@ -159,7 +159,7 @@ const SUBJECTS = {
 const FAVORITES_STORAGE_KEY = "master-lab-favorites-v1";
 const FAVORITE_LIMIT = 8;
 const FAVORITE_VISUALS = new Set(["brake", "gravity", "solenoid", "circuit", "flask", "math", "cell", "physics"]);
-const DEFAULT_FAVORITES = Object.freeze([
+const RECOMMENDED_EXPERIMENTS = Object.freeze([
   {
     subject: "物理",
     question: SUBJECTS["物理"].question,
@@ -943,15 +943,17 @@ function sanitizeFavoriteRecord(record) {
 function loadFavoriteRecords() {
   try {
     const stored = window.localStorage.getItem(FAVORITES_STORAGE_KEY);
-    const source = stored === null ? DEFAULT_FAVORITES : JSON.parse(stored);
-    if (!Array.isArray(source)) return DEFAULT_FAVORITES.map(sanitizeFavoriteRecord).filter(Boolean);
+    const source = stored === null ? [] : JSON.parse(stored);
+    if (!Array.isArray(source)) return [];
+    hasSavedFavorites = stored !== null;
     return source.map(sanitizeFavoriteRecord).filter(Boolean).slice(0, FAVORITE_LIMIT);
   } catch {
-    return DEFAULT_FAVORITES.map(sanitizeFavoriteRecord).filter(Boolean);
+    return [];
   }
 }
 
 function persistFavoriteRecords() {
+  hasSavedFavorites = true;
   try {
     window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteRecords));
   } catch {
@@ -1002,18 +1004,23 @@ function renderFavoriteList() {
   const count = $("#favoriteCount");
   if (!list || !empty || !count) return;
 
-  count.textContent = `${favoriteRecords.length} 个`;
-  empty.hidden = favoriteRecords.length > 0;
+  const recommended = !hasSavedFavorites && favoriteRecords.length === 0;
+  const records = recommended ? RECOMMENDED_EXPERIMENTS.map(sanitizeFavoriteRecord).filter(Boolean) : favoriteRecords;
+  const heading = $("#favoritesTitle");
+  if (heading) heading.textContent = recommended ? "推荐实验" : "已收藏的实验";
+  count.textContent = `${records.length} 个`;
+  empty.hidden = records.length > 0;
   list.replaceChildren();
 
-  favoriteRecords.forEach(record => {
+  records.forEach(record => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "history-item favorite-item";
     button.dataset.favoriteId = record.id;
     button.dataset.subject = record.subject;
     button.dataset.question = record.question;
-    button.setAttribute("aria-label", `载入收藏实验：${record.title}`);
+    button.setAttribute("aria-label", `载入${recommended ? "推荐" : "收藏"}实验：${record.title}`);
+    button.dataset.recommended = String(recommended);
 
     const visual = document.createElement("span");
     visual.className = `history-visual ${record.visual}`;
@@ -1023,7 +1030,7 @@ function renderFavoriteList() {
     const title = document.createElement("strong");
     const detail = document.createElement("small");
     title.textContent = record.title;
-    detail.textContent = record.detail;
+    detail.textContent = `${recommended ? "推荐 · " : ""}${record.detail}`;
     copy.append(title, detail);
 
     button.append(visual, copy, createFavoriteChevron());
@@ -1074,6 +1081,7 @@ function toggleCurrentFavorite(event) {
   showToast(state.favorite ? "已收藏到右侧实验列表" : "已取消收藏");
 }
 
+let hasSavedFavorites = false;
 let favoriteRecords = loadFavoriteRecords();
 
 function updateSubjectBodyClass(subject = state.subject) {
@@ -3040,10 +3048,13 @@ function renderExtraPhysicsVisual(content = buildExtraPhysicsContent()) {
     elements.genericPhysicsVisual.dataset.diagramId = diagramId;
   }
   if (elements.genericPhysicsVisual._visualHtml !== html) {
-    elements.genericPhysicsVisual.innerHTML = diagramId
-      ? `<div class="diagram-mobile-toolbar"><span>放大后左右滑动看全图</span><button type="button" class="diagram-zoom-toggle" aria-pressed="false">放大图示</button></div>
-         <div class="diagram-pan-viewport" role="region" aria-label="教材图示，放大后可左右滚动查看" tabindex="0">${html}</div>`
-      : html;
+    const retained = extraPhysicsTemplate()?.updateVisual?.(elements.genericPhysicsVisual, html);
+    if (!retained) {
+      elements.genericPhysicsVisual.innerHTML = diagramId
+        ? `<div class="diagram-mobile-toolbar"><span>放大后左右滑动看全图</span><button type="button" class="diagram-zoom-toggle" aria-pressed="false">放大图示</button></div>
+           <div class="diagram-pan-viewport" role="region" aria-label="教材图示，放大后可左右滚动查看" tabindex="0">${html}</div>`
+        : html;
+    }
     elements.genericPhysicsVisual._visualHtml = html;
   }
   const zoomButton = elements.genericPhysicsVisual.querySelector(".diagram-zoom-toggle");
@@ -4967,12 +4978,15 @@ function syncCircuitMotion(values) {
     svg = $("#circuitStage .edu-circuit-svg");
     if (!svg.querySelector(".current-loop")) svg.insertAdjacentHTML("beforeend", ScienceMotion.circuitMarkup("M110 125V60H238L282 50L294 60H610V220H110V125Z"));
     current = values.circuit.current;
-  } else if (state.subject === "物理" && ["lampPower", "seriesCircuit"].includes(state.physicsTemplate)) {
+  } else if (state.subject === "物理" && ["lampPower", "seriesCircuit", "parallelCircuit"].includes(state.physicsTemplate)) {
     svg = elements.genericPhysicsVisual.querySelector(".edu-circuit-svg");
     current = values.extraPhysics.model.metrics[state.physicsTemplate === "lampPower" ? 1 : 2];
   }
   if (!svg) { circuitMotion = null; return; }
-  if (circuitMotion?.svg !== svg) circuitMotion = ScienceMotion.bindCircuit(svg, circuitPhases.get(state.physicsTemplate) || 0);
+  if (circuitMotion?.svg !== svg || (extraPhysicsTemplate()?.bindMotion && circuitMotion?.layout !== svg.getAttribute("viewBox"))) {
+    const bind = extraPhysicsTemplate()?.bindMotion || ScienceMotion.bindCircuit;
+    circuitMotion = bind(svg, circuitPhases.get(state.physicsTemplate) || 0);
+  }
   circuitMotion.current = current;
   circuitMotion.render(0, motionPreference.matches);
 }
@@ -5856,7 +5870,11 @@ function dispatchAIContextChanged(reason = "context") {
 }
 
 function buildMasterLabAIContext() {
-  const inputQuestion = $("#questionInput")?.value.trim() || "";
+  const questionInput = $("#questionInput");
+  // The prefilled sample is not the student's problem until it has been generated;
+  // otherwise a question asked from the home-page AI entry would be tied to it.
+  const untouchedSample = !state.hasGenerated && questionInput && questionInput.value === questionInput.defaultValue;
+  const inputQuestion = untouchedSample ? "" : questionInput?.value.trim() || "";
   const generatedQuestion = state.generatedQuestion || "";
   const currentExperimentIsActive = state.hasGenerated && generatedQuestion && inputQuestion === generatedQuestion;
   if (!currentExperimentIsActive) {
@@ -5877,6 +5895,8 @@ function buildMasterLabAIContext() {
     return `${label?.textContent || "参数"} ${value}${unit}`.trim();
   }).join("｜");
   const currentReasoning = $(".reason-step.active") || $(`.reason-step[data-step="${state.reasonStep}"]`);
+  const week1Model = state.subject === "物理" && ["parallelCircuit", "planeMirror"].includes(state.physicsTemplate)
+    ? buildExtraPhysicsContent().model : null;
   return {
     mode: "experiment",
     subject: state.subject,
@@ -5885,8 +5905,8 @@ function buildMasterLabAIContext() {
     templateId: currentAITemplateId(),
     parameters: currentAIParameters(),
     deterministicResult: {
-      resultText: (elements.sceneTip?.textContent || "").trim().slice(0, 300),
-      metrics: metricText.slice(0, 300)
+      resultText: (week1Model?.conclusion || elements.sceneTip?.textContent || "").trim().slice(0, 300),
+      metrics: (week1Model ? week1Model.facts.map(item => `${item.label}：${item.value}`).join("｜") : metricText).slice(0, 300)
     },
     formula: ($(".formula-spotlight strong")?.textContent || "").trim().slice(0, 600),
     currentStep: (currentReasoning?.textContent || "").replace(/\s+/g, " ").trim().slice(0, 600)
@@ -7546,7 +7566,7 @@ $("#favoriteList")?.addEventListener("click", event => {
   applyWaitingState(item.dataset.subject);
   $("#questionInput").value = item.dataset.question;
   window.scrollTo({ top: 0, behavior: motionPreference.matches ? "auto" : "smooth" });
-  showToast(`${item.dataset.subject}收藏实验已载入，点击生成实验开始建模`);
+  showToast(`${item.dataset.subject}${item.dataset.recommended === "true" ? "推荐" : "收藏"}实验已载入，点击生成实验开始建模`);
 });
 
 $("#playbackButton").addEventListener("click", event => {

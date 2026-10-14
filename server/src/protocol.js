@@ -154,6 +154,9 @@ export function findTutorTopicMismatches(request, response) {
   if (!request || !response || request.context?.mode !== 'question') {
     return [];
   }
+  // Only a full solution must name the original problem's objects; a hint or an
+  // explanation may rightly leave them out (the public gateway applies the same scope).
+  if (request.responseLevel !== 'steps') return [];
   const targetedFollowUp = isTargetedTutorFollowUp(request);
   const question = targetedFollowUp ? latestTutorQuestion(request) : request.context.originalQuestion || '';
   const responseText = tutorResponseText(response);
@@ -182,17 +185,30 @@ function stableDecimal(value) {
   return Number(Number(value).toFixed(8));
 }
 
+// Numeric a(v) statements in a reply, minus those the student wrote: a check may
+// quote the student's own expression back while explaining what is wrong with it.
+export function statedNumericAccelerations(request, answerText) {
+  const studentText = canonicalMathText([latestTutorQuestion(request),
+    ...(request.history || []).filter((item) => item.role === 'user').map((item) => item.content)].join('\n'));
+  const statements = String(answerText || '').match(
+    /a\s*\\?\(\s*v\s*\\?\)\s*=\s*(?:\(|\\frac\{)?\s*-?\d[-−+*/×·().\d\sA-Za-z\\{}^_]*|加速度.{0,12}?(?:为|是|=)\s*-?\d[\d.]*/gi) || [];
+  return statements.filter((statement) => !studentText.includes(canonicalMathText(statement).replace(/\\/g, '')) &&
+    !studentText.includes(canonicalMathText(statement)));
+}
+
 export function findDeterministicTutorIssues(request, response) {
   if (!request || !response || request.context?.mode !== 'question') {
     return [];
   }
   const question = request.context.originalQuestion || '';
-  // A conceptual excerpt question need not repeat the whole numeric answer.
-  // Keep numeric checking when either the latest question or answer includes it.
+  // Numbers are checked when this turn asks for the full calculation, or when the
+  // reply states a numeric a(v) of its own. A hint or explanation that withholds
+  // the answer is not rejected for lacking it; a variant uses new numbers.
+  if (request.responseLevel === 'variant') return [];
   const targetedFollowUp = isTargetedTutorFollowUp(request);
   const answerText = tutorResponseText(response);
-  const numericAcceleration = /a\s*\\?\(\s*v\s*\\?\)\s*=\s*(?:\(|\\frac\{)?\s*-?\d|加速度.{0,12}(?:为|是|=)\s*-?\d/i.test(answerText);
-  if (targetedFollowUp && ['hint', 'explain'].includes(request.responseLevel) && !numericAcceleration) return [];
+  const solving = request.responseLevel === 'steps' && !targetedFollowUp;
+  if (!solving && !statedNumericAccelerations(request, answerText).length) return [];
   if (targetedFollowUp && !/加速度|a\s*\(\s*v\s*\)/i.test(latestTutorQuestion(request) + answerText)) return [];
   if (!/(?:金属棒|导体棒)/.test(question) || !/a\s*\(\s*v\s*\)/i.test(question) || !/(?:磁场|磁感应强度)/.test(question)) {
     return [];

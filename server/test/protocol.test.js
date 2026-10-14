@@ -480,3 +480,25 @@ test('retains the complete captured chemical conclusion including LaTeX beyond 5
   assert.ok(result);
   assert.equal(result.steps.at(-1),fixture.payload.finalAnswer);
 });
+
+test('an induction hint that withholds the answer is not rejected for lacking the numeric a(v)', () => {
+  const context = {
+    mode: 'question',
+    subject: '物理',
+    originalQuestion: '质量0.20kg、长度0.50m的金属棒在磁场B=0.80T中运动，回路电阻R=2.0Ω，拉力F=1.0N，求a(v)。'
+  };
+  const hint = sanitizeTutorChatRequest({ message: '先给我一个提示', responseLevel: 'hint', context });
+  const clue = { mode: 'hint', summary: '先写出安培力 F安=B²L²v/R，再用牛顿第二定律列式。', steps: [], formulas: [], finalAnswer: null };
+  assert.deepEqual(findDeterministicTutorIssues(hint, clue), []);
+  assert.ok(validateTutorChatResponse(clue, hint));
+  // A hint that does state a wrong numeric a(v) is still caught.
+  assert.deepEqual(findDeterministicTutorIssues(hint, { ...clue, summary: 'a(v)=(1.0-0.16v)/0.20' }), ['INDUCTION_ROD_ACCELERATION_MISMATCH']);
+  // A check may quote the student's own wrong expression without restating a result.
+  const check = sanitizeTutorChatRequest({ message: '帮我检查：a(v)=(1.0-0.16v)/0.20', responseLevel: 'check', context });
+  assert.deepEqual(findDeterministicTutorIssues(check, { mode: 'explain', summary: '你写的 a(v)=(1.0-0.16v)/0.20 漏了回路电阻，安培力应除以 R。', steps: [] }), []);
+  // A full solution must still state the correct relation.
+  const steps = sanitizeTutorChatRequest({ message: '请完整解答。', responseLevel: 'steps', context });
+  assert.deepEqual(findDeterministicTutorIssues(steps, { mode: 'steps', summary: '', steps: ['先分析受力。', '再列牛顿第二定律。'] }), ['INDUCTION_ROD_ACCELERATION_MISMATCH']);
+  assert.deepEqual(findDeterministicTutorIssues(sanitizeTutorChatRequest({ message: '出一道变式', responseLevel: 'variant', context }),
+    { mode: 'explain', summary: '变式：若 R=4.0Ω，a(v)=5-0.2v。', steps: [] }), []);
+});

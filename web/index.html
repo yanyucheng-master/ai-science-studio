@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" href="assets/brand/orbit-flask-2026-10-04/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="vendor/katex/katex.min.css?v=0.19.0">
-  <link rel="stylesheet" href="styles.css?v=20261011-answer-style-1">
+  <link rel="stylesheet" href="styles.css?v=20261014-week1-1">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -132,6 +132,14 @@
             <button class="preset-option" type="button" data-preset="lampPower">
               <span>测量小灯泡电功率</span>
               <small>P = UI · 额定电压与亮度</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="parallelCircuit">
+              <span>并联电路电流与电阻</span>
+              <small>支路电流 · 干路电流 · 总电阻</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="planeMirror">
+              <span>平面镜成像规律</span>
+              <small>物像等距 · 正立等大 · 虚像</small>
             </button>
             <button class="preset-option" type="button" data-preset="seriesCircuit">
               <span>串联电路动态分析</span>
@@ -703,7 +711,7 @@
 
           <section class="history-card favorites-card card" aria-labelledby="favoritesTitle">
             <div class="history-header">
-              <h3 id="favoritesTitle">已收藏的实验</h3>
+              <h3 id="favoritesTitle">推荐实验</h3>
               <span class="favorite-count" id="favoriteCount">2 个</span>
             </div>
             <div class="favorite-list" id="favoriteList" aria-live="polite"></div>
@@ -779,6 +787,7 @@
           <div class="ai-session-toolbar">
             <button id="aiTutorHistoryButton" type="button" aria-expanded="false" aria-controls="aiTutorHistoryPanel">最近会话</button>
             <button id="aiTutorNewButton" type="button">新对话</button>
+            <button id="aiTutorExportButton" type="button" title="把当前对话连同题目与参数条件导出为 Markdown 文件">导出对话</button>
             <span id="aiTutorStorageStatus" role="status">会话与草稿仅保存在此浏览器</span>
           </div>
           <div class="ai-session-undo" id="aiTutorUndoBar" role="status" hidden><span>已清空当前对话</span><button id="aiTutorUndoButton" type="button">撤销清空</button></div>
@@ -914,11 +923,12 @@
   </dialog>
 
   <script src="science-motion.js?v=20260922-motion-1"></script>
-  <script src="physics-extra.js?v=20261009-release-1"></script>
-  <script src="app.js?v=20261009-release-1"></script>
+  <script src="physics-extra.js?v=20261014-week1-1"></script>
+  <script src="app.js?v=20261014-week1-1"></script>
   <script src="vendor/katex/katex.min.js?v=0.19.0"></script>
   <script src="vendor/katex/mhchem.min.js?v=0.19.0"></script>
-  <script src="ai-tutor.js?v=20261011-answer-style-public-1"></script>
+  <script src="tutor-checks.js?v=20261011-tutor-round-1"></script>
+  <script src="ai-tutor.js?v=20261014-week1-public-1"></script>
   <script src="announcements.js?v=20261008-announcements-2"></script>
 </body>
 </html>

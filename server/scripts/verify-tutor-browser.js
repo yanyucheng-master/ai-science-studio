@@ -209,6 +209,7 @@ try {
       fractions: document.querySelectorAll('.ai-safe-fraction, .katex .mfrac').length,
       subscripts: document.querySelectorAll('.ai-message.assistant sub, .ai-message.assistant .katex .msupsub').length,
       final: document.querySelector('.ai-final-step')?.innerText || '',
+      prose: [...document.querySelectorAll('.ai-message.assistant .ai-answer-prose')].at(-1)?.innerText || '',
       appendedResults: document.querySelectorAll('.ai-step-result').length,
       oldSections: document.querySelectorAll('.final-section, .check-section').length,
       followUps: document.querySelectorAll('.ai-follow-up').length,
@@ -286,8 +287,10 @@ try {
         assert.equal(ui.error, false, name);
       }
       if (name === 'default_concept') {
+        // A conceptual reply reads as a paragraph, not a one-item step list.
         assert.equal(ui.formulas, 0, name);
-        assert.match(ui.final, /植物细胞.*细胞壁.*细胞膜/, name);
+        assert.equal(ui.steps, 0, name);
+        assert.match(ui.prose, /植物细胞.*细胞壁.*细胞膜/, name);
       }
       if (name === 'default_clarification') {
         assert.match(ui.text, /题目没有给出物体质量/, name);
