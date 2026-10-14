@@ -34,8 +34,9 @@
 | 新模板最终单元复查 | 43 / 43 通过，含额外的平移表述 | `artifacts/week1-2026-10-13/week1-unit-final.log` |
 | `npm run test:week1` | 50 组布局检查、2 组收藏流程、3 组动画结果全部通过，失败 0 | `artifacts/week1-2026-10-13/browser-report.json` |
 | 公网 worktree 复核 | 新模板 43 / 43，JavaScript 语法与差异检查通过；共享实现一致 | `artifacts/week1-2026-10-13/public-sync-report.json` |
-| 两分支公告静态检查 | 各检查本轮明确清单 12 个文件，通过；真实暂存区哈希保持不变 | `artifacts/week1-2026-10-13/release-static-report.json` |
+| 两分支公告静态检查 | 初次临时索引各 12 个文件通过；最终实际提交清单为主分支 12 个、公网分支 20 个，提交前与推送前门禁均通过 | `artifacts/week1-2026-10-13/publication-audit.json` 及 Git 发布命令结果 |
 | 公网发布审核补充验证 | 19 / 19 通过：提示过滤、直连/网关路由与共同核对规则，使用模拟响应 | `artifacts/week1-2026-10-13/public-hint-release.log` |
+| 公网静态文件 | 8 个资源分别使用普通 URL 与唯一参数 URL，16 / 16 与已发布 Git 文件字节一致 | `artifacts/week1-2026-10-13/live-resources.json` |
 
 浏览器检查采用本机 Edge 155.0.4283.45 的隔离测试会话，宽度包括 320、390、768、1366、1920px。验证预设菜单、真实生成、参数滑动与鼠标拖动、SVG 节点保留、文字边界/重叠、页面横向溢出、读数卡完整性、放大与平移、物像对称、参数极值及四位小数输入保真。图中不再放解释脚注；实测上述布局的 SVG 标注最小实际字号约 16.15px，读数区说明及标签至少 16px、数值 18px，解析正文 15px。参数区移除解释小字，标签、数值和单位至少 16px；名称、数值控制与滑条分行，避免相互挤压。截图保存在上述本地证据目录；人工检查过桌面和手机默认画面。
 
@@ -43,22 +44,31 @@
 
 收藏检查覆盖新访客、打开推荐不点亮星标/不写存储、首次收藏、刷新恢复、取消最后一条后的空状态、旧默认条目兼容、损坏的存储内容，以及存储被浏览器禁止时的当前页面操作。
 
-所有浏览器请求限制在本地测试站点；不读取 `.env` 或浏览器个人配置，不发送真实 AI 请求。最初 `npm test` 受到沙盒对本地回环连接的限制，获准在本地测试环境运行后通过；初版浏览器检查发现并修复了场景高度覆盖、顶部容器拦截放大按钮、手机图示文字过小的问题。
+自动化浏览器测试的请求限制在本地测试站点；不读取 `.env` 或浏览器个人配置，不发送真实 AI 请求。发布后另在用户已登录的 Chrome 中读取 Render 状态，并在公网页面生成两道可本地匹配的预设进行验收，未提交 AI 问答。最初 `npm test` 受到沙盒对本地回环连接的限制，获准在本地测试环境运行后通过；初版浏览器检查发现并修复了场景高度覆盖、顶部容器拦截放大按钮、手机图示文字过小的问题。
 
 ## 分支同步与发布状态
 
-公网 worktree：`artifacts/ai-fix-2026-10-08/public-worktree`，分支 `codex/public-demo-byo-key`，本轮同步前 HEAD 为 `7817846088e611767a345783f0b697f8283c8310`。该工作区原有上一轮 AI 导师的未提交修改，本轮按增量补丁同步，不整页覆盖，不改变公网 AI 脚本引用与配置。
+公网 worktree：`artifacts/ai-fix-2026-10-08/public-worktree`，分支 `codex/public-demo-byo-key`，本轮同步前 HEAD 为 `7817846088e611767a345783f0b697f8283c8310`。该工作区原有上一轮 AI 导师的未提交修改，本轮按增量补丁同步，不整页覆盖，保留公网 AI 分支行为与配置，按实际变更更新对应脚本版本号。
 
 同步前的文件备份、哈希清单与增量补丁保存在 `artifacts/week1-2026-10-13/public-before/`、`public-before.json` 和 `week1-public.patch`。第一次增量同步记入 `public-sync-report.json`：共享实现按 CRLF/LF 归一化后逐文件一致，当时 8 个既有 AI 文件原始 SHA-256 不变。最初字节校验发现的是 Git 换行格式差异，未以整页覆盖方式处理。
 
 用户随后授权审核完整发布范围。审核发现公网草稿尚未包含主分支最后一版提示过滤：常见数字及与已知量重复的结果、分数、根式仍可能泄露，提醒字段也未过滤。现已只同步对应过滤代码和两组回归测试，并将 README 的验证边界说明同步到主分支版本；19 项针对性检查通过。公网 AI 服务地址、个人密钥优先、Flash max 配置及错误处理保留。发布备份与变更哈希见 `publication-before/`、`public-publication-fixes.json`，AI 脚本引用更新为 `20261014-week1-public-1`。上一轮尚未发布的 AI 公告按主分支实际内容校正，不再把服务端源码更新写成公益后台已经重新部署。
 
-公告 ID：`20261014-experiment-library-week1`，revision 1。最初两分支的 `node server/scripts/check-announcement-release.js --base HEAD --staged` 使用临时 Git 索引检查本周 12 个文件，通过且未改变真实暂存区。最终发布将使用主分支 12 个、公网分支 20 个文件的明确清单，分别检查实际暂存内容，并在推送前对已获取的目标远端引用执行 `--committed` 检查。公网批次还包含上一轮未提交的 AI 导师更新及上述漏同步修复，已在公告中区分。
+公告 ID：`20261014-experiment-library-week1`。最初两分支的 `node server/scripts/check-announcement-release.js --base HEAD --staged` 使用临时 Git 索引检查本周 12 个文件，通过且未改变真实暂存区。最终代码发布使用主分支 12 个、公网分支 20 个文件的明确清单，实际暂存内容与审核清单逐文件哈希一致；提交前 `--staged` 与针对已获取远端引用的 `--committed` 检查均通过。公网批次还包含上一轮未提交的 AI 导师更新及上述漏同步修复，已在公告中区分。代码发布使用 revision 1，后续补齐本验收与发布记录时按规则增加到 revision 2。
 
 本轮审核清单共 12 个文件：`web/app.js`、`web/physics-extra.js`、`web/styles.css`、`web/index.html`、`web/announcements.json`、`server/package.json`、`server/eval/local-template-bank.json`、`server/scripts/verify-question-bank-browser.js`、`server/scripts/verify-week1-browser.js`、`server/test/week1-templates.test.js`、本验收文档与 `docs/experiment-library-plan-2026-10-12.md`。本地证据、备份、临时脚本及原有设计候选未加入清单。
 
 公网清单在上述 12 个文件之外，增加 `server/README.md`、`server/scripts/verify-tutor-browser.js`、`server/src/protocol.js`、`server/test/protocol.test.js`、`server/test/web-ai-tutor.test.js`、`server/test/web-tutor-checks.test.js`、`web/ai-tutor.js`、`web/tutor-checks.js`，共 20 个文件；这些是已有 AI 更新及所需依赖，已纳入完整发布审核。
 
-发布分工于 2026-10-14 经用户明确改为由 Codex 审核、提交、推送与核验。此记录保存时仍在提交前核查阶段，GitHub、CI 与 Render 的实际结果待发布完成后补记。代码同步到本地公网分支不等于网站已更新。
+发布分工于 2026-10-14 经用户明确改为由 Codex 审核、提交、推送与核验，结果如下：
+
+- 主分支代码提交：[94788ad9c345a37db0025f5a915e677c48544229](https://github.com/yanyucheng-master/ai-science-studio/commit/94788ad9c345a37db0025f5a915e677c48544229)。公网代码提交：[b1a412106418f6f6ebac67929c9627f248c8a8e6](https://github.com/yanyucheng-master/ai-science-studio/commit/b1a412106418f6f6ebac67929c9627f248c8a8e6)。原子推送成功，`git ls-remote` 核对两个分支均与本地 SHA 一致。随后补记验收结果的文档与公告提交不改变实验实现。
+- GitHub API 对这两个代码提交均返回 0 个 Actions 运行、0 个 check run、空状态检查列表；仓库没有 `.github/workflows`。这是“无 CI 运行记录”，并非“CI 通过”。未禁用自动检查或 Git hooks。
+- Render 控制台实查：静态服务 `srv-d8nsa3egvqtc73e3hekg`，仓库 `yanyucheng-master/ai-science-studio`，分支 `codex/public-demo-byo-key`，发布目录 `web`，Root Directory 与 Build Command 均为空。
+- [代码部署 dep-db7k884s728c73d8cleg](https://dashboard.render.com/static/srv-d8nsa3egvqtc73e3hekg/deploys/dep-db7k884s728c73d8cleg) 显示 **Deploy succeeded | Live**、Auto-Deploy、用时 12.8s；页面时间为 2026-10-14 16:58:08（UTC+8）。日志明确检出公网完整 SHA `b1a412106418f6f6ebac67929c9627f248c8a8e6` 并显示网站已上线。
+- 对 HTML、CSS、`physics-extra.js`、`app.js`、`ai-tutor.js`、`tutor-checks.js`、公告 JSON 和页面实际引用版本的公告脚本，分别请求普通 URL 与唯一查询参数 URL；16 个响应的 SHA-256 均与公网 Git 文件一致。实际缓存响应头为 `public, max-age=0, s-maxage=300`，未把仓库中的缓存声明当成线上响应。
+- 公网 Chrome 验收：并联预设 R₁=6Ω、R₂=3Ω、U=6V，页面显示 I₁=1A、I₂=2A、I=3A、R并=2Ω；平面镜预设 u=20cm、h=5cm，页面显示 v=20cm、d=40cm、h′=5cm。既有浏览器收藏仍保留；未添加或删除用户收藏。
+
+本轮完成第一周目标与可选的 1.10 调研。初中 / 高中切换、跨学科框架和后续实验按原计划留在第二周及以后。本轮没有重新部署 AI 后台或更改其环境变量。
 
 复跑：在 `server/` 运行上述 npm 命令。浏览器脚本沿用 `PLAYWRIGHT_MODULE` 与 `BROWSER_CHANNEL` 环境变量，默认 Edge；测试依赖未写入应用生产依赖。
