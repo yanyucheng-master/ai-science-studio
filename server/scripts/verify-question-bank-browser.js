@@ -65,7 +65,9 @@ const plans = await planPage.evaluate(items => items.map(item => {
     const model = template.model(p.p1, p.p2, p.fixed);
     const metric = model.metrics[2];
     Object.assign(values, { p1: p.p1, p2: p.p2, r1: p.fixed?.r1, mCold: p.fixed?.mCold, readout: model.readout,
-      force: metric, power: metric, current: metric, t: metric, pressure: metric, eta: metric, wavelength: metric });
+      force: metric, power: metric, current: metric, t: metric, pressure: metric, eta: metric, wavelength: metric,
+      i1: model.i1, i2: model.i2, equivalentResistance: model.equivalentResistance,
+      imageDistance: model.imageDistance, objectImageDistance: model.objectImageDistance, imageHeight: model.imageHeight });
   }
   return { ok: true, values };
 }), bank);

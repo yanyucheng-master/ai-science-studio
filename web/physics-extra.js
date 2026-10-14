@@ -277,6 +277,14 @@
       if (problem) return { ok: false, message: problem };
     }
     const full = fixedWithDefaults(template, fixed);
+    if (template.strict.sameConditions) {
+      const original = template.strict.values(source, G.extractQuantities(source));
+      if (!original?.ok || !G.approx(original.p1, p1) || !G.approx(original.p2, p2)
+        || Object.entries(original.fixed || {}).some(([key, value]) => typeof value === "number"
+          ? !G.approx(value, full[key]) : value !== full[key])) {
+        return miss("题目条件与实验参数不一致，不能把示意值或补充条件当作原题已知量。");
+      }
+    }
     const leftovers = G.unconsumed(source, template.strict.used(p1, p2, full), { ignore: template.strict.ignore });
     if (leftovers.length) {
       return { ok: false, message: `题目中的“${leftovers[0].text}”不在“${template.menuTitle}”模板的计算范围内。` };
@@ -329,7 +337,9 @@
     const [capMin, capMax] = template.strict.caps[index];
     const min = value < param.min ? Math.max(capMin, niceBound(value, false)) : param.min;
     const max = value > param.max ? Math.min(capMax, niceBound(value * 1.25, true)) : param.max;
-    return { ...param, min, max, value };
+    const step = template.strict.preciseParams
+      ? Math.min(param.step, 10 ** -Math.max(exactPlaces(value) ?? 4, exactPlaces(min) ?? 4)) : param.step;
+    return { ...param, min, max, step, value };
   };
   const stages = (a, b, c) => [
     { label: "识别题型", text: a, progress: 28 },
@@ -340,7 +350,7 @@
     ["提取条件", titles[0], "把题干中的可变量转成实验参数。"],
     ["选择公式", titles[1], "选择与题型匹配的核心关系式。"],
     ["代入计算", titles[2], "用当前参数计算关键物理量。"],
-    ["现象验证", titles[3], "通过模型变化检验计算结论。"]
+    ["现象验证", model.explanation ? `${titles[3]} ${model.explanation}` : titles[3], "通过模型变化检验计算结论。"]
   ];
   const fact = (label, value) => ({ label, value });
 
@@ -369,8 +379,8 @@
       <marker id="dgRayArrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1.5L8 5L1 8.5" fill="none" stroke="#d9412f" stroke-width="1.6"/></marker>
       <pattern id="dgHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V8" stroke="#6b7f99" stroke-width="1.4"/></pattern>
     </defs>`;
-  const diagram = (className, label, body) => `
-    <svg class="edu-circuit-svg edu-diagram ${className}" viewBox="0 0 760 400" role="img" aria-label="${label}">
+  const diagram = (className, label, body, width = 760, height = 400) => `
+    <svg class="edu-circuit-svg edu-diagram ${className}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${label}">
       ${diagramDefs}${body}
     </svg>`;
   const dimension = (x1, y1, x2, y2, text, textX, textY, anchor = "middle") => `
@@ -776,6 +786,155 @@
   }
 
 
+  // These two diagrams retain their SVG nodes while sliders move. The shared RAF clock
+  // only updates particle transforms; it never reparses the diagram on every frame.
+  function updateRetainedDiagram(host, html) {
+    const current = host.querySelector(".week1-scene");
+    if (!current) return false;
+    const fragment = document.createElement("template");
+    fragment.innerHTML = html;
+    const next = fragment.content.firstElementChild;
+    if (!next || current.className !== next.className) return false;
+    const patch = (a, b) => {
+      if (a.nodeType !== b.nodeType || a.nodeName !== b.nodeName) { a.replaceWith(b.cloneNode(true)); return; }
+      if (a.nodeType === 3) { if (a.data !== b.data) a.data = b.data; return; }
+      if (a.nodeType !== 1) return;
+      // Particle transforms are owned by the animation clock, not the markup.
+      if (a.matches(".parallel-particles")) return;
+      for (const attr of [...a.attributes]) if (!b.hasAttribute(attr.name)) a.removeAttribute(attr.name);
+      for (const attr of [...b.attributes]) if (a.getAttribute(attr.name) !== attr.value) a.setAttribute(attr.name, attr.value);
+      if (a.childNodes.length !== b.childNodes.length) { a.replaceChildren(...[...b.childNodes].map(n => n.cloneNode(true))); return; }
+      [...a.childNodes].forEach((child, i) => patch(child, b.childNodes[i]));
+    };
+    patch(current, next);
+    return true;
+  }
+
+  function parallelCircuitDiagram(model) {
+    const { i1, i2, voltage, metrics: [r1, r2, current] } = model;
+    const maxI = Math.max(i1, i2, 1e-12);
+    const stream = (name, path, value) => `<g class="parallel-stream" data-branch="${name}" data-current="${value}">
+      <path class="parallel-path" d="${path}" fill="none" stroke="none"/>
+      <g class="parallel-particles" aria-hidden="true">${Array.from({length:6}, () => '<circle class="parallel-dot" r="3.5"/>').join("")}</g>
+    </g>`;
+    if (window.matchMedia?.("(max-width: 560px)").matches) {
+      return diagram("parallel-diagram compact-diagram", "并联电路的两条支路电流与干路电流", `
+        ${caption("并联电路 · 分流与汇合",180,32)}
+        ${stream("main","M328 212V100H32V212",current)}
+        ${stream("branch1","M32 212H328",i1)}
+        ${stream("branch2","M32 212V338H328V212",i2)}
+        <g class="parallel-wires" fill="none" stroke="#445a78" stroke-width="2.4">
+          <path d="M32 212V100H62 M98 100H170 M191 100H328V338 M32 212V338 M32 212H80 M116 212H174 M280 212H328 M32 338H80 M116 338H174 M280 338H328"/>
+          <path d="M170 80V120 M191 89V111" stroke-width="3.5"/>
+          <rect x="174" y="198" width="106" height="28" rx="3" fill="#eff6ff"/><rect x="174" y="324" width="106" height="28" rx="3" fill="#e9f8f3"/>
+          <circle cx="80" cy="100" r="18" fill="white"/><circle cx="98" cy="212" r="18" fill="white"/><circle cx="98" cy="338" r="18" fill="white"/>
+        </g>
+        <text class="dg-label" x="80" y="107" text-anchor="middle">A</text><text class="dg-label" x="98" y="219" text-anchor="middle">A₁</text><text class="dg-label" x="98" y="345" text-anchor="middle">A₂</text>
+        <text class="dg-small" x="157" y="70">+</text><text class="dg-small" x="199" y="70">−</text>
+        <text class="dg-value-text" x="180" y="150" text-anchor="middle">U = ${fmt(voltage,6)} V</text>
+        <text class="dg-label" x="227" y="189" text-anchor="middle">R₁ = ${fmt(r1,6)} Ω</text>
+        <text class="dg-label" x="227" y="308" text-anchor="middle">R₂ = ${fmt(r2,6)} Ω</text>
+        <text class="dg-value-text" x="135" y="264" text-anchor="middle">I₁ ${eq(i1)} ${fmt(i1,6)} A</text>
+        <text class="dg-value-text" x="135" y="390" text-anchor="middle">I₂ ${eq(i2)} ${fmt(i2,6)} A</text>
+        ${[32,328].map(x=>`<circle cx="${x}" cy="212" r="4.5" fill="#445a78"/>`).join("")}
+        <path d="M280 256H318" opacity="${current>0?1:0}" stroke="#2563c9" stroke-width="${n2(Math.max(.8,5*i1/maxI))}" marker-end="url(#dgArrowBlue)"/>
+        <path d="M280 382H318" opacity="${current>0?1:0}" stroke="#1b9270" stroke-width="${n2(Math.max(.8,5*i2/maxI))}" marker-end="url(#dgArrowGreen)"/>
+        <text class="dg-value-text" x="180" y="445" text-anchor="middle">干路 I ${eq(current)} ${fmt(current,6)} A</text>`,360,468);
+    }
+    return diagram("parallel-diagram", "两个电阻并联：干路电流在节点分流，经两条支路后汇合", `
+      ${caption("并联电路 · 分流与汇合",380,32)}
+      ${stream("main", "M660 188V86H100V188", current)}
+      ${stream("branch1", "M100 188H660", i1)}
+      ${stream("branch2", "M100 188V290H660V188", i2)}
+      <g class="edu-switch-closed parallel-wires" fill="none" stroke="#445a78" stroke-width="2.4">
+        <path d="M100 188V86H162 M198 86H342 M363 86H660V290 M100 188V290 M100 188H182 M218 188H300 M420 188H660 M100 290H182 M218 290H300 M420 290H660"/>
+        <path d="M342 66V106 M363 75V97" stroke-width="3.5"/>
+        <rect x="300" y="174" width="120" height="28" rx="3" fill="#eff6ff"/>
+        <rect x="300" y="276" width="120" height="28" rx="3" fill="#e9f8f3"/>
+        <circle cx="180" cy="86" r="18" fill="white"/><circle cx="200" cy="188" r="18" fill="white"/><circle cx="200" cy="290" r="18" fill="white"/>
+      </g>
+      <text class="dg-label" x="180" y="93" text-anchor="middle">A</text>
+      <text class="dg-label" x="200" y="195" text-anchor="middle">A₁</text>
+      <text class="dg-label" x="200" y="297" text-anchor="middle">A₂</text>
+      <text class="dg-small" x="329" y="70" text-anchor="middle">+</text><text class="dg-small" x="376" y="70" text-anchor="middle">−</text>
+      <text class="dg-value-text" x="435" y="72">U = ${fmt(voltage, 6)} V</text>
+      <text class="dg-value-text" x="170" y="130" text-anchor="middle">I ${eq(current)} ${fmt(current, 6)} A</text>
+      <text class="dg-label" x="360" y="159" text-anchor="middle">R₁ = ${fmt(r1, 6)} Ω</text>
+      <text class="dg-value-text" x="560" y="159" text-anchor="middle">I₁ ${eq(i1)} ${fmt(i1, 6)} A</text>
+      <text class="dg-label" x="360" y="261" text-anchor="middle">R₂ = ${fmt(r2, 6)} Ω</text>
+      <text class="dg-value-text" x="560" y="261" text-anchor="middle">I₂ ${eq(i2)} ${fmt(i2, 6)} A</text>
+      ${[100,660].map(x => `<circle cx="${x}" cy="188" r="4.5" fill="#445a78"/>`).join("")}
+      <path d="M555 211H608" opacity="${current>0?1:0}" stroke="#2563c9" stroke-width="${n2(Math.max(.8, 5*i1/maxI))}" marker-end="url(#dgArrowBlue)"/>
+      <path d="M555 313H608" opacity="${current>0?1:0}" stroke="#1b9270" stroke-width="${n2(Math.max(.8, 5*i2/maxI))}" marker-end="url(#dgArrowGreen)"/>
+      <text class="dg-label" x="380" y="365" text-anchor="middle">U₁ = U₂ = U　　I = I₁ + I₂</text>`);
+  }
+
+  function bindParallelMotion(svg, phase = 0) {
+    const branches = [...svg.querySelectorAll(".parallel-stream")].map(group => {
+      const path = group.querySelector(".parallel-path");
+      const length = path.getTotalLength();
+      const speed = Math.min(180, 72 * Math.sqrt(Number(group.dataset.current)));
+      return { group, path, length, offset: phase * speed / length % 1, dots: [...group.querySelectorAll(".parallel-dot")] };
+    });
+    return { svg, phase, layout: svg.getAttribute("viewBox"), current: 0, closed: true,
+      render(dt = 0, reduced = false) {
+        if (!reduced) this.phase += dt;
+        for (const branch of branches) {
+          const current = Number(branch.group.dataset.current);
+          const speed = Math.min(180, 72 * Math.sqrt(current));
+          // Integrate distance each frame: changing current must not rewind/jump the dots.
+          if (!reduced && current > 0) branch.offset = (branch.offset + dt * speed / branch.length) % 1;
+          branch.dots.forEach((dot, index) => {
+            dot.style.display = current > 0 && !reduced ? "" : "none";
+            if (current <= 0 || reduced) return;
+            const offset = (branch.offset + index / branch.dots.length) % 1;
+            const p = branch.path.getPointAtLength(offset * branch.length);
+            dot.setAttribute("transform", `translate(${p.x} ${p.y})`);
+          });
+        }
+      }
+    };
+  }
+
+  function planeMirrorDiagram(model) {
+    const [u,h] = model.metrics;
+    const compact = window.matchMedia?.("(max-width: 560px)").matches;
+    const center = compact ? 180 : 380;
+    const dx = compact ? 40 + 55 * u / (u + 40) : 75 + 165 * u / (u + 40);
+    const height = 45 + 108 * h / (h + 15);
+    const left = center - dx, right = center + dx;
+    const labelU = model.distanceKnown ? `u = ${fmt(u,6)} cm` : "物距未给出";
+    const labelV = model.distanceKnown ? `v = ${fmt(u,6)} cm` : "像距等于物距";
+    if(compact) return diagram("plane-mirror-diagram compact-diagram", "物像关于镜面对称，虚像正立且与物等大", `
+      ${caption("平面镜成像 · 物像对称",180,32)}
+      <text class="dg-label dg-green" x="90" y="76" text-anchor="middle">物体</text><text class="dg-label dg-blue" x="270" y="76" text-anchor="middle">正立等大虚像</text>
+      <rect x="181" y="77" width="9" height="168" fill="url(#dgHatch)"/><path d="M180 74V247" stroke="#4f6482" stroke-width="3"/>
+      <text class="dg-small" x="180" y="272" text-anchor="middle">镜面</text>
+      <path class="dg-extension" d="M${n2(left)} ${n2(238-height)}H${n2(right)} M${n2(left)} 238H${n2(right)}"/>
+      <g class="mirror-object" style="transform:translate(${n2(left)}px,238px) scaleY(${n2(height/100)})"><path d="M0 0V-100M-8 -88L0 -100L8 -88" fill="none" stroke="#1b9270" stroke-width="3.2"/></g>
+      <g class="mirror-image" style="transform:translate(${n2(right)}px,238px) scaleY(${n2(height/100)})"><path d="M0 0V-100M-8 -88L0 -100L8 -88" fill="none" stroke="#2563c9" stroke-width="3.2" stroke-dasharray="6 4"/></g>
+      <text class="dg-small" x="90" y="308" text-anchor="middle">${model.heightKnown?`h = ${fmt(h,6)} cm`:"物高未给出"}</text>
+      <text class="dg-small" x="270" y="308" text-anchor="middle">${model.heightKnown?`h′ = ${fmt(h,6)} cm`:"h′ = h"}</text>
+      ${dimension(left,334,180,334,labelU,90,358)}${dimension(180,334,right,334,labelV,270,358)}
+      ${dimension(left,386,right,386,model.distanceKnown?`物像距离 d = ${fmt(2*u,6)} cm`:"物像距离 d = 2u",180,414)}`,360,438);
+    return diagram("plane-mirror-diagram", "物体和正立等大的虚像关于镜面对称，像与物到镜面的距离相等", `
+      ${caption("平面镜成像 · 物像对称",380,32)}
+      <text class="dg-label dg-green" x="190" y="76" text-anchor="middle">物体</text>
+      <text class="dg-label dg-blue" x="570" y="76" text-anchor="middle">正立、等大的虚像</text>
+      <rect x="381" y="77" width="10" height="168" fill="url(#dgHatch)"/>
+      <path d="M380 74V247" stroke="#4f6482" stroke-width="3"/>
+      <text class="dg-small" x="380" y="68" text-anchor="middle">镜面</text>
+      <path class="dg-extension" d="M${n2(left)} ${n2(238-height)}H${n2(right)} M${n2(left)} 238H${n2(right)}"/>
+      <g class="mirror-object" style="transform:translate(${n2(left)}px,238px) scaleY(${n2(height/100)})"><path d="M0 0V-100M-8 -88L0 -100L8 -88" fill="none" stroke="#1b9270" stroke-width="3.2"/></g>
+      <g class="mirror-image" style="transform:translate(${n2(right)}px,238px) scaleY(${n2(height/100)})"><path d="M0 0V-100M-8 -88L0 -100L8 -88" fill="none" stroke="#2563c9" stroke-width="3.2" stroke-dasharray="6 4"/></g>
+      <text class="dg-small" x="190" y="274" text-anchor="middle">${model.heightKnown ? `物高 h = ${fmt(h,6)} cm` : "物高未给出"}</text>
+      <text class="dg-small" x="570" y="274" text-anchor="middle">${model.heightKnown ? `像高 h′ = ${fmt(h,6)} cm` : "h′ = h"}</text>
+      <path class="dg-extension" d="M${n2(left)} 245V343 M380 251V296 M${n2(right)} 245V343"/>
+      ${dimension(left,296,380,296,labelU,220,320)}
+      ${dimension(380,296,right,296,labelV,540,320)}
+      ${dimension(left,343,right,343,model.distanceKnown ? `物像距离 d = 2u = ${fmt(2*u,6)} cm` : "物像距离 d = 2u",380,366)}`);
+  }
+
   function genericShell(model, bodyHtml) {
     return `
       <div class="generic-physics-scene ${model.visual}">
@@ -786,8 +945,111 @@
   }
 
   const templates = {
+    parallelCircuit: {
+      id: "parallelCircuit", level: "junior",
+      menuTitle: "并联电路电流与电阻", menuMeta: "支路电流 · 干路电流 · 总电阻",
+      stage: "初中核心", block: "电学", title: "并联电路：电流分流与总电阻",
+      defaults: [6,3], keywords: /并联/,
+      params: [
+        {label:"支路电阻 R₁",desc:"电源电压不变，观察第一支路电流",unit:"Ω",min:1,max:30,step:.5,value:6},
+        {label:"支路电阻 R₂",desc:"电源电压不变，观察第二支路电流",unit:"Ω",min:1,max:30,step:.5,value:3}
+      ],
+      strict: {
+        sameConditions: true, preciseParams: true, caps: [[.1,1000],[.1,1000]], fixedDefaults: {voltage:6},
+        intent: {require:[/并联/],forbid:[/串联|混联|滑动|变阻器|灯泡|小灯|电动机|电动势|内阻|电容|二极管|交流|如图|图示|图中|附图|开关|断开|断路|短路|故障|接触不良|温度|变化|改变|增大|减小|最大|最小|量程|允许|至少|至多|范围|功率|电能|热量|R\s*[3-9]|[甲乙丙]电阻|电阻[甲乙丙]|[三四五六七八九十3-9]\s*(?:个|只|条|段).*电阻/, /\d\s*[+*/÷×-]\s*\d|√|根号|分之|百分之|不等于|大于|小于|不超过|不低于|R\d\s*=\s*\d+(?:\.\d+)?\s*R\d/]},
+        values(source,tokens) {
+          const volts=tokensOf(tokens,"voltage"), ohms=tokensOf(tokens,"resistance");
+          if(volts.length!==1 || !/电源|总电压/.test(source)) return miss("并联模板需要明确给出电源电压。");
+          if([...ohms,...volts].some(token=>exactPlaces(token.value)===null)) return miss("换算为 Ω、V 后的输入最多保留四位小数；更高精度需交给 AI，不能自动舍入题干。");
+          if(ohms.length===1 && /(?:两|2)(?:个|只)\s*$/.test(leadOf(source,ohms[0],12))) {
+            return {ok:true,p1:ohms[0].value,p2:ohms[0].value,fixed:{voltage:volts[0].value}};
+          }
+          if(ohms.length!==2) return miss("并联模板只处理两个定值电阻，需要两个明确的阻值。");
+          const labels=ohms.map(token => leadOf(source,token,30).match(/R\s*([12])(?:的)?(?:阻值|电阻)?\s*(?:=|为|是|:)?\s*$/)?.[1] || "");
+          if(labels[0] && labels[0]===labels[1]) return miss("同一支路出现重复阻值，请明确 R₁ 与 R₂。");
+          const order=source.match(/R\s*([12])\s*(?:和|与|、)\s*R\s*([12])[^，,。;；]{0,8}分别(?:为|是)/);
+          const reversed=labels[0]==="2" || labels[1]==="1" || (!labels.some(Boolean) && order?.[1]==="2");
+          return {ok:true,p1:ohms[reversed?1:0].value,p2:ohms[reversed?0:1].value,fixed:{voltage:volts[0].value}};
+        },
+        checkFixed: fixed => fixed.voltage===0 || (fixed.voltage>=.01 && fixed.voltage<=1000) ? "" : "电源电压需为 0V 或 0.01–1000V。",
+        used: (r1,r2,fixed) => [{cls:"resistance",value:r1},{cls:"resistance",value:r2},{cls:"voltage",value:fixed.voltage}],
+        asks: {supported:/电流|电阻|阻值|示数/,unsupported:/电压|功率|热|能量|电能|电量|电荷|时间|之比|比值|比例|变化|多大.*电源/}
+      },
+      failMessage:"请给出两个定值电阻的阻值和并联电源电压。",
+      question: (r1,r2,fixed={}) => `电阻 R1=${fmtInput(r1)}Ω 与 R2=${fmtInput(r2)}Ω 并联接在 ${fmtInput(fixed.voltage??6)}V 电源上，求支路电流、干路电流和总电阻。`,
+      given: (r1,r2,fixed) => `R₁ = ${fmtInput(r1)}Ω，R₂ = ${fmtInput(r2)}Ω；电源 U = ${fmtInput(fixed.voltage??6)}V；两支路并联`,
+      model(r1,r2,fixed={}) {
+        const voltage=fixed.voltage??6, i1=voltage/r1, i2=voltage/r2, current=i1+i2, equivalentResistance=r1*r2/(r1+r2);
+        return {visual:"visual-parallel week1-scene",voltage,i1,i2,equivalentResistance,metrics:[r1,r2,current],metricUnit:"A",
+          facts:[fact("干路电流",`${mark(current)}${fmt(current,6)} A`),fact("支路电流",`I₁ ${eq(i1)} ${fmt(i1,6)} A；I₂ ${eq(i2)} ${fmt(i2,6)} A`),fact("总电阻",`${mark(equivalentResistance)}${fmt(equivalentResistance,6)} Ω`)],
+          formula:"U₁ = U₂ = U；I = I₁ + I₂；1/R并 = 1/R₁ + 1/R₂",
+          formulaDetail:`I₁ = U/R₁ = ${fmt(voltage,6)}/${fmt(r1,6)} ${eq(i1)} ${fmt(i1,6)} A；I₂ = U/R₂ = ${fmt(voltage,6)}/${fmt(r2,6)} ${eq(i2)} ${fmt(i2,6)} A；I = I₁ + I₂ ${eq(current)} ${fmt(current,6)} A；R并 = R₁R₂/(R₁ + R₂) ${eq(equivalentResistance)} ${fmt(equivalentResistance,6)} Ω`,
+          conclusion:`两支路电压均为 ${fmt(voltage,6)}V；干路电流${about(current)}${fmt(current,6)}A。电源电压不变时，改变一个支路的阻值，另一支路电流不变；总电阻小于任一支路电阻。`,
+          sceneConclusion:"同压 · 分流 · 汇合",
+          explanation:"模型忽略电源内阻、导线和电流表的电阻。箭头粗细比较两支路电流，光点只示意电流方向，不代表电荷的实际漂移速度。总电阻由并联电压规律、电流规律和欧姆定律推导得出。",
+          readout:`I ${eq(current)} ${fmt(current,6)}A`,badge:"并联电路"};
+      },
+      visual: model => genericShell(model,parallelCircuitDiagram(model)),
+      recognition: model => `并联电路｜${model.formulaDetail}`,
+      updateVisual: updateRetainedDiagram, bindMotion: bindParallelMotion
+    },
+
+    planeMirror: {
+      id:"planeMirror",level:"junior",menuTitle:"平面镜成像规律",menuMeta:"物像等距 · 正立等大 · 虚像",
+      stage:"初中核心",block:"光学",title:"平面镜成像：物像关于镜面对称",
+      defaults:[20,5],keywords:/平面镜/,
+      params:[
+        {label:"物距 u",desc:"物体到镜面的垂直距离",unit:"cm",min:1,max:100,step:1,value:20},
+        {label:"物高 h",desc:"改变物高，观察像与物始终等高",unit:"cm",min:1,max:30,step:.5,value:5}
+      ],
+      strict:{
+        sameConditions:true,preciseParams:true,caps:[[.1,1000],[.1,300]],fixedDefaults:{distanceKnown:true,heightKnown:true},
+        intent:{require:[/平面镜/],forbid:[/透镜|凹面镜|凸面镜|移|运动|速度|转动|旋转|转过|转角|靠近|远离|走向|走近|走远|后退|前进|两面|两块|双面|[二三四五六七八九十2-9]\s*(?:面|块|个).*镜|两(?:个|支|只).*物|两个物体|如图|图示|图中|附图|至少|最小|多长.*镜|镜(?:子|面)?(?:的)?(?:长度|高度|宽度)|看到全身|视野|范围|夹角|入射角|反射角|几次|多次/, /\d\s*[+*/÷×-]\s*\d|√|根号|分之|百分之|不等于|大于|小于|不超过|不低于/]},
+        values(source,tokens) {
+          const lengths=tokensOf(tokens,"length");
+          if(!lengths.length || lengths.length>2) return miss("请明确给出物距或物高；当前模板只处理一个物体、一面平面镜。");
+          let u=null,h=null;
+          for(const token of lengths) {
+            const lead=leadOf(source,token,32), tail=tailOf(source,token,8);
+            if(/像距|像高|像(?:到|距|离)(?:平面)?镜(?:面|子)?\s*$/.test(lead)) return miss("请给出物体的条件；当前模板不从像反求物，也不忽略矛盾条件。");
+            const height=/(?:物高|身高|高度|高|h)\s*(?:=|为|是|:)?\s*$/.test(lead) || /^\s*(?:高|的(?:物体|蜡烛))/.test(tail);
+            const distance=/(?:物距|u)\s*(?:=|为|是|:)?\s*$/.test(lead) || /(?:距|离)(?:平面)?镜(?:面|子)?(?:的距离)?\s*(?:为|是|=)?\s*$/.test(lead) || /(?:平面镜|镜面|镜子)前(?:方)?\s*$/.test(lead);
+            if(height && !distance && h===null) h=token.value*100;
+            else if(distance && !height && u===null) u=token.value*100;
+            else return miss("有无法确定归属或重复的长度条件，请区分物距与物高。");
+          }
+          if([u,h].some(value=>value!==null && exactPlaces(value)===null)) return miss("换算为 cm 后的输入最多保留四位小数；更高精度需交给 AI，不能自动舍入题干。");
+          const asks=guard().askItems(source).join("；");
+          if(h===null && /像高|像(?:的)?高度|像.{0,6}多高/.test(asks)) return miss("求像高必须给出物高，不能用示意高度代替。");
+          if(u===null && /像距|距离|多远|相距/.test(asks)) return miss("求像距或物像距离必须给出物距。");
+          return {ok:true,p1:u??20,p2:h??5,fixed:{distanceKnown:u!==null,heightKnown:h!==null}};
+        },
+        used:(u,h,fixed)=>[...(fixed.distanceKnown?[{cls:"length",value:u/100}]:[]),...(fixed.heightKnown?[{cls:"length",value:h/100}]:[])],
+        asks:{supported:/像|距离|多远|光屏|正立|等大|镜面/,unsupported:/速度|运动|移动|转|数目|数量|几个|多少个|多少面|亮度|颜色|光路|画图|作图|反射角|入射角|放大率/}
+      },
+      failMessage:"请给出平面镜前物体的物距或物高，求相应的像距、物像距离或像高。",
+      question:(u,h,fixed={})=>`平面镜成像，${fixed.distanceKnown!==false?`物体距镜面 ${fmtInput(u)}cm`:"物距未给出"}，${fixed.heightKnown!==false?`物高 ${fmtInput(h)}cm`:"物高未给出"}，求${fixed.distanceKnown!==false?"像距和物像距离":"像高"}${fixed.distanceKnown!==false&&fixed.heightKnown!==false?"及像高":""}。`,
+      given:(u,h,fixed)=>`${fixed.distanceKnown?`物距 u = ${fmtInput(u)}cm`:"物距未给出（横向位置仅示意）"}；${fixed.heightKnown?`物高 h = ${fmtInput(h)}cm`:"物高未给出（高度仅示意）"}`,
+      model(u,h,fixed={}) {
+        const distanceKnown=fixed.distanceKnown!==false,heightKnown=fixed.heightKnown!==false;
+        const distance=distanceKnown?`像距 v = ${fmt(u,6)}cm；物像距离 d = 2u = ${fmt(2*u,6)}cm`:"物距未给出，像距与物像距离不能求数值";
+        const height=heightKnown?`像高 h′ = h = ${fmt(h,6)}cm`:"物高未给出，只能确定像与物等高";
+        return {visual:"visual-plane-mirror week1-scene",metrics:[u,h,distanceKnown?u:0],metricUnit:"cm",distanceKnown,heightKnown,
+          imageDistance:distanceKnown?u:null,objectImageDistance:distanceKnown?2*u:null,imageHeight:heightKnown?h:null,
+          facts:[fact("像距",distanceKnown?`${fmt(u,6)} cm`:"未给出物距"),fact("物像距离",distanceKnown?`${fmt(2*u,6)} cm`:"未给出物距"),fact("像高",heightKnown?`${fmt(h,6)} cm`:"与物等高，数值未知")],
+          formula:"v = u；d = 2u；h′ = h",formulaDetail:`${distance}；${height}。`,
+          conclusion:`${distance}；${height}。成正立、等大的虚像，光屏上接收不到。`,
+          sceneConclusion:"正立 · 等大 · 虚像",
+          explanation:"物点与对应像点的连线垂直于镜面。图中的横向虚线为对称辅助线，不是光线；横向距离和高度分别缩放。题目未给出的量只用于示意，不补入答案。",
+          readout:distanceKnown?`像距 v = ${fmt(u,6)}cm`:`像高 h′ = ${fmt(h,6)}cm`,badge:"平面镜成像"};
+      },
+      visual:model=>genericShell(model,planeMirrorDiagram(model)),recognition:model=>`平面镜成像｜${model.formulaDetail}`,
+      updateVisual:updateRetainedDiagram,
+      parameter:(param,index,fixed)=> (index===0?!fixed.distanceKnown:!fixed.heightKnown) ? {...param,label:index===0?"示意物距":"示意高度",unit:"格",desc:"题目未给出此量；仅调整图示，不参与求数值"} : param
+    },
     lever: {
       id: "lever",
+      level: "junior",
       menuTitle: "杠杆平衡条件探究",
       menuMeta: "力 × 力臂 · 判断是否平衡",
       stage: "初中核心",
@@ -854,6 +1116,7 @@
 
     lens: {
       id: "lens",
+      level: "junior",
       menuTitle: "凸透镜成像规律判断",
       menuMeta: "物距与 f、2f 比较 · 像的性质",
       stage: "初中核心",
@@ -911,6 +1174,7 @@
 
     buoyancy: {
       id: "buoyancy",
+      level: "junior",
       menuTitle: "浮力与阿基米德原理验证",
       menuMeta: "F浮 = ρgV排 · 称重法",
       stage: "初中核心",
@@ -985,6 +1249,7 @@
 
     friction: {
       id: "friction",
+      level: "senior",
       menuTitle: "滑动摩擦力影响因素",
       menuMeta: "f = μF压 · 压力与粗糙程度",
       stage: "高中必修1",
@@ -1033,6 +1298,7 @@
 
     lampPower: {
       id: "lampPower",
+      level: "junior",
       menuTitle: "测量小灯泡电功率",
       menuMeta: "P = UI · 额定电压与亮度",
       stage: "初中核心",
@@ -1183,6 +1449,7 @@
 
     seriesCircuit: {
       id: "seriesCircuit",
+      level: "junior",
       menuTitle: "串联电路动态分析",
       menuMeta: "滑动变阻器 · 电流与电压变化",
       stage: "初中核心",
@@ -1331,6 +1598,7 @@
 
     heatBalance: {
       id: "heatBalance",
+      level: "junior",
       menuTitle: "比热容与热平衡计算",
       menuMeta: "Q = cmΔt · 热量守恒",
       stage: "初中核心",
@@ -1388,6 +1656,7 @@
 
     liquidPressure: {
       id: "liquidPressure",
+      level: "junior",
       menuTitle: "液体压强与深度关系",
       menuMeta: "p = ρgh · 深度越大压强越大",
       stage: "初中核心",
@@ -1439,6 +1708,7 @@
 
     efficiency: {
       id: "efficiency",
+      level: "junior",
       menuTitle: "机械效率实验",
       menuMeta: "η = W有 / W总 · 滑轮组",
       stage: "初中核心",
@@ -1524,6 +1794,7 @@
 
     sound: {
       id: "sound",
+      level: "junior",
       menuTitle: "声音的传播与音调响度",
       menuMeta: "频率定音调 · 振幅定响度",
       stage: "初中核心",
@@ -1592,17 +1863,19 @@
     ];
     template.content = (p1 = template.defaults[0], p2 = template.defaults[1], fixed) => {
       const model = template.model(Number(p1), Number(p2), fixedWithDefaults(template, fixed));
+      const params = [adaptParam(template, 0, Number(p1)), adaptParam(template, 1, Number(p2))].map((param, index) => template.parameter
+        ? template.parameter(param, index, fixedWithDefaults(template, fixed)) : param);
       return {
         title: template.title,
         description: `${template.stage}｜${template.block}｜${model.conclusion}`,
         engine: `${template.stage} · ${template.block}模板`,
         ar: "当前为网页端典型题型模板演示，可继续扩展移动端空间观察。",
         metrics: [
-          [template.params[0].label.replace(/\s.+$/, ""), template.params[0].unit],
-          [template.params[1].label.replace(/\s.+$/, ""), template.params[1].unit],
+          [params[0].label.replace(/\s.+$/, ""), params[0].unit],
+          [params[1].label.replace(/\s.+$/, ""), params[1].unit],
           [model.facts[0].label, model.metricUnit || ""]
         ],
-        params: [adaptParam(template, 0, Number(p1)), adaptParam(template, 1, Number(p2))],
+        params,
         steps: commonSteps(model, [
           template.given
             ? template.given(Number(p1), Number(p2), fixedWithDefaults(template, fixed))
@@ -1624,7 +1897,7 @@
         facts: model.facts,
         visualHtml: template.visual(model),
         resultTitle: model.readout,
-        resultDescription: model.conclusion
+        resultDescription: model.sceneConclusion || model.conclusion
       };
     };
     template.parseQuestion = text => templateParse(template, text);

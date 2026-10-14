@@ -87,7 +87,7 @@
   "expect": "local",
   "kind": "brake",
   "answer": {
-   "stopDistance": 80.0
+   "stopDistance": 80
   },
   "note": "线性阻力预设"
  },
@@ -306,8 +306,19 @@
  },
  {
   "q": "R1=6Ω 和 R2=3Ω 并联接在 6V 电源上，求干路电流。",
-  "expect": "ai",
-  "note": "并联"
+  "expect": "local",
+  "note": "第一周扩展",
+  "kind": "extra",
+  "templateId": "parallelCircuit",
+  "answer": {
+   "current": 3,
+   "i1": 1,
+   "i2": 2,
+   "equivalentResistance": 2
+  },
+  "show": [
+   "I = 3A"
+  ]
  },
  {
   "q": "一个电阻两端电压为 6V，电阻为 30Ω，求电流。",
@@ -423,8 +434,18 @@
  },
  {
   "q": "平面镜成像，物体距镜面 20cm，像距镜面多远？",
-  "expect": "ai",
-  "note": "平面镜"
+  "expect": "local",
+  "note": "第一周扩展",
+  "kind": "extra",
+  "templateId": "planeMirror",
+  "answer": {
+   "imageDistance": 20,
+   "objectImageDistance": 40
+  },
+  "show": [
+   "像距 v = 20cm",
+   "物高未给出"
+  ]
  },
  {
   "q": "凹透镜的焦距为 10cm，物体距透镜 20cm，求像的性质。",
@@ -456,7 +477,7 @@
   "answer": {
    "p1": 200,
    "p2": 1000,
-   "force": 2.0
+   "force": 2
   },
   "note": "g 取 10"
  },
@@ -468,7 +489,7 @@
   "answer": {
    "p1": 500,
    "p2": 800,
-   "force": 4.0
+   "force": 4
   },
   "note": "科学计数法密度"
  },
@@ -1613,5 +1634,323 @@
   "note": "条件齐全的 AI 改写可以通过原题核对",
   "mapped": "一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。",
   "mappedAccepted": true
+ },
+ {
+  "q": "电阻 R₁=12Ω 与 R₂=6Ω 并联，电源电压为 6V，求两条支路电流和总电阻。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "parallelCircuit",
+  "answer": {
+   "i1": 0.5,
+   "i2": 1,
+   "current": 1.5,
+   "equivalentResistance": 4
+  },
+  "show": [],
+  "note": "第一周扩展"
+ },
+ {
+  "q": "两个 10Ω 的电阻并联，接在 5V 电源上，求总电流。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "parallelCircuit",
+  "answer": {
+   "p1": 10,
+   "p2": 10,
+   "current": 1,
+   "equivalentResistance": 5
+  },
+  "show": [],
+  "note": "第一周扩展"
+ },
+ {
+  "q": "电阻 R2=8Ω 和 R1=4Ω 并联接在 12V 电源上，求通过 R1 的电流和总电流。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "parallelCircuit",
+  "answer": {
+   "p1": 4,
+   "p2": 8,
+   "i1": 3,
+   "i2": 1.5,
+   "current": 4.5
+  },
+  "show": [],
+  "note": "第一周扩展"
+ },
+ {
+  "q": "两个电阻的阻值分别为 0.5kΩ 和 1kΩ，并联接在 3000mV 电源上，求干路电流。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "parallelCircuit",
+  "answer": {
+   "p1": 500,
+   "p2": 1000,
+   "current": 0.009,
+   "equivalentResistance": 333.3333333333333
+  },
+  "show": [],
+  "note": "第一周扩展"
+ },
+ {
+  "q": "R1=2.5Ω、R2=7.5Ω，并联接在 3V 电源上，求支路电流、干路电流与总电阻。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "parallelCircuit",
+  "answer": {
+   "p1": 2.5,
+   "p2": 7.5,
+   "i1": 1.2,
+   "i2": 0.4,
+   "current": 1.6,
+   "equivalentResistance": 1.875
+  },
+  "show": [
+   "1.875 Ω"
+  ],
+  "note": "第一周扩展"
+ },
+ {
+  "q": "电源电压为 0V，R1=6Ω 与 R2=3Ω 并联，求干路电流。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "parallelCircuit",
+  "answer": {
+   "current": 0,
+   "i1": 0,
+   "i2": 0,
+   "equivalentResistance": 2
+  },
+  "show": [],
+  "note": "第一周扩展"
+ },
+ {
+  "q": "物体高 40mm，距平面镜 0.3m，求像高以及像与物体之间的距离。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "planeMirror",
+  "answer": {
+   "p1": 30,
+   "p2": 4,
+   "imageHeight": 4,
+   "objectImageDistance": 60
+  },
+  "show": [
+   "h′ = h = 4cm"
+  ],
+  "note": "第一周扩展"
+ },
+ {
+  "q": "平面镜前物距 u=12.5cm，物高 h=2.5cm，求像距和像高。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "planeMirror",
+  "answer": {
+   "p1": 12.5,
+   "p2": 2.5,
+   "imageDistance": 12.5,
+   "imageHeight": 2.5
+  },
+  "show": [],
+  "note": "第一周扩展"
+ },
+ {
+  "q": "身高为 1.6m 的人站在平面镜前 1m 处，求像与人的距离。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "planeMirror",
+  "answer": {
+   "p1": 100,
+   "p2": 160,
+   "objectImageDistance": 200
+  },
+  "show": [],
+  "note": "第一周扩展"
+ },
+ {
+  "q": "高 10cm 的蜡烛放在平面镜前 30cm 处，求像高，并判断像能否在光屏上接收到。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "planeMirror",
+  "answer": {
+   "p1": 30,
+   "p2": 10,
+   "imageHeight": 10
+  },
+  "show": [
+   "虚像",
+   "光屏上接收不到"
+  ],
+  "note": "第一周扩展"
+ },
+ {
+  "q": "物体高 8cm，放在平面镜前，求像高。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "planeMirror",
+  "answer": {
+   "imageHeight": 8
+  },
+  "show": [
+   "物距未给出",
+   "h′ = h = 8cm"
+  ],
+  "note": "第一周扩展"
+ },
+ {
+  "q": "R1=6Ω、R2=3Ω、R3=6Ω 并联接在 6V 电源上，求干路电流。",
+  "expect": "ai",
+  "target": "parallelCircuit",
+  "note": "三个电阻"
+ },
+ {
+  "q": "R1=6Ω 与 R2=3Ω 并联后再与另一个电阻串联，电源为 6V，求电流。",
+  "expect": "ai",
+  "target": "parallelCircuit",
+  "note": "混联"
+ },
+ {
+  "q": "R1=6Ω 与 3Ω 的滑动变阻器并联，电源为 6V，求干路电流。",
+  "expect": "ai",
+  "target": "parallelCircuit",
+  "note": "滑变"
+ },
+ {
+  "q": "如图，R1=6Ω 与 R2=3Ω 并联在 6V 电源上，求电流。",
+  "expect": "ai",
+  "target": "parallelCircuit",
+  "note": "依赖图示"
+ },
+ {
+  "q": "R1=6Ω 与阻值 3Ω 的灯泡并联，电源为 6V，求电流。",
+  "expect": "ai",
+  "target": "parallelCircuit",
+  "note": "灯泡"
+ },
+ {
+  "q": "R1=6Ω 与 R2=3Ω 并联，求干路电流。",
+  "expect": "ai",
+  "target": "parallelCircuit",
+  "note": "缺电压"
+ },
+ {
+  "q": "R1=6Ω 与 R2=3Ω 并联接在 6V 电源上，求电功率。",
+  "expect": "ai",
+  "target": "parallelCircuit",
+  "note": "超出所问范围"
+ },
+ {
+  "q": "R1=6Ω 与 R2=3Ω 并联接在 6V 电源上，电流表有内阻，求电流。",
+  "expect": "ai",
+  "target": "parallelCircuit",
+  "note": "非理想电表"
+ },
+ {
+  "q": "R1=6Ω 与 R2=3Ω 并联接在 6V 电源上，断开支路开关后求电流。",
+  "expect": "ai",
+  "target": "parallelCircuit",
+  "note": "电路状态变化"
+ },
+ {
+  "q": "R1=6Ω 与 R2=3Ω 并联接在 6V 电源上，求支路电流之比。",
+  "expect": "ai",
+  "target": "parallelCircuit",
+  "note": "电流比未建模"
+ },
+ {
+  "q": "平面镜前物体距镜面 20cm，以 2m/s 远离镜面，求像的速度。",
+  "expect": "ai",
+  "target": "planeMirror",
+  "note": "移动速度"
+ },
+ {
+  "q": "物体距平面镜 20cm，镜面转动 30°，求像的位置。",
+  "expect": "ai",
+  "target": "planeMirror",
+  "note": "镜面转动"
+ },
+ {
+  "q": "物体在两面平面镜之间，距镜面 20cm，求像的数目。",
+  "expect": "ai",
+  "target": "planeMirror",
+  "note": "多镜"
+ },
+ {
+  "q": "身高 160cm 的人距平面镜 100cm，至少需要多长的镜子才能看到全身？",
+  "expect": "ai",
+  "target": "planeMirror",
+  "note": "最小镜长"
+ },
+ {
+  "q": "平面镜成像，物体距镜面 20cm，求像高。",
+  "expect": "ai",
+  "target": "planeMirror",
+  "note": "缺物高"
+ },
+ {
+  "q": "平面镜成像，物体高 5cm，求像到镜面的距离。",
+  "expect": "ai",
+  "target": "planeMirror",
+  "note": "缺物距"
+ },
+ {
+  "q": "如图，物体距平面镜 20cm，求像与物体的距离。",
+  "expect": "ai",
+  "target": "planeMirror",
+  "note": "依赖图示"
+ },
+ {
+  "q": "平面镜前两个物体分别距镜面 20cm 和 30cm，求两像距离。",
+  "expect": "ai",
+  "target": "planeMirror",
+  "note": "多个物体"
+ },
+ {
+  "q": "物体距平面镜 20cm，像距镜面 30cm，求像与物距离。",
+  "expect": "ai",
+  "target": "planeMirror",
+  "note": "矛盾条件"
+ },
+ {
+  "q": "物体距平面镜 20cm，求物体通过镜子能看到的范围。",
+  "expect": "ai",
+  "target": "planeMirror",
+  "note": "视野问题"
+ },
+ {
+  "q": "R1=0.1234Ω 与 R2=3.2Ω 并联接在6.1234V电源上，求干路电流。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "parallelCircuit",
+  "answer": {"p1": 0.1234, "p2": 3.2},
+  "show": ["0.1234", "6.1234"],
+  "note": "保留四位小数输入与滑块精度"
+ },
+ {
+  "q": "平面镜前物距 u=12.1234cm，物高 h=2.5cm，求像距和像高。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "planeMirror",
+  "answer": {"p1": 12.1234, "p2": 2.5, "imageDistance": 12.1234, "imageHeight": 2.5},
+  "show": ["12.1234"],
+  "note": "提取条件不能缩短原始小数"
+ },
+ {
+  "q": "R1=0.123456Ω 与 R2=3Ω 并联接在6V电源上，求干路电流。",
+  "expect": "ai",
+  "target": "parallelCircuit",
+  "note": "阻值超出演示输入精度"
+ },
+ {
+  "q": "R1=6Ω 与 R2=3Ω 并联接在6.123456V电源上，求干路电流。",
+  "expect": "ai",
+  "target": "parallelCircuit",
+  "note": "固定电源电压也不能舍入题干"
+ },
+ {
+  "q": "平面镜前物距 u=12.123456cm，物高 h=2.5cm，求像距和像高。",
+  "expect": "ai",
+  "target": "planeMirror",
+  "note": "长度超出演示输入精度"
  }
 ]
