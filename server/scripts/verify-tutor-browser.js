@@ -13,7 +13,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const baseline = process.argv.includes('--baseline');
-const output = resolve(root, 'outputs/tutor-sse', baseline ? 'before' : 'after');
+const output = process.env.TUTOR_QA_OUTPUT || resolve(root, 'outputs/tutor-sse', baseline ? 'before' : 'after');
 await mkdir(output, { recursive: true });
 const answer = {
   mode: 'steps', summary: '本题 context.mode=question，parameters 与 deterministicResult 为空。',
@@ -61,7 +61,7 @@ function fixtureAnswer() {
   return answer;
 }
 const mime = { html: 'text/html', css: 'text/css', js: 'text/javascript' };
-const webFiles = new Set(['index.html', 'styles.css', 'app.js', 'physics-extra.js', 'science-motion.js', 'ai-tutor.js']);
+const webFiles = new Set(['index.html', 'styles.css', 'app.js', 'physics-extra.js', 'science-motion.js', 'science-formulas.js', 'tutor-checks.js', 'ai-tutor.js']);
 const server = createServer(async (req, res) => {
   const path = new URL(req.url, 'http://localhost').pathname;
   if (path === '/fixture/chat/completions') {

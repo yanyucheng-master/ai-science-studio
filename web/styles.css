@@ -2427,6 +2427,37 @@ body.ai-tutor-route .ai-tutor-workspace {
   vertical-align: baseline;
 }
 
+/* Shared display-only notation: scripts stay attached, fractions grow the line,
+   and a radical's rule spans its complete (possibly fractional) radicand. */
+.science-math { letter-spacing: 0; font-variant-numeric: lining-nums; }
+.science-scripted { display: inline-block; white-space: nowrap; }
+.science-quantity { display: inline-block; white-space: nowrap; }
+.science-math > .science-scripts { display: inline-grid; position: relative; font-size: .65em; line-height: 1; vertical-align: baseline; }
+.science-math .science-scripts > sub,
+.science-math .science-scripts > sup {
+  display: block; position: relative; font: inherit; line-height: 1;
+  margin: 0; padding: 0; vertical-align: baseline;
+}
+.science-math .science-scripts > sub { top: .36em; bottom: auto; }
+.science-math .science-scripts > sup { top: -.62em; bottom: auto; }
+.science-math .science-scripts.has-both { vertical-align: .65em; }
+.science-math .science-scripts.has-both > sub,
+.science-math .science-scripts.has-both > sup { top: auto; bottom: auto; }
+.vfrac.science-math { font-size: .94em; line-height: 1.1; transform: none; margin: .18em .12em; }
+.vfrac.science-math > .vfrac-num { padding: .03em .18em .18em; border-bottom-width: .065em; line-height: 1.15; }
+.vfrac.science-math > .vfrac-den { padding: .16em .18em .03em; line-height: 1.15; }
+.science-math.sqrt-formula { margin: .12em .06em; }
+.science-math > .sqrt-radicand { padding: .13em .1em .04em; }
+.science-math .sqrt-index { font-size: .65em; align-self: flex-start; }
+.science-formula-rule { pointer-events: none; }
+.reasoning-card .reason-step .formula,
+.formula-spotlight strong,
+.formula-spotlight p,
+.parse-feedback strong,
+.mentor-feedback { overflow-wrap: anywhere; }
+.reasoning-card .reason-step .formula { line-height: 1.9; }
+.preset-option small:has(.science-math) { line-height: 1.7; }
+
 .ai-rich-math sub { bottom: -.28em; }
 .ai-rich-math sup { top: -.5em; }
 
@@ -7470,6 +7501,36 @@ body.fullscreen-lock {
   transform: translateY(0.02em);
 }
 
+/* Shared fractions override the earlier compact cards, including nested ones. */
+.formula-spotlight strong .vfrac.science-math,
+.formula-spotlight p .vfrac.science-math,
+.reason-step .vfrac.science-math,
+.parse-feedback .vfrac.science-math,
+.mentor-card .vfrac.science-math,
+.scene-tip .vfrac.science-math {
+  font-size: .94em;
+  margin: .18em .12em;
+  transform: none;
+}
+.formula-spotlight p { font-size: 14px; line-height: 1.9; }
+.science-math > .sqrt-sign {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 .72em;
+  width: .72em;
+  padding: 0;
+  font-size: inherit;
+  overflow: hidden;
+  text-indent: -99em;
+}
+.science-math > .sqrt-sign::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  clip-path: polygon(0 62%, 12% 56%, 32% 84%, 90% 0, 100% 0, 34% 100%, 10% 65%, 0 69%);
+}
+
 .demo-mode .reasoning-steps {
   gap: 10px;
 }
@@ -9338,7 +9399,7 @@ body.subject-physics-active:not(.awaiting-generation) .generic-physics-readout .
     border-bottom: 1px solid rgba(143, 183, 230, .6);
     color: #285488;
     background: rgba(247, 251, 255, .96);
-    font-size: 10.5px;
+    font-size: 14px;
     font-weight: 700;
   }
   .generic-physics-visual:has(.edu-diagram) .diagram-pan-viewport { top: 40px; }
@@ -9351,7 +9412,7 @@ body.subject-physics-active:not(.awaiting-generation) .generic-physics-readout .
     border-radius: 8px;
     color: #1957a5;
     background: rgba(255, 255, 255, .94);
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 700;
   }
   .scene.subject-generic-physics:has(.diagram-zoomed .edu-diagram) { min-height: 720px; }
@@ -9900,9 +9961,9 @@ body.ai-tutor-route .scene *, body.ai-tutor-route .scene *::before, body.ai-tuto
 .ai-final-step .ai-step-title { color: #245fc8; }
 .ai-formula-line { display: block; min-height: 0; margin-top: 6px; padding: 8px 10px; max-width: 100%; overflow-x: auto; font-size: 14px; border: 1px solid #dce8ff; background: #f6f9ff; }
 .ai-formula-line .katex { font-size: 1.08em; }
-.ai-inline-math { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle; padding: 2px 0; }
+.ai-inline-math { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle; padding: .25em 0; }
 .ai-inline-math .katex { font-size: 1.02em; }
-.ai-display-math { display: inline-block; }
+.ai-display-math { display: inline-block; padding-block: .25em; }
 .ai-rich-math .katex { font-variant-numeric: normal; }
 .ai-answer-section h4 { margin-bottom: 7px; }
 

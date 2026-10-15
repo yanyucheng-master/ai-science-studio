@@ -697,7 +697,7 @@
     const ghostTop = startY + R + 30;
     const label = (x, y, text) => `<g class="dg-seg-no"><circle cx="${x}" cy="${y}" r="9"/><text x="${x}" y="${y + 4}" text-anchor="middle">${text}</text></g>`;
     return diagram("dg-pulley", "滑轮组：一个定滑轮和一个动滑轮，承担物重的绳子段数 n = 3，绳子自由端向上拉", `
-      ${caption(invalid ? "η > 100%：读数异常，请复核拉力或承担物重的绳子段数" : "承担物重的绳子段数 n = 3：s = 3h，η = W有 / W总", 380, 394)}
+      ${caption(invalid ? "η > 100%：读数异常，请复核拉力或承担物重的绳子段数" : "承担物重的绳子段数 n = 3：s = 3h，η = W有 / W总", 380, 414)}
       <rect class="dg-ceiling" x="300" y="34" width="118" height="12" fill="url(#dgHatch)"/>
       <line class="dg-line" x1="300" y1="46" x2="418" y2="46"/>
       <line class="dg-line" x1="${m - R / 2}" y1="46" x2="${m - R / 2}" y2="${fixedY - R / 2 - 2}"/>
@@ -723,13 +723,13 @@
       <line class="dg-force dg-blue-force" x1="${rope.right}" y1="${endNow - 22}" x2="${rope.right}" y2="${endNow - 74}" marker-end="url(#dgArrowBlue)"/>
       <text class="dg-force-text dg-blue" x="${rope.right + 10}" y="${endNow - 58}">F = ${fmt(force)} N</text>
       <g class="dg-table" transform="translate(574 110)">
-        <rect width="178" height="150" rx="10"/>
+        <rect width="178" height="230" rx="10"/>
         <text x="12" y="28">W有 = Gh</text>
-        <text x="12" y="54">W总 = Fs = F·3h</text>
-        <text x="12" y="80">η = W有 / W总</text>
-        <text x="12" y="110">&#8195;= G / (3F)</text>
-        <text class="dg-value-text" x="12" y="140">${invalid ? "= 读数异常" : `${eq(eta)} ${fmt(eta, 1)}%`}</text>
-      </g>`);
+        <text x="12" y="66">W总 = Fs = F·3h</text>
+        <text x="12" y="112">η = W有 / W总</text>
+        <text x="12" y="166">&#8195;= G / (3F)</text>
+        <text class="dg-value-text" x="12" y="216">${invalid ? "= 读数异常" : `${eq(eta)} ${fmt(eta, 1)}%`}</text>
+      </g>`, 760, 440);
   }
 
   function soundDiagram(freq, amp, wavelength) {

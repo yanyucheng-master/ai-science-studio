@@ -9,7 +9,7 @@ import {resolve,extname} from 'node:path';
 const require=createRequire(import.meta.url);
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root=fileURLToPath(new URL('../../',import.meta.url));
-const output=resolve(root,'artifacts/week1-2026-10-13');
+const output=process.env.WEEK1_QA_OUTPUT || resolve(root,'artifacts/week1-2026-10-13');
 await mkdir(output,{recursive:true});
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.svg':'image/svg+xml','.ico':'image/x-icon'};
 const server=createServer(async(req,res)=>{

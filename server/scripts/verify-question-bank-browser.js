@@ -120,9 +120,13 @@ for (const { item, index, values } of localItems) {
     question: document.querySelector('#questionInput').value
   }));
   // 播放到终点后核对页面上的结论文字：精确值不能被四舍五入，近似值要写“≈ / 约”，已知条件要列全
-  const finalText = await page.evaluate(() => {
+  const finalText = await page.evaluate(async () => {
     if (typeof duration === 'function') { state.time = duration(); updateScene(); }
-    return [...document.querySelectorAll('.experiment-card, .reasoning-card, .mentor-card')].map(node => node.innerText).join('\n');
+    await new Promise(requestAnimationFrame);
+    // Structured notation has no slash in innerText and Unicode scripts become
+    // real sub/sup nodes. Compare its accessible source, keeping exact values,
+    // equality/approximation signs and significant digits in the assertions.
+    return [...document.querySelectorAll('.experiment-card, .reasoning-card, .mentor-card')].map(node => ScienceFormula.sourceText(node)).join('\n');
   });
   const squash = text => String(text).replace(/\s+/g, '');
   for (const expected of item.show || []) {

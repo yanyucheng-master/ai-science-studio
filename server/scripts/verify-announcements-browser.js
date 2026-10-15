@@ -16,7 +16,7 @@ const originalFeed = JSON.parse(await readFile(resolve(root, 'web/announcements.
 let feed = structuredClone(originalFeed);
 let mode = 'valid';
 let feedRequests = 0;
-const files = new Set(['index.html', 'styles.css', 'app.js', 'physics-extra.js', 'science-motion.js', 'ai-tutor.js', 'announcements.js']);
+const files = new Set(['index.html', 'styles.css', 'app.js', 'physics-extra.js', 'science-motion.js', 'science-formulas.js', 'ai-tutor.js', 'announcements.js']);
 const mime = { html: 'text/html', css: 'text/css', js: 'text/javascript' };
 const server = createServer(async (req, res) => {
   const path = new URL(req.url, 'http://localhost').pathname;
