@@ -5,57 +5,17 @@ function fractionHtml(numerator, denominator) {
   return `<span class="vfrac"><span class="vfrac-num">${numerator}</span><span class="vfrac-den">${denominator}</span></span>`;
 }
 
-function sqrtHtml(content) {
-  return `<span class="sqrt-formula"><span class="sqrt-sign">√</span><span class="sqrt-radicand">${content}</span></span>`;
-}
-
 function verticalizeFormulaHtml(value) {
-  let html = String(value ?? "");
-  const replacements = [
-    [/√\(2h\/g\)/g, sqrtHtml(fractionHtml("2h", "g"))],
-    [/1\/\(2√x\)/g, fractionHtml("1", "2√x")],
-    [/1\/f/g, fractionHtml("1", "f")],
-    [/1\/u/g, fractionHtml("1", "u")],
-    [/1\/v/g, fractionHtml("1", "v")],
-    [/1\/x/g, fractionHtml("1", "x")],
-    [/uf\/\(u−f\)/g, fractionHtml("uf", "u−f")],
-    [/2h\/g/g, fractionHtml("2h", "g")],
-    [/1\/2(?=g?t²|gt²|g)/g, fractionHtml("1", "2")],
-    [/U\s*\/\s*\(R₁\s*\+\s*R₂\)/g, fractionHtml("U", "R₁ + R₂")],
-    [/U\s*\/\s*R(?![₁₂A-Za-z0-9])/g, fractionHtml("U", "R")],
-    [/W有\s*\/\s*W总/g, fractionHtml("W有", "W总")],
-    [/Gh\s*\/\s*Fs/g, fractionHtml("Gh", "Fs")],
-    [/G\/\(nF\)/g, fractionHtml("G", "nF")],
-    [/v₀²\/\(2μg\)/g, fractionHtml("v₀²", "2μg")],
-    [/m\s*v₀\/k/g, fractionHtml("mv₀", "k")],
-    [/dv\/dt/g, fractionHtml("dv", "dt")],
-    [/kt\/m/g, fractionHtml("kt", "m")],
-    [/k\/m/g, fractionHtml("k", "m")],
-    [/m\/k/g, fractionHtml("m", "k")],
-    [/f\/m/g, fractionHtml("f", "m")]
-  ];
-  replacements.forEach(([pattern, replacement]) => {
-    html = html.replace(pattern, replacement);
-  });
-  return html;
+  return window.ScienceFormula.html(value);
 }
 
 function setFormulaHtml(element, html) {
   if (!element) return;
-  element.innerHTML = verticalizeFormulaHtml(html);
+  window.ScienceFormula.setHtml(element, html);
 }
 
 function observeFormulaContainer(element) {
-  if (!element) return;
-  const observer = new MutationObserver(() => {
-    if (element.dataset.formulaFormatting === "1") return;
-    const formatted = verticalizeFormulaHtml(element.innerHTML);
-    if (formatted === element.innerHTML) return;
-    element.dataset.formulaFormatting = "1";
-    element.innerHTML = formatted;
-    delete element.dataset.formulaFormatting;
-  });
-  observer.observe(element, { childList: true, subtree: true, characterData: true });
+  return window.ScienceFormula.observe(element);
 }
 
 const params = new URLSearchParams(window.location.search);
@@ -908,9 +868,14 @@ if (elements.mathGraph && "ResizeObserver" in window) {
   elements.mentorMessage,
   elements.mentorFeedback,
   elements.parseFeedback,
-  $("#problemText"),
-  elements.generationStatus
+  elements.generationStatus,
+  $("#physicsPresetDropdown"),
+  $(".reasoning-card"),
+  $("#scene"),
+  $(".parameters"),
+  $("#experimentTitle")
 ].forEach(observeFormulaContainer);
+window.ScienceFormula.installCopy();
 
 const GENERATION_STAGES = [
   { label: "识别条件", text: "识别题干条件与问题目标", progress: 28 },
@@ -5870,6 +5835,9 @@ function dispatchAIContextChanged(reason = "context") {
 }
 
 function buildMasterLabAIContext() {
+  // Read the original notation, not concatenated numerator/denominator or the
+  // visual order of simultaneous scripts. This keeps display DOM out of AI data.
+  const displayedSource = node => window.ScienceFormula?.sourceText(node) ?? node?.textContent ?? "";
   const questionInput = $("#questionInput");
   // The prefilled sample is not the student's problem until it has been generated;
   // otherwise a question asked from the home-page AI entry would be tied to it.
@@ -5890,9 +5858,9 @@ function buildMasterLabAIContext() {
     };
   }
   const metricText = elements.metricLabels.map((label, index) => {
-    const value = elements.metricValues[index]?.textContent || "";
-    const unit = elements.metricUnits[index]?.textContent || "";
-    return `${label?.textContent || "参数"} ${value}${unit}`.trim();
+    const value = displayedSource(elements.metricValues[index]);
+    const unit = displayedSource(elements.metricUnits[index]);
+    return `${displayedSource(label) || "参数"} ${value}${unit}`.trim();
   }).join("｜");
   const currentReasoning = $(".reason-step.active") || $(`.reason-step[data-step="${state.reasonStep}"]`);
   const week1Model = state.subject === "物理" && ["parallelCircuit", "planeMirror"].includes(state.physicsTemplate)
@@ -5905,11 +5873,11 @@ function buildMasterLabAIContext() {
     templateId: currentAITemplateId(),
     parameters: currentAIParameters(),
     deterministicResult: {
-      resultText: (week1Model?.conclusion || elements.sceneTip?.textContent || "").trim().slice(0, 300),
+      resultText: (week1Model?.conclusion || displayedSource(elements.sceneTip)).trim().slice(0, 300),
       metrics: (week1Model ? week1Model.facts.map(item => `${item.label}：${item.value}`).join("｜") : metricText).slice(0, 300)
     },
-    formula: ($(".formula-spotlight strong")?.textContent || "").trim().slice(0, 600),
-    currentStep: (currentReasoning?.textContent || "").replace(/\s+/g, " ").trim().slice(0, 600)
+    formula: displayedSource($(".formula-spotlight strong")).trim().slice(0, 600),
+    currentStep: displayedSource(currentReasoning).replace(/\s+/g, " ").trim().slice(0, 600)
   };
 }
 

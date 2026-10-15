@@ -1359,13 +1359,13 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     // partial fraction remains readable, then replace visual/MathML duplicates.
     const expanded = range.cloneRange();
     const elementFor = node => node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
-    const mathFor = node => elementFor(node)?.closest(".ai-inline-math, .ai-display-math");
+    const mathFor = node => elementFor(node)?.closest(".ai-inline-math, .ai-display-math, .science-math");
     const startMath = mathFor(range.startContainer);
     const endMath = mathFor(range.endContainer);
     if (startMath && root.contains(startMath)) expanded.setStartBefore(startMath);
     if (endMath && root.contains(endMath)) expanded.setEndAfter(endMath);
     const fragment = expanded.cloneContents();
-    fragment.querySelectorAll(".ai-inline-math, .ai-display-math").forEach(node => {
+    fragment.querySelectorAll(".ai-inline-math, .ai-display-math, .science-math").forEach(node => {
       const source = node.dataset.mathSource || node.querySelector('annotation[encoding="application/x-tex"]')?.textContent;
       if (source) node.replaceWith(document.createTextNode(` \\(${source}\\) `));
     });
@@ -2383,6 +2383,11 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
   }
 
   function appendLegacyMathContent(container, value, options = {}) {
+    if (window.ScienceFormula) {
+      container.classList.add("ai-rich-math");
+      window.ScienceFormula.appendText(container, text(value));
+      return;
+    }
     const source = normalizeMathSource(value);
     container.classList.add("ai-rich-math");
     let cursor = 0;
@@ -2406,8 +2411,9 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     node.dataset.mathSource = source;
     if (!window.katex) return false;
     try {
-      window.katex.render(source, node, { throwOnError: true, trust: false,
-        strict: "ignore", output: "htmlAndMathml", maxExpand: 1000, maxSize: 10, displayMode: false });
+      const normalized = window.ScienceFormula?.normalizeTex(source) ?? source;
+      window.katex.render(inline ? `\\displaystyle ${normalized}` : normalized, node, { throwOnError: true, trust: false,
+        strict: "ignore", output: "htmlAndMathml", maxExpand: 1000, maxSize: 10, displayMode: !inline });
     } catch {
       throw new TutorRequestError("INVALID_MATH");
     }
@@ -2623,7 +2629,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       section.setAttribute("aria-label", "AI 建议的追问方向");
       section.append(createElement("p", "ai-suggestions-label", "继续探索 · 点击填入提问"));
       suggestions.forEach(question => {
-        const button = createElement("button", "ai-suggested-question", question);
+        const button = createMathElement("button", "ai-suggested-question", question);
         button.type = "button";
         button.addEventListener("click", () => insertSuggestedQuestion(question));
         section.append(button);

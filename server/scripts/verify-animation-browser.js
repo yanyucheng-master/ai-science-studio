@@ -11,9 +11,9 @@ import { resolve } from 'node:path';
 const require=createRequire(import.meta.url);
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root=fileURLToPath(new URL('../../',import.meta.url));
-const output=resolve(root,'outputs/animation-upgrade/verification');
+const output=process.env.ANIMATION_QA_OUTPUT || resolve(root,'outputs/animation-upgrade/verification');
 await mkdir(output,{recursive:true});
-const files=new Set(['index.html','app.js','styles.css','science-motion.js','physics-extra.js','ai-tutor.js']);
+const files=new Set(['index.html','app.js','styles.css','science-motion.js','science-formulas.js','physics-extra.js','ai-tutor.js']);
 const server=createServer(async(req,res)=>{
   const name=new URL(req.url,'http://localhost').pathname.slice(1)||'index.html';
   if(!files.has(name)){res.writeHead(204);res.end();return;}
@@ -36,11 +36,14 @@ async function prepare(context){
     return route.fulfill({status:204,body:''});
   });
   await context.addInitScript(()=>{
-    const pending=new Set(), timers=new Set(), intervals=new Set();
-    window.motionAudit={pending,maxPending:0,frames:0,costs:[],times:[],timers,intervals,longTasks:[]};
+    const pending=new Set(), selectionPending=new Set(), timers=new Set(), intervals=new Set();
+    window.motionAudit={pending,selectionPending,maxPending:0,frames:0,costs:[],times:[],timers,intervals,longTasks:[]};
     const raf=requestAnimationFrame,cancel=cancelAnimationFrame,st=setTimeout,ct=clearTimeout,si=setInterval,ci=clearInterval;
-    window.requestAnimationFrame=cb=>{let id=raf(t=>{pending.delete(id);const start=performance.now();cb(t);motionAudit.costs.push(performance.now()-start);motionAudit.times.push(t);motionAudit.frames++;});pending.add(id);motionAudit.maxPending=Math.max(motionAudit.maxPending,pending.size);return id;};
-    window.cancelAnimationFrame=id=>{pending.delete(id);cancel(id);};
+    // Tutor selection capture is an existing one-shot UI frame after pointerup,
+    // not a scene animation. Track it separately instead of counting it as a
+    // second ongoing clock. All other frame callbacks remain in the audit.
+    window.requestAnimationFrame=cb=>{const set=cb.name==='captureSelection'?selectionPending:pending;let id=raf(t=>{set.delete(id);const start=performance.now();cb(t);if(set===pending){motionAudit.costs.push(performance.now()-start);motionAudit.times.push(t);motionAudit.frames++;}});set.add(id);motionAudit.maxPending=Math.max(motionAudit.maxPending,pending.size);return id;};
+    window.cancelAnimationFrame=id=>{pending.delete(id);selectionPending.delete(id);cancel(id);};
     window.setTimeout=(cb,ms,...args)=>{let id=st(()=>{timers.delete(id);cb(...args);},ms);timers.add(id);return id;};
     window.clearTimeout=id=>{timers.delete(id);ct(id);};
     window.setInterval=(...args)=>{const id=si(...args);intervals.add(id);return id;};
@@ -164,7 +167,11 @@ try{
     assert.ok(await page.evaluate(()=>Number.isFinite(circuitMotion.phase)&&circuitMotion.current>0));
     // Existing schematic has a fixed closed switch; also exercise the renderer's open/zero guards.
     await page.evaluate(()=>{circuitMotion.current=0;circuitMotion.render();animationClock.reconcile();});
-    assert.equal(await page.evaluate(()=>motionAudit.pending.size),0);
+    // Pointerup also queues the tutor's one-shot selection capture; let it drain
+    // before asserting that no ongoing scene callback remains.
+    await page.waitForTimeout(80);
+    const stopped=await page.evaluate(()=>({pending:motionAudit.pending.size,current:circuitMotion.current,playing:state.playing,closed:circuitMotion.closed,template:state.physicsTemplate}));
+    assert.equal(stopped.pending,0,JSON.stringify(stopped));
     assert.equal(await page.locator('.subject-stage:visible .circuit-current-pulse:visible').count(),0);
     await page.evaluate(()=>{updateScene();circuitMotion.svg.querySelector('.edu-switch').classList.remove('edu-switch-closed');circuitMotion.render();animationClock.reconcile();});
     assert.equal(await page.evaluate(()=>motionAudit.pending.size),0);
