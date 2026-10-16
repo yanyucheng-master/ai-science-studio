@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" href="assets/brand/orbit-flask-2026-10-04/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="vendor/katex/katex.min.css?v=0.19.0">
-  <link rel="stylesheet" href="styles.css?v=20261015-formulas-1">
+  <link rel="stylesheet" href="styles.css?v=20261016-week2-1">
 </head>
 <body class="awaiting-generation">
   <div class="ambient ambient-one"></div>
@@ -58,6 +58,13 @@
           <p class="subheading">今天想把哪一道题“动”起来？</p>
         </div>
         <div class="top-actions">
+          <div class="grade-switch grade-switch-header" role="group" aria-label="学段">
+            <span class="grade-switch-label" aria-hidden="true">学段</span>
+            <div class="grade-seg">
+              <button type="button" data-grade="junior" aria-pressed="false">初中</button>
+              <button type="button" data-grade="senior" aria-pressed="true">高中</button>
+            </div>
+          </div>
           <button class="ai-entry-button" id="aiTutorEntryButton" type="button" aria-label="进入 AI 导师全屏问答" aria-controls="aiTutorWorkspace" title="AI 导师 · 全屏问答">
             <svg class="ai-wordmark" viewBox="0 0 33 24" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M0 24L11.4 0L14 0L25.4 24L20.5 24L17.84 18.4L7.56 18.4L4.9 24ZM9.51 14.3L12.7 7.58L15.89 14.3ZM28.4 0H33V24H28.4Z"/></svg>
           </button>
@@ -84,7 +91,7 @@
             <button class="input-tool" data-toast="正在聆听，请读出题目" aria-label="语音输入">
               <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0m-7 7v3m-4 0h8"/></svg>
             </button>
-            <button class="preset-picker" id="physicsPresetToggle" type="button" aria-label="展开物理预设题目" aria-expanded="false">
+            <button class="preset-picker" id="physicsPresetToggle" type="button" aria-label="展开物理预设实验" aria-expanded="false" aria-controls="physicsPresetDropdown">
               <i></i>
             </button>
             <button class="generate-button" id="generateButton">
@@ -93,73 +100,97 @@
             </button>
           </div>
           <div class="preset-dropdown" id="physicsPresetDropdown" aria-hidden="true">
-            <button class="preset-option" type="button" data-preset="brake">
+            <button class="preset-option" type="button" data-preset="brake" data-subject="物理" data-level="senior" data-block="力学">
               <span>刹车距离实验 · 速度如何归零</span>
               <small>20m/s · 5m/s² · 停止距离 40m</small>
             </button>
-            <button class="preset-option" type="button" data-preset="solenoid">
+            <button class="preset-option" type="button" data-preset="solenoid" data-subject="物理" data-level="junior" data-block="电磁学">
               <span>通电螺线管：磁场方向与电磁铁磁性</span>
               <small>200匝 · 0.5A · 左端逆时针</small>
             </button>
-            <button class="preset-option" type="button" data-preset="boardSlider">
+            <button class="preset-option" type="button" data-preset="boardSlider" data-subject="物理" data-level="senior" data-block="力学">
               <span>木板—滑块：相对运动与临界滑落</span>
               <small>光滑地面 · 摩擦力 · 相对位移</small>
             </button>
-            <button class="preset-option" type="button" data-preset="projectile">
+            <button class="preset-option" type="button" data-preset="projectile" data-subject="物理" data-level="senior" data-block="力学">
               <span>平抛运动：水平位移与落地时间</span>
               <small>12m/s · 20m 高 · 不计空气阻力</small>
             </button>
-            <button class="preset-option" type="button" data-preset="circuit">
+            <button class="preset-option" type="button" data-preset="circuit" data-subject="物理" data-level="junior" data-block="电学">
               <span>欧姆定律电路：电压、电阻与电流</span>
               <small>6V · 3Ω · I = 2A</small>
             </button>
-            <button class="preset-option" type="button" data-preset="lever">
+            <button class="preset-option" type="button" data-preset="lever" data-subject="物理" data-level="junior" data-block="力学">
               <span>杠杆平衡条件探究</span>
               <small>力 × 力臂 · 判断是否平衡</small>
             </button>
-            <button class="preset-option" type="button" data-preset="lens">
+            <button class="preset-option" type="button" data-preset="lens" data-subject="物理" data-level="junior" data-block="光学">
               <span>凸透镜成像规律判断</span>
               <small>物距 · 焦距 · 像距与性质</small>
             </button>
-            <button class="preset-option" type="button" data-preset="buoyancy">
+            <button class="preset-option" type="button" data-preset="buoyancy" data-subject="物理" data-level="junior" data-block="力学">
               <span>浮力与阿基米德原理验证</span>
               <small>F浮 = ρgV排 · 称重法</small>
             </button>
-            <button class="preset-option" type="button" data-preset="friction">
+            <button class="preset-option" type="button" data-preset="friction" data-subject="物理" data-level="both" data-block="力学" data-meta-junior="压力大小 · 接触面粗糙程度 · 二力平衡">
               <span>滑动摩擦力影响因素</span>
-              <small>f = μN · 压力与粗糙程度</small>
+              <small>f = μF压 · 压力与粗糙程度</small>
             </button>
-            <button class="preset-option" type="button" data-preset="lampPower">
+            <button class="preset-option" type="button" data-preset="lampPower" data-subject="物理" data-level="junior" data-block="电学">
               <span>测量小灯泡电功率</span>
               <small>P = UI · 额定电压与亮度</small>
             </button>
-            <button class="preset-option" type="button" data-preset="parallelCircuit">
+            <button class="preset-option" type="button" data-preset="parallelCircuit" data-subject="物理" data-level="junior" data-block="电学">
               <span>并联电路电流与电阻</span>
               <small>支路电流 · 干路电流 · 总电阻</small>
             </button>
-            <button class="preset-option" type="button" data-preset="planeMirror">
+            <button class="preset-option" type="button" data-preset="planeMirror" data-subject="物理" data-level="junior" data-block="光学">
               <span>平面镜成像规律</span>
               <small>物像等距 · 正立等大 · 虚像</small>
             </button>
-            <button class="preset-option" type="button" data-preset="seriesCircuit">
+            <button class="preset-option" type="button" data-preset="seriesCircuit" data-subject="物理" data-level="junior" data-block="电学">
               <span>串联电路动态分析</span>
               <small>滑动变阻器 · 电流与电压变化</small>
             </button>
-            <button class="preset-option" type="button" data-preset="heatBalance">
+            <button class="preset-option" type="button" data-preset="heatBalance" data-subject="物理" data-level="junior" data-block="热学">
               <span>比热容与热平衡计算</span>
               <small>Q = cmΔt · 热量守恒</small>
             </button>
-            <button class="preset-option" type="button" data-preset="liquidPressure">
+            <button class="preset-option" type="button" data-preset="liquidPressure" data-subject="物理" data-level="junior" data-block="力学">
               <span>液体压强与深度关系</span>
               <small>p = ρgh · 深度越大压强越大</small>
             </button>
-            <button class="preset-option" type="button" data-preset="efficiency">
+            <button class="preset-option" type="button" data-preset="efficiency" data-subject="物理" data-level="junior" data-block="力学">
               <span>机械效率实验</span>
               <small>η = <span class="vfrac"><span class="vfrac-num">W有</span><span class="vfrac-den">W总</span></span> · 滑轮组</small>
             </button>
-            <button class="preset-option" type="button" data-preset="sound">
+            <button class="preset-option" type="button" data-preset="sound" data-subject="物理" data-level="junior" data-block="声学">
               <span>声音的传播与音调响度</span>
               <small>频率定音调 · 振幅定响度</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="feCuSO4" data-subject="化学" data-level="both" data-block="化学计算" data-meta-junior="质量比 56∶160∶64 · 列比例式 · 足量">
+              <span>铁与硫酸铜定量反应</span>
+              <small>物质的量 · 1∶1 计量 · 判断过量</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="quadratic" data-subject="数学" data-level="both" data-block="函数" data-meta-junior="开口 · 顶点 · 对称轴 · 与坐标轴交点">
+              <span>二次函数图像与性质</span>
+              <small>单调性 · 最值 · 零点</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="linearSystem" data-subject="数学" data-level="junior" data-block="方程（组）">
+              <span>二元一次方程组与两直线交点</span>
+              <small>加减消元 · 交点坐标 · 无解与无数组解</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="tangent" data-subject="数学" data-level="senior" data-block="导数">
+              <span>函数图像上的动点与切线斜率</span>
+              <small>y′ = f′(x) · 切线斜率 k</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="cellPlant" data-subject="生物" data-level="both" data-block="细胞">
+              <span>植物细胞：结构与功能</span>
+              <small>细胞壁 · 叶绿体 · 液泡</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="cellAnimal" data-subject="生物" data-level="both" data-block="细胞">
+              <span>动物细胞：结构与功能</span>
+              <small>细胞膜 · 细胞核 · 线粒体</small>
             </button>
           </div>
           <div class="parse-feedback" id="parseFeedback" aria-live="polite"></div>
@@ -169,6 +200,12 @@
               <button class="subject-tab" data-subject="化学"><i class="chemistry"></i>化学</button>
               <button class="subject-tab" data-subject="数学"><i class="math"></i>数学</button>
               <button class="subject-tab" data-subject="生物"><i class="biology"></i>生物</button>
+            </div>
+            <div class="grade-switch grade-switch-inline" role="group" aria-label="学段">
+              <div class="grade-seg">
+                <button type="button" data-grade="junior" aria-pressed="false">初中</button>
+                <button type="button" data-grade="senior" aria-pressed="true">高中</button>
+              </div>
             </div>
           </div>
         </div>
@@ -181,6 +218,7 @@
               <div class="title-row">
                 <span class="live-dot"></span>
                 <h2 id="experimentTitle">等待生成实验</h2>
+                <span class="grade-tag" id="experimentGradeTag" hidden></span>
               </div>
               <p id="problemText">输入题目并点击“生成实验”后，这里会构建对应的可视化实验。</p>
             </div>
@@ -924,8 +962,10 @@
 
   <script src="science-formulas.js?v=20261015-formulas-1"></script>
   <script src="science-motion.js?v=20260922-motion-1"></script>
-  <script src="physics-extra.js?v=20261015-formulas-1"></script>
-  <script src="app.js?v=20261015-formulas-1"></script>
+  <script src="physics-extra.js?v=20261016-week2-1"></script>
+  <script src="math-extra.js?v=20261016-week2-1"></script>
+  <script src="chemistry-extra.js?v=20261016-week2-1"></script>
+  <script src="app.js?v=20261016-week2-1"></script>
   <script src="vendor/katex/katex.min.js?v=0.19.0"></script>
   <script src="vendor/katex/mhchem.min.js?v=0.19.0"></script>
   <script src="tutor-checks.js?v=20261011-tutor-round-1"></script>

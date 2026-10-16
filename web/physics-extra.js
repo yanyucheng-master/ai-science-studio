@@ -223,6 +223,8 @@
   const leadOf = (source, token, size = 14) => source.slice(Math.max(0, token.index - size), token.index);
   const tailOf = (source, token, size = 12) => source.slice(token.index + token.text.length, token.index + token.text.length + size);
   const miss = message => ({ ok: false, message });
+  // 把多段互斥的词表拼成一个正则：与原来的单个长正则逐字等价，只是便于分行阅读
+  const anyOf = (...patterns) => new RegExp(patterns.map(pattern => pattern.source).join("|"));
   // 取数量前最近的一个标签词（如“R2”“拉力”“焦距”），用来区分同类量的身份
   const lastLabel = (source, token, pattern, size = 16) => {
     const lead = leadOf(source, token, size);
@@ -256,11 +258,12 @@
     if (blocked) return `题目包含“${source.match(blocked)[0]}”，超出“${template.menuTitle}”模板的建模范围。`;
     return "";
   };
-  const rangeOf = (template, index) => template.strict.caps?.[index] || [template.params[index].min, template.params[index].max];
-  const rangeProblem = (template, values) => {
+  const rangeOf = (template, index, fixed = {}) => template.strict.rangeFor?.(index, fixed)
+    || template.strict.caps?.[index] || [template.params[index].min, template.params[index].max];
+  const rangeProblem = (template, values, fixed = {}) => {
     for (const [index, value] of values.entries()) {
       const param = template.params[index];
-      const [min, max] = rangeOf(template, index);
+      const [min, max] = rangeOf(template, index, fixed);
       if (!Number.isFinite(value) || value < min - 1e-9 || value > max + 1e-9) {
         return `识别到${param.label}为 ${fmtInput(value)}${param.unit}，超出当前演示范围（${min}–${max}${param.unit}）。`;
       }
@@ -278,7 +281,8 @@
     }
     const full = fixedWithDefaults(template, fixed);
     if (template.strict.sameConditions) {
-      const original = template.strict.values(source, G.extractQuantities(source));
+      // 原题没写学段线索时，按实验当前的讲法核对（双学段模板的讲法跟随全局学段）
+      const original = template.strict.values(source, G.extractQuantities(source), { gradeLevel: full.level });
       if (!original?.ok || !G.approx(original.p1, p1) || !G.approx(original.p2, p2)
         || Object.entries(original.fixed || {}).some(([key, value]) => typeof value === "number"
           ? !G.approx(value, full[key]) : value !== full[key])) {
@@ -295,19 +299,20 @@
     return { ok: true };
   };
 
-  // 严格解析：条件缺一不可、不夹值、不套默认值；任何一项不满足都返回未匹配，由 AI 继续分析
-  const templateParse = (template, text) => {
+  // 严格解析：条件缺一不可、不夹值、不套默认值；任何一项不满足都返回未匹配，由 AI 继续分析。
+  // context.gradeLevel 只供双学段模板选择讲法，不参与数值判断。
+  const templateParse = (template, text, context = {}) => {
     const G = guard();
     const source = G.normalize(text);
     const intent = intentProblem(template, source);
     if (intent) return miss(intent);
-    const values = template.strict.values(source, G.extractQuantities(source));
+    const values = template.strict.values(source, G.extractQuantities(source), context);
     if (!values?.ok) return miss(values?.message || template.failMessage);
     const p1 = G.tidy(values.p1);
     const p2 = G.tidy(values.p2);
-    const range = rangeProblem(template, [p1, p2]);
-    if (range) return miss(range);
     const fixed = fixedWithDefaults(template, values.fixed);
+    const range = rangeProblem(template, [p1, p2], fixed);
+    if (range) return miss(range);
     const fixedProblem = template.strict.checkFixed?.(fixed, p1, p2);
     if (fixedProblem) return miss(fixedProblem);
     const check = checkQuestion(template, source, p1, p2, fixed, { skipIntent: true });
@@ -315,7 +320,7 @@
     const model = template.model(p1, p2, fixed);
     return {
       ok: true,
-      subject: "物理",
+      subject: template.subject,
       type: template.id,
       p1,
       p2,
@@ -581,7 +586,8 @@
       </g>`);
   }
 
-  function frictionDiagram(pressure, mu, friction) {
+  // surface：初中讲法给出接触面名称时，图中只写接触面，不写动摩擦因数
+  function frictionDiagram(pressure, mu, friction, surface = "") {
     const extra = clamp(Math.round((pressure - 2) / 4), 0, 7);
     const weights = Array.from({ length: extra }, (_, index) => `<rect class="dg-weight" x="${292 + (index % 2) * 4}" y="${188 - index * 9}" width="36" height="8" rx="2"/>`).join("");
     const bumps = Array.from({ length: 64 }, (_, index) => {
@@ -599,7 +605,7 @@
     return diagram("dg-friction", "探究滑动摩擦力：用弹簧测力计水平拉动木块在长木板上做匀速直线运动", `
       ${caption("匀速直线运动：拉力 F 与滑动摩擦力 f 是一对平衡力，f = F")}
       <path class="dg-board-surface" d="M60 262${bumps}V284H60Z"/>
-      <text class="dg-small" x="700" y="304" text-anchor="end">长木板 · 动摩擦因数 μ = ${fmt(mu, 2)}</text>
+      <text class="dg-small" x="700" y="304" text-anchor="end">${surface ? `接触面：${surface}` : `长木板 · 动摩擦因数 μ = ${fmt(mu, 2)}`}</text>
       <rect class="dg-block" x="270" y="200" width="100" height="62" rx="4"/>
       <text class="dg-label" x="320" y="236" text-anchor="middle">木块</text>
       ${weights}
@@ -944,111 +950,269 @@
       </div>`;
   }
 
+  // 初中“探究滑动摩擦力的大小与哪些因素有关”（八年级下册）：接触面按教材用木板、棉布、毛巾；
+  // 演示读数是模拟值，只用来比较大小，界面和答案里都不出现动摩擦因数。
+  const FRICTION_SURFACES = Object.freeze([
+    Object.freeze({ name: "木板", mu: 0.3 }),
+    Object.freeze({ name: "棉布", mu: 0.45 }),
+    Object.freeze({ name: "毛巾", mu: 0.6 })
+  ]);
+  const frictionSurface = index => FRICTION_SURFACES[clamp(Math.round(Number(index) || 1), 1, FRICTION_SURFACES.length) - 1];
+  const FRICTION_INQUIRY = /探究|影响|有关|关系/;
+  // 问压力、接触面粗糙程度（任一或两个），或直接问“与哪些因素有关”；接触面积、速度等教材结论为“无关”的因素不在本模板范围内
+  const FRICTION_JUNIOR_FACTORS = source => /压力|粗糙/.test(source) || /哪些因素|什么因素|影响[^，。；？]{0,12}因素/.test(source);
+  const FRICTION_JUNIOR_EXCLUDED = /面积|速度|快慢|(?:运动|拉动|拉力)的?方向|重力|质量/;
+  const FRICTION_JUNIOR_QUESTION = "用弹簧测力计沿水平方向拉着木块在长木板上做匀速直线运动，探究滑动摩擦力的大小与压力大小、接触面粗糙程度的关系。";
+  const FRICTION_JUNIOR_RANGES = [[2, 30], [1, FRICTION_SURFACES.length]];
+  const FRICTION_JUNIOR_PARAMS = [
+    { label: "压力 F压", desc: "在木块上加减砝码，改变木块对接触面的压力", unit: "N", min: 2, max: 30, step: 1 },
+    {
+      label: "接触面",
+      desc: "木板 → 棉布 → 毛巾，接触面越来越粗糙",
+      unit: "",
+      min: 1,
+      max: FRICTION_SURFACES.length,
+      step: 1,
+      valueText: value => frictionSurface(value).name
+    }
+  ];
+  function juniorFrictionModel(normal, surface) {
+    const friction = normal * surface.mu;
+    return {
+      visual: "visual-friction",
+      surface,
+      metrics: [normal, surface.name, friction],
+      metricUnit: "N",
+      // 读数卡在手机上很窄：标签写明“模拟”，数值保持简短
+      facts: [
+        fact("测力计示数（模拟）", `${mark(friction)}${fmt(friction, 2)} N`),
+        fact("二力平衡", "f = F"),
+        fact("影响因素", "压力、粗糙程度")
+      ],
+      conclusion: `压力越大、接触面越粗糙，滑动摩擦力越大。当前压力 ${fmt(normal)}N、接触面为${surface.name}，测力计示数${about(friction) ? "约为" : "为"} ${fmt(friction, 2)}N。`,
+      formula: "f = F拉",
+      formulaDetail: `压力 ${fmt(normal)}N、接触面为${surface.name}时，测力计示数 F ${eq(friction)} ${fmt(friction, 2)}N，所以 f = F ${eq(friction)} ${fmt(friction, 2)}N`,
+      explanation: "木块必须沿水平方向做匀速直线运动，拉力才与滑动摩擦力平衡；演示中的示数为模拟值，用来比较大小。",
+      readout: `f ${eq(friction)} ${fmt(friction, 2)}N`,
+      badge: "二力平衡 · 控制变量法"
+    };
+  }
+
   const templates = {
     parallelCircuit: {
-      id: "parallelCircuit", level: "junior",
-      menuTitle: "并联电路电流与电阻", menuMeta: "支路电流 · 干路电流 · 总电阻",
-      stage: "初中核心", block: "电学", title: "并联电路：电流分流与总电阻",
-      defaults: [6,3], keywords: /并联/,
+      id: "parallelCircuit",
+      subject: "物理",
+      level: "junior",
+      menuTitle: "并联电路电流与电阻",
+      menuMeta: "支路电流 · 干路电流 · 总电阻",
+      stage: "初中核心",
+      block: "电学",
+      title: "并联电路：电流分流与总电阻",
+      defaults: [6, 3],
+      keywords: /并联/,
       params: [
-        {label:"支路电阻 R₁",desc:"电源电压不变，观察第一支路电流",unit:"Ω",min:1,max:30,step:.5,value:6},
-        {label:"支路电阻 R₂",desc:"电源电压不变，观察第二支路电流",unit:"Ω",min:1,max:30,step:.5,value:3}
+        { label: "支路电阻 R₁", desc: "电源电压不变，观察第一支路电流", unit: "Ω", min: 1, max: 30, step: .5, value: 6 },
+        { label: "支路电阻 R₂", desc: "电源电压不变，观察第二支路电流", unit: "Ω", min: 1, max: 30, step: .5, value: 3 }
       ],
       strict: {
-        sameConditions: true, preciseParams: true, caps: [[.1,1000],[.1,1000]], fixedDefaults: {voltage:6},
-        intent: {require:[/并联/],forbid:[/串联|混联|滑动|变阻器|灯泡|小灯|电动机|电动势|内阻|电容|二极管|交流|如图|图示|图中|附图|开关|断开|断路|短路|故障|接触不良|温度|变化|改变|增大|减小|最大|最小|量程|允许|至少|至多|范围|功率|电能|热量|R\s*[3-9]|[甲乙丙]电阻|电阻[甲乙丙]|[三四五六七八九十3-9]\s*(?:个|只|条|段).*电阻/, /\d\s*[+*/÷×-]\s*\d|√|根号|分之|百分之|不等于|大于|小于|不超过|不低于|R\d\s*=\s*\d+(?:\.\d+)?\s*R\d/]},
-        values(source,tokens) {
-          const volts=tokensOf(tokens,"voltage"), ohms=tokensOf(tokens,"resistance");
-          if(volts.length!==1 || !/电源|总电压/.test(source)) return miss("并联模板需要明确给出电源电压。");
-          if([...ohms,...volts].some(token=>exactPlaces(token.value)===null)) return miss("换算为 Ω、V 后的输入最多保留四位小数；更高精度需交给 AI，不能自动舍入题干。");
-          if(ohms.length===1 && /(?:两|2)(?:个|只)\s*$/.test(leadOf(source,ohms[0],12))) {
-            return {ok:true,p1:ohms[0].value,p2:ohms[0].value,fixed:{voltage:volts[0].value}};
-          }
-          if(ohms.length!==2) return miss("并联模板只处理两个定值电阻，需要两个明确的阻值。");
-          const labels=ohms.map(token => leadOf(source,token,30).match(/R\s*([12])(?:的)?(?:阻值|电阻)?\s*(?:=|为|是|:)?\s*$/)?.[1] || "");
-          if(labels[0] && labels[0]===labels[1]) return miss("同一支路出现重复阻值，请明确 R₁ 与 R₂。");
-          const order=source.match(/R\s*([12])\s*(?:和|与|、)\s*R\s*([12])[^，,。;；]{0,8}分别(?:为|是)/);
-          const reversed=labels[0]==="2" || labels[1]==="1" || (!labels.some(Boolean) && order?.[1]==="2");
-          return {ok:true,p1:ohms[reversed?1:0].value,p2:ohms[reversed?0:1].value,fixed:{voltage:volts[0].value}};
+        sameConditions: true,
+        preciseParams: true,
+        caps: [[.1, 1000], [.1, 1000]],
+        fixedDefaults: { voltage: 6 },
+        intent: {
+          require: [/并联/],
+          forbid: [
+            anyOf(
+              /串联|混联|滑动|变阻器|灯泡|小灯|电动机|电动势|内阻|电容|二极管|交流/,
+              /如图|图示|图中|附图/,
+              /开关|断开|断路|短路|故障|接触不良/,
+              /温度|变化|改变|增大|减小|最大|最小|量程|允许|至少|至多|范围/,
+              /功率|电能|热量/,
+              /R\s*[3-9]|[甲乙丙]电阻|电阻[甲乙丙]|[三四五六七八九十3-9]\s*(?:个|只|条|段).*电阻/
+            ),
+            /\d\s*[+*/÷×-]\s*\d|√|根号|分之|百分之|不等于|大于|小于|不超过|不低于|R\d\s*=\s*\d+(?:\.\d+)?\s*R\d/
+          ]
         },
-        checkFixed: fixed => fixed.voltage===0 || (fixed.voltage>=.01 && fixed.voltage<=1000) ? "" : "电源电压需为 0V 或 0.01–1000V。",
-        used: (r1,r2,fixed) => [{cls:"resistance",value:r1},{cls:"resistance",value:r2},{cls:"voltage",value:fixed.voltage}],
-        asks: {supported:/电流|电阻|阻值|示数/,unsupported:/电压|功率|热|能量|电能|电量|电荷|时间|之比|比值|比例|变化|多大.*电源/}
+        values(source, tokens) {
+          const volts = tokensOf(tokens, "voltage");
+          const ohms = tokensOf(tokens, "resistance");
+          if (volts.length !== 1 || !/电源|总电压/.test(source)) return miss("并联模板需要明确给出电源电压。");
+          if ([...ohms, ...volts].some(token => exactPlaces(token.value) === null)) {
+            return miss("换算为 Ω、V 后的输入最多保留四位小数；更高精度需交给 AI，不能自动舍入题干。");
+          }
+          if (ohms.length === 1 && /(?:两|2)(?:个|只)\s*$/.test(leadOf(source, ohms[0], 12))) {
+            return { ok: true, p1: ohms[0].value, p2: ohms[0].value, fixed: { voltage: volts[0].value } };
+          }
+          if (ohms.length !== 2) return miss("并联模板只处理两个定值电阻，需要两个明确的阻值。");
+          const labels = ohms.map(token => leadOf(source, token, 30).match(/R\s*([12])(?:的)?(?:阻值|电阻)?\s*(?:=|为|是|:)?\s*$/)?.[1] || "");
+          if (labels[0] && labels[0] === labels[1]) return miss("同一支路出现重复阻值，请明确 R₁ 与 R₂。");
+          const order = source.match(/R\s*([12])\s*(?:和|与|、)\s*R\s*([12])[^，,。;；]{0,8}分别(?:为|是)/);
+          const reversed = labels[0] === "2" || labels[1] === "1" || (!labels.some(Boolean) && order?.[1] === "2");
+          return { ok: true, p1: ohms[reversed ? 1 : 0].value, p2: ohms[reversed ? 0 : 1].value, fixed: { voltage: volts[0].value } };
+        },
+        checkFixed: fixed => fixed.voltage === 0 || (fixed.voltage >= .01 && fixed.voltage <= 1000) ? "" : "电源电压需为 0V 或 0.01–1000V。",
+        used: (r1, r2, fixed) => [
+          { cls: "resistance", value: r1 },
+          { cls: "resistance", value: r2 },
+          { cls: "voltage", value: fixed.voltage }
+        ],
+        asks: {
+          supported: /电流|电阻|阻值|示数/,
+          unsupported: /电压|功率|热|能量|电能|电量|电荷|时间|之比|比值|比例|变化|多大.*电源/
+        }
       },
-      failMessage:"请给出两个定值电阻的阻值和并联电源电压。",
-      question: (r1,r2,fixed={}) => `电阻 R1=${fmtInput(r1)}Ω 与 R2=${fmtInput(r2)}Ω 并联接在 ${fmtInput(fixed.voltage??6)}V 电源上，求支路电流、干路电流和总电阻。`,
-      given: (r1,r2,fixed) => `R₁ = ${fmtInput(r1)}Ω，R₂ = ${fmtInput(r2)}Ω；电源 U = ${fmtInput(fixed.voltage??6)}V；两支路并联`,
-      model(r1,r2,fixed={}) {
-        const voltage=fixed.voltage??6, i1=voltage/r1, i2=voltage/r2, current=i1+i2, equivalentResistance=r1*r2/(r1+r2);
-        return {visual:"visual-parallel week1-scene",voltage,i1,i2,equivalentResistance,metrics:[r1,r2,current],metricUnit:"A",
-          facts:[fact("干路电流",`${mark(current)}${fmt(current,6)} A`),fact("支路电流",`I₁ ${eq(i1)} ${fmt(i1,6)} A；I₂ ${eq(i2)} ${fmt(i2,6)} A`),fact("总电阻",`${mark(equivalentResistance)}${fmt(equivalentResistance,6)} Ω`)],
-          formula:"U₁ = U₂ = U；I = I₁ + I₂；1/R并 = 1/R₁ + 1/R₂",
-          formulaDetail:`I₁ = U/R₁ = ${fmt(voltage,6)}/${fmt(r1,6)} ${eq(i1)} ${fmt(i1,6)} A；I₂ = U/R₂ = ${fmt(voltage,6)}/${fmt(r2,6)} ${eq(i2)} ${fmt(i2,6)} A；I = I₁ + I₂ ${eq(current)} ${fmt(current,6)} A；R并 = R₁R₂/(R₁ + R₂) ${eq(equivalentResistance)} ${fmt(equivalentResistance,6)} Ω`,
-          conclusion:`两支路电压均为 ${fmt(voltage,6)}V；干路电流${about(current)}${fmt(current,6)}A。电源电压不变时，改变一个支路的阻值，另一支路电流不变；总电阻小于任一支路电阻。`,
-          sceneConclusion:"同压 · 分流 · 汇合",
-          explanation:"模型忽略电源内阻、导线和电流表的电阻。箭头粗细比较两支路电流，光点只示意电流方向，不代表电荷的实际漂移速度。总电阻由并联电压规律、电流规律和欧姆定律推导得出。",
-          readout:`I ${eq(current)} ${fmt(current,6)}A`,badge:"并联电路"};
+      failMessage: "请给出两个定值电阻的阻值和并联电源电压。",
+      question: (r1, r2, fixed = {}) => `电阻 R1=${fmtInput(r1)}Ω 与 R2=${fmtInput(r2)}Ω 并联接在 ${fmtInput(fixed.voltage ?? 6)}V 电源上，求支路电流、干路电流和总电阻。`,
+      given: (r1, r2, fixed) => `R₁ = ${fmtInput(r1)}Ω，R₂ = ${fmtInput(r2)}Ω；电源 U = ${fmtInput(fixed.voltage ?? 6)}V；两支路并联`,
+      model(r1, r2, fixed = {}) {
+        const voltage = fixed.voltage ?? 6;
+        const i1 = voltage / r1;
+        const i2 = voltage / r2;
+        const current = i1 + i2;
+        const equivalentResistance = r1 * r2 / (r1 + r2);
+        return {
+          visual: "visual-parallel week1-scene",
+          voltage,
+          i1,
+          i2,
+          equivalentResistance,
+          metrics: [r1, r2, current],
+          metricUnit: "A",
+          facts: [
+            fact("干路电流", `${mark(current)}${fmt(current, 6)} A`),
+            fact("支路电流", `I₁ ${eq(i1)} ${fmt(i1, 6)} A；I₂ ${eq(i2)} ${fmt(i2, 6)} A`),
+            fact("总电阻", `${mark(equivalentResistance)}${fmt(equivalentResistance, 6)} Ω`)
+          ],
+          formula: "U₁ = U₂ = U；I = I₁ + I₂；1/R并 = 1/R₁ + 1/R₂",
+          formulaDetail: `I₁ = U/R₁ = ${fmt(voltage, 6)}/${fmt(r1, 6)} ${eq(i1)} ${fmt(i1, 6)} A；I₂ = U/R₂ = ${fmt(voltage, 6)}/${fmt(r2, 6)} ${eq(i2)} ${fmt(i2, 6)} A；I = I₁ + I₂ ${eq(current)} ${fmt(current, 6)} A；R并 = R₁R₂/(R₁ + R₂) ${eq(equivalentResistance)} ${fmt(equivalentResistance, 6)} Ω`,
+          conclusion: `两支路电压均为 ${fmt(voltage, 6)}V；干路电流${about(current)}${fmt(current, 6)}A。电源电压不变时，改变一个支路的阻值，另一支路电流不变；总电阻小于任一支路电阻。`,
+          sceneConclusion: "同压 · 分流 · 汇合",
+          explanation: "模型忽略电源内阻、导线和电流表的电阻。箭头粗细比较两支路电流，光点只示意电流方向，不代表电荷的实际漂移速度。总电阻由并联电压规律、电流规律和欧姆定律推导得出。",
+          readout: `I ${eq(current)} ${fmt(current, 6)}A`,
+          badge: "并联电路"
+        };
       },
-      visual: model => genericShell(model,parallelCircuitDiagram(model)),
+      visual: model => genericShell(model, parallelCircuitDiagram(model)),
       recognition: model => `并联电路｜${model.formulaDetail}`,
-      updateVisual: updateRetainedDiagram, bindMotion: bindParallelMotion
+      updateVisual: updateRetainedDiagram,
+      bindMotion: bindParallelMotion
     },
 
     planeMirror: {
-      id:"planeMirror",level:"junior",menuTitle:"平面镜成像规律",menuMeta:"物像等距 · 正立等大 · 虚像",
-      stage:"初中核心",block:"光学",title:"平面镜成像：物像关于镜面对称",
-      defaults:[20,5],keywords:/平面镜/,
-      params:[
-        {label:"物距 u",desc:"物体到镜面的垂直距离",unit:"cm",min:1,max:100,step:1,value:20},
-        {label:"物高 h",desc:"改变物高，观察像与物始终等高",unit:"cm",min:1,max:30,step:.5,value:5}
+      id: "planeMirror",
+      subject: "物理",
+      level: "junior",
+      menuTitle: "平面镜成像规律",
+      menuMeta: "物像等距 · 正立等大 · 虚像",
+      stage: "初中核心",
+      block: "光学",
+      title: "平面镜成像：物像关于镜面对称",
+      defaults: [20, 5],
+      keywords: /平面镜/,
+      params: [
+        { label: "物距 u", desc: "物体到镜面的垂直距离", unit: "cm", min: 1, max: 100, step: 1, value: 20 },
+        { label: "物高 h", desc: "改变物高，观察像与物始终等高", unit: "cm", min: 1, max: 30, step: .5, value: 5 }
       ],
-      strict:{
-        sameConditions:true,preciseParams:true,caps:[[.1,1000],[.1,300]],fixedDefaults:{distanceKnown:true,heightKnown:true},
-        intent:{require:[/平面镜/],forbid:[/透镜|凹面镜|凸面镜|移|运动|速度|转动|旋转|转过|转角|靠近|远离|走向|走近|走远|后退|前进|两面|两块|双面|[二三四五六七八九十2-9]\s*(?:面|块|个).*镜|两(?:个|支|只).*物|两个物体|如图|图示|图中|附图|至少|最小|多长.*镜|镜(?:子|面)?(?:的)?(?:长度|高度|宽度)|看到全身|视野|范围|夹角|入射角|反射角|几次|多次/, /\d\s*[+*/÷×-]\s*\d|√|根号|分之|百分之|不等于|大于|小于|不超过|不低于/]},
-        values(source,tokens) {
-          const lengths=tokensOf(tokens,"length");
-          if(!lengths.length || lengths.length>2) return miss("请明确给出物距或物高；当前模板只处理一个物体、一面平面镜。");
-          let u=null,h=null;
-          for(const token of lengths) {
-            const lead=leadOf(source,token,32), tail=tailOf(source,token,8);
-            if(/像距|像高|像(?:到|距|离)(?:平面)?镜(?:面|子)?\s*$/.test(lead)) return miss("请给出物体的条件；当前模板不从像反求物，也不忽略矛盾条件。");
-            const height=/(?:物高|身高|高度|高|h)\s*(?:=|为|是|:)?\s*$/.test(lead) || /^\s*(?:高|的(?:物体|蜡烛))/.test(tail);
-            const distance=/(?:物距|u)\s*(?:=|为|是|:)?\s*$/.test(lead) || /(?:距|离)(?:平面)?镜(?:面|子)?(?:的距离)?\s*(?:为|是|=)?\s*$/.test(lead) || /(?:平面镜|镜面|镜子)前(?:方)?\s*$/.test(lead);
-            if(height && !distance && h===null) h=token.value*100;
-            else if(distance && !height && u===null) u=token.value*100;
+      strict: {
+        sameConditions: true,
+        preciseParams: true,
+        caps: [[.1, 1000], [.1, 300]],
+        fixedDefaults: { distanceKnown: true, heightKnown: true },
+        intent: {
+          require: [/平面镜/],
+          forbid: [
+            anyOf(
+              /透镜|凹面镜|凸面镜/,
+              /移|运动|速度|转动|旋转|转过|转角|靠近|远离|走向|走近|走远|后退|前进/,
+              /两面|两块|双面|[二三四五六七八九十2-9]\s*(?:面|块|个).*镜|两(?:个|支|只).*物|两个物体/,
+              /如图|图示|图中|附图/,
+              /至少|最小|多长.*镜|镜(?:子|面)?(?:的)?(?:长度|高度|宽度)|看到全身|视野|范围/,
+              /夹角|入射角|反射角|几次|多次/
+            ),
+            /\d\s*[+*/÷×-]\s*\d|√|根号|分之|百分之|不等于|大于|小于|不超过|不低于/
+          ]
+        },
+        values(source, tokens) {
+          const lengths = tokensOf(tokens, "length");
+          if (!lengths.length || lengths.length > 2) return miss("请明确给出物距或物高；当前模板只处理一个物体、一面平面镜。");
+          let u = null;
+          let h = null;
+          for (const token of lengths) {
+            const lead = leadOf(source, token, 32);
+            const tail = tailOf(source, token, 8);
+            if (/像距|像高|像(?:到|距|离)(?:平面)?镜(?:面|子)?\s*$/.test(lead)) {
+              return miss("请给出物体的条件；当前模板不从像反求物，也不忽略矛盾条件。");
+            }
+            const height = /(?:物高|身高|高度|高|h)\s*(?:=|为|是|:)?\s*$/.test(lead) || /^\s*(?:高|的(?:物体|蜡烛))/.test(tail);
+            const distance = /(?:物距|u)\s*(?:=|为|是|:)?\s*$/.test(lead)
+              || /(?:距|离)(?:平面)?镜(?:面|子)?(?:的距离)?\s*(?:为|是|=)?\s*$/.test(lead)
+              || /(?:平面镜|镜面|镜子)前(?:方)?\s*$/.test(lead);
+            if (height && !distance && h === null) h = token.value * 100;
+            else if (distance && !height && u === null) u = token.value * 100;
             else return miss("有无法确定归属或重复的长度条件，请区分物距与物高。");
           }
-          if([u,h].some(value=>value!==null && exactPlaces(value)===null)) return miss("换算为 cm 后的输入最多保留四位小数；更高精度需交给 AI，不能自动舍入题干。");
-          const asks=guard().askItems(source).join("；");
-          if(h===null && /像高|像(?:的)?高度|像.{0,6}多高/.test(asks)) return miss("求像高必须给出物高，不能用示意高度代替。");
-          if(u===null && /像距|距离|多远|相距/.test(asks)) return miss("求像距或物像距离必须给出物距。");
-          return {ok:true,p1:u??20,p2:h??5,fixed:{distanceKnown:u!==null,heightKnown:h!==null}};
+          if ([u, h].some(value => value !== null && exactPlaces(value) === null)) {
+            return miss("换算为 cm 后的输入最多保留四位小数；更高精度需交给 AI，不能自动舍入题干。");
+          }
+          const asks = guard().askItems(source).join("；");
+          if (h === null && /像高|像(?:的)?高度|像.{0,6}多高/.test(asks)) return miss("求像高必须给出物高，不能用示意高度代替。");
+          if (u === null && /像距|距离|多远|相距/.test(asks)) return miss("求像距或物像距离必须给出物距。");
+          return { ok: true, p1: u ?? 20, p2: h ?? 5, fixed: { distanceKnown: u !== null, heightKnown: h !== null } };
         },
-        used:(u,h,fixed)=>[...(fixed.distanceKnown?[{cls:"length",value:u/100}]:[]),...(fixed.heightKnown?[{cls:"length",value:h/100}]:[])],
-        asks:{supported:/像|距离|多远|光屏|正立|等大|镜面/,unsupported:/速度|运动|移动|转|数目|数量|几个|多少个|多少面|亮度|颜色|光路|画图|作图|反射角|入射角|放大率/}
+        used: (u, h, fixed) => [
+          ...(fixed.distanceKnown ? [{ cls: "length", value: u / 100 }] : []),
+          ...(fixed.heightKnown ? [{ cls: "length", value: h / 100 }] : [])
+        ],
+        asks: {
+          supported: /像|距离|多远|光屏|正立|等大|镜面/,
+          unsupported: /速度|运动|移动|转|数目|数量|几个|多少个|多少面|亮度|颜色|光路|画图|作图|反射角|入射角|放大率/
+        }
       },
-      failMessage:"请给出平面镜前物体的物距或物高，求相应的像距、物像距离或像高。",
-      question:(u,h,fixed={})=>`平面镜成像，${fixed.distanceKnown!==false?`物体距镜面 ${fmtInput(u)}cm`:"物距未给出"}，${fixed.heightKnown!==false?`物高 ${fmtInput(h)}cm`:"物高未给出"}，求${fixed.distanceKnown!==false?"像距和物像距离":"像高"}${fixed.distanceKnown!==false&&fixed.heightKnown!==false?"及像高":""}。`,
-      given:(u,h,fixed)=>`${fixed.distanceKnown?`物距 u = ${fmtInput(u)}cm`:"物距未给出（横向位置仅示意）"}；${fixed.heightKnown?`物高 h = ${fmtInput(h)}cm`:"物高未给出（高度仅示意）"}`,
-      model(u,h,fixed={}) {
-        const distanceKnown=fixed.distanceKnown!==false,heightKnown=fixed.heightKnown!==false;
-        const distance=distanceKnown?`像距 v = ${fmt(u,6)}cm；物像距离 d = 2u = ${fmt(2*u,6)}cm`:"物距未给出，像距与物像距离不能求数值";
-        const height=heightKnown?`像高 h′ = h = ${fmt(h,6)}cm`:"物高未给出，只能确定像与物等高";
-        return {visual:"visual-plane-mirror week1-scene",metrics:[u,h,distanceKnown?u:0],metricUnit:"cm",distanceKnown,heightKnown,
-          imageDistance:distanceKnown?u:null,objectImageDistance:distanceKnown?2*u:null,imageHeight:heightKnown?h:null,
-          facts:[fact("像距",distanceKnown?`${fmt(u,6)} cm`:"未给出物距"),fact("物像距离",distanceKnown?`${fmt(2*u,6)} cm`:"未给出物距"),fact("像高",heightKnown?`${fmt(h,6)} cm`:"与物等高，数值未知")],
-          formula:"v = u；d = 2u；h′ = h",formulaDetail:`${distance}；${height}。`,
-          conclusion:`${distance}；${height}。成正立、等大的虚像，光屏上接收不到。`,
-          sceneConclusion:"正立 · 等大 · 虚像",
-          explanation:"物点与对应像点的连线垂直于镜面。图中的横向虚线为对称辅助线，不是光线；横向距离和高度分别缩放。题目未给出的量只用于示意，不补入答案。",
-          readout:distanceKnown?`像距 v = ${fmt(u,6)}cm`:`像高 h′ = ${fmt(h,6)}cm`,badge:"平面镜成像"};
+      failMessage: "请给出平面镜前物体的物距或物高，求相应的像距、物像距离或像高。",
+      question: (u, h, fixed = {}) => {
+        const distanceKnown = fixed.distanceKnown !== false;
+        const heightKnown = fixed.heightKnown !== false;
+        return `平面镜成像，${distanceKnown ? `物体距镜面 ${fmtInput(u)}cm` : "物距未给出"}，${heightKnown ? `物高 ${fmtInput(h)}cm` : "物高未给出"}，求${distanceKnown ? "像距和物像距离" : "像高"}${distanceKnown && heightKnown ? "及像高" : ""}。`;
       },
-      visual:model=>genericShell(model,planeMirrorDiagram(model)),recognition:model=>`平面镜成像｜${model.formulaDetail}`,
-      updateVisual:updateRetainedDiagram,
-      parameter:(param,index,fixed)=> (index===0?!fixed.distanceKnown:!fixed.heightKnown) ? {...param,label:index===0?"示意物距":"示意高度",unit:"格",desc:"题目未给出此量；仅调整图示，不参与求数值"} : param
+      given: (u, h, fixed) => `${fixed.distanceKnown ? `物距 u = ${fmtInput(u)}cm` : "物距未给出（横向位置仅示意）"}；${fixed.heightKnown ? `物高 h = ${fmtInput(h)}cm` : "物高未给出（高度仅示意）"}`,
+      model(u, h, fixed = {}) {
+        const distanceKnown = fixed.distanceKnown !== false;
+        const heightKnown = fixed.heightKnown !== false;
+        const distance = distanceKnown ? `像距 v = ${fmt(u, 6)}cm；物像距离 d = 2u = ${fmt(2 * u, 6)}cm` : "物距未给出，像距与物像距离不能求数值";
+        const height = heightKnown ? `像高 h′ = h = ${fmt(h, 6)}cm` : "物高未给出，只能确定像与物等高";
+        return {
+          visual: "visual-plane-mirror week1-scene",
+          metrics: [u, h, distanceKnown ? u : 0],
+          metricUnit: "cm",
+          distanceKnown,
+          heightKnown,
+          imageDistance: distanceKnown ? u : null,
+          objectImageDistance: distanceKnown ? 2 * u : null,
+          imageHeight: heightKnown ? h : null,
+          facts: [
+            fact("像距", distanceKnown ? `${fmt(u, 6)} cm` : "未给出物距"),
+            fact("物像距离", distanceKnown ? `${fmt(2 * u, 6)} cm` : "未给出物距"),
+            fact("像高", heightKnown ? `${fmt(h, 6)} cm` : "与物等高，数值未知")
+          ],
+          formula: "v = u；d = 2u；h′ = h",
+          formulaDetail: `${distance}；${height}。`,
+          conclusion: `${distance}；${height}。成正立、等大的虚像，光屏上接收不到。`,
+          sceneConclusion: "正立 · 等大 · 虚像",
+          explanation: "物点与对应像点的连线垂直于镜面。图中的横向虚线为对称辅助线，不是光线；横向距离和高度分别缩放。题目未给出的量只用于示意，不补入答案。",
+          readout: distanceKnown ? `像距 v = ${fmt(u, 6)}cm` : `像高 h′ = ${fmt(h, 6)}cm`,
+          badge: "平面镜成像"
+        };
+      },
+      visual: model => genericShell(model, planeMirrorDiagram(model)),
+      recognition: model => `平面镜成像｜${model.formulaDetail}`,
+      updateVisual: updateRetainedDiagram,
+      parameter: (param, index, fixed) => (index === 0 ? !fixed.distanceKnown : !fixed.heightKnown)
+        ? { ...param, label: index === 0 ? "示意物距" : "示意高度", unit: "格", desc: "题目未给出此量；仅调整图示，不参与求数值" }
+        : param
     },
     lever: {
       id: "lever",
+      subject: "物理",
       level: "junior",
       menuTitle: "杠杆平衡条件探究",
       menuMeta: "力 × 力臂 · 判断是否平衡",
@@ -1116,6 +1280,7 @@
 
     lens: {
       id: "lens",
+      subject: "物理",
       level: "junior",
       menuTitle: "凸透镜成像规律判断",
       menuMeta: "物距与 f、2f 比较 · 像的性质",
@@ -1174,6 +1339,7 @@
 
     buoyancy: {
       id: "buoyancy",
+      subject: "物理",
       level: "junior",
       menuTitle: "浮力与阿基米德原理验证",
       menuMeta: "F浮 = ρgV排 · 称重法",
@@ -1249,7 +1415,9 @@
 
     friction: {
       id: "friction",
-      level: "senior",
+      subject: "物理",
+      // 两个学段：高中按 f = μF压 计算（题目给出压力和动摩擦因数）；初中只讲影响因素与二力平衡，不出现 μ
+      level: "both",
       menuTitle: "滑动摩擦力影响因素",
       menuMeta: "f = μF压 · 压力与粗糙程度",
       stage: "高中必修1",
@@ -1263,22 +1431,43 @@
       ],
       strict: {
         intent: { require: [/摩擦/], forbid: [/静摩擦|静止|没有拉动|未拉动|没拉动|拉不动|斜面|倾角|竖直|墙|叠放|上面放|两个|加速|减速|刹车|滚动/] },
+        // AI 改写核对时，原题本身也要落在同一种讲法与同一组数值上（初中探究题没有数值，只靠这一条拦住接触面积、速度等题）
+        sameConditions: true,
         values(source, tokens) {
+          // 初中探究题（八年级下册）：不给任何数值，只问滑动摩擦力与压力、接触面粗糙程度的关系
+          if (!tokens.length && FRICTION_INQUIRY.test(source) && FRICTION_JUNIOR_FACTORS(source) && !FRICTION_JUNIOR_EXCLUDED.test(source)) {
+            return { ok: true, p1: 10, p2: 1, fixed: { level: "junior", levelLocked: true } };
+          }
           const forces = tokensOf(tokens, "force");
           const coefs = tokensOf(tokens, "coef");
           if (forces.length !== 1 || coefs.length !== 1) return miss("当前摩擦力模板需要压力和动摩擦因数。");
           if (!/压力/.test(lastLabel(source, forces[0], /压力|拉力|重力|重|F/, 10))) return miss("当前摩擦力模板需要明确的压力。");
-          return { ok: true, p1: forces[0].value, p2: coefs[0].value };
+          return { ok: true, p1: forces[0].value, p2: coefs[0].value, fixed: { level: "senior", levelLocked: true } };
         },
-        used: (normal, mu) => [{ cls: "force", value: normal }, { cls: "coef", value: mu }],
-        asks: source => ({
-          supported: /匀速/.test(source) && /水平/.test(source) ? /摩擦力|f(?:的)?大小|示数|拉力/ : /摩擦力|f(?:的)?大小/,
-          unsupported: /加速度|速度|功|时间|压力(?:是|为)?多|因数|系数/
-        })
+        rangeFor: (index, fixed) => fixed.level === "junior" ? FRICTION_JUNIOR_RANGES[index] : null,
+        used: (normal, mu, fixed = {}) => fixed.level === "junior" ? [] : [{ cls: "force", value: normal }, { cls: "coef", value: mu }],
+        asks: source => /\d/.test(source)
+          ? {
+              supported: /匀速/.test(source) && /水平/.test(source) ? /摩擦力|f(?:的)?大小|示数|拉力/ : /摩擦力|f(?:的)?大小/,
+              unsupported: /加速度|速度|功|时间|压力(?:是|为)?多|因数|系数/
+            }
+          : {
+              supported: /摩擦力|关系|有关|因素|影响|探究|示数|拉力|方法/,
+              unsupported: /多少|多大|数值|加速度|速度|功|时间|因数|系数/
+            }
       },
       failMessage: "当前摩擦力模板需要识别压力和动摩擦因数，例如：压力10N，动摩擦因数0.3。",
-      question: (p1, p2) => `用弹簧测力计水平匀速拉动木块，木块对木板的压力为 ${fmtInput(p1)}N，动摩擦因数为 ${fmtInput(p2)}。求滑动摩擦力。`,
-      model: (normal, mu) => {
+      question: (p1, p2, fixed = {}) => fixed.level === "junior"
+        ? FRICTION_JUNIOR_QUESTION
+        : `用弹簧测力计水平匀速拉动木块，木块对木板的压力为 ${fmtInput(p1)}N，动摩擦因数为 ${fmtInput(p2)}。求滑动摩擦力。`,
+      given: (p1, p2, fixed = {}) => fixed.level === "junior"
+        ? `压力 F压 = ${fmtInput(p1)}N（可加减砝码）；接触面：${frictionSurface(p2).name}（可更换）；弹簧测力计沿水平方向匀速拉动木块`
+        : `压力 F压 = ${fmtInput(p1)}N，动摩擦因数 μ = ${fmtInput(p2)}`,
+      presetFor: level => level === "junior"
+        ? { p1: 10, p2: 1, fixed: { level: "junior", levelLocked: true } }
+        : { p1: 10, p2: 0.3, fixed: { level: "senior", levelLocked: true } },
+      model: (normal, mu, fixed = {}) => {
+        if (fixed.level === "junior") return juniorFrictionModel(normal, frictionSurface(mu));
         const friction = normal * mu;
         return {
           visual: "visual-friction",
@@ -1292,12 +1481,33 @@
           badge: "控制变量法"
         };
       },
-      visual: model => genericShell(model, frictionDiagram(model.metrics[0], model.metrics[1], model.metrics[2])),
-      recognition: model => `滑动摩擦｜${model.formulaDetail}｜${model.facts[0].value}`
+      visual: model => genericShell(model, model.surface
+        ? frictionDiagram(model.metrics[0], model.surface.mu, model.metrics[2], model.surface.name)
+        : frictionDiagram(model.metrics[0], model.metrics[1], model.metrics[2])),
+      recognition: model => `滑动摩擦｜${model.formulaDetail}｜${model.facts[0].value}`,
+      // 初中讲法的接触面是三种材料，不是动摩擦因数，不能当作 AI 协议里的 frictionCoefficient 发送
+      protocolCompatible: fixed => fixed.level !== "junior",
+      parameter: (param, index, fixed) => fixed.level === "junior" ? { ...FRICTION_JUNIOR_PARAMS[index], value: param.value } : param,
+      variant: (p1, p2, fixed) => fixed.level === "junior" ? { p1, p2: p2 >= FRICTION_SURFACES.length ? 1 : p2 + 1 } : null,
+      copy: (model, p1, p2, fixed) => fixed.level === "junior" ? {
+        stage: "初中核心",
+        engine: "初中核心 · 力学模板",
+        description: `初中核心｜力学｜${model.conclusion}`,
+        steps: [
+          ["探究方法", "控制变量法：每次只改变压力或接触面中的一个因素", "保持另一个因素不变，才能判断是哪个因素影响了滑动摩擦力。"],
+          ["测量原理", "匀速直线拉动：f = F拉（二力平衡）", "木块做匀速直线运动时，拉力与滑动摩擦力是一对平衡力。"],
+          ["读数记录", model.formulaDetail, "测力计示数就是滑动摩擦力的大小（演示读数为模拟值）。"],
+          ["得出结论", "压力越大、接触面越粗糙，滑动摩擦力越大", "分别拖动压力和接触面，验证结论。"]
+        ],
+        mentor: "关键追问：探究滑动摩擦力与压力的关系时，为什么要保持<strong>接触面不变</strong>？",
+        hint: "小提示：只有沿水平方向<strong>匀速直线</strong>拉动木块时，弹簧测力计的示数才等于滑动摩擦力；改变一个因素时，要保持另一个因素不变。",
+        challenge: "试试看：保持压力不变，把接触面从<strong>木板</strong>换成<strong>毛巾</strong>，测力计示数会怎样变化？"
+      } : {}
     },
 
     lampPower: {
       id: "lampPower",
+      subject: "物理",
       level: "junior",
       menuTitle: "测量小灯泡电功率",
       menuMeta: "P = UI · 额定电压与亮度",
@@ -1449,6 +1659,7 @@
 
     seriesCircuit: {
       id: "seriesCircuit",
+      subject: "物理",
       level: "junior",
       menuTitle: "串联电路动态分析",
       menuMeta: "滑动变阻器 · 电流与电压变化",
@@ -1598,6 +1809,7 @@
 
     heatBalance: {
       id: "heatBalance",
+      subject: "物理",
       level: "junior",
       menuTitle: "比热容与热平衡计算",
       menuMeta: "Q = cmΔt · 热量守恒",
@@ -1656,6 +1868,7 @@
 
     liquidPressure: {
       id: "liquidPressure",
+      subject: "物理",
       level: "junior",
       menuTitle: "液体压强与深度关系",
       menuMeta: "p = ρgh · 深度越大压强越大",
@@ -1708,6 +1921,7 @@
 
     efficiency: {
       id: "efficiency",
+      subject: "物理",
       level: "junior",
       menuTitle: "机械效率实验",
       menuMeta: "η = W有 / W总 · 滑轮组",
@@ -1794,6 +2008,7 @@
 
     sound: {
       id: "sound",
+      subject: "物理",
       level: "junior",
       menuTitle: "声音的传播与音调响度",
       menuMeta: "频率定音调 · 振幅定响度",
@@ -1854,7 +2069,16 @@
   templates.efficiency.given = (load, force, fixed) => `G = ${fmtInput(load)}N，F = ${fmtInput(force)}N，n = 3${Number.isFinite(fixed.h) ? `，h = ${fmtInput(fixed.h)}m` : ""}${Number.isFinite(fixed.s) ? `，s = ${fmtInput(fixed.s)}m` : ""}`;
   templates.sound.given = (f, a) => `f = ${fmtInput(f)}Hz，振幅 A = ${fmtInput(a)}%，空气中声速 v = 340m/s`;
 
-  Object.values(templates).forEach(template => {
+  // 学段：junior / senior 只属于一个学段；both 两个学段都适用，讲法由 fixed.level 选择（题目明确时锁定，否则跟随全局学段）
+  const levelsOf = template => template.level === "both" ? ["junior", "senior"] : [template.level];
+  const contentLevelOf = (template, fixed = {}) => template.level === "both"
+    ? (fixed.level === "junior" ? "junior" : "senior")
+    : template.level;
+
+  // 给每个模板补上统一的生成、解析和核对接口；物理、数学等学科共用同一套流程
+  function decorate(template) {
+    template.subject = template.subject || "物理";
+    template.levels = levelsOf(template);
     const nextA = clamp(template.defaults[0] + Number(template.params[0].step) * 2, template.params[0].min, template.params[0].max);
     const nextB = clamp(template.defaults[1] + Number(template.params[1].step) * 2, template.params[1].min, template.params[1].max);
     template.examples = [
@@ -1862,10 +2086,11 @@
       { p1: nextA, p2: nextB, question: template.question(nextA, nextB) }
     ];
     template.content = (p1 = template.defaults[0], p2 = template.defaults[1], fixed) => {
-      const model = template.model(Number(p1), Number(p2), fixedWithDefaults(template, fixed));
+      const full = fixedWithDefaults(template, fixed);
+      const model = template.model(Number(p1), Number(p2), full);
       const params = [adaptParam(template, 0, Number(p1)), adaptParam(template, 1, Number(p2))].map((param, index) => template.parameter
-        ? template.parameter(param, index, fixedWithDefaults(template, fixed)) : param);
-      return {
+        ? template.parameter(param, index, full) : param);
+      const content = {
         title: template.title,
         description: `${template.stage}｜${template.block}｜${model.conclusion}`,
         engine: `${template.stage} · ${template.block}模板`,
@@ -1878,7 +2103,7 @@
         params,
         steps: commonSteps(model, [
           template.given
-            ? template.given(Number(p1), Number(p2), fixedWithDefaults(template, fixed))
+            ? template.given(Number(p1), Number(p2), full)
             : `${template.params[0].label} = ${fmtInput(p1)}${template.params[0].unit}，${template.params[1].label} = ${fmtInput(p2)}${template.params[1].unit}`,
           model.formula,
           model.formulaDetail,
@@ -1892,18 +2117,46 @@
         formulaHtml: `${model.formulaDetail}<br>${model.conclusion}`,
         sceneTip: model.conclusion,
         model,
+        subject: template.subject,
+        level: contentLevelOf(template, full),
         stage: template.stage,
         block: template.block,
         facts: model.facts,
-        visualHtml: template.visual(model),
+        visualHtml: template.visual ? template.visual(model) : "",
+        graph: template.graph ? template.graph(model, full) : null,
         resultTitle: model.readout,
         resultDescription: model.sceneConclusion || model.conclusion
       };
+      // 非物理模板可替换步骤、追问等文案（例如数学不说“物理量”）；数值仍只来自 model
+      return template.copy ? { ...content, ...template.copy(model, Number(p1), Number(p2), full, content) } : content;
     };
-    template.parseQuestion = text => templateParse(template, text);
+    template.parseQuestion = (text, context) => templateParse(template, text, context);
     template.checkQuestion = (text, p1, p2, fixed) => checkQuestion(template, text, p1, p2, fixed);
     template.fixedWithDefaults = fixed => fixedWithDefaults(template, fixed);
-  });
+    template.contentLevel = fixed => contentLevelOf(template, fixedWithDefaults(template, fixed));
+    return template;
+  }
 
+  // 所有学科的通用模板登记在同一张表里；标识在各学科之间也必须唯一
+  const registry = window.MASTER_LAB_TEMPLATES || {};
+  function register(list) {
+    for (const template of Object.values(list)) {
+      if (!template?.id || (registry[template.id] && registry[template.id] !== template)) {
+        console.error(`通用模板标识缺失或重复：${template?.id}`);
+        continue;
+      }
+      registry[template.id] = decorate(template);
+    }
+    return registry;
+  }
+
+  register(templates);
+  window.MASTER_LAB_TEMPLATES = registry;
+  // 物理通用模板（历史名称，旧代码与测试仍按此读取物理部分）
   window.EXTRA_PHYSICS_TEMPLATES = templates;
+  // 其他学科的模板文件（如 math-extra.js）通过这个工具包注册，复用同一套严格解析与显示规则
+  window.MasterLabTemplateKit = Object.freeze({
+    register,
+    helpers: Object.freeze({ clamp, exactPlaces, fmt, fmtInput, eq, about, mark, miss, fact, stages, commonSteps, tokensOf, leadOf, tailOf, lastLabel, anyOf, n2 })
+  });
 })();

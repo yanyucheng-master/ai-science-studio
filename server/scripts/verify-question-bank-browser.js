@@ -1,5 +1,8 @@
 // 题目解析回归：本地模板只在题目条件完全吻合时生成实验，且生成后数值不被滑块等环节改动。
+// 题目带 level（junior / senior）时按该学段规划和生成（默认高中）；学段只决定双学段实验的讲法，不限制题型。
+// show：生成后页面上必须出现的文字；hide：不能出现的文字（如初中讲法里的 μ）。
 // 用法：npm run test:questions（需要 Playwright；BROWSER_CHANNEL 默认 msedge，可设为 chromium）
+// 调试单个模板时可设 BANK_FILTER（按模板标识、类型或题目文字筛选，如 BANK_FILTER=quadratic）；完整回归不要设置
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
@@ -11,7 +14,9 @@ import { extname, resolve } from 'node:path';
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root = fileURLToPath(new URL('../../', import.meta.url));
-const bank = JSON.parse(await readFile(resolve(root, 'server/eval/local-template-bank.json'), 'utf8'));
+const fullBank = JSON.parse(await readFile(resolve(root, 'server/eval/local-template-bank.json'), 'utf8'));
+const filter = process.env.BANK_FILTER || '';
+const bank = filter ? fullBank.filter(item => [item.templateId, item.target, item.kind, item.q].some(value => String(value || '').includes(filter))) : fullBank;
 const mime = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon', '.webmanifest': 'application/manifest+json' };
 const server = createServer(async (req, res) => {
   const path = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
@@ -48,7 +53,7 @@ async function freshPage() {
 // 1. 规划层：是否匹配本地模板、匹配到哪个模板、关键结果是否正确
 const { context: planContext, page: planPage, errors: planErrors } = await freshPage();
 const plans = await planPage.evaluate(items => items.map(item => {
-  const plan = planLocalExperiment(item.q, { subject: '物理', physicsTemplate: 'brake', presetQuestion: '' });
+  const plan = planLocalExperiment(item.q, { subject: '物理', physicsTemplate: 'brake', presetQuestion: '', gradeLevel: item.level || 'senior' });
   if (!plan.ok) return { ok: false, message: plan.parse?.message || '' };
   const p = plan.parse;
   const values = { kind: plan.kind, templateId: plan.templateId || '' };
@@ -57,17 +62,21 @@ const plans = await planPage.evaluate(items => items.map(item => {
   if (plan.kind === 'circuit') Object.assign(values, { voltage: p.voltage, resistance: p.resistance, current: p.current, p1: p.voltage, p2: p.resistance });
   if (plan.kind === 'solenoid') Object.assign(values, { leftPole: p.leftPole, rightPole: p.rightPole, p1: p.current, p2: p.turns });
   if (plan.kind === 'boardSlider') Object.assign(values, { p1: p.initialSpeed, p2: p.boardLength });
-  if (plan.kind === 'chemistry') Object.assign(values, { cuMol: p.cuMol, cuMass: p.cuMass, limiting: p.limiting, p1: p.feMass, p2: p.cuso4Mol });
+  // 化学：p1、p2 是滑块数值（初中讲法的硫酸铜按质量 g）；足量的一方没有数值
+  if (plan.kind === 'chemistry') Object.assign(values, { cuMol: p.cuMol, cuMass: p.cuMass, limiting: p.limiting, p1: p.p1 ?? p.feMass, p2: p.p2 ?? p.cuso4Mol, level: p.chemForm?.level, excess: p.excess || '' });
   if (plan.kind === 'math') Object.assign(values, { slope: p.slope, x: p.x, p1: p.x });
-  if (plan.kind === 'biology') Object.assign(values, { cellType: p.cellType });
+  if (plan.kind === 'biology') Object.assign(values, { cellType: p.cellType, cellLevel: p.cellLevel });
   if (plan.kind === 'extra') {
-    const template = EXTRA_PHYSICS_TEMPLATES[plan.templateId];
+    const template = (window.MASTER_LAB_TEMPLATES || EXTRA_PHYSICS_TEMPLATES)[plan.templateId];
     const model = template.model(p.p1, p.p2, p.fixed);
     const metric = model.metrics[2];
-    Object.assign(values, { p1: p.p1, p2: p.p2, r1: p.fixed?.r1, mCold: p.fixed?.mCold, readout: model.readout,
+    Object.assign(values, { p1: p.p1, p2: p.p2, r1: p.fixed?.r1, mCold: p.fixed?.mCold, readout: model.readout, level: template.contentLevel(p.fixed),
       force: metric, power: metric, current: metric, t: metric, pressure: metric, eta: metric, wavelength: metric,
       i1: model.i1, i2: model.i2, equivalentResistance: model.equivalentResistance,
-      imageDistance: model.imageDistance, objectImageDistance: model.objectImageDistance, imageHeight: model.imageHeight });
+      imageDistance: model.imageDistance, objectImageDistance: model.objectImageDistance, imageHeight: model.imageHeight,
+      // 数学通用模板：二次函数的系数 a、顶点、判别式、根；方程组的解的情况与解
+      a: p.fixed?.a, vertexX: model.h, vertexY: model.k, delta: model.delta, rootsText: model.rootsText,
+      solutionKind: model.solutionKind, solX: model.x, solY: model.y });
   }
   return { ok: true, values };
 }), bank);
@@ -105,6 +114,7 @@ await planContext.close();
 for (const { item, index, values } of localItems) {
   const { context, page, errors } = await freshPage();
   const label = `#${index + 1} ${item.q.slice(0, 36)}`;
+  if (item.level) await page.evaluate(level => setGradeLevel(level, { persist: false, announce: false }), item.level);
   await page.locator('#questionInput').fill(item.q);
   await page.locator('#generateButton').click();
   await page.waitForFunction(() => state.hasGenerated && !document.querySelector('#generateButton').classList.contains('loading')
@@ -117,21 +127,33 @@ for (const { item, index, values } of localItems) {
     slider1: Number(document.querySelectorAll('.parameters input[type=range]')[0]?.value),
     slider2: Number(document.querySelectorAll('.parameters input[type=range]')[1]?.value),
     text: document.querySelector('.experiment-card')?.innerText + document.querySelector('.reasoning-card')?.innerText,
-    question: document.querySelector('#questionInput').value
+    question: document.querySelector('#questionInput').value,
+    gradeTag: document.querySelector('#experimentGradeTag')?.hidden ? '' : document.querySelector('#experimentGradeTag')?.textContent || '',
+    gradeLevel: state.gradeLevel
   }));
   // 播放到终点后核对页面上的结论文字：精确值不能被四舍五入，近似值要写“≈ / 约”，已知条件要列全
-  const finalText = await page.evaluate(async () => {
+  const { finalText, visibleText } = await page.evaluate(async () => {
     if (typeof duration === 'function') { state.time = duration(); updateScene(); }
     await new Promise(requestAnimationFrame);
     // Structured notation has no slash in innerText and Unicode scripts become
     // real sub/sup nodes. Compare its accessible source, keeping exact values,
     // equality/approximation signs and significant digits in the assertions.
-    return [...document.querySelectorAll('.experiment-card, .reasoning-card, .mentor-card')].map(node => ScienceFormula.sourceText(node)).join('\n');
+    const cards = [...document.querySelectorAll('.experiment-card, .reasoning-card, .mentor-card')];
+    // “不能出现”的文字只看页面上显示的部分：其他实验的舞台（如木板—滑块）隐藏在同一张卡片里
+    return { finalText: cards.map(node => ScienceFormula.sourceText(node)).join('\n'), visibleText: cards.map(node => node.innerText).join('\n') };
   });
   const squash = text => String(text).replace(/\s+/g, '');
   for (const expected of item.show || []) {
     if (!squash(finalText).includes(squash(expected))) failures.push(`${label}：页面上没有“${expected}”`);
   }
+  for (const banned of item.hide || []) {
+    if (squash(visibleText).includes(squash(banned))) failures.push(`${label}：页面上不应出现“${banned}”`);
+  }
+  // 学段只影响讲法：生成后的内容学段与规划一致，实验标题旁标出“初中内容 / 高中内容”，全局学段不被题目改写
+  const contentLevel = values.level || values.cellLevel;
+  const levelLabel = { junior: '初中内容', senior: '高中内容' }[contentLevel];
+  if (levelLabel && after.gradeTag !== levelLabel) failures.push(`${label}：学段标签为“${after.gradeTag}”，应为“${levelLabel}”`);
+  if (after.gradeLevel !== (item.level || 'senior')) failures.push(`${label}：生成后全局学段变成了 ${after.gradeLevel}`);
   if (Number.isFinite(values.p1) && !near(after.p1, values.p1)) failures.push(`${label}：生成后参数1 = ${after.p1}，题目为 ${values.p1}`);
   if (Number.isFinite(values.p2) && item.kind !== 'math' && !near(after.p2, values.p2)) failures.push(`${label}：生成后参数2 = ${after.p2}，题目为 ${values.p2}`);
   if (Number.isFinite(values.p1) && item.kind !== 'biology' && !near(after.slider1, after.p1)) failures.push(`${label}：滑块1 = ${after.slider1}，状态为 ${after.p1}`);
@@ -144,7 +166,7 @@ for (const { item, index, values } of localItems) {
 
 await browser.close();
 server.close();
-console.log(`题库 ${bank.length} 题：本地 ${localItems.length}，交给 AI ${bank.length - localItems.length}`);
+console.log(`题库 ${bank.length} 题${filter ? `（筛选“${filter}”，全库 ${fullBank.length} 题）` : ''}：本地 ${localItems.length}，交给 AI ${bank.length - localItems.length}`);
 if (failures.length) {
   console.log(failures.join('\n'));
   assert.fail(`${failures.length} 项不符合预期`);

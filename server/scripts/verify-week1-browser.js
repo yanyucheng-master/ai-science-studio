@@ -48,6 +48,9 @@ async function generate(page,q){
 async function preset(page,id){
   // The actual menu handler resets fixed conditions before generation.
   await page.locator('#physicsPresetToggle').click();
+  // Since week 2 the menu lists the selected grade level first; the other level is a folded group.
+  const folded=page.locator(`#physicsPresetDropdown details.preset-other:not([open]):has([data-preset="${id}"]) > summary`);
+  if(await folded.count())await folded.click();
   await page.locator(`[data-preset="${id}"]`).click();
   await generate(page,await page.locator('#questionInput').inputValue());
   assert.equal(await page.evaluate(()=>state.physicsTemplate),id);
@@ -198,7 +201,15 @@ try {
     ['物体距平面镜1000cm，物高300cm，求像距及像高。','large-mirror'],
     ['R1=0.1234Ω 与 R2=3.2Ω 并联接在6.1234V电源上，求干路电流。','precise-parallel'],
     ['平面镜前物距 u=12.1234cm，物高 h=2.5cm，求像距和像高。','precise-mirror']
-  ]) {await generate(page,q);await geometry(page,label);await page.setViewportSize({width:390,height:1000});await geometry(page,`${label}-compact`);await page.setViewportSize({width:1366,height:1000});}
+  ]) {
+    await generate(page,q);await geometry(page,label);
+    // Measure the compact layout only after the resize handler has redrawn the 360-wide diagram.
+    await page.setViewportSize({width:390,height:1000});
+    await page.waitForFunction(()=>document.querySelector('#genericPhysicsVisual svg')?.viewBox.baseVal.width===360);
+    await geometry(page,`${label}-compact`);
+    await page.setViewportSize({width:1366,height:1000});
+    await page.waitForFunction(()=>document.querySelector('#genericPhysicsVisual svg')?.viewBox.baseVal.width!==360);
+  }
   await context.close();
 
   const reduced=await fresh(390,'reduce');await preset(reduced.page,'parallelCircuit');
