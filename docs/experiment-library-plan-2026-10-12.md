@@ -1,6 +1,6 @@
 # 大师实验室 · 实验库扩展选题与执行计划（2026-10-12）
 
-状态（2026-10-16）：第一周 1.1–1.10 已完成并发布。第二周 2.1 框架跨学科、2.2 学段切换、2.4 二次函数、2.5 方程组已完成，3.2 铁 + 硫酸铜初中讲法（含“足量”）提前完成；2.3 题库全量回归通过，浏览器回归仍有已记录的环境限制和原有断言失败，不表述为全部通过；2.6 的公网 worktree 增量同步、公告与验收记录已完成。用户已于 10/16 授权验收并推送两个分支，GitHub、CI 与 Render 的核验结果在推送后补记。详见 [第二周验收记录](experiment-library-week2-qa-2026-10-16.md)。
+状态（2026-10-16）：第一周 1.1–1.10 已完成并发布。第二周 2.1 框架跨学科、2.2 学段切换、2.4 二次函数、2.5 方程组已完成，3.2 铁 + 硫酸铜初中讲法（含“足量”）提前完成；2.3 题库全量回归通过，浏览器回归仍有已记录的环境限制和原有断言失败，不表述为全部通过；2.6 两分支增量同步、公告、提交推送与公网静态核验已完成。主分支代码提交 `da084ee`、公网代码提交 `ce15bb1` 的远端 SHA 一致；Render 已 Live，11 个公开资源的 22 次哈希比对一致；GitHub 未返回本次 CI 运行记录。详见 [第二周验收记录](experiment-library-week2-qa-2026-10-16.md)。
 
 ## 第二周执行记录（2026-10-16）
 
@@ -15,7 +15,7 @@
 - [x] 公网 worktree 增量同步：同一组 19 个路径，保留公网 AI 层与公告历史；公网副本 `npm test` 317 / 317，题库、第二周、公式排版、公告回归通过。
 - [x] 公告 `20261016-experiment-library-week2@1`（替换未发布的 `20261016-preset-dropdown-layout@1`），两分支静态核查通过（沙箱按真实 Git 历史模拟暂存与提交）。
 - [x] 10/16 用户已明确授权查看验收并推送 GitHub；发布前静态审查补上陡直线无候选标签位置时的绘图防护，并同步两分支公告。该补丁完成静态核查，未重新运行功能测试。
-- [ ] 按 19 个明确路径提交、推送两个分支，核对远端 SHA，并分别记录 GitHub、CI 和 Render 部署结果。
+- [x] 按 19 个明确路径提交并推送两个分支：master `da084ee5a1a520fe5ccafc4f04de7ac6a8a6fa8a`、公网 `ce15bb1379d5c42b8210568afcbf04c8fb422ebf`，`git ls-remote` 完整 SHA 一致。两分支在本机完成语法、差异、资源与提交前 / 推送前公告静态检查；未重跑功能测试。GitHub Actions、check run 与状态检查均无运行记录。
 
 ## 第一周执行记录（2026-10-13 至 2026-10-14）
 
@@ -128,7 +128,7 @@
 
 ## 四、交接要点（给接手的会话）
 - 第二周后的入口（10/16）：通用模板统一登记在 `window.MASTER_LAB_TEMPLATES`（`web/physics-extra.js` 的 `MasterLabTemplateKit.register`，模板写明 `subject`、`level`、`block`）；数学模板在 `web/math-extra.js`，化学计算工具在 `web/chemistry-extra.js`（`relativeMass`、`proportion`）；学段状态 `state.gradeLevel`，存储键 `masterLab.gradeLevel.v1`；双学段模板用 `fixed.level` / `levelLocked` 与 `presetFor(level)`；第二周验收脚本 `server/scripts/verify-week2-browser.js`（`npm run test:week2`）。
-- 10/16 本机没有可用终端，第二周改为云端沙箱修改测试、再写回主文件夹；以下 10/13 的终端说明以当时为准。
+- 10/16 开发阶段没有可用终端，第二周在云端沙箱修改测试后写回主文件夹；本轮发布阶段终端可用，已在本机执行静态检查、Git 提交与推送。以下 10/13 的终端说明以当时为准。
 - 10/13 已确认本机终端可用，本轮直接修改并测试主文件夹；先前“云端中转”约束不再适用。
 - 通用物理模板：`web/physics-extra.js` 里 `const templates = {`（10/11 版第 788 行），文件末尾自动注册到 `window.EXTRA_PHYSICS_TEMPLATES`，`app.js` 第 316 行读取
   - 每个模板：`stage`（如“初中核心”“高中必修1”）、`block`（板块）、`params`（两个滑块）、`strict`（intent require/forbid、`values`、`used`、`asks`、`fixedDefaults`）、`model`、`visual`（SVG，`genericShell`）、`recognition`
