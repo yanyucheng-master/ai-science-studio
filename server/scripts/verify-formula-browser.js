@@ -32,6 +32,9 @@ async function generate(page,q){
 async function preset(page,id){
  await page.locator('.subject-tab[data-subject="物理"]').click();
  await page.locator('#physicsPresetToggle').click();
+ // Since week 2 the menu lists the selected grade level first; the other level is a folded group.
+ const folded=page.locator(`#physicsPresetDropdown details.preset-other:not([open]):has([data-preset="${id}"]) > summary`);
+ if(await folded.count())await folded.click();
  if(await page.locator(`[data-preset="${id}"]`).getAttribute('hidden')!==null)await page.locator('#physicsPresetToggle').click();
  else await page.locator(`[data-preset="${id}"]`).click();
  const q=await page.locator('#questionInput').inputValue();await generate(page,q);

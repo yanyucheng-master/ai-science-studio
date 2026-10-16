@@ -762,19 +762,40 @@ body.announcements-open {
   background: #f3f7ff;
 }
 
-.preset-option span {
-  overflow: hidden;
-  font-size: 12px;
-  font-weight: 800;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+/* Style the label only; nested formula spans must retain their own baselines. */
+.preset-option > span {
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
-.preset-option small {
-  flex: 0 0 auto;
-  color: #8fa0ba;
-  font-size: 10px;
-  font-weight: 800;
+.preset-option > small {
+  flex: 0 1 auto;
+  max-width: 52%;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.7;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .preset-option {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 3px;
+  }
+
+  .preset-option > span,
+  .preset-option > small {
+    flex: none;
+    max-width: 100%;
+    text-align: left;
+  }
 }
 
 .generate-button {
@@ -2456,7 +2477,6 @@ body.ai-tutor-route .ai-tutor-workspace {
 .parse-feedback strong,
 .mentor-feedback { overflow-wrap: anywhere; }
 .reasoning-card .reason-step .formula { line-height: 1.9; }
-.preset-option small:has(.science-math) { line-height: 1.7; }
 
 .ai-rich-math sub { bottom: -.28em; }
 .ai-rich-math sup { top: -.5em; }
@@ -6609,6 +6629,7 @@ body.subject-biology-active:not(.awaiting-generation) .scene {
 .plant-cell-model.labels-hidden .cell-label { opacity: 0; pointer-events: none; }
 @container (max-width: 520px) {
   .cell-label text { font-size: 16px; stroke-width: 3.6px; }
+  .cell-label text.is-long { font-size: 12.5px; }
 }
 
 .cell-level-toggle {
@@ -10376,4 +10397,294 @@ body:has(.week1-scene) .reasoning-card .reason-step .formula { font-size: 15px; 
   .header-tools #favoriteButton { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; }
   .experiment-card .card-header > div:first-child { min-width: 0; }
   .experiment-card .header-tools { flex-shrink: 0; }
+}
+
+/* ===== 第二周：学段切换与各学科预设菜单（2026-10-16）===== */
+/* 学段：页首右上的分段按钮；手机宽度放不下时改用学科行里的同一组按钮 */
+.grade-switch {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.grade-switch-label {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+
+.grade-seg {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  border: 1px solid #d3e2fd;
+  border-radius: 13px;
+  background: #f5f9ff;
+}
+
+.grade-seg button {
+  min-width: 48px;
+  height: 36px;
+  padding: 0 12px;
+  color: #5f7090;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  transition: color .16s ease, background .16s ease, box-shadow .16s ease;
+}
+
+.grade-seg button:hover {
+  color: #1f62e0;
+}
+
+.grade-seg button[aria-pressed="true"] {
+  color: #1a56d6;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(45, 115, 246, .14), inset 0 0 0 1px #c6dbfb;
+}
+
+.grade-seg button:focus-visible {
+  outline: 2px solid #3174e8;
+  outline-offset: 2px;
+}
+
+.grade-switch-inline {
+  display: none;
+}
+
+.grade-switch-inline .grade-seg {
+  border-radius: 11px;
+}
+
+.grade-switch-inline .grade-seg button {
+  min-width: 44px;
+  height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+.prompt-foot {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .grade-switch-label {
+    display: none;
+  }
+}
+
+@media (max-width: 460px) {
+  .grade-switch-header {
+    display: none;
+  }
+
+  .grade-switch-inline {
+    display: inline-flex;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grade-seg button {
+    transition: none;
+  }
+}
+
+/* 实验标题旁的“初中内容 / 高中内容”；与当前选择的学段不同时用橙色 */
+.title-row {
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+
+.grade-tag {
+  display: inline-flex;
+  height: 22px;
+  padding: 0 8px;
+  align-items: center;
+  color: #1a56d6;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid #c6dbfb;
+  border-radius: 999px;
+  background: #eef5ff;
+}
+
+.grade-tag.is-other-level {
+  color: #a3500c;
+  border-color: #f6cfa5;
+  background: #fff4e8;
+}
+
+.grade-tag[hidden] {
+  display: none;
+}
+
+/* 预设菜单：所有学科都有；本学段按板块分组，另一学段折叠在底部 */
+.preset-picker {
+  display: grid;
+}
+
+.preset-dropdown.show {
+  display: block;
+}
+
+.preset-dropdown {
+  max-height: min(520px, 64vh);
+}
+
+.preset-menu-head {
+  margin: 2px 4px 2px;
+  padding: 4px 7px;
+  color: #5f7090;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+
+.preset-group + .preset-group {
+  margin-top: 2px;
+}
+
+.preset-group-title {
+  margin: 8px 11px 2px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.preset-menu-empty {
+  margin: 4px 11px 8px;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.preset-other {
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px solid #e3ecf8;
+}
+
+.preset-other > summary {
+  display: flex;
+  min-height: 40px;
+  padding: 6px 11px;
+  gap: 8px;
+  align-items: center;
+  color: #3d5478;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.preset-other > summary::-webkit-details-marker {
+  display: none;
+}
+
+.preset-other > summary::before {
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  content: "";
+  transform: rotate(-45deg);
+  transition: transform .16s ease;
+}
+
+.preset-other[open] > summary::before {
+  transform: rotate(45deg);
+}
+
+.preset-other > summary:hover {
+  background: #f3f7ff;
+}
+
+.preset-other > summary:focus-visible {
+  outline: 2px solid #3174e8;
+  outline-offset: 1px;
+}
+
+/* 内容超出菜单高度时，在底部提示还能向下滚动（高度为 0，不改变滚动范围） */
+.preset-scroll-hint {
+  position: sticky;
+  bottom: -6px;
+  height: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.preset-scroll-hint span {
+  position: absolute;
+  right: -6px;
+  bottom: 0;
+  left: -6px;
+  padding: 22px 12px 8px;
+  color: #1a56d6;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, .97) 55%);
+  border-radius: 0 0 13px 13px;
+  opacity: 0;
+  transition: opacity .16s ease;
+}
+
+.preset-dropdown.has-more .preset-scroll-hint span {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preset-other > summary::before,
+  .preset-scroll-hint span {
+    transition: none;
+  }
+}
+
+/* 数学通用模板（二次函数、方程组）：两个参数都有滑块；对称轴、关键点与直线的样式 */
+body.subject-math-active.subject-generic-template-active:not(.awaiting-generation) .parameters {
+  grid-template-columns: 1fr 1fr;
+}
+
+body.subject-math-active.subject-generic-template-active:not(.awaiting-generation) .parameters .parameter:nth-child(2) {
+  display: grid;
+}
+
+@media (max-width: 900px) {
+  body.subject-math-active.subject-generic-template-active:not(.awaiting-generation) .parameters {
+    grid-template-columns: 1fr;
+  }
+}
+
+.math-guide { fill: none; stroke: #8a7fd6; stroke-width: 1.4; stroke-dasharray: 6 5; }
+.math-guide-label { fill: #5a42c9; font-size: 12px; font-weight: 700; paint-order: stroke; stroke: rgba(255,255,255,.92); stroke-width: 3.5px; }
+.math-point.vertex { fill: #f08a2c; }
+.math-point.intercept { fill: #17a985; }
+.math-point.solution { fill: #6a52dc; }
+.math-point-label.vertex { fill: #b45f12; }
+.math-point-label.intercept { fill: #127a61; }
+.math-line { fill: none; stroke: #2465ef; stroke-width: 2.6; stroke-linecap: round; }
+.math-line.line-2 { stroke: #e0563b; }
+.math-line.coincide { stroke-dasharray: 10 7; }
+.math-line-label { fill: #1d4fbf; font-size: 12.5px; font-weight: 800; font-style: italic; paint-order: stroke; stroke: rgba(255,255,255,.92); stroke-width: 3.5px; }
+.math-line-label.line-2 { fill: #b83a22; }
+
+/* 题目写明“足量”的量没有数值：对应滑块锁定 */
+.parameter.is-locked input[type="range"] {
+  cursor: not-allowed;
+  opacity: .45;
+}
+
+.parameter.is-locked .number-control button {
+  cursor: not-allowed;
+  opacity: .4;
 }

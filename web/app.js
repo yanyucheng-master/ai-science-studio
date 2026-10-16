@@ -116,6 +116,25 @@ const SUBJECTS = {
   }
 };
 
+// 专用实验的固定展示字段（引擎名、读数标签等）。同一学科切换回专用实验时恢复，避免沿用通用模板写入的内容。
+const SUBJECT_BASE_FIELDS = Object.freeze(Object.fromEntries(Object.entries(SUBJECTS).map(([subject, config]) => [subject, Object.freeze({
+  engine: config.engine,
+  ar: config.ar,
+  metrics: config.metrics,
+  generationStages: config.generationStages
+})])));
+
+function restoreSubjectBaseFields(subject) {
+  const base = SUBJECT_BASE_FIELDS[subject];
+  if (!base) return;
+  const target = SUBJECTS[subject];
+  target.engine = base.engine;
+  target.ar = base.ar;
+  target.metrics = base.metrics;
+  if (base.generationStages) target.generationStages = base.generationStages;
+  else delete target.generationStages;
+}
+
 const FAVORITES_STORAGE_KEY = "master-lab-favorites-v1";
 const FAVORITE_LIMIT = 8;
 const FAVORITE_VISUALS = new Set(["brake", "gravity", "solenoid", "circuit", "flask", "math", "cell", "physics"]);
@@ -136,14 +155,68 @@ const RECOMMENDED_EXPERIMENTS = Object.freeze([
   }
 ]);
 
+// 收藏区推荐随学段：高中推荐刹车、铁 + 硫酸铜，初中推荐杠杆、浮力。只在从未保存过收藏时显示，不写入收藏。
+const RECOMMENDED_BY_LEVEL = Object.freeze({
+  senior: RECOMMENDED_EXPERIMENTS,
+  junior: Object.freeze([
+    {
+      subject: "物理",
+      question: window.EXTRA_PHYSICS_TEMPLATES?.lever?.examples?.[0]?.question || "",
+      title: "杠杆平衡条件探究",
+      detail: "物理 · 初中力学模板",
+      visual: "physics"
+    },
+    {
+      subject: "物理",
+      question: window.EXTRA_PHYSICS_TEMPLATES?.buoyancy?.examples?.[0]?.question || "",
+      title: "浮力与阿基米德原理验证",
+      detail: "物理 · 初中力学模板",
+      visual: "physics"
+    }
+  ].filter(item => item.question))
+});
+
+// 学段：默认高中；用户的选择保存在独立的本机键里，读写失败（隐私模式、禁用存储）时本页仍可切换
+const GRADE_LEVEL_STORAGE_KEY = "masterLab.gradeLevel.v1";
+const GRADE_LEVEL_LABELS = Object.freeze({ junior: "初中", senior: "高中" });
+
+function normalizeGradeLevel(level) {
+  return level === "junior" ? "junior" : "senior";
+}
+
+function loadGradeLevel() {
+  try {
+    const stored = window.localStorage.getItem(GRADE_LEVEL_STORAGE_KEY);
+    return stored === "junior" || stored === "senior" ? stored : "senior";
+  } catch {
+    return "senior";
+  }
+}
+
+function persistGradeLevel(level) {
+  try {
+    window.localStorage.setItem(GRADE_LEVEL_STORAGE_KEY, level);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+const INITIAL_GRADE_LEVEL = loadGradeLevel();
+
 const state = {
   subject: "物理",
+  gradeLevel: INITIAL_GRADE_LEVEL,
+  // 预选题来源：default（切换学科或首次打开时的默认题，可随学段替换）或 menu（用户在菜单里选的）
+  presetOrigin: "default",
   playing: false,
   time: 0,
   lastFrame: 0,
   p1: 20,
   p2: 5,
   physicsTemplate: "brake",
+  // 物理以外的学科当前使用的通用模板；空字符串表示该学科的专用实验（铁+硫酸铜、切线、细胞）
+  subjectTemplates: { "化学": "", "数学": "", "生物": "" },
   brakeMode: "constant",
   brakeGravity: 9.8,
   brakeMass: 1000,
@@ -151,6 +224,8 @@ const state = {
   extraFixed: {},
   circuitSolve: null,
   chemGiven: null,
+  // 铁 + 硫酸铜的讲法与条件形式（见 chemistryForm）
+  chemForm: { level: "senior", levelLocked: true, excess: "" },
   brakeAsk: null,
   projectileAsk: null,
   boardSliderParams: {
@@ -181,7 +256,9 @@ const state = {
   favorite: false,
   mathModel: null,
   cellType: "plant",
-  cellLevel: "senior",
+  // 细胞模型的初中 / 高中层：跟随全局学段；题目明确写了亚显微、电子显微镜等时锁定为题目的学段
+  cellLevel: INITIAL_GRADE_LEVEL,
+  cellLevelLocked: false,
   cellLabelsVisible: true,
   selectedOrganelle: "nucleus",
   cellRotateX: -4,
@@ -273,11 +350,18 @@ const CIRCUIT_LIMITS = {
   resistanceMax: 20
 };
 
+// 通用模板登记表：physics-extra.js、math-extra.js 等按学科注册，每个模板带 subject、level、block。
+// EXTRA_PHYSICS_TEMPLATES 只含物理部分（历史名称，物理专用判断仍按它区分通用模板与专用实验）。
+const GENERIC_TEMPLATES = window.MASTER_LAB_TEMPLATES || window.EXTRA_PHYSICS_TEMPLATES || {};
 const EXTRA_PHYSICS_TEMPLATES = window.EXTRA_PHYSICS_TEMPLATES || {};
 const EXTRA_PHYSICS_IDS = Object.keys(EXTRA_PHYSICS_TEMPLATES);
 
 function isExtraPhysicsTemplate(id = state.physicsTemplate) {
   return Boolean(EXTRA_PHYSICS_TEMPLATES[id]);
+}
+
+function genericTemplatesOf(subject) {
+  return Object.values(GENERIC_TEMPLATES).filter(template => template.subject === subject);
 }
 
 const CHEMISTRY_CONSTANTS = {
@@ -692,9 +776,11 @@ function cellLabelMarkup([id, ax, ay, side, ly]) {
   const name = CELL_STRUCTURE_TEXT[id]?.name || "";
   const textX = side === "left" ? 52 : 448;
   const lineX = side === "left" ? 55 : 445;
+  // 四个字的名称（高尔基体）在窄屏放大字号后会超出图边，样式里单独缩小
+  const long = [...name].length > 3 ? ' class="is-long"' : "";
   return `<g class="cell-label" data-organelle="${id}" aria-hidden="true">
     <path class="cell-label-line" d="M${lineX} ${ly - 4}L${ax} ${ay}"/>
-    <text x="${textX}" y="${ly}" text-anchor="${side === "left" ? "end" : "start"}">${name}</text></g>`;
+    <text${long} x="${textX}" y="${ly}" text-anchor="${side === "left" ? "end" : "start"}">${name}</text></g>`;
 }
 
 function buildCellLayers(type = "plant", level = "senior") {
@@ -859,7 +945,11 @@ renderCellModelMarkup(state.cellType, state.cellLevel);
 
 if (elements.mathGraph && "ResizeObserver" in window) {
   new ResizeObserver(() => {
-    if (state.subject === "数学" && Number.isFinite(state.mathGraphX)) renderMathGraph(currentMathModel(), state.mathGraphX);
+    if (state.subject !== "数学") return;
+    // 数学通用模板（二次函数等）与切线图共用同一块画布，按当前实验重画
+    if (activeGenericTemplate("数学")) {
+      if (state.hasGenerated) renderTemplateGraph(buildGenericContent());
+    } else if (Number.isFinite(state.mathGraphX)) renderMathGraph(currentMathModel(), state.mathGraphX);
   }).observe(elements.mathGraph);
 }
 
@@ -970,7 +1060,8 @@ function renderFavoriteList() {
   if (!list || !empty || !count) return;
 
   const recommended = !hasSavedFavorites && favoriteRecords.length === 0;
-  const records = recommended ? RECOMMENDED_EXPERIMENTS.map(sanitizeFavoriteRecord).filter(Boolean) : favoriteRecords;
+  const recommendations = RECOMMENDED_BY_LEVEL[state.gradeLevel] || RECOMMENDED_EXPERIMENTS;
+  const records = recommended ? recommendations.map(sanitizeFavoriteRecord).filter(Boolean) : favoriteRecords;
   const heading = $("#favoritesTitle");
   if (heading) heading.textContent = recommended ? "推荐实验" : "已收藏的实验";
   count.textContent = `${records.length} 个`;
@@ -1058,6 +1149,7 @@ function updateSubjectBodyClass(subject = state.subject) {
   document.body.classList.toggle("subject-circuit-active", subject === "物理" && state.physicsTemplate === "circuit" && state.hasGenerated);
   document.body.classList.toggle("subject-board-slider-active", subject === "物理" && state.physicsTemplate === "boardSlider" && state.hasGenerated);
   document.body.classList.toggle("subject-extra-physics-active", subject === "物理" && isExtraPhysicsTemplate() && state.hasGenerated);
+  document.body.classList.toggle("subject-generic-template-active", Boolean(activeGenericTemplate(subject)) && state.hasGenerated);
 }
 
 function saveCurrentSubjectSnapshot() {
@@ -1068,6 +1160,7 @@ function saveCurrentSubjectSnapshot() {
     generatedQuestion: state.generatedQuestion || $("#questionInput")?.value || SUBJECTS[state.subject]?.question || "",
     time: state.time,
     physicsTemplate: state.physicsTemplate,
+    subjectTemplate: subjectTemplateId(state.subject),
     brakeMode: state.brakeMode,
     brakeGravity: state.brakeGravity,
     brakeMass: state.brakeMass,
@@ -1088,6 +1181,8 @@ function saveCurrentSubjectSnapshot() {
     brakeAsk: state.brakeAsk ? { ...state.brakeAsk } : null,
     projectileAsk: state.projectileAsk ? { ...state.projectileAsk } : null,
     chemGiven: state.chemGiven ? { ...state.chemGiven } : null,
+    chemForm: { ...chemistryForm() },
+    cellLevelLocked: state.cellLevelLocked,
     cellRotateX: state.cellRotateX,
     cellRotateY: state.cellRotateY
   };
@@ -1101,9 +1196,14 @@ function restoreSubjectSnapshot(subject) {
   state.p2 = snapshot.p2;
   state.generatedQuestion = snapshot.generatedQuestion || SUBJECTS[subject]?.question || "";
   state.time = Number.isFinite(snapshot.time) ? snapshot.time : 0;
+  // 只恢复本学科当前通用模板的固定条件（如平面镜“物高未给出”），不改动其他学科的记录
+  const genericId = GENERIC_TEMPLATES[snapshot.subjectTemplate]?.subject === subject ? snapshot.subjectTemplate : "";
+  if (genericId) {
+    const savedFixed = snapshot.extraFixed?.[genericId];
+    state.extraFixed = { ...state.extraFixed, [genericId]: savedFixed ? JSON.parse(JSON.stringify(savedFixed)) : null };
+  }
   if (subject === "物理") {
     state.projectileGravity = snapshot.projectileGravity ?? PROJECTILE_LIMITS.gravity;
-    state.extraFixed = snapshot.extraFixed ? JSON.parse(JSON.stringify(snapshot.extraFixed)) : {};
     state.circuitSolve = snapshot.circuitSolve || null;
     state.brakeAsk = snapshot.brakeAsk || null;
     state.projectileAsk = snapshot.projectileAsk || null;
@@ -1122,18 +1222,27 @@ function restoreSubjectSnapshot(subject) {
     else if (state.physicsTemplate === "solenoid") syncPhysicsSolenoidContent();
     else if (state.physicsTemplate === "projectile") syncPhysicsProjectileContent();
     else if (state.physicsTemplate === "circuit") syncPhysicsCircuitContent();
-    else if (isExtraPhysicsTemplate(state.physicsTemplate)) syncExtraPhysicsContent(state.physicsTemplate);
+    else if (isExtraPhysicsTemplate(state.physicsTemplate)) syncGenericContent(state.physicsTemplate);
     else syncPhysicsBrakeContent();
+    return true;
+  }
+  setSubjectTemplate(subject, genericId);
+  if (genericId) {
+    syncGenericContent(genericId);
+    return true;
   }
   if (subject === "生物") {
     state.cellType = snapshot.cellType || "plant";
     state.cellLevel = normalizeCellLevel(snapshot.cellLevel || state.cellLevel);
+    state.cellLevelLocked = Boolean(snapshot.cellLevelLocked);
     state.selectedOrganelle = snapshot.selectedOrganelle || "nucleus";
     syncBiologyContent(state.cellType);
     setCellRotation(snapshot.cellRotateX ?? -4, snapshot.cellRotateY ?? -10);
   }
   if (subject === "化学") {
     state.chemGiven = snapshot.chemGiven || null;
+    state.chemForm = chemistryForm(snapshot.chemForm);
+    syncChemistryFeCuSO4Content();
   }
   if (subject === "数学") {
     state.mathModel = createMathModel(snapshot.mathModelSpec || defaultMathSpec());
@@ -1962,10 +2071,197 @@ function chemistryReactionJudgement(model) {
   };
 }
 
-function buildChemistryQuestionText(feMass = state.p1, cuso4Mol = state.p2) {
+// 铁 + 硫酸铜的讲法与条件形式：level 学段（junior 按质量比列比例式，senior 按物质的量）；
+// levelLocked 题目含物质的量时锁定高中讲法；excess 题目写“足量”的反应物（"fe" 或 "cuso4"），它的量不参与计算、滑块锁定
+const CHEMISTRY_DEFAULT_FORM = Object.freeze({ level: "senior", levelLocked: true, excess: "" });
+
+function chemistryForm(form = state.chemForm) {
+  return { ...CHEMISTRY_DEFAULT_FORM, ...(form || {}) };
+}
+
+// 两个滑块 → 计算用的铁质量（g）和硫酸铜物质的量（mol）。初中讲法的第二个滑块是硫酸铜的质量（g）。
+// 足量的一方取刚好反应所需量的 1.5 倍作示意，只驱动动画（溶液颜色、剩余量），文字里只写“足量”
+function chemistryAmounts(p1 = state.p1, p2 = state.p2, form = state.chemForm) {
+  const f = chemistryForm(form);
+  let feMass = Number(p1);
+  let cuso4Mol = f.level === "junior" ? Number(p2) / 160 : Number(p2);
+  if (f.excess === "cuso4") cuso4Mol = cleanChemNumber((feMass / CHEMISTRY_CONSTANTS.feMolarMass) * 1.5);
+  if (f.excess === "fe") feMass = cleanChemNumber(cuso4Mol * CHEMISTRY_CONSTANTS.feMolarMass * 1.5);
+  return { feMass, cuso4Mol };
+}
+
+const CHEMISTRY_EXCESS_PARAM = Object.freeze({ unit: "", min: 0, max: 1, step: 1, value: 0, locked: true, valueText: () => "足量" });
+
+function chemistryParams(form, feMass, cuso4Value) {
+  const f = chemistryForm(form);
+  const fe = f.excess === "fe"
+    ? { ...CHEMISTRY_EXCESS_PARAM, label: "铁粉 Fe", desc: "题目写明铁粉足量：不限量，滑块锁定" }
+    : { label: "铁粉质量 m(Fe)", desc: "调整投入铁粉质量", unit: "g", min: CHEMISTRY_CONSTANTS.feMassMin, max: CHEMISTRY_CONSTANTS.feMassMax, step: 2.8, value: feMass };
+  const cuso4 = f.excess === "cuso4"
+    ? { ...CHEMISTRY_EXCESS_PARAM, label: "硫酸铜 CuSO₄", desc: "题目写明硫酸铜足量：不限量，滑块锁定" }
+    : f.level === "junior"
+      ? { label: "硫酸铜质量 m(CuSO₄)", desc: "调整硫酸铜的质量", unit: "g", min: CHEMISTRY_CONSTANTS.cuso4MolMin * 160, max: CHEMISTRY_CONSTANTS.cuso4MolMax * 160, step: 8, value: cuso4Value }
+      : { label: "硫酸铜 n(CuSO₄)", desc: "调整硫酸铜物质的量", unit: "mol", min: CHEMISTRY_CONSTANTS.cuso4MolMin, max: CHEMISTRY_CONSTANTS.cuso4MolMax, step: 0.05, value: cuso4Value };
+  return [fe, cuso4];
+}
+
+function buildChemistryQuestionText(p1 = state.p1, p2 = state.p2, form = state.chemForm) {
+  const f = chemistryForm(form);
+  // 足量题与只给质量的题不写“物质的量”，题目随学段换讲法时不改题干
+  if (f.excess === "cuso4") return `将 ${exactNumber(p1)}g 铁粉加入足量的硫酸铜溶液中，充分反应后生成铜的质量是多少？`;
+  if (f.excess === "fe") {
+    const grams = f.level === "junior" ? Number(p2) : state.chemGiven?.cuso4 === "mass" ? Number(p2) * 160 : null;
+    const amount = grams === null ? `${decimalPlaces(p2) > 2 ? exactNumber(p2) : formatMol(p2)}mol` : `${exactNumber(grams)}g`;
+    return `向含 ${amount} 硫酸铜的溶液中加入足量铁粉，充分反应后可生成铜多少克？`;
+  }
+  if (f.level === "junior") return `将 ${exactNumber(p1)}g 铁粉加入含 ${exactNumber(p2)}g 硫酸铜的溶液中，充分反应，判断哪种物质过量，并求生成铜的质量。`;
+  const feMass = p1;
+  const cuso4Mol = p2;
   const feText = decimalPlaces(feMass) > 1 ? exactNumber(feMass) : formatGram(feMass);
   const molText = decimalPlaces(cuso4Mol) > 2 ? exactNumber(cuso4Mol) : formatMol(cuso4Mol);
   return `将 ${feText}g 铁粉加入含有 ${molText}mol 硫酸铜的溶液中，充分反应。请计算最多生成多少 mol 铜？生成铜的质量是多少？并判断哪种反应物过量。`;
+}
+
+// 反应过程中的数量读数：初中只写质量；足量的一方不写剩余量
+function chemistryAmountsLine(r, form = state.chemForm) {
+  const f = chemistryForm(form);
+  if (f.level === "junior") {
+    const fe = f.excess === "fe" ? "铁粉足量（有剩余）" : `剩余 Fe ${formatGram(r.feLeftMol * CHEMISTRY_CONSTANTS.feMolarMass)} g`;
+    const cuso4 = f.excess === "cuso4" ? "硫酸铜足量（有剩余）" : `剩余 CuSO₄ ${formatGram(r.cuso4Left * 160)} g`;
+    return `已生成 Cu ${formatGram(r.producedMass)} g · ${fe} · ${cuso4}`;
+  }
+  const fe = f.excess === "fe" ? "Fe 足量" : `Fe 剩余 ${formatMol(r.feLeftMol)} mol`;
+  const cuso4 = f.excess === "cuso4" ? "CuSO₄ 足量" : `CuSO₄ 剩余 ${formatMol(r.cuso4Left)} mol`;
+  return `已生成 Cu ${formatMol(r.producedMol)} mol / ${formatGram(r.producedMass)} g · ${fe} · ${cuso4}`;
+}
+
+// 初中讲法（九年级上册“利用化学方程式的简单计算”）：按质量比 56∶160∶64 列比例式，不出现物质的量
+function buildChemistryJuniorContent(p1, p2, form) {
+  const f = chemistryForm(form);
+  const kit = window.MasterLabChemistry;
+  const amounts = chemistryAmounts(p1, p2, f);
+  const model = chemistryFeCuSO4Model(amounts.feMass, amounts.cuso4Mol);
+  const equation = "Fe + CuSO₄ = FeSO₄ + Cu";
+  const g = value => kit.massText(value).text;
+  const fe = { formula: "Fe", name: "铁" };
+  const cuso4 = { formula: "CuSO4", name: "硫酸铜" };
+  const feMass = f.excess === "fe" ? null : Number(p1);
+  const cuso4Mass = f.excess === "cuso4" ? null : Number(p2);
+  // 按完全反应的物质计算：只给一种时就是它；两种都给出时先按质量比判断哪种过量
+  let basis = f.excess === "fe" ? "cuso4" : "fe";
+  let judge = null;
+  if (!f.excess) {
+    const need = kit.proportion({ equation, known: { ...fe, mass: feMass }, unknown: cuso4, ask: `${g(feMass)} g 铁完全反应需要硫酸铜的质量`, symbol: "y" });
+    const diff = cuso4Mass - need.value;
+    const relation = Math.abs(diff) < 1e-9 ? "=" : diff > 0 ? ">" : "<";
+    basis = relation === "<" ? "cuso4" : "fe";
+    const verdict = relation === "=" ? "恰好完全反应" : relation === ">" ? "硫酸铜过量，铁完全反应" : "铁过量，硫酸铜完全反应";
+    judge = { need, relation, verdict };
+  }
+  const known = basis === "fe" ? { ...fe, mass: feMass } : { ...cuso4, mass: cuso4Mass };
+  const product = kit.proportion({ equation, known, unknown: { formula: "Cu", name: "铜" }, ask: "生成铜的质量" });
+  const partner = kit.proportion({ equation, known, unknown: basis === "fe" ? cuso4 : fe, ask: "", symbol: "z" });
+  const partnerName = basis === "fe" ? "硫酸铜" : "铁";
+  const partnerText = `参加反应的${partnerName}为 ${partner.exact ? "" : "约 "}${partner.valueText} g`;
+  const leftover = judge && judge.relation !== "="
+    ? (basis === "fe" ? `剩余硫酸铜 ${g(cuso4Mass - partner.value)} g` : `剩余铁 ${g(feMass - partner.value)} g`)
+    : "";
+  const blue = f.excess === "cuso4" || (judge && basis === "fe" && judge.relation === ">");
+  const phenomenon = `铁表面析出红色的铜；${blue ? "硫酸铜有剩余，溶液仍呈蓝色" : "硫酸铜完全反应，溶液由蓝色变为浅绿色"}。`;
+  const answer = product.answer.replace(/。$/, "");
+  const conditionText = `${feMass === null ? "铁粉足量" : `铁 ${g(feMass)} g`}，${cuso4Mass === null ? "硫酸铜足量" : `硫酸铜 ${g(cuso4Mass)} g`}`;
+  const basisText = judge ? judge.verdict : f.excess === "cuso4" ? "硫酸铜足量，铁完全反应" : "铁粉足量，硫酸铜完全反应";
+  const steps = judge ? [
+    ["判断哪种物质过量", `设 ${g(feMass)} g 铁完全反应需要硫酸铜的质量为 y：${judge.need.ratio}，y ${judge.need.exact ? "=" : "≈"} ${judge.need.valueText} g；题目给出硫酸铜 ${g(cuso4Mass)} g，${judge.verdict}`, `过量的物质有剩余，要按完全反应的${basis === "fe" ? "铁" : "硫酸铜"}计算。`],
+    ["设未知数", `解：${product.set}`, "按完全反应的物质计算，不能用过量物质的质量计算。"],
+    ["列比例式", `${equation}；${product.relation}；${product.ratio}`, "上下对应：同一物质的相关量写在上面，实际质量写在下面。"],
+    ["求解并作答", `${product.solve}；${answer}${leftover ? `；${leftover}` : ""}`, phenomenon]
+  ] : [
+    ["设未知数", `解：${product.set}`, `${basisText}，按${basis === "fe" ? "铁" : "硫酸铜"}的质量计算。`],
+    ["写方程式、找相关量", `${equation}；${product.relation}`, "相关量 = 化学计量数 × 相对分子质量（或相对原子质量）。"],
+    ["列比例式", product.ratio, "上下对应：同一物质的相关量写在上面，实际质量写在下面。"],
+    ["求解并作答", `${product.solve}；${answer}`, `${partnerText}；${phenomenon}`]
+  ];
+  const conclusion = `${basisText}：生成铜 ${product.exact ? "" : "约 "}${product.valueText} g，${partnerText}${leftover ? `，${leftover}` : ""}。`;
+  const challengeFe = feMass === null ? null : chemistryChallengeFe(feMass);
+  return {
+    description: `${equation}；铁表面析出红色铜，${blue ? "硫酸铜有剩余时溶液仍呈蓝色" : "溶液由蓝色逐渐变为浅绿色"}。按质量比 56∶160∶64 列比例式：${conclusion}`,
+    params: chemistryParams(f, feMass, cuso4Mass),
+    metrics: [["Fe 投入", f.excess === "fe" ? "" : "g"], ["CuSO₄ 投入", f.excess === "cuso4" ? "" : "g"], ["生成 Cu", "g"]],
+    steps,
+    mentor: judge
+      ? (judge.relation === "=" ? "铁和硫酸铜恰好完全反应时，用铁或硫酸铜的质量计算铜，结果一样吗？为什么？" : "为什么不能用<strong>过量</strong>的那种物质的质量来计算铜的质量？")
+      : `为什么${f.excess === "cuso4" ? "硫酸铜" : "铁粉"}“<strong>足量</strong>”时，只用${f.excess === "cuso4" ? "铁" : "硫酸铜"}的质量就能算出铜的质量？`,
+    hint: "小提示：先写出化学方程式，在有关物质下面写出相关量（化学计量数 × 相对分子质量），再在下面写出已知量和未知数 x，上下对应列比例式。",
+    challenge: challengeFe === null
+      ? "试试看：把硫酸铜的质量增加一倍，生成铜的质量会怎样变化？"
+      : `试试看：把铁粉调到 <strong>${formatGram(challengeFe)} g</strong>，生成铜的质量会变成多少？`,
+    generationStages: [
+      { label: "识别条件", text: `识别 ${conditionText}`, progress: 28 },
+      { label: "列比例式", text: `${product.ratio}`, progress: 63 },
+      { label: "生成结果", text: `生成 Cu ${product.exact ? "" : "约 "}${product.valueText} g`, progress: 100 }
+    ],
+    recognitionText: `${feMass === null ? "Fe 足量" : `Fe ${g(feMass)}g`}｜${cuso4Mass === null ? "CuSO₄ 足量" : `CuSO₄ ${g(cuso4Mass)}g`}｜${basisText}｜生成 Cu ${product.exact ? "=" : "≈"} ${product.valueText} g`,
+    formulaHtml: `${product.set}<br>${equation}<br>${product.relation}<br>${product.ratio}<br>${product.solve}`,
+    spotlightNote: "质量关系：Fe ∶ CuSO₄ ∶ Cu = 56 ∶ 160 ∶ 64",
+    sceneTip: `铁粉与溶液接触后表面析出铜；颜色为定性示意。${conclusion}`,
+    conclusion,
+    model: { ...model, cuMass: product.value, level: "junior" }
+  };
+}
+
+// 高中讲法的“足量”题：已知一种反应物，另一种足量；按物质的量计算
+function buildChemistrySeniorExcessContent(p1, p2, givenForms, form) {
+  const f = chemistryForm(form);
+  const amounts = chemistryAmounts(p1, p2, f);
+  const model = chemistryFeCuSO4Model(amounts.feMass, amounts.cuso4Mol);
+  const feGiven = f.excess === "cuso4";
+  const knownMol = feGiven ? model.feMol : amounts.cuso4Mol;
+  const molText = formatMol(knownMol);
+  const eq = eqSign(knownMol, 4);
+  const cuMass = cleanChemNumber(knownMol * CHEMISTRY_CONSTANTS.cuMolarMass);
+  const massEq = eqSign(cuMass, 3);
+  const cuso4InGram = !feGiven && givenForms?.cuso4 === "mass" && Math.abs(givenForms.cuso4Mol - amounts.cuso4Mol) < 1e-9;
+  const conditionLine = feGiven
+    ? `m(Fe) = ${formatGram(amounts.feMass)}g，CuSO₄ 足量`
+    : `${cuso4InGram ? `m(CuSO₄) = ${formatGram(amounts.cuso4Mol * 160)}g` : `n(CuSO₄) = ${molText}mol`}，Fe 足量`;
+  const molLine = feGiven
+    ? `n(Fe) = m/M = ${formatGram(amounts.feMass)} g ÷ 56 g/mol ${eq} ${molText} mol`
+    : cuso4InGram ? `n(CuSO₄) = m/M = ${formatGram(amounts.cuso4Mol * 160)} g ÷ 160 g/mol ${eq} ${molText} mol` : `n(CuSO₄) = ${molText} mol`;
+  const partnerLine = feGiven
+    ? `参加反应的 CuSO₄ 为 ${molText} mol（${formatGram(knownMol * 160)} g）`
+    : `参加反应的 Fe 为 ${molText} mol（${formatGram(knownMol * CHEMISTRY_CONSTANTS.feMolarMass)} g）`;
+  const cuMassLine = eq === "=" ? `m(Cu) = n·M = ${molText} mol × 64 g/mol ${massEq} ${formatGram(cuMass)} g` : `m(Cu) = n·M ${massEq} ${formatGram(cuMass)} g`;
+  const cuAbout = eq === "≈" || massEq === "≈" ? "约 " : "";
+  const basisText = feGiven ? "CuSO₄ 足量，Fe 完全反应" : "Fe 足量，CuSO₄ 完全反应";
+  const conclusion = `${basisText}：n(Cu) = ${feGiven ? "n(Fe)" : "n(CuSO₄)"} ${eq} ${molText} mol，生成 Cu ${cuAbout}${formatGram(cuMass)} g；${partnerLine}。`;
+  const challengeFe = feGiven ? chemistryChallengeFe(amounts.feMass) : null;
+  return {
+    description: `Fe + CuSO₄ = FeSO₄ + Cu；铁表面析出红色铜；${feGiven ? "硫酸铜足量，剩余的 CuSO₄ 使溶液仍呈蓝色" : "硫酸铜完全反应后溶液呈浅绿色"}。${conclusion}`,
+    params: chemistryParams(f, amounts.feMass, amounts.cuso4Mol),
+    metrics: [["Fe 投入", feGiven ? "g" : ""], ["生成 Cu", "mol"], ["Cu 质量", "g"]],
+    steps: [
+      ["提取条件", conditionLine, feGiven ? "硫酸铜足量：铁完全反应，生成铜的量由铁决定。" : "铁粉足量：硫酸铜完全反应，生成铜的量由硫酸铜决定。"],
+      ["换算物质的量", molLine, "把已知量换算成物质的量。"],
+      ["按计量关系", `Fe ∶ CuSO₄ ∶ Cu = 1∶1∶1，n(Cu) = ${feGiven ? "n(Fe)" : "n(CuSO₄)"} ${eq} ${molText} mol；${partnerLine}`, "足量的一方有剩余，不决定生成物的量。"],
+      ["计算生成物", cuMassLine, feGiven ? "铁表面析出红色固体；硫酸铜有剩余，溶液仍呈蓝色。" : "铁表面析出红色固体；硫酸铜完全反应，溶液变为浅绿色。"]
+    ],
+    mentor: `为什么${feGiven ? "硫酸铜" : "铁粉"}<strong>足量</strong>时，生成铜的物质的量只由${feGiven ? "铁" : "硫酸铜"}决定？`,
+    hint: `先把已知量换算成物质的量（${eq === "≈" ? "约 " : ""}${molText} mol），再按 Fe ∶ CuSO₄ ∶ Cu = 1∶1∶1 求出铜的物质的量和质量。`,
+    challenge: challengeFe === null
+      ? "如果硫酸铜的物质的量增加一倍（铁粉仍足量），生成铜的质量会怎样变化？"
+      : `如果铁粉${challengeFe > amounts.feMass ? "增加" : "减少"}到 <strong>${formatGram(challengeFe)}g</strong>（硫酸铜仍足量），生成铜的质量会变成多少？`,
+    generationStages: [
+      { label: "识别条件", text: `识别 ${conditionLine}`, progress: 28 },
+      { label: "判断关系", text: `${basisText}，按 1∶1 计算`, progress: 63 },
+      { label: "生成结果", text: `生成 Cu ${cuAbout}${molText}mol / ${formatGram(cuMass)}g`, progress: 100 }
+    ],
+    recognitionText: `${conditionLine.replace(/^m\(Fe\) = /, "Fe ").replace(/^[mn]\(CuSO₄\) = /, "CuSO₄ ").replace("，", "｜")}｜反应判断：${basisText}｜生成 Cu ${cuAbout ? "≈" : "="} ${molText}mol / ${formatGram(cuMass)}g`,
+    formulaHtml: `${molLine}<br>Fe ∶ CuSO₄ ∶ Cu = 1∶1∶1，n(Cu) ${eq} ${molText} mol<br>${cuMassLine}`,
+    sceneTip: `铁粉与溶液接触后表面析铜；颜色为定性示意。${conclusion}`,
+    conclusion,
+    model: { ...model, cuMol: knownMol, cuMass, level: "senior" }
+  };
 }
 
 // 题目原来给的是质量还是物质的量：数值未被拖动改变时，条件按原题形式书写
@@ -1974,7 +2270,15 @@ function chemistryGivenForms(feMass, cuso4Mol, given = state.chemGiven) {
   return Math.abs(given.feMass - feMass) < 1e-9 && Math.abs(given.cuso4Mol - cuso4Mol) < 1e-9 ? given : null;
 }
 
-function buildChemistryFeCuSO4Content(feMass = state.p1, cuso4Mol = state.p2, givenForms = state.chemGiven) {
+// 按讲法分流：初中按质量比；高中“足量”题按已知的一方计算；高中两种都给出时沿用原来的物质的量讲法（文字不变）
+function buildChemistryFeCuSO4Content(p1 = state.p1, p2 = state.p2, givenForms = state.chemGiven, form = state.chemForm) {
+  const f = chemistryForm(form);
+  if (f.level === "junior") return buildChemistryJuniorContent(p1, p2, f);
+  if (f.excess) return buildChemistrySeniorExcessContent(p1, p2, givenForms, f);
+  return buildChemistrySeniorContent(p1, p2, givenForms);
+}
+
+function buildChemistrySeniorContent(feMass, cuso4Mol, givenForms) {
   const model = chemistryFeCuSO4Model(feMass, cuso4Mol);
   const judgement = chemistryReactionJudgement(model);
   const given = chemistryGivenForms(model.feMass, model.cuso4Mol, givenForms);
@@ -2033,13 +2337,41 @@ function buildChemistryFeCuSO4Content(feMass = state.p1, cuso4Mol = state.p2, gi
     recognitionText: `${conditionLine.replace(/^m\(Fe\)/, "Fe").replace(/^n\(Fe\)/, "Fe").replace(/，[mn]\(CuSO₄\)/, "｜CuSO₄")}｜反应判断：${judgement.short}｜生成 Cu ${cuEq === "≈" || massEq === "≈" ? "≈" : "="} ${cuMolText}mol / ${cuMassText}g`,
     formulaHtml: `${feMolLine}<br>${cuso4MolLine}<br>Fe 与 CuSO₄ 按 1∶1 反应，${judgement.short}，n(Cu) ${cuEq} ${cuMolText} mol<br>${cuMassLine}`,
     sceneTip: `铁粉与溶液接触后表面析铜；颜色为定性示意，CuSO₄ 过量时仍有蓝色。理论最多生成 Cu ${cuAbout}${cuMolText}mol / ${cuMassText}g；${leftLine}。`,
+    metrics: [["Fe 投入", "g"], ["生成 Cu", "mol"], ["Cu 质量", "g"]],
+    spotlightNote: "计量关系：1mol Fe : 1mol CuSO₄ : 1mol Cu",
     model
   };
 }
 
-function syncChemistryFeCuSO4Content(feMass = state.p1, cuso4Mol = state.p2) {
-  const content = buildChemistryFeCuSO4Content(feMass, cuso4Mol);
+// 铁 + 硫酸铜两个学段都适用：题目含物质的量时锁定高中讲法；只给质量时跟随全局学段
+function chemistryLevelInfo() {
+  return { levels: ["junior", "senior"], content: chemistryForm().level };
+}
+
+// 已生成实验后切换学段：只给质量的题换讲法（第二个滑块在初中是硫酸铜质量 g，高中是物质的量 mol）；
+// 锁定讲法的题只有本站写出的预设题会换成新学段的预设，学生输入的题不改写
+function applyGradeLevelToChemistry(level = state.gradeLevel) {
+  const form = chemistryForm();
+  if (form.level === level) return;
+  const ours = state.generatedQuestion === buildChemistryQuestionText();
+  if (form.levelLocked) {
+    if (!ours) return;
+    applyChemistryDefaultPreset(level);
+  } else {
+    if (form.excess !== "cuso4") state.p2 = level === "junior" ? cleanChemNumber(state.p2 * 160) : cleanChemNumber(state.p2 / 160);
+    state.chemForm = { ...form, level };
+    syncChemistryFeCuSO4Content();
+  }
+  refreshExperimentAfterLevelChange(ours);
+}
+
+function syncChemistryFeCuSO4Content(p1 = state.p1, p2 = state.p2) {
+  setSubjectTemplate("化学", "");
+  restoreSubjectBaseFields("化学");
+  const content = buildChemistryFeCuSO4Content(p1, p2);
   const chemistry = SUBJECTS["化学"];
+  chemistry.question = buildChemistryQuestionText(p1, p2);
+  chemistry.metrics = content.metrics;
   chemistry.description = content.description;
   chemistry.params = content.params;
   chemistry.steps = content.steps;
@@ -2291,6 +2623,8 @@ function buildMathQuestionText(x = state.p1, model = currentMathModel()) {
 }
 
 function syncMathContent(x = state.p1, model = currentMathModel()) {
+  setSubjectTemplate("数学", "");
+  restoreSubjectBaseFields("数学");
   state.mathModel = model;
   const safeX = clamp(Number(x), model.domainMin, model.domainMax);
   state.p1 = Number(Number(safeX).toFixed(6));
@@ -2324,13 +2658,18 @@ function normalizeBiologyCellType(text = "") {
 }
 
 // 人教版：七年级上册只要求光学显微镜下的基本结构；亚显微结构（内质网、高尔基体等）属于必修1。
-function normalizeBiologyCellLevel(text = "", fallback = "junior") {
+// 题目写明学段线索时返回该学段，否则返回空字符串（由全局学段决定）
+function explicitCellLevel(text = "") {
   const source = String(text || "");
   // “电子显微镜下观察”含有“显微镜下观察”：先判断亚显微结构的说法
   if (/亚显微|电子显微镜|电镜|内质网|高尔基体|核糖体|溶酶体|中心体/.test(source)) return "senior";
   if (/初中|七年级|光学显微镜|显微镜下观察/.test(source)) return "junior";
   if (/高中|必修|细胞器|核膜|核孔|核仁|染色质/.test(source)) return "senior";
-  return normalizeCellLevel(fallback);
+  return "";
+}
+
+function normalizeBiologyCellLevel(text = "", fallback = "junior") {
+  return explicitCellLevel(text) || normalizeCellLevel(fallback);
 }
 
 function currentCellOrganelles(type = state.cellType, level = state.cellLevel) {
@@ -2452,6 +2791,8 @@ function buildBiologyContent(type = state.cellType, level = state.cellLevel) {
 }
 
 function syncBiologyContent(type = state.cellType, level = state.cellLevel) {
+  setSubjectTemplate("生物", "");
+  restoreSubjectBaseFields("生物");
   state.cellType = type;
   state.cellLevel = normalizeCellLevel(level);
   const content = buildBiologyContent(type, state.cellLevel);
@@ -2606,15 +2947,28 @@ function switchBiologyCellType(type, options = {}) {
   if (state.hasGenerated) saveCurrentSubjectSnapshot();
 }
 
-function switchBiologyCellLevel(level) {
+// options.updateQuestion：只有本站写出的题目才随学段改写；学生输入的题目保持原样
+function switchBiologyCellLevel(level, options = {}) {
   if (state.subject !== "生物") return;
   const next = normalizeCellLevel(level);
   if (next === state.cellLevel) return;
   clearReasoningTimers();
-  switchBiologyCellType(state.cellType, { level: next, keepSelection: true, keepView: true });
+  const keepQuestion = options.updateQuestion === false && state.generatedQuestion;
+  switchBiologyCellType(state.cellType, {
+    level: next,
+    keepSelection: true,
+    keepView: true,
+    ...(keepQuestion ? { updateQuestion: false, problemText: state.generatedQuestion } : {})
+  });
+  if (keepQuestion) {
+    $("#questionInput").value = keepQuestion;
+    state.generatedQuestion = keepQuestion;
+    saveCurrentSubjectSnapshot();
+  }
+  updateGradeTag();
   if (state.hasGenerated) dispatchAIContextChanged("parameters");
   setReasoningStep(2, `<span>学段切换</span>已切换到${CELL_LEVEL_LABELS[next]}（${CELL_LEVEL_SOURCES[next]}），共 ${currentCellOrganelles().length} 个结构。`);
-  showToast(`已切换到${CELL_LEVEL_LABELS[next]}`);
+  if (options.announce !== false) showToast(`已切换到${CELL_LEVEL_LABELS[next]}`);
 }
 
 function syncPhysicsBrakeContent(v0 = state.p1, parameter = state.p2, options = {}) {
@@ -2946,56 +3300,94 @@ function syncPhysicsCircuitContent(voltage = state.p1, resistance = state.p2) {
   return content.model;
 }
 
-function extraPhysicsTemplate(id = state.physicsTemplate) {
-  return EXTRA_PHYSICS_TEMPLATES[id] || null;
+/* ===== 通用模板（跨学科，2026-10-16）=====
+   模板由 physics-extra.js、math-extra.js 等注册到 GENERIC_TEMPLATES。物理沿用 state.physicsTemplate 记录当前模板；
+   其他学科用 state.subjectTemplates[学科]，空字符串表示该学科的专用实验。获取、内容绑定、场景、预设、快照、
+   收藏、变式和 AI 上下文都通过下面这组函数找到“当前学科的当前通用模板”。 */
+function subjectTemplateId(subject = state.subject) {
+  return subject === "物理" ? state.physicsTemplate : state.subjectTemplates?.[subject] || "";
 }
 
-function buildExtraPhysicsContent(id = state.physicsTemplate, p1 = state.p1, p2 = state.p2) {
+function activeGenericTemplate(subject = state.subject) {
+  const template = GENERIC_TEMPLATES[subjectTemplateId(subject)];
+  return template && template.subject === subject ? template : null;
+}
+
+function activeGenericId(subject = state.subject) {
+  return activeGenericTemplate(subject)?.id || "";
+}
+
+function setSubjectTemplate(subject, id = "") {
+  if (subject === "物理") state.physicsTemplate = id || "brake";
+  else state.subjectTemplates = { ...state.subjectTemplates, [subject]: id };
+}
+
+// 历史名称：返回任一学科的通用模板
+function extraPhysicsTemplate(id = activeGenericId()) {
+  return GENERIC_TEMPLATES[id] || null;
+}
+
+function buildGenericContent(id = activeGenericId(), p1 = state.p1, p2 = state.p2) {
   const template = extraPhysicsTemplate(id);
   if (!template) return null;
   return template.content(p1, p2, state.extraFixed?.[id]);
 }
 
-function buildExtraPhysicsQuestionText(id = state.physicsTemplate, p1 = state.p1, p2 = state.p2) {
+// 历史名称：测试与旧代码按此读取当前通用模板的内容（各学科通用）
+function buildExtraPhysicsContent(id = activeGenericId(), p1 = state.p1, p2 = state.p2) {
+  return buildGenericContent(id, p1, p2);
+}
+
+function buildGenericQuestionText(id = activeGenericId(), p1 = state.p1, p2 = state.p2) {
   const template = extraPhysicsTemplate(id);
   if (!template) return buildPhysicsBrakeQuestionText();
   return template.question(p1, p2, template.fixedWithDefaults ? template.fixedWithDefaults(state.extraFixed?.[id]) : {});
 }
 
-function syncExtraPhysicsContent(id = state.physicsTemplate, p1 = state.p1, p2 = state.p2) {
+function syncGenericContent(id = activeGenericId(), p1 = state.p1, p2 = state.p2) {
   const template = extraPhysicsTemplate(id);
   if (!template) return syncPhysicsBrakeContent();
-  state.physicsTemplate = id;
-  const content = buildExtraPhysicsContent(id, p1, p2);
-  const physics = SUBJECTS["物理"];
-  physics.question = buildExtraPhysicsQuestionText(id, p1, p2);
-  physics.title = content.title;
-  physics.description = content.description;
-  physics.engine = content.engine;
-  physics.ar = content.ar;
-  physics.metrics = content.metrics;
-  physics.params = content.params;
-  physics.steps = content.steps;
-  physics.mentor = content.mentor;
-  physics.hint = content.hint;
-  physics.challenge = content.challenge;
-  physics.generationStages = content.generationStages;
-  physics.recognitionText = content.recognitionText;
+  setSubjectTemplate(template.subject, id);
+  const content = buildGenericContent(id, p1, p2);
+  const target = SUBJECTS[template.subject];
+  target.question = buildGenericQuestionText(id, p1, p2);
+  target.title = content.title;
+  target.description = content.description;
+  target.engine = content.engine;
+  target.ar = content.ar;
+  target.metrics = content.metrics;
+  target.params = content.params;
+  target.steps = content.steps;
+  target.mentor = content.mentor;
+  target.hint = content.hint;
+  target.challenge = content.challenge;
+  target.generationStages = content.generationStages;
+  target.recognitionText = content.recognitionText;
   return content.model;
 }
 
-function identifyExtraPhysicsTemplate(text) {
-  const source = normalizeQuestionText(text);
-  return EXTRA_PHYSICS_IDS.find(id => EXTRA_PHYSICS_TEMPLATES[id].keywords?.test(source)) || "";
+// 历史名称（动画验收脚本仍按此调用）
+function syncExtraPhysicsContent(id = activeGenericId(), p1 = state.p1, p2 = state.p2) {
+  return syncGenericContent(id, p1, p2);
 }
 
-function parseExtraPhysicsQuestion(text, preferredId = "") {
-  const id = preferredId && isExtraPhysicsTemplate(preferredId) ? preferredId : identifyExtraPhysicsTemplate(text);
+function identifyGenericTemplate(text, subject = "物理") {
+  const source = normalizeQuestionText(text);
+  return genericTemplatesOf(subject).find(template => template.keywords?.test(source))?.id || "";
+}
+
+function identifyExtraPhysicsTemplate(text) {
+  return identifyGenericTemplate(text, "物理");
+}
+
+function parseGenericQuestion(text, preferredId = "", context = {}) {
+  const subject = GENERIC_TEMPLATES[preferredId]?.subject || context.subject || "物理";
+  const id = GENERIC_TEMPLATES[preferredId] ? preferredId : identifyGenericTemplate(text, subject);
   const template = extraPhysicsTemplate(id);
   if (!template) {
-    return { ok: false, message: "暂未识别该物理题型，请尝试选择一个物理预设模板。" };
+    return { ok: false, message: subject === "物理" ? "暂未识别该物理题型，请尝试选择一个物理预设模板。" : `暂未识别该${subject}题型，请尝试选择一个${subject}预设模板。` };
   }
-  const result = template.parseQuestion(text);
+  const result = template.parseQuestion(text, { gradeLevel: context.gradeLevel || state.gradeLevel });
   if (!result.ok) return result;
   return {
     ...result,
@@ -3004,10 +3396,29 @@ function parseExtraPhysicsQuestion(text, preferredId = "") {
   };
 }
 
-function renderExtraPhysicsVisual(content = buildExtraPhysicsContent()) {
+function parseExtraPhysicsQuestion(text, preferredId = "") {
+  return parseGenericQuestion(text, preferredId, { subject: "物理" });
+}
+
+function genericRecognitionResult(subject = state.subject) {
+  const content = buildGenericContent(activeGenericId(subject));
+  return { ok: true, subject, type: activeGenericId(subject), recognitionText: content?.recognitionText || "" };
+}
+
+// 通用模板的场景：教材图示（物理）或函数图像（数学，复用 renderMathGraph 的坐标系）
+function renderGenericVisual(content = buildGenericContent()) {
+  if (!content) return;
+  if (content.graph) {
+    renderTemplateGraph(content);
+    return;
+  }
+  renderDiagramVisual(content);
+}
+
+function renderDiagramVisual(content) {
   if (!content || !elements.genericPhysicsVisual) return;
   const html = content.visualHtml || "";
-  const diagramId = html.includes('edu-diagram') ? state.physicsTemplate : "";
+  const diagramId = html.includes('edu-diagram') ? activeGenericId() : "";
   if (elements.genericPhysicsVisual.dataset.diagramId !== diagramId) {
     elements.genericPhysicsVisual.classList.remove("diagram-zoomed");
     elements.genericPhysicsVisual.dataset.diagramId = diagramId;
@@ -3702,12 +4113,27 @@ function parsePhysicsCircuitQuestion(text) {
 
 window.parsePhysicsCircuitQuestion = parsePhysicsCircuitQuestion;
 
-function parseChemistryFeCuSO4Question(text) {
-  const failMessage = "当前化学演示支持铁与硫酸铜的定量反应题，请输入铁的质量和硫酸铜的物质的量（或质量）。";
+// 题目附带的相对原子质量 / 相对分子质量（“相对原子质量：Fe-56 Cu-64”）必须与模板一致，否则交给 AI
+const CHEMISTRY_STANDARD_MASSES = Object.freeze({ Fe: 56, Cu: 64, S: 32, O: 16, CuSO4: 160, FeSO4: 152 });
+function chemistryMassStatementProblem(source) {
+  for (const clause of source.match(/(?:相对原子质量|相对分子质量|原子量)[^。；;）)]*/g) || []) {
+    for (const match of clause.matchAll(/(?:^|[^A-Za-z0-9])(CuSO4|FeSO4|Fe|Cu|S|O)\s*(?:[-:：=]\s*|\s+)(\d+(?:\.\d+)?)/g)) {
+      if (CHEMISTRY_STANDARD_MASSES[match[1]] !== Number(match[2])) return `题目给出的相对质量 ${match[1]}-${match[2]} 与模板（Fe 56、Cu 64、S 32、O 16）不一致。`;
+    }
+  }
+  return "";
+}
+
+// 两种反应物都给出用量时按原来的讲法判断限量；只给一种、另一种写明“足量”时按给出的一方计算。
+// 题目含物质的量时锁定高中讲法；只给质量时讲法跟随全局学段（context.gradeLevel）
+function parseChemistryFeCuSO4Question(text, context = {}) {
+  const failMessage = "当前化学演示支持铁与硫酸铜的定量反应题：给出铁和硫酸铜的用量，或给出其中一种、另一种足量。";
   const guard = questionGuard();
   if (!guard) return { ok: false, message: failMessage };
   const source = guard.normalize(text);
   if (!/(铁|Fe)/i.test(source) || !/(硫酸铜|CuSO4)/i.test(source)) return { ok: false, message: failMessage };
+  const massProblem = chemistryMassStatementProblem(source);
+  if (massProblem) return { ok: false, message: massProblem };
   const tokens = guard.extractQuantities(source);
   // 数量属于谁：看紧挨着的前后文字（“5.6g 铁粉”“含 0.20mol 硫酸铜”“硫酸铜 16g”）
   const owner = token => {
@@ -3730,37 +4156,59 @@ function parseChemistryFeCuSO4Question(text) {
     else if (who === "cuso4" && token.cls === "amount" && cuso4Mol === null) cuso4Mol = token.value;
     else if (who === "cuso4" && token.cls === "mass" && cuso4Mol === null) { cuso4Mol = token.value * 1000 / 160; cuso4Form = "mass"; }
   }
-  if (!Number.isFinite(feMass) || !Number.isFinite(cuso4Mol) || feMass <= 0 || cuso4Mol <= 0) {
+  // “足量 / 过量”只认紧挨着反应物的说法（“足量的硫酸铜溶液”“铁粉足量”）；“判断哪种反应物过量”是所问内容
+  const feExcess = /(?:足量|过量)(?:的)?\s*(?:铁粉|铁|Fe(?!SO))|(?:铁粉|铁|Fe(?!SO))\s*(?:足量|过量)/i.test(source);
+  const cuso4Excess = /(?:足量|过量)(?:的)?\s*(?:硫酸铜|CuSO4)|(?:硫酸铜|CuSO4)\s*(?:溶液)?\s*(?:足量|过量)/i.test(source);
+  const feGiven = Number.isFinite(feMass) && feMass > 0;
+  const cuso4Given = Number.isFinite(cuso4Mol) && cuso4Mol > 0;
+  let excess = "";
+  if (feGiven && cuso4Given) {
+    if (/足量/.test(source) && (feExcess || cuso4Excess)) return { ok: false, message: "题目既给出了反应物的用量又写了“足量”，条件需要 AI 核对。" };
+  } else if (feGiven && cuso4Excess && !feExcess) {
+    excess = "cuso4";
+  } else if (cuso4Given && feExcess && !cuso4Excess) {
+    excess = "fe";
+  } else {
     return { ok: false, message: failMessage };
   }
-  feMass = guard.tidy(feMass);
-  cuso4Mol = guard.tidy(cuso4Mol);
-  if (feMass < CHEMISTRY_CONSTANTS.feMassMin || feMass > CHEMISTRY_CONSTANTS.feMassMax) {
+  if (feGiven) feMass = guard.tidy(feMass);
+  if (cuso4Given) cuso4Mol = guard.tidy(cuso4Mol);
+  if (feGiven && (feMass < CHEMISTRY_CONSTANTS.feMassMin || feMass > CHEMISTRY_CONSTANTS.feMassMax)) {
     return { ok: false, message: `识别到铁的质量 ${exactNumber(feMass)}g，当前演示范围为 ${CHEMISTRY_CONSTANTS.feMassMin}–${CHEMISTRY_CONSTANTS.feMassMax}g。` };
   }
-  if (cuso4Mol < CHEMISTRY_CONSTANTS.cuso4MolMin || cuso4Mol > CHEMISTRY_CONSTANTS.cuso4MolMax) {
+  if (cuso4Given && (cuso4Mol < CHEMISTRY_CONSTANTS.cuso4MolMin || cuso4Mol > CHEMISTRY_CONSTANTS.cuso4MolMax)) {
     return { ok: false, message: `识别到硫酸铜 ${exactNumber(cuso4Mol)}mol，当前演示范围为 ${CHEMISTRY_CONSTANTS.cuso4MolMin}–${CHEMISTRY_CONSTANTS.cuso4MolMax}mol。` };
   }
-
-  const model = chemistryFeCuSO4Model(feMass, cuso4Mol);
-  const chemGiven = { feMass, cuso4Mol, fe: feForm, cuso4: cuso4Form };
-  const content = buildChemistryFeCuSO4Content(feMass, cuso4Mol, chemGiven);
-  const judgement = chemistryReactionJudgement(model);
+  const molCue = tokens.some(token => token.cls === "amount" || token.cls === "molarMass") || /物质的量|摩尔|mol/i.test(source);
+  const level = molCue ? "senior" : normalizeGradeLevel(context.gradeLevel || state.gradeLevel);
+  const chemForm = { level, levelLocked: molCue, excess };
+  const chemGiven = { feMass: feGiven ? feMass : null, cuso4Mol: cuso4Given ? cuso4Mol : null, fe: feForm, cuso4: cuso4Form };
+  // 状态里的两个滑块：铁的质量 g；硫酸铜在初中按质量 g、高中按物质的量 mol；足量的一方没有数值
+  const p1 = feGiven ? feMass : null;
+  const p2 = cuso4Given ? (level === "junior" ? guard.tidy(cuso4Mol * 160) : cuso4Mol) : null;
+  const content = buildChemistryFeCuSO4Content(p1 ?? 0, p2 ?? 0, chemGiven, chemForm);
+  const model = content.model;
+  const judgement = excess ? null : chemistryReactionJudgement(model);
+  const limiting = excess ? (excess === "cuso4" ? "Fe" : "CuSO₄") : model.limiting;
   const result = {
     ok: true,
     subject: "化学",
     type: "fe_cuso4_stoichiometry",
-    feMass,
-    cuso4Mol,
-    feMol: model.feMol,
-    limiting: model.limiting,
+    feMass: chemGiven.feMass,
+    cuso4Mol: chemGiven.cuso4Mol,
+    feMol: feGiven ? feMass / CHEMISTRY_CONSTANTS.feMolarMass : null,
+    limiting,
     cuMol: model.cuMol,
     cuMass: model.cuMass,
-    cuso4Left: model.cuso4Left,
-    feLeftMol: model.feLeftMol,
+    cuso4Left: excess ? null : model.cuso4Left,
+    feLeftMol: excess ? null : model.feLeftMol,
+    excess,
     chemGiven,
+    chemForm,
+    p1,
+    p2,
     recognitionText: content.recognitionText,
-    message: `已识别：Fe ${feForm === "amount" ? `${exactNumber(feMass / CHEMISTRY_CONSTANTS.feMolarMass)}mol` : `${exactNumber(feMass)}g`}，CuSO₄ ${cuso4Form === "mass" ? `${exactNumber(cuso4Mol * 160)}g` : `${exactNumber(cuso4Mol)}mol`}，${judgement.short}`
+    message: `已识别：Fe ${feGiven ? (feForm === "amount" ? `${exactNumber(feMass / CHEMISTRY_CONSTANTS.feMolarMass)}mol` : `${exactNumber(feMass)}g`) : "足量"}，CuSO₄ ${cuso4Given ? (cuso4Form === "mass" ? `${exactNumber(cuso4Mol * 160)}g` : `${exactNumber(cuso4Mol)}mol`) : "足量"}，${judgement ? judgement.short : `${limiting} 完全反应`}`
   };
   const check = chemistryStrictCheck(text, result);
   return check.ok ? result : { ok: false, message: check.message };
@@ -4013,11 +4461,17 @@ function boardSliderStrictCheck(text, result) {
 }
 
 function chemistryStrictCheck(text, result) {
-  return strictTemplateCheck(text, QUESTION_SPECS.chemistry, [
-    { cls: "mass", value: result.feMass / 1000 },
-    { cls: "amount", value: result.feMass / CHEMISTRY_CONSTANTS.feMolarMass },
-    { cls: "amount", value: result.cuso4Mol },
-    { cls: "mass", value: result.cuso4Mol * 160 / 1000 },
+  // 足量的一方没有用量：只核对题目给出的那一种；足量题问“剩余多少”无法回答
+  const fe = result.excess === "fe" ? NaN : result.feMass;
+  const cuso4 = result.excess === "cuso4" ? NaN : result.cuso4Mol;
+  const spec = result.excess
+    ? { ...QUESTION_SPECS.chemistry, asks: { ...QUESTION_SPECS.chemistry.asks, unsupported: new RegExp(`${QUESTION_SPECS.chemistry.asks.unsupported.source}|剩余`) } }
+    : QUESTION_SPECS.chemistry;
+  return strictTemplateCheck(text, spec, [
+    { cls: "mass", value: fe / 1000 },
+    { cls: "amount", value: fe / CHEMISTRY_CONSTANTS.feMolarMass },
+    { cls: "amount", value: cuso4 },
+    { cls: "mass", value: cuso4 * 160 / 1000 },
     // 题目附带的标准摩尔质量（Fe 56、Cu 64、CuSO₄ 160 g/mol）与模板一致，可以出现
     { cls: "molarMass", value: CHEMISTRY_CONSTANTS.feMolarMass },
     { cls: "molarMass", value: CHEMISTRY_CONSTANTS.cuMolarMass },
@@ -4026,7 +4480,7 @@ function chemistryStrictCheck(text, result) {
 }
 
 // 只认“植物细胞/叶肉细胞”和“动物细胞/口腔上皮细胞/人体细胞”的结构识别题；比较题、特化细胞和其他生物知识点交给 AI
-function parseBiologyCellQuestion(text) {
+function parseBiologyCellQuestion(text, context = {}) {
   const failMessage = "当前生物演示支持植物细胞或动物细胞的结构识别题。";
   const guard = questionGuard();
   if (!guard) return { ok: false, message: failMessage };
@@ -4045,16 +4499,20 @@ function parseBiologyCellQuestion(text) {
   if (guard.extractQuantities(source).length) return { ok: false, message: "题目中的数量不在细胞结构模板的范围内。" };
   const asks = guard.checkAsks(source, QUESTION_SPECS.biology.asks.supported, QUESTION_SPECS.biology.asks.unsupported);
   if (!asks.ok) return { ok: false, message: `细胞结构模板不能直接回答“${asks.item}”。` };
+  // 题目没写学段线索时跟随全局学段；写了（亚显微、电子显微镜、七年级……）就按题目的学段并锁定
   return {
     ok: true,
     subject: "生物",
     cellType: plant ? "plant" : "animal",
-    cellLevel: normalizeBiologyCellLevel(text, "junior")
+    cellLevel: normalizeBiologyCellLevel(text, context.gradeLevel || state.gradeLevel),
+    cellLevelLocked: Boolean(explicitCellLevel(text))
   };
 }
 
 /* 本地实验规划：只做识别与核对，不改动页面状态。generateExperiment 和题库测试共用。 */
 function planLocalExperiment(question, context = {}) {
+  // 学段只用来给双学段实验选讲法（题目没写学段线索时），不影响能否本地生成
+  const gradeLevel = normalizeGradeLevel(context.gradeLevel || state.gradeLevel);
   const subjectContext = context.subject ?? state.subject;
   const templateContext = context.physicsTemplate ?? state.physicsTemplate;
   const presetQuestion = context.presetQuestion ?? SUBJECTS[subjectContext]?.question;
@@ -4091,7 +4549,7 @@ function planLocalExperiment(question, context = {}) {
     }
     if (!boardSliderCandidate && !solenoidCandidate) {
       for (const id of extraIds) {
-        const plan = attempt("extra", parseExtraPhysicsQuestion(question, id), { templateId: id });
+        const plan = attempt("extra", parseGenericQuestion(question, id, { subject: "物理", gradeLevel }), { templateId: id });
         if (plan) return plan;
       }
       if (circuitCandidate) {
@@ -4105,15 +4563,25 @@ function planLocalExperiment(question, context = {}) {
     }
   }
   if (detected === "化学") {
-    const plan = attempt("chemistry", parseChemistryFeCuSO4Question(question));
+    const plan = attempt("chemistry", parseChemistryFeCuSO4Question(question, { gradeLevel }));
     if (plan) return plan;
   }
   if (detected === "数学") {
-    const plan = attempt("math", parseMathTangentQuestion(question));
-    if (plan) return plan;
+    // 含“切线、斜率、导数”的题交给切线模板；其余题按数学通用模板（二次函数等）逐个严格解析
+    if (/切线|斜率|导数|导函数|变化率/.test(question)) {
+      const plan = attempt("math", parseMathTangentQuestion(question));
+      if (plan) return plan;
+    } else {
+      const normalizedQuestion = normalizeQuestionText(question);
+      for (const template of genericTemplatesOf("数学")) {
+        if (!template.keywords?.test(normalizedQuestion)) continue;
+        const plan = attempt("extra", parseGenericQuestion(question, template.id, { subject: "数学", gradeLevel }), { templateId: template.id });
+        if (plan) return plan;
+      }
+    }
   }
   if (detected === "生物") {
-    const plan = attempt("biology", parseBiologyCellQuestion(question));
+    const plan = attempt("biology", parseBiologyCellQuestion(question, { gradeLevel }));
     if (plan) return plan;
   }
   const generic = { ok: false, message: "当前题目没有匹配到本地实验模板。" };
@@ -4125,7 +4593,7 @@ function planFitsQuestion(plan, text) {
   const parse = plan.parse;
   switch (plan.kind) {
     case "extra":
-      return EXTRA_PHYSICS_TEMPLATES[plan.templateId].checkQuestion(text, parse.p1, parse.p2, parse.fixed);
+      return GENERIC_TEMPLATES[plan.templateId].checkQuestion(text, parse.p1, parse.p2, parse.fixed);
     case "brake":
       return brakeStrictCheck(text, parse);
     case "projectile":
@@ -4179,12 +4647,12 @@ window.planLocalExperiment = planLocalExperiment;
 window.mappedPlanFitsOriginal = mappedPlanFitsOriginal;
 
 function duration() {
+  if (activeGenericTemplate()) return 6;
   if (state.subject === "物理" && state.physicsTemplate === "brake") return physicsBrakeModel().duration;
   if (state.subject === "物理" && state.physicsTemplate === "boardSlider") return boardSliderModel().endTime;
   if (state.subject === "物理" && state.physicsTemplate === "solenoid") return 8;
   if (state.subject === "物理" && state.physicsTemplate === "projectile") return projectileModel().fallTime;
   if (state.subject === "物理" && state.physicsTemplate === "circuit") return 6;
-  if (state.subject === "物理" && isExtraPhysicsTemplate()) return 6;
   if (state.subject === "数学") return 8 / state.p2;
   return 8;
 }
@@ -4192,6 +4660,16 @@ function duration() {
 function valuesAt(time) {
   const t = Math.min(time, duration());
   const progress = Math.min(1, t / duration());
+
+  if (activeGenericTemplate()) {
+    const content = buildGenericContent();
+    return {
+      progress,
+      timelineProgress: progress,
+      metrics: content.model.metrics,
+      generic: content
+    };
+  }
 
   if (state.subject === "物理" && state.physicsTemplate === "brake") {
     const model = physicsBrakeModel();
@@ -4256,20 +4734,17 @@ function valuesAt(time) {
     };
   }
 
-  if (state.subject === "物理" && isExtraPhysicsTemplate()) {
-    const content = buildExtraPhysicsContent();
-    return {
-      progress,
-      timelineProgress: progress,
-      metrics: content.model.metrics,
-      extraPhysics: content
-    };
-  }
-
   if (state.subject === "化学") {
-    const chem = chemistryFeCuSO4Model(state.p1, state.p2);
+    const form = chemistryForm();
+    const amounts = chemistryAmounts();
+    const chem = chemistryFeCuSO4Model(amounts.feMass, amounts.cuso4Mol);
     const reaction = ScienceMotion.reactionAt(chem, progress);
-    return { progress, metrics: [chem.feMass, reaction.producedMol, reaction.producedMass], chem, reaction };
+    // 足量的一方读数写“足量”；初中读数只用质量
+    const fe = form.excess === "fe" ? "足量" : chem.feMass;
+    const metrics = form.level === "junior"
+      ? [fe, form.excess === "cuso4" ? "足量" : state.p2, reaction.producedMass]
+      : [fe, reaction.producedMol, reaction.producedMass];
+    return { progress, metrics, chem, reaction };
   }
 
   if (state.subject === "数学") {
@@ -4289,8 +4764,10 @@ function formatNumber(value) {
 
 function formatMetricValue(value, index) {
   if (typeof value === "string") return value;
+  const generic = activeGenericTemplate();
+  if (generic) return generic.formatMetric ? generic.formatMetric(value, index) : smartNumber(value, index === 2 ? 2 : 1);
   if (state.subject === "化学") {
-    if (index === 1) return formatMol(value);
+    if (index === 1 && chemistryForm().level !== "junior") return formatMol(value);
     return formatGram(value);
   }
   if (state.subject === "数学" && index < 3) return formatMathNumber(value);
@@ -4314,7 +4791,6 @@ function formatMetricValue(value, index) {
     const places = exactPlaces(reference, 4);
     return Number(value).toFixed(places === null ? (index === 2 ? 2 : 1) : clamp(places, 1, 4));
   }
-  if (state.subject === "物理" && isExtraPhysicsTemplate()) return smartNumber(value, index === 2 ? 2 : 1);
   return formatNumber(value);
 }
 
@@ -4357,15 +4833,12 @@ function mathTickText(value, step) {
   return text.replace("-", "−");
 }
 
-// One pixel-exact coordinate system for axes, curve, tangent and point (textbook style: O, x, y, arrows).
-function renderMathGraph(model = currentMathModel(), x = state.p1) {
-  const svg = elements.mathGraph;
-  if (!svg) return;
-  state.mathGraphX = x;
+// One pixel-exact coordinate system for axes, grid and ticks (textbook style: O, x, y, arrows).
+// The tangent graph and the generic math templates (quadratic, linear systems) draw on the same frame.
+function mathGraphFrame(svg, bounds) {
   const width = Math.max(260, Math.round(svg.clientWidth || 600));
   const height = Math.max(170, Math.round(svg.clientHeight || 280));
   svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-  const bounds = mathGraphBounds(model);
   const pad = { left: 30, right: 30, top: 18, bottom: 22 };
   const plotW = width - pad.left - pad.right;
   const plotH = height - pad.top - pad.bottom;
@@ -4404,14 +4877,19 @@ function renderMathGraph(model = currentMathModel(), x = state.p1) {
     parts.push(`<text class="math-origin" x="${fx(axisX - 5)}" y="${fx(axisY + 14)}" text-anchor="end">O</text>`);
   }
   parts.push(ticks.join(""));
+  return { bounds, width, height, pad, plotW, plotH, sx, sy, fx, within, axisX, axisY, xStep, yStep, parts };
+}
 
+// Sampled function path over the frame; breaks where the function is undefined.
+function mathCurvePath(frame, fn, count = 240) {
+  const { bounds, sx, sy, fx } = frame;
   const samples = [];
   let started = false;
   let lastPoint = null;
   let firstPoint = null;
-  for (let i = 0; i <= 240; i += 1) {
-    const vx = bounds.minX + ((bounds.maxX - bounds.minX) * i) / 240;
-    const vy = model.value(vx);
+  for (let i = 0; i <= count; i += 1) {
+    const vx = bounds.minX + ((bounds.maxX - bounds.minX) * i) / count;
+    const vy = fn(vx);
     if (!Number.isFinite(vy)) {
       started = false;
       continue;
@@ -4421,10 +4899,36 @@ function renderMathGraph(model = currentMathModel(), x = state.p1) {
     lastPoint = [sx(vx), sy(vy)];
     if (!firstPoint && vy <= bounds.maxY && vy >= bounds.minY) firstPoint = [sx(vx), sy(vy)];
   }
+  return { d: samples.join(" "), firstPoint, lastPoint };
+}
+
+// Tick labels give way to the labels that carry results.
+function pruneMathTickLabels(svg, keepSelector) {
+  try {
+    const keep = [...svg.querySelectorAll(keepSelector)].map(node => node.getBBox());
+    svg.querySelectorAll(".math-tick-label").forEach(label => {
+      const box = label.getBBox();
+      const hit = keep.some(other => box.x < other.x + other.width + 3 && other.x < box.x + box.width + 3 && box.y < other.y + other.height + 1 && other.y < box.y + box.height + 1);
+      if (hit) label.remove();
+    });
+  } catch {
+    // 不可见时无法测量，保持原样
+  }
+}
+
+// One pixel-exact coordinate system for axes, curve, tangent and point (textbook style: O, x, y, arrows).
+function renderMathGraph(model = currentMathModel(), x = state.p1) {
+  const svg = elements.mathGraph;
+  if (!svg) return;
+  state.mathGraphX = x;
+  const frame = mathGraphFrame(svg, mathGraphBounds(model));
+  const { bounds, width, height, pad, plotW, sx, sy, fx, within, axisX, axisY, xStep, parts } = frame;
+
+  const { d, firstPoint, lastPoint } = mathCurvePath(frame, value => model.value(value));
   const y0 = model.value(x);
   const slope = model.derivative(x);
   const hasPoint = Number.isFinite(y0);
-  const plot = [`<path class="math-curve" d="${samples.join(" ")}"/>`];
+  const plot = [`<path class="math-curve" d="${d}"/>`];
   const slopeText = [];
   let triangleDir = 0;
   if (hasPoint && Number.isFinite(slope)) {
@@ -4466,16 +4970,181 @@ function renderMathGraph(model = currentMathModel(), x = state.p1) {
     parts.push(`<text class="math-point-label" x="${fx(px + (labelRight ? 11 : -11))}" y="${fx(py - 10)}" text-anchor="${labelRight ? "start" : "end"}">P(${formatMathNumber(x)}, ${formatMathNumber(y0)})</text>`);
   }
   svg.innerHTML = parts.join("");
+  pruneMathTickLabels(svg, ".math-slope-text, .math-point-label, .math-function-label");
+}
+
+// 数学画面右上角的标签：切线图是“动点 P”，二次函数是“顶点”，方程组是“交点”
+function setMathStageLabel(title, value) {
+  const label = $(".math-label span");
+  if (label && label.textContent !== title) label.textContent = title;
+  const strong = $("#mathCoordinate");
+  if (strong) strong.textContent = value;
+}
+
+// 数学通用模板的取景：关键点（顶点、交点等）都在图内；曲线远端按关键点的范围截断，不把顶点附近压扁
+function templateGraphNeeded(spec) {
+  const focus = (spec.focus || []).filter(point => Number.isFinite(point.x) && Number.isFinite(point.y));
+  const xs = focus.length ? focus.map(point => point.x) : [0];
+  let minX = Math.min(...xs);
+  let maxX = Math.max(...xs);
+  if (Number.isFinite(spec.center)) {
+    const half = Math.max(spec.center - minX, maxX - spec.center);
+    minX = spec.center - half;
+    maxX = spec.center + half;
+  }
+  const margin = Math.max(1, (maxX - minX) * 0.3);
+  minX -= margin;
+  maxX += margin;
+  if (maxX - minX < 4) {
+    const mid = (minX + maxX) / 2;
+    minX = mid - 2;
+    maxX = mid + 2;
+  }
+  const focusYs = [0, ...focus.map(point => point.y)];
+  const low = Math.min(...focusYs);
+  const high = Math.max(...focusYs);
+  const span = Math.max(2, high - low);
+  const ys = [...focusYs];
+  const sample = fn => {
+    for (let i = 0; i <= 96; i += 1) {
+      const y = fn(minX + ((maxX - minX) * i) / 96);
+      if (Number.isFinite(y)) ys.push(clamp(y, low - 1.5 * span, high + 1.5 * span));
+    }
+  };
+  (spec.curves || []).forEach(curve => sample(curve.fn));
+  (spec.lines || []).forEach(line => {
+    if (Math.abs(line.b) > 1e-12) sample(x => (line.c - line.a * x) / line.b);
+  });
+  let minY = Math.min(...ys);
+  let maxY = Math.max(...ys);
+  if (maxY - minY < 1) {
+    maxY += 1;
+    minY -= 1;
+  }
+  const pad = Math.max(0.3, (maxY - minY) * 0.14);
+  return { minX, maxX, minY: minY - pad, maxY: maxY + pad };
+}
+
+// 拖动滑块时尽量保持坐标系不动，便于看出图形的平移；关键点跑出范围或图形缩得太小时才重新取景
+function templateGraphView(svg, spec) {
+  const needed = templateGraphNeeded(spec);
+  const view = svg._templateView;
+  if (view && view.key === spec.key) {
+    const bounds = view.bounds;
+    const mx = (bounds.maxX - bounds.minX) * 0.04;
+    const my = (bounds.maxY - bounds.minY) * 0.04;
+    const fits = (spec.focus || []).every(point => !Number.isFinite(point.x) || !Number.isFinite(point.y)
+      || (point.x >= bounds.minX + mx && point.x <= bounds.maxX - mx && point.y >= bounds.minY + my && point.y <= bounds.maxY - my));
+    const xRatio = (needed.maxX - needed.minX) / (bounds.maxX - bounds.minX);
+    const yRatio = (needed.maxY - needed.minY) / (bounds.maxY - bounds.minY);
+    if (fits && xRatio >= 0.4 && yRatio >= 0.4) return bounds;
+  }
+  svg._templateView = { key: spec.key, bounds: needed };
+  return needed;
+}
+
+// 标注依次尝试候选位置：不出图、不压住已放好的标注和关键点；都放不下就不画（数值仍在步骤和读数里）
+function placeMathLabels(svg, labels, frame) {
   try {
-    const keep = [...svg.querySelectorAll(".math-slope-text, .math-point-label, .math-function-label")].map(node => node.getBBox());
-    svg.querySelectorAll(".math-tick-label").forEach(label => {
-      const box = label.getBBox();
-      const hit = keep.some(other => box.x < other.x + other.width + 3 && other.x < box.x + box.width + 3 && box.y < other.y + other.height + 1 && other.y < box.y + box.height + 1);
-      if (hit) label.remove();
+    const placed = [...svg.querySelectorAll(".math-point, .math-axis-name, .math-origin")].map(node => node.getBBox());
+    const overlaps = (box, other) => box.x < other.x + other.width + 2 && other.x < box.x + box.width + 2
+      && box.y < other.y + other.height + 1 && other.y < box.y + box.height + 1;
+    const inside = box => box.x >= 2 && box.y >= 2 && box.x + box.width <= frame.width - 2 && box.y + box.height <= frame.height - 2;
+    labels.forEach((label, index) => {
+      const node = svg.querySelector(`[data-label="${index}"]`);
+      if (!node) return;
+      for (const [x, y, anchor] of label.candidates) {
+        node.setAttribute("x", frame.fx(x));
+        node.setAttribute("y", frame.fx(y));
+        node.setAttribute("text-anchor", anchor);
+        const box = node.getBBox();
+        if (inside(box) && !placed.some(other => overlaps(box, other))) {
+          placed.push(box);
+          return;
+        }
+      }
+      node.remove();
     });
   } catch {
-    // 不可见时无法测量，保持原样
+    // 不可见时无法测量，保持首选位置
   }
+}
+
+const mathLabelText = text => String(text).replace(/[&<>]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[ch]);
+
+// 数学通用模板的图像（二次函数的抛物线、方程组的两条直线等）：与切线图共用坐标系和曲线采样
+function renderTemplateGraph(content = buildGenericContent()) {
+  const svg = elements.mathGraph;
+  const spec = content?.graph;
+  if (!svg || !spec) return;
+  state.mathGraphX = NaN;
+  const frame = mathGraphFrame(svg, templateGraphView(svg, spec));
+  const { bounds, width, height, pad, plotH, sx, sy, fx, within, parts } = frame;
+  const plot = [];
+  const labels = [];
+  for (const guide of spec.guides || []) {
+    if (!within(guide.x, bounds.minX, bounds.maxX)) continue;
+    const px = sx(guide.x);
+    plot.push(`<path class="math-guide" d="M${fx(px)} ${pad.top}V${fx(pad.top + plotH)}"/>`);
+    if (guide.label) labels.push({ text: guide.label, cls: "math-guide-label", priority: 3, candidates: [[px + 6, pad.top + 13, "start"], [px - 6, pad.top + 13, "end"]] });
+  }
+  for (const line of spec.lines || []) {
+    // a·x + b·y = c；b = 0 时是竖直线
+    const vertical = Math.abs(line.b) < 1e-12;
+    if (vertical && !within(line.c / line.a, bounds.minX, bounds.maxX)) continue;
+    const ends = vertical
+      ? [[line.c / line.a, bounds.minY], [line.c / line.a, bounds.maxY]]
+      : [bounds.minX, bounds.maxX].map(x => [x, (line.c - line.a * x) / line.b]);
+    plot.push(`<line class="${line.cls || "math-line"}" x1="${fx(sx(ends[0][0]))}" y1="${fx(sy(ends[0][1]))}" x2="${fx(sx(ends[1][0]))}" y2="${fx(sy(ends[1][1]))}"/>`);
+    if (line.label) {
+      // 标注放在直线上靠近图框两端、仍在图内的位置（第二条直线默认从另一端开始，两条标注分开）
+      const spots = (line.spots || [0.86, 0.14, 0.7, 0.3]).map(t => vertical
+        ? [line.c / line.a, bounds.minY + (bounds.maxY - bounds.minY) * t]
+        : [bounds.minX + (bounds.maxX - bounds.minX) * t, (line.c - line.a * (bounds.minX + (bounds.maxX - bounds.minX) * t)) / line.b])
+        .filter(([x, y]) => within(y, bounds.minY, bounds.maxY));
+      // 很陡的直线可能没有落在图内的候选标签位置；保留直线，数值仍可在步骤中阅读。
+      if (spots.length) labels.push({ text: line.label, cls: `math-line-label ${(line.cls || "").replace(/\bmath-line\b|\bcoincide\b/g, "")}`.replace(/\s+/g, " ").trim(), priority: 2,
+        candidates: spots.flatMap(([x, y]) => [[sx(x) + 8, sy(y) - 8, "start"], [sx(x) - 8, sy(y) - 8, "end"], [sx(x) + 8, sy(y) + 18, "start"]]) });
+    }
+  }
+  for (const curve of spec.curves || []) {
+    const path = mathCurvePath(frame, curve.fn);
+    plot.push(`<path class="${curve.cls || "math-curve"}" d="${path.d}"/>`);
+    if (curve.label && path.firstPoint && path.lastPoint) {
+      // 函数名放在曲线一端的内侧，离开曲线一点，不压线
+      const at = end => fx(Math.max(Math.min(end[1] + (end[1] < height / 2 ? 22 : -12), height - 26), 14));
+      labels.push({ text: curve.label, cls: "math-function-label", priority: 2,
+        candidates: [[Math.min(path.lastPoint[0] - 16, width - 8), at(path.lastPoint), "end"], [Math.max(path.firstPoint[0] + 16, 8), at(path.firstPoint), "start"]] });
+    }
+  }
+  const dots = [];
+  for (const point of spec.points || []) {
+    if (!within(point.x, bounds.minX, bounds.maxX) || !within(point.y, bounds.minY, bounds.maxY)) continue;
+    const px = sx(point.x);
+    const py = sy(point.y);
+    dots.push(`<circle class="math-point ${point.cls || ""}" cx="${fx(px)}" cy="${fx(py)}" r="${point.cls === "vertex" || point.cls === "solution" ? 6.5 : 5}"/>`);
+    const spots = {
+      "above-right": [px + 9, py - 10, "start"],
+      "above-left": [px - 9, py - 10, "end"],
+      "below-right": [px + 9, py + 20, "start"],
+      "below-left": [px - 9, py + 20, "end"],
+      right: [px + 11, py + 4, "start"],
+      left: [px - 11, py + 4, "end"]
+    };
+    const prefer = { above: ["above-right", "above-left"], below: ["below-right", "below-left"], right: ["right", "left"] }[point.place] || [point.place];
+    const candidates = [...new Set([...prefer, "above-right", "above-left", "below-right", "below-left", "right", "left"])].filter(key => spots[key]).map(key => spots[key]);
+    labels.push({ text: point.label, cls: `math-point-label ${point.cls || ""}`.trim(), priority: point.cls === "vertex" || point.cls === "solution" ? 0 : 1, candidates });
+  }
+  labels.sort((a, b) => a.priority - b.priority);
+  parts.push(`<g clip-path="url(#mathPlotClip)">${plot.join("")}</g>${dots.join("")}`);
+  parts.push(labels.map((label, index) => `<text class="${label.cls}" data-label="${index}" x="${fx(label.candidates[0][0])}" y="${fx(label.candidates[0][1])}" text-anchor="${label.candidates[0][2]}">${mathLabelText(label.text)}</text>`).join(""));
+  svg.innerHTML = parts.join("");
+  placeMathLabels(svg, labels, frame);
+  pruneMathTickLabels(svg, ".math-point, .math-point-label, .math-function-label, .math-guide-label, .math-line-label");
+  svg.setAttribute("aria-label", spec.ariaLabel || "函数图像");
+  const note = $("#mathSlopeNote");
+  if (note) note.textContent = spec.note || "";
+  setMathStageLabel(spec.badge?.title || "", spec.badge?.value || "");
 }
 
 function formatTime(seconds) {
@@ -4945,7 +5614,7 @@ function syncCircuitMotion(values) {
     current = values.circuit.current;
   } else if (state.subject === "物理" && ["lampPower", "seriesCircuit", "parallelCircuit"].includes(state.physicsTemplate)) {
     svg = elements.genericPhysicsVisual.querySelector(".edu-circuit-svg");
-    current = values.extraPhysics.model.metrics[state.physicsTemplate === "lampPower" ? 1 : 2];
+    current = values.generic.model.metrics[state.physicsTemplate === "lampPower" ? 1 : 2];
   }
   if (!svg) { circuitMotion = null; return; }
   if (circuitMotion?.svg !== svg || (extraPhysicsTemplate()?.bindMotion && circuitMotion?.layout !== svg.getAttribute("viewBox"))) {
@@ -5126,11 +5795,12 @@ function updateSubjectVisuals(values) {
     }
   }
 
-  if (state.subject === "物理" && isExtraPhysicsTemplate()) {
-    renderExtraPhysicsVisual(values.extraPhysics || buildExtraPhysicsContent());
+  const generic = activeGenericTemplate();
+  if (generic) {
+    renderGenericVisual(values.generic || buildGenericContent());
   }
 
-  if (state.subject === "化学") {
+  if (state.subject === "化学" && !generic) {
     const r = values.reaction;
     const convertedFraction = values.chem.cuso4Mol > 0 ? r.producedMol / values.chem.cuso4Mol : 0;
     const color = [45, 148, 229].map((start, i) => Math.round(start + ([166, 215, 181][i] - start) * convertedFraction));
@@ -5143,20 +5813,21 @@ function updateSubjectVisuals(values) {
     $(".chem-label span").textContent = "反应完成度";
     $("#chemRate").textContent = `${Math.round(r.extent * 100)}%`;
     $("#chemPhase").textContent = r.stage;
-    $("#chemAmounts").textContent = `已生成 Cu ${formatMol(r.producedMol)} mol / ${formatGram(r.producedMass)} g · Fe 剩余 ${formatMol(r.feLeftMol)} mol · CuSO₄ 剩余 ${formatMol(r.cuso4Left)} mol`;
+    $("#chemAmounts").textContent = chemistryAmountsLine(r);
   }
 
-  if (state.subject === "数学") {
+  if (state.subject === "数学" && !generic) {
     const x = values.x;
     const model = currentMathModel();
     const slope = model.derivative(x);
     renderMathGraph(model, x);
-    $("#mathCoordinate").textContent = `(${formatMathNumber(x)}, ${formatMathNumber(model.value(x))})`;
+    elements.mathGraph?.setAttribute("aria-label", "函数图像、动点 P 与切线");
+    setMathStageLabel("动点 P", `(${formatMathNumber(x)}, ${formatMathNumber(model.value(x))})`);
     const slopeNote = $("#mathSlopeNote");
     if (slopeNote) slopeNote.textContent = `切线斜率 k = f′(${formatMathNumber(x)}) ${eqSign(slope, 4)} ${formatMathNumber(slope)}`;
   }
 
-  if (state.subject === "生物") renderCellDetail(state.selectedOrganelle);
+  if (state.subject === "生物" && !generic) renderCellDetail(state.selectedOrganelle);
   syncCircuitMotion(values);
   animationClock.reconcile();
 }
@@ -5175,7 +5846,9 @@ function updateScene() {
   if (completed) {
     pauseExperiment();
     let conclusion = "";
-    if (state.subject === "物理") {
+    if (activeGenericTemplate()) {
+      if (values.generic) conclusion = values.generic.model.conclusion;
+    } else if (state.subject === "物理") {
       if (state.physicsTemplate === "boardSlider") {
         const model = values.boardSlider || boardSliderValuesAt(state.time).boardSlider;
         conclusion = model.conclusion;
@@ -5195,8 +5868,6 @@ function updateScene() {
           : asked?.solveFor === "U"
             ? `电阻两端电压 U = IR ${eqSign(values.circuit.voltage)} ${smartNumber(values.circuit.voltage)}V，${powerText}。`
             : `电路电流 I ${eqSign(values.circuit.current)} ${smartNumber(values.circuit.current, 2)}A，${powerText}。`;
-      } else if (isExtraPhysicsTemplate() && values.extraPhysics) {
-        conclusion = values.extraPhysics.model.conclusion;
       } else {
         const brake = values.brake || physicsBrakeModel();
         if (brake.mode === "linear_drag") {
@@ -5207,6 +5878,9 @@ function updateScene() {
           conclusion = `车辆${aboutText(brake.duration) ? "约" : "在"} ${smartNumber(brake.duration, 2)} 秒后停止，刹车距离${aboutText(brake.stopDistance) ? "约为" : "为"} ${smartNumber(brake.stopDistance, 1)} 米。`;
         }
       }
+    } else if (state.subject === "化学" && values.chem && (chemistryForm().level === "junior" || chemistryForm().excess)) {
+      // 初中讲法与足量题：结论由内容生成（足量的一方不写剩余量）
+      conclusion = buildChemistryFeCuSO4Content().conclusion;
     } else if (state.subject === "化学" && values.chem) {
       const cuAbout = eqSign(values.chem.cuMol, 4) === "≈" || eqSign(values.chem.cuMass, 3) === "≈" ? "约 " : "";
       const chem = values.chem;
@@ -5257,7 +5931,8 @@ function updateFormulaSpotlight(subject) {
   const projectile = buildPhysicsProjectileContent();
   const circuit = buildPhysicsCircuitContent();
   const boardSlider = buildPhysicsBoardSliderContent();
-  const extraPhysics = isExtraPhysicsTemplate() ? buildExtraPhysicsContent() : null;
+  // 当前学科正在使用通用模板时，公式卡取模板自己的关系式和结论（物理、数学等一致）
+  const generic = activeGenericTemplate(subject) ? buildGenericContent(activeGenericId(subject)) : null;
   const chemistry = buildChemistryFeCuSO4Content();
   const mathModel = currentMathModel();
   const mathValue = subject === "数学" ? state.p1 : SUBJECTS["数学"].params[0].value;
@@ -5286,12 +5961,6 @@ function updateFormulaSpotlight(subject) {
         boardSlider.formulaLabel,
         boardSlider.formula,
         boardSlider.formulaHtml
-      ]
-    : extraPhysics
-    ? [
-        extraPhysics.model.badge,
-        extraPhysics.model.formula,
-        extraPhysics.formulaHtml
       ]
     : state.physicsTemplate === "solenoid"
     ? [
@@ -5322,7 +5991,7 @@ function updateFormulaSpotlight(subject) {
     "化学": [
       "核心关系",
       "Fe + CuSO₄ = FeSO₄ + Cu",
-      `计量关系：1mol Fe : 1mol CuSO₄ : 1mol Cu<br>${chemistry.formulaHtml}`
+      `${chemistry.spotlightNote}<br>${chemistry.formulaHtml}`
     ],
     "数学": [
       "导数关系",
@@ -5332,7 +6001,9 @@ function updateFormulaSpotlight(subject) {
     "生物": biologyConcept
   };
 
-  const [label, formula, desc] = formulas[subject] || formulas["物理"];
+  const [label, formula, desc] = generic
+    ? [generic.model.badge, generic.model.formula, generic.formulaHtml]
+    : formulas[subject] || formulas["物理"];
   const labelEl = $("span", spotlight);
   const formulaEl = $("strong", spotlight);
   const descEl = $("p", spotlight);
@@ -5340,7 +6011,7 @@ function updateFormulaSpotlight(subject) {
   if (labelEl) labelEl.textContent = label;
   setFormulaHtml(formulaEl, formula);
   const mathSlopeEq = eqSign(mathModel.derivative(mathValue), 4);
-  const result = formulaSpotlightResult(subject, { physics, projectile, circuit, solenoid, boardSlider, extraPhysics, chemistry, mathX, mathSlope, mathSlopeEq });
+  const result = formulaSpotlightResult(subject, { physics, projectile, circuit, solenoid, boardSlider, generic, chemistry, mathX, mathSlope, mathSlopeEq });
   if (descEl) descEl.classList.toggle("formula-result", Boolean(result));
   // 有明确结果时只显示结果，代入过程留给下面的步骤；生物等概念类保留原说明
   setFormulaHtml(descEl, result ? `<b>结果</b><span>${result}</span>` : desc);
@@ -5349,8 +6020,8 @@ function updateFormulaSpotlight(subject) {
 // 取各模板已算好的结论（识别摘要或实验读数），不在这里重新计算
 function formulaSpotlightResult(subject, parts) {
   const segments = text => String(text || "").split("｜").map(item => item.trim()).filter(Boolean);
+  if (parts.generic) return parts.generic.model?.readout || "";
   if (subject === "物理") {
-    if (parts.extraPhysics) return parts.extraPhysics.model?.readout || "";
     if (state.physicsTemplate === "projectile") return segments(parts.projectile.recognitionText).slice(-2).join(" · ");
     if (state.physicsTemplate === "circuit") return segments(parts.circuit.recognitionText).slice(-2).join(" · ");
     if (state.physicsTemplate === "solenoid") return segments(parts.solenoid.recognitionText).slice(1, 3).join(" · ");
@@ -5424,9 +6095,16 @@ function setRange(range, param) {
   range.max = param.max;
   range.step = rangeStepFor(param);
   range.value = param.value;
+  // 题目写明“足量”的量没有数值：滑块和加减按钮锁定
+  const locked = Boolean(param.locked);
+  range.disabled = locked;
+  const parameter = range.closest(".parameter");
+  parameter?.classList.toggle("is-locked", locked);
+  parameter?.querySelectorAll(".number-control button").forEach(button => { button.disabled = locked; });
 }
 
 function formatParam(param, value) {
+  if (typeof param.valueText === "function") return param.valueText(value);
   const valueDecimals = decimalPlaces(Number(Number(value).toFixed(4)));
   const decimals = Math.min(4, Math.max(decimalPlaces(param.step), valueDecimals));
   return `${param.prefix || ""}${Number(value).toFixed(decimals)}`;
@@ -5475,7 +6153,7 @@ function syncPhysicsQuestionFromState() {
       : state.physicsTemplate === "circuit"
         ? buildPhysicsCircuitQuestionText()
         : isExtraPhysicsTemplate()
-          ? buildExtraPhysicsQuestionText()
+          ? buildGenericQuestionText(state.physicsTemplate)
           : buildPhysicsBrakeQuestionText();
   $("#questionInput").value = question;
   $("#problemText").textContent = question;
@@ -5487,9 +6165,11 @@ function syncPhysicsQuestionFromState() {
 function syncSubjectQuestionFromState(subject = state.subject) {
   if (subject === "物理") return syncPhysicsQuestionFromState();
   let question = SUBJECTS[subject]?.question || "";
-  if (subject === "化学") question = buildChemistryQuestionText();
-  if (subject === "数学") question = buildMathQuestionText();
-  if (subject === "生物") question = buildBiologyQuestionText();
+  const generic = activeGenericTemplate(subject);
+  if (generic) question = buildGenericQuestionText(generic.id);
+  else if (subject === "化学") question = buildChemistryQuestionText();
+  else if (subject === "数学") question = buildMathQuestionText();
+  else if (subject === "生物") question = buildBiologyQuestionText();
   $("#questionInput").value = question;
   $("#problemText").textContent = question;
   state.generatedQuestion = question;
@@ -5497,10 +6177,11 @@ function syncSubjectQuestionFromState(subject = state.subject) {
   return question;
 }
 
+// 把当前模板的参数同步到滑块和读数（物理专用实验、各学科通用模板共用）
 function syncPhysicsControlsFromState() {
   pauseExperiment();
   state.time = 0;
-  const current = SUBJECTS["物理"];
+  const current = config();
   current.params.forEach((param, index) => {
     elements.paramLabels[index].textContent = param.label;
     elements.paramDescriptions[index].textContent = param.desc;
@@ -5509,7 +6190,10 @@ function syncPhysicsControlsFromState() {
     elements.paramValues[index].textContent = formatParam(param, index === 0 ? state.p1 : state.p2);
   });
   elements.totalTime.textContent = formatTimelineTime(duration());
-  if (state.physicsTemplate === "brake") {
+  if (activeGenericTemplate()) {
+    const content = buildGenericContent();
+    elements.stopDistanceLabel.textContent = content.model.readout;
+  } else if (state.physicsTemplate === "brake") {
     const content = buildPhysicsBrakeContent();
     elements.stopDistanceLabel.textContent = `${eqSign(content.model.stopDistance) === "≈" ? "≈" : ""}${content.stopDistanceText} m`;
     setPhysicsStopMarker();
@@ -5520,9 +6204,6 @@ function syncPhysicsControlsFromState() {
     elements.stopDistanceLabel.textContent = `${smartNumber(projectileModel().range, 1)} m`;
   } else if (state.physicsTemplate === "circuit") {
     elements.stopDistanceLabel.textContent = `${smartNumber(circuitModel().current, 2)} A`;
-  } else if (isExtraPhysicsTemplate()) {
-    const content = buildExtraPhysicsContent();
-    elements.stopDistanceLabel.textContent = content.model.readout;
   } else {
     const solenoid = solenoidModel();
     elements.stopDistanceLabel.textContent = `${solenoid.leftPole}/${solenoid.rightPole}`;
@@ -5563,39 +6244,19 @@ function applyWaitingState(subject = state.subject, options = {}) {
   state.subject = subject;
   updateSubjectBodyClass(subject);
   state.reasonStep = 0;
-  if (subject === "物理" && options.presetQuestion) {
-    state.physicsTemplate = "brake";
-    state.brakeMode = "constant";
-    state.brakeAsk = null;
-    state.p1 = 20;
-    state.p2 = 5;
-    syncPhysicsBrakeContent();
-  }
-  if (subject === "化学" && options.presetQuestion) {
-    state.chemGiven = null;
-    state.p1 = 5.6;
-    state.p2 = 0.2;
-    syncChemistryFeCuSO4Content();
-  }
-  if (subject === "数学" && options.presetQuestion) {
-    state.p1 = 3;
-    state.p2 = 1;
-    state.mathModel = createMathModel(defaultMathSpec());
-    syncMathContent(3, state.mathModel);
-  }
-  if (subject === "生物" && options.presetQuestion) {
-    state.cellType = "plant";
-    syncBiologyContent("plant");
-    state.p1 = -10;
-    state.p2 = currentCellOrganelles().length;
-    state.selectedOrganelle = defaultOrganelleForCellType();
-    resetBiologyCellModel();
+  if (options.presetQuestion) {
+    applySubjectDefaultPreset(subject);
+    state.presetOrigin = "default";
   }
   document.body.classList.add("awaiting-generation");
   setActiveSubjectTab(subject);
   clearRecognitionFeedback();
   if (options.clearInput) $("#questionInput").value = "";
-  if (options.presetQuestion) $("#questionInput").value = SUBJECTS[subject]?.question || "";
+  if (options.presetQuestion) {
+    $("#questionInput").value = SUBJECTS[subject]?.question || "";
+    state.presetKey = currentPresetKey(subject);
+    state.presetQuestionText = $("#questionInput").value;
+  }
   $("#experimentTitle").textContent = "等待生成实验";
   $("#problemText").textContent = "输入题目并点击“生成实验”后，这里会构建对应的可视化实验。";
   $("#engineBadge").textContent = "等待题目输入";
@@ -5614,12 +6275,82 @@ function applyWaitingState(subject = state.subject, options = {}) {
   elements.timeline.value = 0;
   renderWaitingReasoning();
   syncFavoriteState();
+  updateGradeTag();
+}
+
+/* ===== 学段默认题 =====
+   切换学科、首次打开时各学科的默认实验：高中为刹车、铁 + 硫酸铜、切线、细胞（高中层）；
+   初中为杠杆、铁 + 硫酸铜（初中讲法）、二次函数、细胞（初中层）。 */
+function applyGenericPresetState(id, level = state.gradeLevel) {
+  const template = GENERIC_TEMPLATES[id];
+  if (!template) return false;
+  const preset = template.presetFor?.(level) || null;
+  const levelFixed = template.levels.length > 1 ? { level } : null;
+  setSubjectTemplate(template.subject, id);
+  state.extraFixed = { ...(state.extraFixed || {}), [id]: preset?.fixed ?? levelFixed };
+  state.p1 = preset?.p1 ?? template.defaults[0];
+  state.p2 = preset?.p2 ?? template.defaults[1];
+  syncGenericContent(id, state.p1, state.p2);
+  return true;
+}
+
+function applySubjectDefaultPreset(subject, level = state.gradeLevel) {
+  if (subject === "物理") {
+    if (level === "junior" && applyGenericPresetState("lever", level)) return;
+    state.physicsTemplate = "brake";
+    state.brakeMode = "constant";
+    state.brakeAsk = null;
+    state.brakeGravity = 9.8;
+    state.brakeMass = 1000;
+    state.p1 = 20;
+    state.p2 = 5;
+    syncPhysicsBrakeContent();
+  }
+  if (subject === "化学") {
+    applyChemistryDefaultPreset(level);
+  }
+  if (subject === "数学") {
+    if (level === "junior" && applyGenericPresetState("quadratic", level)) return;
+    state.p1 = 3;
+    state.p2 = 1;
+    state.mathModel = createMathModel(defaultMathSpec());
+    syncMathContent(3, state.mathModel);
+  }
+  if (subject === "生物") {
+    state.cellType = "plant";
+    state.cellLevel = normalizeCellLevel(level);
+    state.cellLevelLocked = false;
+    syncBiologyContent("plant", state.cellLevel);
+    state.p1 = -10;
+    state.p2 = currentCellOrganelles().length;
+    state.selectedOrganelle = defaultOrganelleForCellType();
+    resetBiologyCellModel();
+  }
+}
+
+// 化学默认题：第三周前只有铁 + 硫酸铜；学段讲法见 buildChemistryFeCuSO4Content
+function applyChemistryDefaultPreset(level = state.gradeLevel) {
+  state.chemGiven = null;
+  if (level === "junior") {
+    // 初中：5.6g 铁与足量硫酸铜，按质量比列比例式（题目只给质量，讲法跟随学段）
+    state.chemForm = { level: "junior", levelLocked: false, excess: "cuso4" };
+    state.p1 = 5.6;
+    state.p2 = 0;
+  } else {
+    state.chemForm = { level: "senior", levelLocked: true, excess: "" };
+    state.p1 = 5.6;
+    state.p2 = 0.2;
+  }
+  syncChemistryFeCuSO4Content();
 }
 
 function updateParameters(reset = true, options = {}) {
   state.p1 = Number(elements.ranges[0].value);
   state.p2 = Number(elements.ranges[1].value);
-  if (state.subject === "物理") {
+  const generic = activeGenericTemplate();
+  if (generic) {
+    syncGenericContent(generic.id);
+  } else if (state.subject === "物理") {
     if (state.physicsTemplate === "boardSlider") {
       state.boardSliderParams = {
         ...state.boardSliderParams,
@@ -5633,16 +6364,14 @@ function updateParameters(reset = true, options = {}) {
       syncPhysicsProjectileContent();
     } else if (state.physicsTemplate === "circuit") {
       syncPhysicsCircuitContent();
-    } else if (isExtraPhysicsTemplate()) {
-      syncExtraPhysicsContent(state.physicsTemplate);
     } else {
       syncPhysicsBrakeContent();
     }
   }
-  if (state.subject === "化学") {
+  if (state.subject === "化学" && !generic) {
     syncChemistryFeCuSO4Content();
   }
-  if (state.subject === "数学") {
+  if (state.subject === "数学" && !generic) {
     syncMathContent();
   }
   config().params.forEach((param, index) => {
@@ -5725,21 +6454,21 @@ function updateParameters(reset = true, options = {}) {
     }
   }
 
-  if (state.subject === "物理" && isExtraPhysicsTemplate()) {
-    const content = buildExtraPhysicsContent();
+  if (generic) {
+    const content = buildGenericContent(generic.id);
     elements.stopDistanceLabel.textContent = content.model.readout;
-    updateFormulaSpotlight("物理");
+    updateFormulaSpotlight(state.subject);
     elements.sceneTip.innerHTML = `<span>实时结论</span>${content.sceneTip}`;
-    renderExtraPhysicsVisual(content);
+    renderGenericVisual(content);
     if (state.hasGenerated) {
-      if (options.syncQuestion) syncPhysicsQuestionFromState();
+      if (options.syncQuestion) syncSubjectQuestionFromState(state.subject);
       renderReasoning();
       elements.mentorMessage.innerHTML = config().mentor;
-      setRecognitionFeedback({ ok: true, subject: "物理", type: state.physicsTemplate, recognitionText: content.recognitionText });
+      setRecognitionFeedback({ ok: true, subject: state.subject, type: generic.id, recognitionText: content.recognitionText });
     }
   }
 
-  if (state.subject === "化学") {
+  if (state.subject === "化学" && !generic) {
     const content = buildChemistryFeCuSO4Content();
     updateFormulaSpotlight("化学");
     elements.sceneTip.innerHTML = `<span>定量结论</span>${content.sceneTip}`;
@@ -5751,7 +6480,7 @@ function updateParameters(reset = true, options = {}) {
     }
   }
 
-  if (state.subject === "数学") {
+  if (state.subject === "数学" && !generic) {
     updateFormulaSpotlight("数学");
     if (state.hasGenerated) {
       if (options.syncQuestion) syncSubjectQuestionFromState("数学");
@@ -5761,7 +6490,7 @@ function updateParameters(reset = true, options = {}) {
     }
   }
 
-  if (state.subject === "生物") {
+  if (state.subject === "生物" && !generic) {
     setCellRotation(-8, state.p1);
     updateFormulaSpotlight("生物");
     if (state.hasGenerated) {
@@ -5807,8 +6536,16 @@ const AI_PARAMETER_NAMES = Object.freeze({
   sound: ["frequency", "amplitudePercent"]
 });
 
+// 只有服务端协议里登记过的模板才有 AI 模板标识；其他通用模板（并联、平面镜、数学新模板等）返回空字符串
 function currentAITemplateId() {
-  if (state.subject === "化学") return "fe_cuso4";
+  const generic = activeGenericTemplate();
+  if (generic) {
+    // 同一模板的另一种讲法参数含义不同（如初中摩擦的“接触面”不是动摩擦因数），不能套用协议参数
+    const compatible = generic.protocolCompatible ? generic.protocolCompatible(generic.fixedWithDefaults(state.extraFixed?.[generic.id])) : true;
+    return compatible ? AI_TEMPLATE_ID_MAP[generic.id] || "" : "";
+  }
+  // 足量题只有一种反应物有用量，不能按协议的“铁质量 + 硫酸铜质量”两参数发送
+  if (state.subject === "化学") return chemistryForm().excess ? "" : "fe_cuso4";
   if (state.subject === "数学") return "tangent";
   if (state.subject === "生物") return "cell";
   return AI_TEMPLATE_ID_MAP[state.physicsTemplate] || "";
@@ -5823,11 +6560,26 @@ function currentAIParameters(templateId = currentAITemplateId()) {
   if (templateId === "board_slider") return { initialSpeed: state.p1, boardLength: state.p2 };
   if (templateId === "projectile") return { horizontalSpeed: state.p1, height: state.p2 };
   if (templateId === "ohm_circuit") return { voltage: state.p1, resistance: state.p2 };
-  if (templateId === "fe_cuso4") return { ironMass: state.p1, copperSulfateMass: state.p2 * 160 };
+  if (templateId === "fe_cuso4") return { ironMass: state.p1, copperSulfateMass: chemistryForm().level === "junior" ? state.p2 : state.p2 * 160 };
   if (templateId === "tangent") return { coefficient: 1, pointX: state.p1 };
   if (templateId === "cell") return { cellType: state.cellType === "animal" ? 0 : 1 };
   const parameterNames = AI_PARAMETER_NAMES[templateId];
   return parameterNames ? { [parameterNames[0]]: state.p1, [parameterNames[1]]: state.p2 } : {};
+}
+
+// 学段放进 deterministicResult：服务端只保留 context 的固定字段，新增顶层字段会被丢弃
+const GRADE_LEVEL_GUIDES = Object.freeze({
+  junior: "学生选择初中学段：讲解优先用初中方法。化学按相对分子质量列质量比，不用物质的量；数学不用导数，用配方法、图像和顶点坐标公式；物理按初中教材的说法。题目本身需要高中知识时照常解答，并说明属于高中内容。",
+  senior: "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+});
+
+function gradeLevelContext(contentLevel = "") {
+  const context = {
+    gradeLevel: GRADE_LEVEL_LABELS[state.gradeLevel],
+    levelGuide: GRADE_LEVEL_GUIDES[state.gradeLevel]
+  };
+  if (contentLevel && contentLevel !== state.gradeLevel) context.contentLevel = `${GRADE_LEVEL_LABELS[contentLevel]}内容`;
+  return context;
 }
 
 function dispatchAIContextChanged(reason = "context") {
@@ -5852,7 +6604,7 @@ function buildMasterLabAIContext() {
       originalQuestion: inputQuestion,
       templateId: "",
       parameters: {},
-      deterministicResult: {},
+      deterministicResult: gradeLevelContext(),
       formula: "",
       currentStep: ""
     };
@@ -5863,18 +6615,21 @@ function buildMasterLabAIContext() {
     return `${displayedSource(label) || "参数"} ${value}${unit}`.trim();
   }).join("｜");
   const currentReasoning = $(".reason-step.active") || $(`.reason-step[data-step="${state.reasonStep}"]`);
-  const week1Model = state.subject === "物理" && ["parallelCircuit", "planeMirror"].includes(state.physicsTemplate)
-    ? buildExtraPhysicsContent().model : null;
+  const templateId = currentAITemplateId();
+  // 没有协议模板标识的通用模板：按题目问答模式发送（服务端会拒收 experiment + 空模板），
+  // 确定性结果取自模板模型本身，不取动画中途的读数，也不扩展 AI 协议
+  const genericModel = !templateId && activeGenericTemplate() ? buildGenericContent().model : null;
   return {
-    mode: "experiment",
+    mode: templateId ? "experiment" : "question",
     subject: state.subject,
     title: config().title,
     originalQuestion: generatedQuestion,
-    templateId: currentAITemplateId(),
-    parameters: currentAIParameters(),
+    templateId,
+    parameters: templateId ? currentAIParameters(templateId) : {},
     deterministicResult: {
-      resultText: (week1Model?.conclusion || displayedSource(elements.sceneTip)).trim().slice(0, 300),
-      metrics: (week1Model ? week1Model.facts.map(item => `${item.label}：${item.value}`).join("｜") : metricText).slice(0, 300)
+      resultText: (genericModel?.conclusion || displayedSource(elements.sceneTip)).trim().slice(0, 300),
+      metrics: (genericModel ? genericModel.facts.map(item => `${item.label}：${item.value}`).join("｜") : metricText).slice(0, 300),
+      ...gradeLevelContext(experimentLevelInfo()?.content)
     },
     formula: displayedSource($(".formula-spotlight strong")).trim().slice(0, 600),
     currentStep: displayedSource(currentReasoning).replace(/\s+/g, " ").trim().slice(0, 600)
@@ -5899,7 +6654,8 @@ function applyAIParameterPatch(patch) {
     board_slider: { initialSpeed: [0, value => value], boardLength: [1, value => value] },
     projectile: { horizontalSpeed: [0, value => value], height: [1, value => value] },
     ohm_circuit: { voltage: [0, value => value], resistance: [1, value => value] },
-    fe_cuso4: { ironMass: [0, value => value], copperSulfateMass: [1, value => value / 160] },
+    // 初中讲法的第二个滑块就是硫酸铜质量（g），高中是物质的量（mol）
+    fe_cuso4: { ironMass: [0, value => value], copperSulfateMass: [1, value => (chemistryForm().level === "junior" ? value : value / 160)] },
     tangent: { pointX: [0, value => value] }
   };
   const extraNames = AI_PARAMETER_NAMES[templateId];
@@ -5939,7 +6695,6 @@ function physicsSceneClassName() {
   if (state.physicsTemplate === "solenoid") return "solenoid";
   if (state.physicsTemplate === "projectile") return "projectile";
   if (state.physicsTemplate === "circuit") return "circuit";
-  if (isExtraPhysicsTemplate()) return "generic-physics";
   return "physics";
 }
 
@@ -5948,10 +6703,6 @@ function physicsSideKicker() {
   if (state.physicsTemplate === "solenoid") return "安培定则 × 变量探究";
   if (state.physicsTemplate === "projectile") return "运动合成 × 轨迹验证";
   if (state.physicsTemplate === "circuit") return "欧姆定律 × 变量探究";
-  if (isExtraPhysicsTemplate()) {
-    const content = buildExtraPhysicsContent();
-    return `${content.block} × 典型题型模板`;
-  }
   if (state.brakeMode === "friction") return "受力分析 × 摩擦制动";
   if (state.brakeMode === "linear_drag") return "高中拓展 × 变力模型";
   return "公式 × 过程联动";
@@ -5970,9 +6721,6 @@ function physicsRecognitionResult() {
   if (state.physicsTemplate === "circuit") {
     return { ok: true, subject: "物理", type: "ohms_law_circuit", recognitionText: buildPhysicsCircuitContent().recognitionText };
   }
-  if (isExtraPhysicsTemplate()) {
-    return { ok: true, subject: "物理", type: state.physicsTemplate, recognitionText: buildExtraPhysicsContent().recognitionText };
-  }
   const content = buildPhysicsBrakeContent();
   return {
     ok: true,
@@ -5982,25 +6730,46 @@ function physicsRecognitionResult() {
   };
 }
 
+// 场景、侧栏标题和识别结果：通用模板优先（任一学科），其次是各学科的专用实验
+function sceneClassFor(subject = state.subject) {
+  const generic = activeGenericTemplate(subject);
+  if (generic) return generic.scene || "generic-physics";
+  if (subject === "物理") return physicsSceneClassName();
+  return subject === "化学" ? "chemistry" : subject === "数学" ? "math" : "biology";
+}
+
+function sideKickerFor(subject = state.subject) {
+  if (activeGenericTemplate(subject)) return `${buildGenericContent(activeGenericId(subject)).block} × 典型题型模板`;
+  if (subject === "生物") return "结构 × 功能联动";
+  if (subject === "物理") return physicsSideKicker();
+  return "公式 × 过程联动";
+}
+
+function sideHeadingFor(subject = state.subject) {
+  if (activeGenericTemplate(subject)) return "解题路径";
+  if (subject === "生物") return "结构识别路径";
+  return subject === "物理" && state.physicsTemplate !== "brake" ? "解题路径" : "解题思维链";
+}
+
+function recognitionResultFor(subject = state.subject) {
+  if (activeGenericTemplate(subject)) return genericRecognitionResult(subject);
+  if (subject === "物理") return physicsRecognitionResult();
+  if (subject === "化学") return { ok: true, recognitionText: buildChemistryFeCuSO4Content().recognitionText };
+  if (subject === "数学") return parseMathTangentQuestion(state.generatedQuestion);
+  return biologyTemplateRecognition();
+}
+
 function refreshGeneratedSubjectSurface(subject = state.subject, options = {}) {
   const current = config();
-  $(".side-card-header .section-kicker").textContent = subject === "生物"
-    ? "结构 × 功能联动"
-    : subject === "物理"
-      ? physicsSideKicker()
-      : "公式 × 过程联动";
-  $(".side-card-header h2").textContent = subject === "生物"
-    ? "结构识别路径"
-    : subject === "物理" && state.physicsTemplate !== "brake"
-      ? "解题路径"
-      : "解题思维链";
+  $(".side-card-header .section-kicker").textContent = sideKickerFor(subject);
+  $(".side-card-header h2").textContent = sideHeadingFor(subject);
 
   setActiveSubjectTab(subject);
   if (!options.preserveProblemText) $("#problemText").textContent = current.description;
   $("#experimentTitle").textContent = current.title;
   $("#engineBadge").textContent = current.engine;
   if ($("#arDescription")) $("#arDescription").textContent = current.ar;
-  elements.scene.className = `scene subject-${subject === "物理" ? physicsSceneClassName() : subject === "化学" ? "chemistry" : subject === "数学" ? "math" : "biology"}`;
+  elements.scene.className = `scene subject-${sceneClassFor(subject)}`;
   current.metrics.forEach((metric, index) => {
     elements.metricLabels[index].textContent = metric[0];
     elements.metricUnits[index].textContent = metric[1];
@@ -6030,48 +6799,13 @@ function applySubject(subject, updateQuestion = true, options = {}) {
   updateSubjectBodyClass(subject);
   const restored = options.restore && restoreSubjectSnapshot(subject);
   const restoredTime = restored ? state.time : 0;
-  if (subject === "物理" && updateQuestion && !restored) {
-    state.physicsTemplate = "brake";
-    state.brakeMode = "constant";
-    state.brakeAsk = null;
-    state.brakeGravity = 9.8;
-    state.brakeMass = 1000;
-    state.p1 = 20;
-    state.p2 = 5;
-    syncPhysicsBrakeContent();
-  }
-  if (subject === "化学" && updateQuestion && !restored) {
-    state.p1 = 5.6;
-    state.p2 = 0.2;
-    syncChemistryFeCuSO4Content();
-  }
-  if (subject === "数学" && updateQuestion && !restored) {
-    state.p1 = 3;
-    state.p2 = 1;
-    state.mathModel = createMathModel(defaultMathSpec());
-    syncMathContent(3, state.mathModel);
-  }
-  if (subject === "生物" && updateQuestion && !restored) {
-    syncBiologyContent(state.cellType || "plant");
-    state.p1 = -10;
-    state.p2 = currentCellOrganelles().length;
-    state.selectedOrganelle = defaultOrganelleForCellType();
-    resetBiologyCellModel();
-  }
+  if (updateQuestion && !restored) applySubjectDefaultPreset(subject);
   state.reasonStep = 1;
   updateFormulaSpotlight(subject);
   hideMentorFeedback();
   const current = config();
-  $(".side-card-header .section-kicker").textContent = subject === "生物"
-    ? "结构 × 功能联动"
-    : subject === "物理"
-      ? physicsSideKicker()
-      : "公式 × 过程联动";
-  $(".side-card-header h2").textContent = subject === "生物"
-    ? "结构识别路径"
-    : subject === "物理" && state.physicsTemplate !== "brake"
-      ? "解题路径"
-      : "解题思维链";
+  $(".side-card-header .section-kicker").textContent = sideKickerFor(subject);
+  $(".side-card-header h2").textContent = sideHeadingFor(subject);
 
   setActiveSubjectTab(subject);
   if (subject !== "物理") clearRecognitionFeedback();
@@ -6080,7 +6814,7 @@ function applySubject(subject, updateQuestion = true, options = {}) {
   $("#problemText").textContent = current.description;
   $("#engineBadge").textContent = current.engine;
   if ($("#arDescription")) $("#arDescription").textContent = current.ar;
-  elements.scene.className = `scene subject-${subject === "物理" ? physicsSceneClassName() : subject === "化学" ? "chemistry" : subject === "数学" ? "math" : "biology"}`;
+  elements.scene.className = `scene subject-${sceneClassFor(subject)}`;
   $("#viewButton")?.classList.remove("selected");
   $("#annotationButton")?.classList.remove("selected");
 
@@ -6106,28 +6840,26 @@ function applySubject(subject, updateQuestion = true, options = {}) {
   }
   if (restored && state.generatedQuestion) {
     $("#problemText").textContent = state.generatedQuestion;
-    setRecognitionFeedback(
-      subject === "物理" ? physicsRecognitionResult() :
-      subject === "化学" ? { ok: true, recognitionText: buildChemistryFeCuSO4Content().recognitionText } :
-      subject === "数学" ? parseMathTangentQuestion(state.generatedQuestion) :
-      biologyTemplateRecognition()
-    );
+    setRecognitionFeedback(recognitionResultFor(subject));
   }
+  // 在别的学科里切换过学段：恢复的实验按当前学段换讲法（与切换学段时的规则相同）
+  if (restored) applyGradeLevelToExperiment();
   syncFavoriteState();
+  updateGradeTag();
   dispatchAIContextChanged();
 }
 
 function playExperiment() {
+  if (activeGenericTemplate()) {
+    showToast("该题型为参数即时探究：拖动下方滑块即可同步公式和结论");
+    return;
+  }
   if (state.subject === "物理" && state.physicsTemplate === "solenoid") {
     showToast("螺线管为交互观察：请使用反转电流、铁芯和滑块探究变化");
     return;
   }
   if (state.subject === "物理" && state.physicsTemplate === "circuit") {
     showToast("欧姆定律为稳态变量探究：拖动电压或电阻即可同步电流");
-    return;
-  }
-  if (state.subject === "物理" && isExtraPhysicsTemplate()) {
-    showToast("该题型为参数即时探究：拖动下方滑块即可同步公式和结论");
     return;
   }
   if (state.subject === "数学") {
@@ -6157,25 +6889,24 @@ function pauseExperiment() {
 function resetExperiment() {
   pauseExperiment();
   state.time = 0;
-  const physicsTip = state.physicsTemplate === "boardSlider"
-    ? buildPhysicsBoardSliderContent().sceneTip
-    : state.physicsTemplate === "solenoid"
-    ? buildPhysicsSolenoidContent().sceneTip
-    : state.physicsTemplate === "projectile"
-      ? buildPhysicsProjectileContent().sceneTip
-      : state.physicsTemplate === "circuit"
-        ? buildPhysicsCircuitContent().sceneTip
-        : isExtraPhysicsTemplate()
-          ? buildExtraPhysicsContent().sceneTip
-          : buildPhysicsBrakeContent().sceneTip;
+  // 只生成当前实验的提示：通用模板取模板结论，专用实验按学科
   const tips = {
-    "物理": physicsTip,
-    "化学": buildChemistryFeCuSO4Content().sceneTip,
-    "数学": `观察函数 y = ${currentMathModel().expression} 在 x = ${formatMathNumber(state.p1)} 时，导数 y′ = ${currentMathModel().derivativeText} 如何给出切线斜率。`,
-    "生物": `点击模型中的${selectedOrganelle().name}，查看结构类型、主要功能和记忆点。`
+    "物理": () => state.physicsTemplate === "boardSlider"
+      ? buildPhysicsBoardSliderContent().sceneTip
+      : state.physicsTemplate === "solenoid"
+      ? buildPhysicsSolenoidContent().sceneTip
+      : state.physicsTemplate === "projectile"
+        ? buildPhysicsProjectileContent().sceneTip
+        : state.physicsTemplate === "circuit"
+          ? buildPhysicsCircuitContent().sceneTip
+          : buildPhysicsBrakeContent().sceneTip,
+    "化学": () => buildChemistryFeCuSO4Content().sceneTip,
+    "数学": () => `观察函数 y = ${currentMathModel().expression} 在 x = ${formatMathNumber(state.p1)} 时，导数 y′ = ${currentMathModel().derivativeText} 如何给出切线斜率。`,
+    "生物": () => `点击模型中的${selectedOrganelle().name}，查看结构类型、主要功能和记忆点。`
   };
   const tipLabel = state.subject === "化学" ? "实验现象" : "观察提示";
-  elements.sceneTip.innerHTML = `<span>${tipLabel}</span>${tips[state.subject]}`;
+  const generic = activeGenericTemplate();
+  elements.sceneTip.innerHTML = `<span>${tipLabel}</span>${generic ? buildGenericContent(generic.id).sceneTip : tips[state.subject]()}`;
   updateScene();
 }
 
@@ -6530,6 +7261,7 @@ elements.ranges.forEach(input => input.addEventListener("input", () => {
 $$(".number-control button").forEach(button => {
   button.addEventListener("click", () => {
     const input = $(`#${button.dataset.target}`);
+    if (input.disabled) return;
     const next = Number(input.value) + Number(button.dataset.delta) * Number(input.step);
     input.value = Math.max(Number(input.min), Math.min(Number(input.max), next));
     clearDemoTimers();
@@ -6562,25 +7294,159 @@ function currentPhysicsPresetKey() {
   return "brake";
 }
 
-function updatePhysicsPresetOption() {
-  const currentPreset = currentPhysicsPresetKey();
-  $$("#physicsPresetDropdown [data-preset]").forEach(option => {
-    option.hidden = option.dataset.preset === currentPreset;
+/* ===== 预设菜单（各学科，按学段与板块分组，2026-10-16）=====
+   菜单项写在 index.html（data-subject / data-level / data-block）。打开时按当前学科和学段重新分组：
+   本学段按板块分组排在前面，另一学段折叠在底部；当前已预选的那一项隐藏。 */
+const PRESET_BLOCK_ORDER = Object.freeze(["力学", "电学", "电磁学", "光学", "热学", "声学", "化学计算", "函数", "方程（组）", "导数", "细胞"]);
+const DEDICATED_PRESET_KEYS = new Set(["brake", "solenoid", "boardSlider", "projectile", "circuit", "feCuSO4", "tangent", "cellPlant", "cellAnimal"]);
+const PRESET_OPTIONS = $$("#physicsPresetDropdown .preset-option");
+PRESET_OPTIONS.forEach(option => {
+  const meta = option.querySelector(":scope > small");
+  if (meta) option.dataset.metaDefault = meta.innerHTML;
+});
+
+function presetOptionLevels(option) {
+  return option.dataset.level === "both" ? ["junior", "senior"] : [normalizeGradeLevel(option.dataset.level)];
+}
+
+// 通用模板的菜单项只在模板已注册时出现，避免出现点了也无法生成的条目
+function presetOptionAvailable(option) {
+  const key = option.dataset.preset;
+  return DEDICATED_PRESET_KEYS.has(key) || Boolean(GENERIC_TEMPLATES[key]);
+}
+
+function syncPresetOptionText(option, level) {
+  const meta = option.querySelector(":scope > small");
+  if (!meta) return;
+  const next = level === "junior" && option.dataset.metaJunior ? option.dataset.metaJunior : option.dataset.metaDefault;
+  if (option.dataset.metaShown === next) return;
+  option.dataset.metaShown = next;
+  if (next === option.dataset.metaDefault) meta.innerHTML = next;
+  else meta.textContent = next;
+}
+
+function currentPresetKey(subject = state.subject) {
+  if (subject === "物理") return currentPhysicsPresetKey();
+  const generic = activeGenericTemplate(subject);
+  if (generic) return generic.id;
+  if (subject === "化学") return "feCuSO4";
+  if (subject === "数学") return "tangent";
+  return state.cellType === "animal" ? "cellAnimal" : "cellPlant";
+}
+
+function presetBlockRank(block) {
+  const index = PRESET_BLOCK_ORDER.indexOf(block);
+  return index < 0 ? PRESET_BLOCK_ORDER.length : index;
+}
+
+function presetGroupNodes(options, level) {
+  const blocks = new Map();
+  options.forEach(option => {
+    const block = option.dataset.block || "其他";
+    if (!blocks.has(block)) blocks.set(block, []);
+    blocks.get(block).push(option);
   });
+  return [...blocks.entries()]
+    .sort((left, right) => presetBlockRank(left[0]) - presetBlockRank(right[0]))
+    .map(([block, items]) => {
+      const group = document.createElement("div");
+      group.className = "preset-group";
+      group.setAttribute("role", "group");
+      group.setAttribute("aria-label", `${GRADE_LEVEL_LABELS[level]} · ${block}`);
+      const title = document.createElement("p");
+      title.className = "preset-group-title";
+      title.setAttribute("aria-hidden", "true");
+      title.textContent = block;
+      group.append(title, ...items);
+      return group;
+    });
+}
+
+function updatePresetScrollHint() {
+  const dropdown = $("#physicsPresetDropdown");
+  if (!dropdown) return;
+  const more = dropdown.classList.contains("show") && dropdown.scrollHeight - dropdown.scrollTop - dropdown.clientHeight > 6;
+  dropdown.classList.toggle("has-more", more);
+}
+
+function renderPresetMenu() {
+  const dropdown = $("#physicsPresetDropdown");
+  if (!dropdown) return;
+  const subject = state.subject;
+  const level = state.gradeLevel;
+  const otherLevel = level === "junior" ? "senior" : "junior";
+  const currentKey = currentPresetKey(subject);
+  const options = PRESET_OPTIONS.filter(option => option.dataset.subject === subject && presetOptionAvailable(option));
+  options.forEach(option => {
+    syncPresetOptionText(option, level);
+    option.hidden = option.dataset.preset === currentKey;
+  });
+  const visible = options.filter(option => !option.hidden);
+  const mine = visible.filter(option => presetOptionLevels(option).includes(level));
+  const others = visible.filter(option => !presetOptionLevels(option).includes(level));
+  const head = document.createElement("p");
+  head.className = "preset-menu-head";
+  head.textContent = `${GRADE_LEVEL_LABELS[level]} · ${subject}实验`;
+  const nodes = [head];
+  if (mine.length) nodes.push(...presetGroupNodes(mine, level));
+  else {
+    const empty = document.createElement("p");
+    empty.className = "preset-menu-empty";
+    empty.textContent = others.length
+      ? `${GRADE_LEVEL_LABELS[level]}${subject}暂无其他实验，可在下方查看${GRADE_LEVEL_LABELS[otherLevel]}实验，或直接输入题目。`
+      : `${subject}暂无其他预设实验，可以直接输入题目。`;
+    nodes.push(empty);
+  }
+  if (others.length) {
+    const details = document.createElement("details");
+    details.className = "preset-other";
+    const key = `${subject}:${otherLevel}`;
+    details.open = state.presetOtherOpen === key || !mine.length;
+    const summary = document.createElement("summary");
+    summary.textContent = `${GRADE_LEVEL_LABELS[otherLevel]}实验（${others.length} 个）`;
+    details.append(summary, ...presetGroupNodes(others, otherLevel));
+    details.addEventListener("toggle", () => {
+      state.presetOtherOpen = details.open ? key : "";
+      updatePresetScrollHint();
+    });
+    nodes.push(details);
+  }
+  // 当前实验不重复列出，但节点仍留在菜单里（带 hidden），与按 [data-preset] 查找的旧代码和验收脚本保持一致
+  nodes.push(...options.filter(option => option.hidden));
+  const hint = document.createElement("p");
+  hint.className = "preset-scroll-hint";
+  hint.setAttribute("aria-hidden", "true");
+  const hintText = document.createElement("span");
+  hintText.textContent = "向下滚动查看更多";
+  hint.append(hintText);
+  nodes.push(hint);
+  dropdown.replaceChildren(...nodes);
+  $("#physicsPresetToggle")?.setAttribute("aria-label", `展开${subject}预设实验`);
+  updatePresetScrollHint();
+}
+
+function updatePhysicsPresetOption() {
+  renderPresetMenu();
 }
 
 function togglePhysicsPresetDropdown() {
-  if (state.subject !== "物理") return;
   const dropdown = $("#physicsPresetDropdown");
   const toggle = $("#physicsPresetToggle");
   if (!dropdown || !toggle) return;
   const opening = !dropdown.classList.contains("show");
-  if (opening) updatePhysicsPresetOption();
   dropdown.classList.toggle("show", opening);
   dropdown.setAttribute("aria-hidden", String(!opening));
   toggle.classList.toggle("open", opening);
   toggle.setAttribute("aria-expanded", String(opening));
+  if (opening) {
+    renderPresetMenu();
+    dropdown.scrollTop = 0;
+  }
+  updatePresetScrollHint();
 }
+
+$("#physicsPresetDropdown")?.addEventListener("scroll", updatePresetScrollHint, { passive: true });
+window.addEventListener("resize", updatePresetScrollHint);
 
 function preselectBrakeQuestion() {
   clearDemoTimers();
@@ -6687,21 +7553,20 @@ function preselectCircuitQuestion() {
   showToast("已预选默认欧姆定律题目");
 }
 
-function preselectExtraPhysicsQuestion(id) {
+// 预选任一学科的通用模板：重置固定条件，按模板默认参数填入题目
+function preselectGenericQuestion(id) {
   const template = extraPhysicsTemplate(id);
   if (!template) return;
+  const subject = template.subject;
   clearDemoTimers();
   pauseExperiment();
-  applyWaitingState("物理", { presetQuestion: false });
-  state.subject = "物理";
-  state.physicsTemplate = id;
-  state.extraFixed = { ...(state.extraFixed || {}), [id]: null };
-  state.p1 = template.defaults[0];
-  state.p2 = template.defaults[1];
-  syncExtraPhysicsContent(id, state.p1, state.p2);
-  $("#questionInput").value = buildExtraPhysicsQuestionText(id, state.p1, state.p2);
+  applyWaitingState(subject, { presetQuestion: false });
+  state.subject = subject;
+  // 双学段模板按当前学段选择讲法（如摩擦：初中探究影响因素，高中 f = μF压）
+  applyGenericPresetState(id, state.gradeLevel);
+  $("#questionInput").value = buildGenericQuestionText(id, state.p1, state.p2);
   $("#problemText").textContent = `已预选${template.menuTitle}，点击“生成实验”后将生成${template.block}可视化场景。`;
-  setActiveSubjectTab("物理");
+  setActiveSubjectTab(subject);
   clearRecognitionFeedback();
   updatePhysicsPresetOption();
   showToast(`已预选${template.menuTitle}`);
@@ -6712,6 +7577,49 @@ $("#physicsPresetToggle")?.addEventListener("click", event => {
   togglePhysicsPresetDropdown();
 });
 
+// 化学、数学、生物的专用实验预选：与切换学科时的默认题一致，只是换成菜单里选中的那一项
+function preselectChemistryQuestion() {
+  clearDemoTimers();
+  pauseExperiment();
+  applyWaitingState("化学", { presetQuestion: true });
+  $("#problemText").textContent = "已预选铁与硫酸铜定量反应，点击“生成实验”后将生成反应过程与定量结论。";
+  showToast("已预选铁与硫酸铜定量反应");
+}
+
+function preselectMathTangentQuestion() {
+  clearDemoTimers();
+  pauseExperiment();
+  applyWaitingState("数学", { presetQuestion: false });
+  state.p1 = 3;
+  state.p2 = 1;
+  state.mathModel = createMathModel(defaultMathSpec());
+  syncMathContent(3, state.mathModel);
+  $("#questionInput").value = SUBJECTS["数学"].question;
+  $("#problemText").textContent = "已预选函数切线斜率题，点击“生成实验”后将生成函数图像与切线。";
+  setActiveSubjectTab("数学");
+  clearRecognitionFeedback();
+  showToast("已预选函数切线斜率题");
+}
+
+function preselectBiologyQuestion(type) {
+  clearDemoTimers();
+  pauseExperiment();
+  applyWaitingState("生物", { presetQuestion: false });
+  state.cellType = type === "animal" ? "animal" : "plant";
+  state.cellLevel = normalizeCellLevel(state.gradeLevel);
+  state.cellLevelLocked = false;
+  syncBiologyContent(state.cellType, state.cellLevel);
+  state.p1 = -10;
+  state.p2 = currentCellOrganelles().length;
+  state.selectedOrganelle = defaultOrganelleForCellType();
+  resetBiologyCellModel();
+  $("#questionInput").value = SUBJECTS["生物"].question;
+  $("#problemText").textContent = `已预选${CELL_TYPE_LABELS[state.cellType]}结构识别（${CELL_LEVEL_LABELS[state.cellLevel]}），点击“生成实验”后将生成细胞模型。`;
+  setActiveSubjectTab("生物");
+  clearRecognitionFeedback();
+  showToast(`已预选${CELL_TYPE_LABELS[state.cellType]}结构识别`);
+}
+
 function applyPhysicsPresetChoice(option) {
   if (!option) return;
   const preset = option.dataset.preset;
@@ -6721,7 +7629,14 @@ function applyPhysicsPresetChoice(option) {
   else if (preset === "projectile") preselectProjectileQuestion();
   else if (preset === "circuit") preselectCircuitQuestion();
   else if (preset === "brake") preselectBrakeQuestion();
-  else if (isExtraPhysicsTemplate(preset)) preselectExtraPhysicsQuestion(preset);
+  else if (preset === "feCuSO4") preselectChemistryQuestion();
+  else if (preset === "tangent") preselectMathTangentQuestion();
+  else if (preset === "cellPlant" || preset === "cellAnimal") preselectBiologyQuestion(preset === "cellAnimal" ? "animal" : "plant");
+  else if (GENERIC_TEMPLATES[preset]) preselectGenericQuestion(preset);
+  else return;
+  state.presetOrigin = "menu";
+  state.presetKey = preset;
+  state.presetQuestionText = $("#questionInput").value;
 }
 
 $("#physicsPresetDropdown")?.addEventListener("click", event => {
@@ -6810,7 +7725,10 @@ $$(".cell-level-toggle button").forEach(button => {
   button.addEventListener("pointerdown", event => event.stopPropagation());
   button.addEventListener("click", event => {
     event.stopPropagation();
-    switchBiologyCellLevel(button.dataset.level);
+    // 模型上的学段按钮只切换本实验的细胞层，并保持学生输入的题目不变；之后全局学段切换不再覆盖这个选择
+    const ours = !state.hasGenerated || state.generatedQuestion === buildBiologyQuestionText();
+    switchBiologyCellLevel(button.dataset.level, { updateQuestion: ours });
+    if (state.hasGenerated) state.cellLevelLocked = true;
   });
 });
 
@@ -7005,7 +7923,7 @@ async function generateExperiment(options = {}) {
   let solenoidParse = null;
   let projectileParse = null;
   let circuitParse = null;
-  let extraPhysicsParse = null;
+  let genericParse = null;
   let chemistryParse = null;
   let mathParse = null;
   let templateRecognition = null;
@@ -7045,15 +7963,17 @@ async function generateExperiment(options = {}) {
     syncPhysicsControlsFromState();
     setRecognitionFeedback(projectileParse);
   } else if (plan.kind === "extra") {
-    extraPhysicsParse = plan.parse;
-    state.subject = "物理";
-    state.physicsTemplate = extraPhysicsParse.templateId;
-    state.extraFixed = { ...state.extraFixed, [extraPhysicsParse.templateId]: extraPhysicsParse.fixed };
-    state.p1 = extraPhysicsParse.p1;
-    state.p2 = extraPhysicsParse.p2;
-    syncExtraPhysicsContent(extraPhysicsParse.templateId, extraPhysicsParse.p1, extraPhysicsParse.p2);
+    // 任一学科的通用模板：学科取自模板登记的 subject
+    genericParse = plan.parse;
+    const genericSubject = GENERIC_TEMPLATES[genericParse.templateId].subject;
+    state.subject = genericSubject;
+    setSubjectTemplate(genericSubject, genericParse.templateId);
+    state.extraFixed = { ...state.extraFixed, [genericParse.templateId]: genericParse.fixed };
+    state.p1 = genericParse.p1;
+    state.p2 = genericParse.p2;
+    syncGenericContent(genericParse.templateId, genericParse.p1, genericParse.p2);
     syncPhysicsControlsFromState();
-    setRecognitionFeedback(extraPhysicsParse);
+    setRecognitionFeedback(genericParse);
   } else if (plan.kind === "circuit") {
     circuitParse = plan.parse;
     state.subject = "物理";
@@ -7085,9 +8005,11 @@ async function generateExperiment(options = {}) {
     chemistryParse = plan.parse;
     state.subject = "化学";
     state.chemGiven = chemistryParse.chemGiven || null;
-    state.p1 = chemistryParse.feMass;
-    state.p2 = chemistryParse.cuso4Mol;
-    syncChemistryFeCuSO4Content(chemistryParse.feMass, chemistryParse.cuso4Mol);
+    state.chemForm = chemistryForm(chemistryParse.chemForm);
+    // 足量的一方滑块锁定，状态里的数值不参与计算
+    state.p1 = chemistryParse.p1 ?? 0;
+    state.p2 = chemistryParse.p2 ?? 0;
+    syncChemistryFeCuSO4Content();
     setRecognitionFeedback(chemistryParse);
   } else if (plan.kind === "math") {
     mathParse = plan.parse;
@@ -7101,6 +8023,7 @@ async function generateExperiment(options = {}) {
     const cellType = plan.parse.cellType;
     state.cellType = cellType;
     state.cellLevel = plan.parse.cellLevel;
+    state.cellLevelLocked = Boolean(plan.parse.cellLevelLocked);
     syncBiologyContent(cellType, state.cellLevel);
     templateRecognition = biologyTemplateRecognition();
     state.subject = "生物";
@@ -7122,8 +8045,8 @@ async function generateExperiment(options = {}) {
     ? SUBJECTS["物理"].generationStages
     : circuitParse
     ? SUBJECTS["物理"].generationStages
-    : extraPhysicsParse
-    ? SUBJECTS["物理"].generationStages
+    : genericParse
+    ? SUBJECTS[GENERIC_TEMPLATES[genericParse.templateId].subject].generationStages
     : physicsParse
     ? SUBJECTS["物理"].generationStages
     : chemistryParse
@@ -7135,10 +8058,10 @@ async function generateExperiment(options = {}) {
       : null;
   await showGenerationOverlay(generationStages, { question: displayQuestion, subject: detected });
   applySubject(detected, false);
-  if (extraPhysicsParse) {
-    syncExtraPhysicsContent(extraPhysicsParse.templateId, extraPhysicsParse.p1, extraPhysicsParse.p2);
+  if (genericParse) {
+    syncGenericContent(genericParse.templateId, genericParse.p1, genericParse.p2);
     syncPhysicsControlsFromState();
-    refreshGeneratedSubjectSurface("物理", { preserveProblemText: true });
+    refreshGeneratedSubjectSurface(GENERIC_TEMPLATES[genericParse.templateId].subject, { preserveProblemText: true });
   }
   $("#questionInput").value = displayQuestion;
   $("#problemText").textContent = displayQuestion;
@@ -7147,7 +8070,7 @@ async function generateExperiment(options = {}) {
   if (boardSliderParse) setRecognitionFeedback(boardSliderParse);
   if (projectileParse) setRecognitionFeedback(projectileParse);
   if (circuitParse) setRecognitionFeedback(circuitParse);
-  if (extraPhysicsParse) setRecognitionFeedback(extraPhysicsParse);
+  if (genericParse) setRecognitionFeedback(genericParse);
   if (physicsParse) setRecognitionFeedback(physicsParse);
   if (chemistryParse) setRecognitionFeedback(chemistryParse);
   if (mathParse) setRecognitionFeedback(mathParse);
@@ -7162,9 +8085,10 @@ async function generateExperiment(options = {}) {
   resetExperiment();
   setTimeout(focusExperimentCard, 80);
   scheduleReasoningAutoAdvance();
+  updateGradeTag();
   dispatchAIContextChanged();
   setDemoStep(3, "点击播放或请求 AI 导师提示");
-  showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : extraPhysicsParse ? "物理典型题模板已生成，可拖动参数观察变化" : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
+  showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : genericParse ? `${GENERIC_TEMPLATES[genericParse.templateId].subject}典型题模板已生成，可拖动参数观察变化` : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
 }
 
 $("#generateButton").addEventListener("click", () => generateExperiment());
@@ -7276,6 +8200,15 @@ $("#hintButton").addEventListener("click", () => {
   clearReasoningTimers();
   setDemoStep(5, "AI 导师追问与迁移");
   elements.mentorMessage.innerHTML = config().hint;
+  const generic = activeGenericTemplate();
+  if (generic) {
+    updateFormulaSpotlight(state.subject);
+    const content = buildGenericContent(generic.id);
+    setReasoningStep(2, `<span>AI 提示</span>${content.hint.replace(/<[^>]+>/g, "")}`);
+    hideMentorFeedback();
+    showToast("AI 导师已给出当前题型公式提示");
+    return;
+  }
   if (state.subject === "物理") {
     updateFormulaSpotlight("物理");
     if (state.physicsTemplate === "boardSlider") {
@@ -7295,11 +8228,6 @@ $("#hintButton").addEventListener("click", () => {
       setReasoningStep(2, `<span>AI 提示</span>确认是纯电阻电路后，直接用 I = U / R；注意电压、电阻和电流单位。`);
       hideMentorFeedback();
       showToast("AI 导师已给出欧姆定律提示");
-    } else if (isExtraPhysicsTemplate()) {
-      const content = buildExtraPhysicsContent();
-      setReasoningStep(2, `<span>AI 提示</span>${content.hint.replace(/<[^>]+>/g, "")}`);
-      hideMentorFeedback();
-      showToast("AI 导师已给出当前题型公式提示");
     } else {
       setReasoningStep(2, `<span>AI 提示</span>题目没有给时间 t，先找不含 t 的速度—位移公式。`);
       showMentorFormulaFeedback();
@@ -7333,6 +8261,32 @@ $("#challengeButton").addEventListener("click", () => {
   clearReasoningTimers();
   setDemoStep(5, "AI 导师追问与迁移");
   clearDemoTimers();
+
+  // 通用模板（任一学科）：模板自带变式规则时按规则改参数，否则两个参数各前进两格
+  const genericTemplate = activeGenericTemplate();
+  if (genericTemplate) {
+    const template = genericTemplate;
+    const fixed = template.fixedWithDefaults(state.extraFixed?.[template.id]);
+    const custom = template.variant?.(state.p1, state.p2, fixed);
+    if (custom) {
+      state.p1 = custom.p1;
+      state.p2 = custom.p2;
+    } else {
+      const nextP1 = clamp(state.p1 + Number(template.params[0].step) * 2, template.params[0].min, template.params[0].max);
+      const nextP2 = clamp(state.p2 + Number(template.params[1].step) * 2, template.params[1].min, template.params[1].max);
+      state.p1 = nextP1 === state.p1 ? template.defaults[0] : nextP1;
+      state.p2 = nextP2 === state.p2 ? template.defaults[1] : nextP2;
+    }
+    syncGenericContent(template.id, state.p1, state.p2);
+    syncPhysicsControlsFromState();
+    updateParameters(true, { syncQuestion: true });
+    const content = buildGenericContent(template.id);
+    setReasoningStep(4, `<span>变式挑战</span>${content.model.conclusion}`);
+    elements.mentorMessage.innerHTML = `我已生成同类型变式：<strong>${content.recognitionText}</strong>。请用 <strong>${content.model.formula}</strong> 解释变化。`;
+    hideMentorFeedback();
+    showToast(`${template.subject}模板变式题已同步`);
+    return;
+  }
 
   if (state.subject === "物理" && state.physicsTemplate === "boardSlider") {
     state.boardSliderParams = { ...state.boardSliderParams, initialSpeed: 5 };
@@ -7403,23 +8357,6 @@ $("#challengeButton").addEventListener("click", () => {
     return;
   }
 
-  if (state.subject === "物理" && isExtraPhysicsTemplate()) {
-    const template = extraPhysicsTemplate();
-    const nextP1 = clamp(state.p1 + Number(template.params[0].step) * 2, template.params[0].min, template.params[0].max);
-    const nextP2 = clamp(state.p2 + Number(template.params[1].step) * 2, template.params[1].min, template.params[1].max);
-    state.p1 = nextP1 === state.p1 ? template.defaults[0] : nextP1;
-    state.p2 = nextP2 === state.p2 ? template.defaults[1] : nextP2;
-    syncExtraPhysicsContent(state.physicsTemplate, state.p1, state.p2);
-    syncPhysicsControlsFromState();
-    updateParameters(true, { syncQuestion: true });
-    const content = buildExtraPhysicsContent();
-    setReasoningStep(4, `<span>变式挑战</span>${content.model.conclusion}`);
-    elements.mentorMessage.innerHTML = `我已生成同类型变式：<strong>${content.recognitionText}</strong>。请用 <strong>${content.model.formula}</strong> 解释变化。`;
-    hideMentorFeedback();
-    showToast("物理模板变式题已同步");
-    return;
-  }
-
   if (state.subject === "物理" && state.physicsTemplate === "brake" && state.brakeMode === "friction") {
     const previous = physicsBrakeModel();
     state.p2 = frictionChallengeMu(state.p2);
@@ -7472,6 +8409,23 @@ $("#challengeButton").addEventListener("click", () => {
     syncFavoriteState();
     dispatchAIContextChanged("parameters");
     showToast(`变式题已同步：停止距离 ${aboutText(next.stopDistance)}${smartNumber(next.stopDistance)}m`);
+    return;
+  }
+
+  if (state.subject === "化学" && (chemistryForm().level === "junior" || chemistryForm().excess)) {
+    // 初中讲法与足量题：改变题目给出用量的那种反应物（足量的一方滑块锁定）
+    const form = chemistryForm();
+    const index = form.excess === "fe" ? 1 : 0;
+    const param = config().params[index];
+    const current = index === 0 ? state.p1 : state.p2;
+    const next = current * 2 <= Number(param.max) + 1e-9 ? current * 2 : Math.max(Number(param.min), current / 2);
+    setRange(elements.ranges[index], { ...param, value: next });
+    updateParameters(true, { syncQuestion: true });
+    const content = buildChemistryFeCuSO4Content();
+    const amount = index === 0 || form.level === "junior" ? `${formatGram(next)}g` : `${formatMol(next)}mol`;
+    setReasoningStep(4, `<span>变式挑战</span>${content.conclusion}`);
+    elements.mentorMessage.innerHTML = `${index === 0 ? "铁粉" : "硫酸铜"}${next > current ? "增加" : "减少"}到 <strong>${amount}</strong> 后：${content.conclusion}`;
+    showToast("化学变式题已同步");
     return;
   }
 
@@ -7613,10 +8567,149 @@ if (elements.car?.parentElement && "ResizeObserver" in window) {
   }).observe(elements.car.parentElement);
 }
 
+/* ===== 学段切换（2026-10-16）=====
+   页首右上（手机上放在学科行）的“初中 | 高中”：默认高中，选择保存在 masterLab.gradeLevel.v1。
+   学段决定预设菜单排序、默认题、推荐实验、双学段实验的讲法和 AI 导师的讲解方式；
+   输入的题目不受学段限制，照常生成，只在实验标题旁标“初中内容 / 高中内容”。 */
+// 专用实验的学段（计划文档第三节）；通用模板的学段写在模板的 level 上
+const DEDICATED_EXPERIMENT_LEVELS = Object.freeze({
+  brake: "senior",
+  projectile: "senior",
+  boardSlider: "senior",
+  circuit: "junior",
+  solenoid: "junior"
+});
+
+function experimentLevelInfo() {
+  if (!state.hasGenerated) return null;
+  const generic = activeGenericTemplate();
+  if (generic) return { levels: generic.levels, content: generic.contentLevel(state.extraFixed?.[generic.id]) };
+  if (state.subject === "物理") {
+    const level = DEDICATED_EXPERIMENT_LEVELS[state.physicsTemplate] || "senior";
+    return { levels: [level], content: level };
+  }
+  if (state.subject === "化学") return chemistryLevelInfo();
+  if (state.subject === "数学") return { levels: ["senior"], content: "senior" };
+  return { levels: ["junior", "senior"], content: normalizeCellLevel(state.cellLevel) };
+}
+
+function updateGradeTag() {
+  const tag = $("#experimentGradeTag");
+  if (!tag) return;
+  const info = experimentLevelInfo();
+  tag.hidden = !info;
+  if (!info) return;
+  const other = info.content !== state.gradeLevel;
+  tag.textContent = `${GRADE_LEVEL_LABELS[info.content]}内容`;
+  tag.classList.toggle("is-other-level", other);
+  tag.title = other
+    ? `当前选择的是${GRADE_LEVEL_LABELS[state.gradeLevel]}学段；这道题按${GRADE_LEVEL_LABELS[info.content]}内容照常生成`
+    : `与当前选择的${GRADE_LEVEL_LABELS[state.gradeLevel]}学段一致`;
+}
+
+function syncGradeSwitches() {
+  $$(".grade-switch [data-grade]").forEach(button => {
+    const active = button.dataset.grade === state.gradeLevel;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+  document.body.dataset.gradeLevel = state.gradeLevel;
+}
+
+// 当前题目是否是本站按参数写出的题（预设或拖动滑块后同步的），而不是学生自己输入的
+function ownQuestionText(subject = state.subject) {
+  const generic = activeGenericTemplate(subject);
+  if (generic) return buildGenericQuestionText(generic.id);
+  if (subject === "化学") return buildChemistryQuestionText();
+  if (subject === "数学") return buildMathQuestionText();
+  if (subject === "生物") return buildBiologyQuestionText();
+  return "";
+}
+
+function refreshExperimentAfterLevelChange(rewriteQuestion) {
+  const generic = activeGenericTemplate();
+  if (generic) syncGenericContent(generic.id, state.p1, state.p2);
+  syncPhysicsControlsFromState();
+  updateParameters(true, { syncQuestion: rewriteQuestion });
+  refreshGeneratedSubjectSurface(state.subject, { preserveProblemText: true });
+  if (rewriteQuestion) $("#problemText").textContent = state.generatedQuestion;
+  saveCurrentSubjectSnapshot();
+}
+
+// 已生成的实验：双学段实验未被题目锁定时换讲法；本站写出的题目可改写成另一学段的预设；
+// 学生输入的题目一律不改写
+function applyGradeLevelToExperiment(level = state.gradeLevel) {
+  const generic = activeGenericTemplate();
+  if (generic) {
+    if (generic.levels.length < 2) return;
+    const stored = state.extraFixed?.[generic.id] || {};
+    const fixed = generic.fixedWithDefaults(stored);
+    const ours = state.generatedQuestion === buildGenericQuestionText(generic.id);
+    if (!fixed.levelLocked) {
+      state.extraFixed = { ...state.extraFixed, [generic.id]: { ...stored, level } };
+      refreshExperimentAfterLevelChange(ours);
+    } else if (ours && generic.presetFor) {
+      const preset = generic.presetFor(level);
+      state.extraFixed = { ...state.extraFixed, [generic.id]: preset.fixed };
+      state.p1 = preset.p1;
+      state.p2 = preset.p2;
+      refreshExperimentAfterLevelChange(true);
+    }
+    return;
+  }
+  if (state.subject === "化学") {
+    applyGradeLevelToChemistry(level);
+    return;
+  }
+  if (state.subject === "生物" && !state.cellLevelLocked && normalizeCellLevel(level) !== state.cellLevel) {
+    const ours = state.generatedQuestion === buildBiologyQuestionText();
+    switchBiologyCellLevel(level, { updateQuestion: ours, announce: false });
+  }
+}
+
+function applyGradeLevelToPage() {
+  const input = $("#questionInput");
+  if (state.hasGenerated) {
+    applyGradeLevelToExperiment();
+  } else if (input && input.value === state.presetQuestionText) {
+    // 还没生成：输入框里是本站放入的预设题时，换成新学段的对应预设；学生自己改过的题不动
+    const untouchedSample = input.value === input.defaultValue;
+    const option = PRESET_OPTIONS.find(item => item.dataset.preset === state.presetKey && item.dataset.subject === state.subject);
+    if (state.presetOrigin === "menu" && option && presetOptionLevels(option).includes(state.gradeLevel)) applyPhysicsPresetChoice(option);
+    else if (state.presetOrigin === "default") applyWaitingState(state.subject, { presetQuestion: true });
+    if (untouchedSample) input.defaultValue = input.value;
+  }
+  renderFavoriteList();
+  syncFavoriteState();
+  if ($("#physicsPresetDropdown")?.classList.contains("show")) renderPresetMenu();
+  updateGradeTag();
+  dispatchAIContextChanged("context");
+}
+
+function setGradeLevel(level, options = {}) {
+  const next = normalizeGradeLevel(level);
+  const changed = next !== state.gradeLevel;
+  state.gradeLevel = next;
+  const saved = options.persist === false || persistGradeLevel(next);
+  syncGradeSwitches();
+  if (!changed) return;
+  applyGradeLevelToPage();
+  if (options.announce !== false) {
+    showToast(saved ? `已切换到${GRADE_LEVEL_LABELS[next]}学段` : `已切换到${GRADE_LEVEL_LABELS[next]}学段（当前浏览器无法长期保存这项设置）`);
+  }
+}
+
+$$(".grade-switch [data-grade]").forEach(button => {
+  button.addEventListener("click", () => setGradeLevel(button.dataset.grade));
+});
+
 renderFavoriteList();
 syncFavoriteState();
 updateGreeting();
+syncGradeSwitches();
 applyWaitingState("物理", { presetQuestion: true });
+// 初中学段的默认题是杠杆：把它当作“尚未改动的示例题”，与高中的刹车示例同样对待
+$("#questionInput").defaultValue = $("#questionInput").value;
 updatePhysicsPresetOption();
 setDemoStep(1, "输入题目，生成实验");
 animationClock.reconcile();

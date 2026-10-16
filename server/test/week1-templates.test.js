@@ -48,7 +48,8 @@ test('mirror: missing dimensions stay unknown in answers and generated questions
 test('all generic templates expose a recognized grade level', () => {
   assert.equal(Object.keys(templates).length,12);
   for(const t of Object.values(templates)) assert.ok(['junior','senior','both'].includes(t.level),t.id);
-  assert.equal(templates.friction.level,'senior');
+  // Week 2 adds the junior inquiry form (no μ); both forms share one template.
+  assert.equal(templates.friction.level,'both');
 });
 
 test('new templates preserve accepted input precision and reject silent rounding', () => {

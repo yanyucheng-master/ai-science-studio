@@ -926,8 +926,11 @@
  },
  {
   "q": "将 5.6g 铁粉加入足量硫酸铜溶液中，充分反应后生成铜多少克？",
-  "expect": "ai",
-  "note": "足量，缺硫酸铜的量"
+  "expect": "local",
+  "kind": "chemistry",
+  "answer": {"cuMass": 6.4, "p1": 5.6, "level": "senior", "excess": "cuso4"},
+  "show": ["n(Fe) = m/M = 5.6 g ÷ 56 g/mol = 0.10 mol", "m(Cu) = n·M = 0.10 mol × 64 g/mol = 6.4 g"],
+  "note": "足量（第 2 周起本地处理）：按铁计算；题目没写学段，跟随全局学段（高中）"
  },
  {
   "q": "将铁片放入硫酸铜溶液中，一段时间后取出，铁片质量增加了 0.8g，求生成铜的质量。",
@@ -1014,13 +1017,20 @@
  },
  {
   "q": "解方程组：2x + y = 5，x - y = 1。",
-  "expect": "ai",
-  "note": "方程组"
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "linearSystem",
+  "answer": {"solX": 2, "solY": 1, "solutionKind": "unique"},
+  "note": "方程组（第 2 周新增模板，原为转 AI）"
  },
  {
   "q": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
-  "expect": "ai",
-  "note": "顶点"
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "quadratic",
+  "answer": {"vertexX": 2, "vertexY": -1, "delta": 4},
+  "show": ["(1, 0)", "(3, 0)"],
+  "note": "顶点与交点（第 2 周新增模板，原为转 AI）"
  },
  {
   "q": "求曲线 y = x² 在点 (2, 4) 处的切线方程。",
@@ -1429,6 +1439,7 @@
   "q": "观察人体口腔上皮细胞的结构示意图，说出细胞核的作用。",
   "expect": "local",
   "kind": "biology",
+  "level": "junior",
   "answer": {
    "cellType": "animal"
   },
@@ -1952,5 +1963,612 @@
   "expect": "ai",
   "target": "planeMirror",
   "note": "长度超出演示输入精度"
+ },
+ {
+  "q": "用弹簧测力计沿水平方向拉着木块在长木板上做匀速直线运动，探究滑动摩擦力的大小与压力大小、接触面粗糙程度的关系。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "friction",
+  "level": "junior",
+  "answer": {"p1": 10, "p2": 1, "level": "junior"},
+  "show": ["接触面为木板", "f = F拉"],
+  "hide": ["μ", "动摩擦因数"],
+  "note": "初中探究预设：只讲影响因素与二力平衡，不出现 μ"
+ },
+ {
+  "q": "滑动摩擦力的大小与哪些因素有关？",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "friction",
+  "answer": {"level": "junior"},
+  "hide": ["μ"],
+  "mapped": "用弹簧测力计沿水平方向拉着木块在长木板上做匀速直线运动，探究滑动摩擦力的大小与压力大小、接触面粗糙程度的关系。",
+  "mappedAccepted": true,
+  "note": "高中学段下输入初中探究题：照常生成初中讲法（题型不受学段限制）"
+ },
+ {
+  "q": "探究影响滑动摩擦力大小的因素。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "friction",
+  "level": "junior",
+  "answer": {"level": "junior"},
+  "note": "教材实验名称"
+ },
+ {
+  "q": "探究滑动摩擦力的大小与接触面粗糙程度的关系。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "friction",
+  "level": "junior",
+  "answer": {"level": "junior"},
+  "note": "只问一个因素"
+ },
+ {
+  "q": "用弹簧测力计水平匀速拉动木块，木块对木板的压力为 10N，动摩擦因数为 0.3。求滑动摩擦力。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "friction",
+  "level": "junior",
+  "answer": {"p1": 10, "p2": 0.3, "force": 3, "level": "senior"},
+  "show": ["f = μF压"],
+  "note": "初中学段下输入高中题：照常按 f = μF压 生成，标“高中内容”"
+ },
+ {
+  "q": "一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。",
+  "expect": "local",
+  "kind": "brake",
+  "level": "junior",
+  "answer": {"stopDistance": 40, "v0": 20},
+  "note": "初中学段下输入高中题：不受学段限制"
+ },
+ {
+  "q": "滑动摩擦力的大小与接触面积有关吗？",
+  "expect": "ai",
+  "target": "friction",
+  "mapped": "用弹簧测力计沿水平方向拉着木块在长木板上做匀速直线运动，探究滑动摩擦力的大小与压力大小、接触面粗糙程度的关系。",
+  "mappedAccepted": false,
+  "note": "接触面积（教材结论为无关）不在初中讲法范围内；AI 改写成初中预设题也不能通过原题核对"
+ },
+ {
+  "q": "滑动摩擦力的大小与物体运动的速度有关吗？",
+  "expect": "ai",
+  "target": "friction",
+  "note": "运动速度"
+ },
+ {
+  "q": "滑动摩擦力与物体的重力有关吗？",
+  "expect": "ai",
+  "target": "friction",
+  "note": "重力与压力的区别需要讲解"
+ },
+ {
+  "q": "木块对木板的压力为 10N，接触面是毛巾，求滑动摩擦力。",
+  "expect": "ai",
+  "target": "friction",
+  "note": "给了压力却没有动摩擦因数：初中示数是模拟值，不能当作计算结果"
+ },
+ {
+  "q": "探究滑动摩擦力的大小与压力大小、接触面粗糙程度的关系，若压力为 10N，测力计示数是多少？",
+  "expect": "ai",
+  "target": "friction",
+  "note": "初中探究题带数值：示数不能由压力算出"
+ },
+ {
+  "q": "滑动摩擦力是多少？",
+  "expect": "ai",
+  "target": "friction",
+  "note": "没有条件"
+ },
+ {
+  "q": "滑动摩擦力与压力成正比吗？",
+  "expect": "ai",
+  "target": "friction",
+  "note": "正比关系属于 f = μF压，题目没有给出数值"
+ },
+ {
+  "q": "观察动物细胞的结构示意图，说出线粒体的功能。",
+  "expect": "local",
+  "kind": "biology",
+  "answer": {"cellType": "animal", "cellLevel": "senior"},
+  "show": ["与高等植物细胞相比：有中心体，无细胞壁、叶绿体和大液泡"],
+  "note": "题目没写学段：跟随全局学段（高中）"
+ },
+ {
+  "q": "观察动物细胞的结构示意图，说出线粒体的功能。",
+  "expect": "local",
+  "kind": "biology",
+  "level": "junior",
+  "answer": {"cellType": "animal", "cellLevel": "junior"},
+  "show": ["动物细胞没有细胞壁、叶绿体和液泡"],
+  "note": "题目没写学段：跟随全局学段（初中）"
+ },
+ {
+  "q": "七年级生物：观察植物细胞结构示意图，说出叶绿体的功能。",
+  "expect": "local",
+  "kind": "biology",
+  "answer": {"cellType": "plant", "cellLevel": "junior"},
+  "show": ["植物细胞有细胞壁、叶绿体和液泡，动物细胞没有"],
+  "note": "题目写明七年级：按初中讲法，不跟随全局学段（高中）"
+ },
+ {
+  "q": "在电子显微镜下观察动物细胞，说出内质网的功能。",
+  "expect": "local",
+  "kind": "biology",
+  "level": "junior",
+  "answer": {"cellType": "animal", "cellLevel": "senior"},
+  "show": ["内质网"],
+  "note": "初中学段下：题目写明电子显微镜，按高中讲法"
+ },
+ {
+  "q": "二次函数 y = x² − 4x + 3，求图像的开口方向、顶点坐标和对称轴，说明 y 随 x 的增大怎样变化，并求图像与坐标轴的交点。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "quadratic",
+  "level": "junior",
+  "answer": {"p1": -4, "p2": 3, "a": 1, "vertexX": 2, "vertexY": -1, "delta": 4, "level": "junior"},
+  "show": ["顶点 (2, −1)", "x = 2", "(1, 0)", "(3, 0)", "(0, 3)", "y = (x − 2)² − 1"],
+  "hide": ["导数", "零点"],
+  "note": "二次函数初中预设：配方法求顶点、增减性、与坐标轴交点"
+ },
+ {
+  "q": "已知函数 f(x) = x² − 4x + 3，求函数的单调区间、最小值和零点。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "quadratic",
+  "answer": {"p1": -4, "p2": 3, "vertexY": -1, "level": "senior"},
+  "show": ["(−∞, 2]", "[2, +∞)", "最小值", "零点"],
+  "note": "二次函数高中预设：f(x)、单调区间、零点"
+ },
+ {
+  "q": "抛物线 y = -x² + 2x + 3 的顶点坐标和对称轴是什么？",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "quadratic",
+  "answer": {"a": -1, "p1": 2, "p2": 3, "vertexX": 1, "vertexY": 4, "level": "senior"},
+  "show": ["(1, 4)", "x = 1", "开口向下"],
+  "note": "题目没写学段：跟随全局学段（高中）"
+ },
+ {
+  "q": "抛物线 y = -x² + 2x + 3 的顶点坐标和对称轴是什么？",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "quadratic",
+  "level": "junior",
+  "answer": {"vertexX": 1, "vertexY": 4, "level": "junior"},
+  "show": ["(1, 4)"],
+  "hide": ["零点", "单调"],
+  "note": "题目没写学段：跟随全局学段（初中）"
+ },
+ {
+  "q": "二次函数 y = 2x² − 8x + 6 的图像与 x 轴的交点坐标是多少？",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "quadratic",
+  "answer": {"a": 2, "p1": -8, "p2": 6, "vertexX": 2, "vertexY": -2, "delta": 16},
+  "show": ["(1, 0)", "(3, 0)"],
+  "note": "a ≠ 1"
+ },
+ {
+  "q": "二次函数 y = x² + 2x + 1 的图像与 x 轴有几个交点？",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "quadratic",
+  "answer": {"delta": 0, "vertexX": -1, "vertexY": 0},
+  "show": ["Δ = 0", "(−1, 0)"],
+  "note": "Δ = 0：顶点在 x 轴上"
+ },
+ {
+  "q": "二次函数 y = x² + x + 1 的图像与 x 轴有交点吗？",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "quadratic",
+  "answer": {"delta": -3, "vertexX": -0.5, "vertexY": 0.75},
+  "show": ["Δ = −3 < 0", "没有交点"],
+  "note": "Δ < 0：与 x 轴没有交点"
+ },
+ {
+  "q": "二次函数 y = x² − 2x − 1 的顶点坐标和与 x 轴的交点。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "quadratic",
+  "answer": {"vertexX": 1, "vertexY": -2, "delta": 8, "rootsText": "1 ± √2"},
+  "show": ["1 + √2", "1 − √2", "≈ 2.414", "≈ −0.414"],
+  "note": "无理根：写根式和近似值"
+ },
+ {
+  "q": "二次函数 y = 0.5x² − 2x + 1 的开口方向和最小值。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "quadratic",
+  "answer": {"a": 0.5, "p1": -2, "p2": 1, "vertexX": 2, "vertexY": -1},
+  "show": ["开口向上", "最小值"],
+  "note": "小数系数"
+ },
+ {
+  "q": "二次函数 y = x² − 6x + 5，当 x 取何值时，y 随 x 的增大而减小？",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "quadratic",
+  "answer": {"vertexX": 3, "level": "junior"},
+  "show": ["当 x < 3 时，y 随 x 的增大而减小"],
+  "note": "增减性（初中说法，锁定初中讲法）"
+ },
+ {
+  "q": "求函数 f(x) = −x² + 4x 的单调递增区间和最大值。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "quadratic",
+  "answer": {"a": -1, "p1": 4, "p2": 0, "vertexX": 2, "vertexY": 4, "level": "senior"},
+  "show": ["(−∞, 2]", "最大值"],
+  "note": "c = 0：与 y 轴交点也是零点"
+ },
+ {
+  "q": "函数 y = x² − 4x + 3 的值域是什么？",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "quadratic",
+  "answer": {"vertexY": -1, "level": "senior"},
+  "show": ["[−1, +∞)"],
+  "note": "值域（高中说法）"
+ },
+ {
+  "q": "二次函数 y = x² − 4x + 3 的图像在点 (1, 0) 处的切线斜率是多少？",
+  "expect": "local",
+  "kind": "math",
+  "answer": {"slope": -2, "x": 1},
+  "note": "含“切线、斜率”走切线模板"
+ },
+ {
+  "q": "抛物线 y=x^2-4x+3 的顶点在哪里？",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "quadratic",
+  "answer": {"vertexX": 2, "vertexY": -1},
+  "mapped": "二次函数 y = x² − 4x + 3，求图像的顶点坐标。",
+  "mappedAccepted": true,
+  "note": "条件一致的 AI 改写可以通过原题核对"
+ },
+ {
+  "q": "二次函数 y = x² − 4x + 3 在 0 ≤ x ≤ 3 上的最大值是多少？",
+  "expect": "ai",
+  "target": "quadratic",
+  "note": "区间最值"
+ },
+ {
+  "q": "已知二次函数 y = x² + mx + 3 的对称轴是直线 x = 2，求 m 的值。",
+  "expect": "ai",
+  "target": "quadratic",
+  "mapped": "二次函数 y = x² − 4x + 3，求图像的对称轴。",
+  "mappedAccepted": false,
+  "note": "含参数；AI 补出的 m 不能通过原题核对"
+ },
+ {
+  "q": "二次函数的图像经过点 (1, 0)、(3, 0) 和 (0, 3)，求它的解析式。",
+  "expect": "ai",
+  "target": "quadratic",
+  "note": "反求解析式"
+ },
+ {
+  "q": "将抛物线 y = x² 向右平移 2 个单位，再向下平移 1 个单位，求所得抛物线的解析式。",
+  "expect": "ai",
+  "target": "quadratic",
+  "note": "平移"
+ },
+ {
+  "q": "求抛物线 y = x² − 4x + 3 与直线 y = x − 1 的交点坐标。",
+  "expect": "ai",
+  "target": "quadratic",
+  "note": "与直线的交点"
+ },
+ {
+  "q": "二次函数 y = (x − 2)² − 1 的顶点坐标是什么？",
+  "expect": "ai",
+  "target": "quadratic",
+  "note": "顶点式（只接一般式 y = ax² + bx + c）"
+ },
+ {
+  "q": "二次函数 y = x² − 4x + 3 的图像与 x 轴交于 A、B 两点，顶点为 C，求 △ABC 的面积。",
+  "expect": "ai",
+  "target": "quadratic",
+  "note": "面积"
+ },
+ {
+  "q": "二次函数 y = x² − 4x + 3，当 y < 0 时，求 x 的取值范围。",
+  "expect": "ai",
+  "target": "quadratic",
+  "note": "不等式 / 取值范围"
+ },
+ {
+  "q": "二次函数 y = x² − 4x + 3，当 x = 5 时，y 的值是多少？",
+  "expect": "ai",
+  "target": "quadratic",
+  "note": "求函数值"
+ },
+ {
+  "q": "某商品每件的利润 y 与售价 x 满足 y = −x² + 20x − 75，求最大利润。",
+  "expect": "ai",
+  "target": "quadratic",
+  "note": "实际应用题"
+ },
+ {
+  "q": "二次函数 y = ax² + bx + c 的图像如图所示，判断 a、b、c 的符号。",
+  "expect": "ai",
+  "target": "quadratic",
+  "note": "依赖图示、字母系数"
+ },
+ {
+  "q": "二次函数 y = x² − 40x + 3 的顶点坐标是什么？",
+  "expect": "ai",
+  "target": "quadratic",
+  "note": "系数超出演示范围"
+ },
+ {
+  "q": "二次函数 y = x² − 4.125x + 3 的顶点坐标是什么？",
+  "expect": "ai",
+  "target": "quadratic",
+  "note": "系数超过两位小数"
+ },
+ {
+  "q": "二次函数 y = x² − 4x + 3 的顶点坐标是 (2, −1) 吗？",
+  "expect": "ai",
+  "target": "quadratic",
+  "note": "题中另有数值"
+ },
+ {
+  "q": "解方程组：2x + y = 5，x − y = 1，并说明它的解与两条直线交点的关系。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "linearSystem",
+  "answer": {"p1": 5, "p2": 1, "solutionKind": "unique", "solX": 2, "solY": 1, "level": "junior"},
+  "show": ["x = 2", "y = 1", "(2, 1)", "① + ②"],
+  "note": "方程组预设：加减消元，解是两直线的交点"
+ },
+ {
+  "q": "直线 y = 2x − 1 与直线 y = −x + 5 的交点坐标是多少？",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "linearSystem",
+  "answer": {"solutionKind": "unique", "solX": 2, "solY": 3},
+  "show": ["(2, 3)"],
+  "note": "斜截式两直线"
+ },
+ {
+  "q": "解方程组 3x + 2y = 7，x − 2y = 1。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "linearSystem",
+  "answer": {"solX": 2, "solY": 0.5},
+  "show": ["x = 2", "y = 1/2"],
+  "note": "解是分数"
+ },
+ {
+  "q": "解方程组 x + y = 1，x − y = 2。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "linearSystem",
+  "answer": {"solX": 1.5, "solY": -0.5},
+  "show": ["x = 3/2", "y = −1/2"],
+  "note": "两个解都是分数"
+ },
+ {
+  "q": "方程组 x + y = 3，2x + 2y = 8 有解吗？",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "linearSystem",
+  "answer": {"solutionKind": "none"},
+  "show": ["无解", "平行"],
+  "note": "两直线平行：无解"
+ },
+ {
+  "q": "方程组 x + y = 3，2x + 2y = 6 的解有几组？",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "linearSystem",
+  "answer": {"solutionKind": "infinite"},
+  "show": ["无数组解", "重合"],
+  "note": "两直线重合：无数组解"
+ },
+ {
+  "q": "解方程组：x = 2，x + y = 5。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "linearSystem",
+  "answer": {"solX": 2, "solY": 3},
+  "show": ["y = 3"],
+  "note": "其中一条是竖直直线 x = 2"
+ },
+ {
+  "q": "解方程组 0.5x + y = 2，x − y = 1。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "linearSystem",
+  "answer": {"solX": 2, "solY": 1},
+  "note": "小数系数"
+ },
+ {
+  "q": "二元一次方程组 x + 2y = 4，3x − y = 5 的解是什么？",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "linearSystem",
+  "answer": {"solX": 2, "solY": 1},
+  "level": "senior",
+  "show": ["初中内容"],
+  "note": "高中学段下照常生成，标“初中内容”"
+ },
+ {
+  "q": "解方程组：x + y + z = 6，x − y = 1，y + z = 4。",
+  "expect": "ai",
+  "target": "linearSystem",
+  "note": "三元"
+ },
+ {
+  "q": "关于 x、y 的方程组 x + y = k，x − y = 1 的解满足 x = 2y，求 k 的值。",
+  "expect": "ai",
+  "target": "linearSystem",
+  "mapped": "解方程组：x + y = 3，x − y = 1。",
+  "mappedAccepted": false,
+  "note": "含参数；AI 补出的常数不能通过原题核对"
+ },
+ {
+  "q": "鸡兔同笼，共有 35 个头、94 只脚，鸡和兔各有多少只？",
+  "expect": "ai",
+  "target": "linearSystem",
+  "note": "需要先列方程的应用题"
+ },
+ {
+  "q": "某校买篮球和足球共 10 个，篮球每个 80 元，足球每个 60 元，共花 720 元，篮球和足球各买了多少个？",
+  "expect": "ai",
+  "target": "linearSystem",
+  "note": "应用题"
+ },
+ {
+  "q": "2x + y = 5，x − y = 1，x + y = 3 这三个方程有公共解吗？",
+  "expect": "ai",
+  "target": "linearSystem",
+  "note": "三个方程"
+ },
+ {
+  "q": "解方程组：x + y = 5，xy = 6。",
+  "expect": "ai",
+  "target": "linearSystem",
+  "note": "不是二元一次方程组"
+ },
+ {
+  "q": "解不等式组 x + 1 > 0，x − 3 < 0。",
+  "expect": "ai",
+  "target": "linearSystem",
+  "note": "不等式组"
+ },
+ {
+  "q": "解方程组 200x + y = 5，x − y = 1。",
+  "expect": "ai",
+  "target": "linearSystem",
+  "note": "系数超出演示范围"
+ },
+ {
+  "q": "解方程组 0.125x + y = 2，x − y = 1。",
+  "expect": "ai",
+  "target": "linearSystem",
+  "note": "系数超过两位小数"
+ },
+ {
+  "q": "解方程组 2x + y = 5，x − y = 1，并求 x + y 的值。",
+  "expect": "ai",
+  "target": "linearSystem",
+  "note": "另求代数式的值"
+ },
+ {
+  "q": "如图，直线 l₁ 与 l₂ 交于点 P，求以它们的解析式组成的方程组的解。",
+  "expect": "ai",
+  "target": "linearSystem",
+  "note": "依赖图示"
+ },
+ {
+  "q": "一次函数 y = 2x + b 的图像经过点 (1, 3)，求它与直线 y = x 的交点。",
+  "expect": "ai",
+  "target": "linearSystem",
+  "note": "先求解析式"
+ },
+ {
+  "q": "解方程：2x + 1 = 5。",
+  "expect": "ai",
+  "target": "linearSystem",
+  "note": "一元一次方程"
+ },
+ {
+  "q": "将 5.6g 铁粉加入足量的硫酸铜溶液中，充分反应后生成铜的质量是多少？",
+  "expect": "local",
+  "kind": "chemistry",
+  "level": "junior",
+  "answer": {"cuMass": 6.4, "p1": 5.6, "level": "junior", "excess": "cuso4"},
+  "show": ["设生成铜的质量为 x", "56/64 = 5.6g/x", "答：生成铜的质量为 6.4 g"],
+  "hide": ["mol", "物质的量"],
+  "note": "初中预设：足量，按质量比列比例式，不出现物质的量"
+ },
+ {
+  "q": "向含 16g 硫酸铜的溶液中加入足量铁粉，充分反应后可生成铜多少克？",
+  "expect": "local",
+  "kind": "chemistry",
+  "level": "junior",
+  "answer": {"cuMass": 6.4, "p2": 16, "excess": "fe"},
+  "show": ["设生成铜的质量为 x", "160/64 = 16g/x", "答：生成铜的质量为 6.4 g"],
+  "hide": ["mol"],
+  "note": "铁粉足量：按硫酸铜计算"
+ },
+ {
+  "q": "将 8.4g 铁粉加入含 16g 硫酸铜的溶液中，求生成铜的质量。",
+  "expect": "local",
+  "kind": "chemistry",
+  "level": "junior",
+  "answer": {"cuMass": 6.4, "p1": 8.4, "p2": 16, "limiting": "CuSO₄", "level": "junior"},
+  "show": ["铁过量", "答：生成铜的质量为 6.4 g", "剩余铁 2.8 g"],
+  "hide": ["mol"],
+  "note": "两种反应物都给出质量：初中按质量比判断哪种过量"
+ },
+ {
+  "q": "将 5.6g 铁粉加入含 16g 硫酸铜的溶液中，充分反应，判断是否恰好完全反应，并求生成铜的质量。",
+  "expect": "local",
+  "kind": "chemistry",
+  "level": "junior",
+  "answer": {"cuMass": 6.4, "limiting": "恰好完全反应"},
+  "show": ["恰好完全反应"],
+  "note": "恰好完全反应"
+ },
+ {
+  "q": "将 5.6g 铁粉加入含有 0.20mol 硫酸铜的溶液中，充分反应。请计算最多生成多少 mol 铜？生成铜的质量是多少？并判断哪种反应物过量。",
+  "expect": "local",
+  "kind": "chemistry",
+  "level": "junior",
+  "answer": {"cuMol": 0.1, "level": "senior"},
+  "show": ["n(Fe) = m/M"],
+  "note": "初中学段下输入含物质的量的题：照常按高中讲法，标“高中内容”"
+ },
+ {
+  "q": "将 5.6g 铁粉加入足量的硫酸铜溶液中，求生成铜的质量。（相对原子质量：Fe-56，Cu-64）",
+  "expect": "local",
+  "kind": "chemistry",
+  "level": "junior",
+  "answer": {"cuMass": 6.4},
+  "note": "题目附带的相对原子质量与模板一致"
+ },
+ {
+  "q": "11.2g 铁与足量硫酸铜溶液反应，参加反应的硫酸铜的质量是多少？",
+  "expect": "local",
+  "kind": "chemistry",
+  "level": "junior",
+  "answer": {"cuMass": 12.8},
+  "show": ["32 g"],
+  "note": "问参加反应的硫酸铜"
+ },
+ {
+  "q": "将 5.6g 铁粉加入足量硫酸铜溶液中，求剩余硫酸铜的质量。",
+  "expect": "ai",
+  "note": "足量的硫酸铜剩余多少无法确定"
+ },
+ {
+  "q": "将足量铁粉加入足量硫酸铜溶液中，求生成铜的质量。",
+  "expect": "ai",
+  "note": "两种反应物都足量"
+ },
+ {
+  "q": "将 5.6g 铁粉加入足量的硫酸铜溶液中，求生成铜的质量。（相对原子质量：Fe-55.85，Cu-63.55）",
+  "expect": "ai",
+  "note": "相对原子质量与模板不一致"
+ },
+ {
+  "q": "向足量硫酸铜溶液中加入一定量铁粉，充分反应后生成铜 6.4g，求加入铁粉的质量。",
+  "expect": "ai",
+  "note": "已知生成物反求反应物"
+ },
+ {
+  "q": "将 5.6g 铁粉加入足量硫酸铜溶液中，求生成硫酸亚铁的质量。",
+  "expect": "ai",
+  "note": "问 FeSO4"
+ },
+ {
+  "q": "将 30g 铁粉加入足量硫酸铜溶液中，求生成铜的质量。",
+  "expect": "ai",
+  "note": "铁的质量超出演示范围"
  }
 ]
