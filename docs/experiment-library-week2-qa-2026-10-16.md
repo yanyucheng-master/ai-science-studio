@@ -113,7 +113,7 @@
 
 ## 分支同步与发布状态
 
-公告：`20261016-experiment-library-week2@1`，日期 2026-10-16，替换未发布的 `20261016-preset-dropdown-layout@1`；8 条正文中第 7 条保留原菜单排版修复的内容。若实际发布日期晚于 10/16，需把日期改为实际发布日（尚未发布，不需增加 revision）。
+公告：`20261016-experiment-library-week2@2`，日期 2026-10-16；首次发布为 `@1`，替换未发布的 `20261016-preset-dropdown-layout@1`，8 条正文中第 7 条保留原菜单排版修复的内容。首次发布后补记实际发布核验结果，因此按约定提升到 `@2`，保留原公告标识与发布日期。
 
 主分支审核清单（19 个文件）：`web/app.js`、`web/index.html`、`web/styles.css`、`web/physics-extra.js`、`web/math-extra.js`（新）、`web/chemistry-extra.js`（新）、`web/announcements.json`、`server/package.json`、`server/eval/local-template-bank.json`、`server/scripts/verify-formula-browser.js`、`server/scripts/verify-question-bank-browser.js`、`server/scripts/verify-week1-browser.js`、`server/scripts/verify-week2-browser.js`（新）、`server/test/week1-templates.test.js`、`server/test/week2-framework.test.js`（新）、`server/test/week2-math.test.js`（新）、`server/test/week2-chemistry.test.js`（新）、`docs/experiment-library-plan-2026-10-12.md`、本验收文档（新）。本地证据目录 `artifacts/`、`server/.env` 和清单以外的文件都不提交。
 
@@ -121,4 +121,19 @@
 
 公告静态核查：沙箱在从 GitHub 拉取的真实历史上按上述清单模拟暂存与本地提交（未推送），两个分支的 `--base HEAD --staged` 与针对 origin 分支的 `--committed` 均通过：19 个文件变化，1 条新增公告。
 
-提交与推送：用户已于 2026-10-16 授权。本轮本机终端可用，在本机重新执行必要静态检查，按上述 19 个路径提交并推送两个分支；推送后的 GitHub、CI 与 Render 核验结果在下方补记。
+提交与推送：用户已于 2026-10-16 授权。本轮本机终端可用，在本机重新执行必要静态检查，按上述 19 个路径提交并推送两个分支。实际发布结果如下。
+
+### 实际发布结果（2026-10-16）
+
+| 项目 | 本轮核验结果 |
+|---|---|
+| 主分支功能代码 | `da084ee5a1a520fe5ccafc4f04de7ac6a8a6fa8a`，`Add grade-aware cross-subject experiments for week two`，19 个文件 |
+| 公网功能代码 | `ce15bb1379d5c42b8210568afcbf04c8fb422ebf`，`Publish week-two experiments while preserving public AI configuration`，19 个文件 |
+| GitHub 远端 | 两分支正常推送成功，`git ls-remote` 查询的完整 SHA 与上述提交逐一相同；没有强制推送 |
+| 必要静态检查 | 两分支各 12 个 JavaScript 文件语法检查、3 个 JSON 解析、HTML 本地资源引用、凭证形态扫描及差异检查通过；两分支各自提交前 `--base HEAD --staged`、推送前针对已获取 origin 引用的 `--committed` 公告检查均通过（19 个文件、1 条新增公告） |
+| GitHub CI | 对两个完整 SHA 查询 Actions、check run、提交状态检查均为 0 条；聚合 status API 的默认 `pending` 不代表有运行中的任务，不记作 CI 通过；未跳过或修改原有自动 CI |
+| Render 来源与状态 | 用户已登录的 Chrome 中读取静态服务 `srv-d8nsa3egvqtc73e3hekg`；部署 `dep-db938s6q1p3s738tpfjg` 显示 `Deploy succeeded` 且为 `Live`，完整来源 SHA 为 `ce15bb1379d5c42b8210568afcbf04c8fb422ebf`；日志确认分支 `codex/public-demo-byo-key`，于 10/16 22:28:11（GMT+8）显示 `Your site is live` |
+| 公网静态资源 | `index.html`、`styles.css`、`physics-extra.js`、`math-extra.js`、`chemistry-extra.js`、`app.js`、`announcements.json`、`announcements.js`、`ai-tutor.js`、`science-formulas.js`、`tutor-checks.js` 共 11 个文件；正常 URL（沿用页面实际版本参数）与唯一缓存刷新 URL 共 22 次响应为 HTTP 200，SHA-256 均与公网功能提交的 Git 文件一致。样式正常 URL 首次请求未完成，单独重试后匹配 |
+| 功能验收边界 | 本轮未运行本地功能测试、浏览器回归或真实 AI 请求；历史沙箱测试、已知失败项与本轮绘图防护补丁的证据边界见上文。公网文件一致仅证明静态发布一致 |
+
+本节记录的是首次功能代码发布结果。随后两分支补记本计划和验收文档；仓库公告静态检查同样要求文档补记提供有效公告修订，因此将已经发布的 `20261016-experiment-library-week2` 提升为 `revision: 2`，在内部维护条目补充实际发布核验记录。此补记只涉及两份文档与公告，不改变实验脚本、HTML 或样式；首次发布的 22 次哈希记录仍对应上表的功能代码提交，修订后的公告另按最新公网提交核对。原始证据保存在本地 `artifacts/publish-week2-2026-10-16/`；`artifacts/`、密钥和未采用的品牌候选均未提交。
