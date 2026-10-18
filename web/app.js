@@ -7908,7 +7908,8 @@ async function generateExperiment(options = {}) {
     return;
   }
 
-  const plan = options.mapped ? planLocalExperiment(question, MAPPED_PLAN_CONTEXT) : planLocalExperiment(question);
+  const plan = options.shared ? window.MasterLabShare.planFor(options.shared)
+    : options.mapped ? planLocalExperiment(question, MAPPED_PLAN_CONTEXT) : planLocalExperiment(question);
   const detected = plan.subject;
   if (!plan.ok) {
     const remote = await handOffUnmatchedQuestion(plan.parse, displayQuestion, detected, allowAiFallback);
@@ -8056,13 +8057,14 @@ async function generateExperiment(options = {}) {
         : templateRecognition
           ? SUBJECTS["生物"].generationStages
       : null;
-  await showGenerationOverlay(generationStages, { question: displayQuestion, subject: detected });
+  if (!options.shared) await showGenerationOverlay(generationStages, { question: displayQuestion, subject: detected });
   applySubject(detected, false);
   if (genericParse) {
     syncGenericContent(genericParse.templateId, genericParse.p1, genericParse.p2);
     syncPhysicsControlsFromState();
     refreshGeneratedSubjectSurface(GENERIC_TEMPLATES[genericParse.templateId].subject, { preserveProblemText: true });
   }
+  if (options.shared) window.MasterLabShare.applyParameters(options.shared);
   $("#questionInput").value = displayQuestion;
   $("#problemText").textContent = displayQuestion;
   state.generatedQuestion = displayQuestion;
@@ -8083,12 +8085,15 @@ async function generateExperiment(options = {}) {
   hideGenerationOverlay();
   clearDemoTimers();
   resetExperiment();
-  setTimeout(focusExperimentCard, 80);
-  scheduleReasoningAutoAdvance();
+  if (!options.shared) {
+    setTimeout(focusExperimentCard, 80);
+    scheduleReasoningAutoAdvance();
+  }
   updateGradeTag();
   dispatchAIContextChanged();
   setDemoStep(3, "点击播放或请求 AI 导师提示");
-  showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : genericParse ? `${GENERIC_TEMPLATES[genericParse.templateId].subject}典型题模板已生成，可拖动参数观察变化` : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
+  if (!options.shared) showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : genericParse ? `${GENERIC_TEMPLATES[genericParse.templateId].subject}典型题模板已生成，可拖动参数观察变化` : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
+  return true;
 }
 
 $("#generateButton").addEventListener("click", () => generateExperiment());
@@ -8533,13 +8538,9 @@ document.addEventListener("keydown", event => {
   button.addEventListener("click", toggleCurrentFavorite);
 });
 
-$("#shareButton").addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText(`${location.href}#${encodeURIComponent(state.subject)}`);
-    showToast("实验分享链接已复制");
-  } catch {
-    showToast("复制失败，请检查浏览器权限");
-  }
+$("#shareButton").addEventListener("click", () => {
+  if (window.MasterLabShare) window.MasterLabShare.copy();
+  else showToast("分享模块尚未加载，请刷新页面后重试");
 });
 
 document.addEventListener("keydown", event => {
@@ -8713,12 +8714,16 @@ $("#questionInput").defaultValue = $("#questionInput").value;
 updatePhysicsPresetOption();
 setDemoStep(1, "输入题目，生成实验");
 animationClock.reconcile();
-if (document.body.classList.contains("demo-mode")) {
+if (document.body.classList.contains("demo-mode") && !location.hash.startsWith("#/share")) {
   scheduleAutoDemo();
 }
 
 window.addEventListener("pageshow", event => {
   if (!event.persisted) return;
   updateGreeting();
+  if (location.hash.startsWith("#/share")) {
+    window.MasterLabShare?.restoreRoute(true);
+    return;
+  }
   applyWaitingState("物理", { presetQuestion: true });
 });
