@@ -6233,6 +6233,7 @@ function renderWaitingReasoning() {
 }
 
 function applyWaitingState(subject = state.subject, options = {}) {
+  window.MasterLabInstant?.dismiss();
   clearDemoTimers();
   clearReasoningTimers();
   pauseExperiment();
@@ -6587,6 +6588,8 @@ function dispatchAIContextChanged(reason = "context") {
 }
 
 function buildMasterLabAIContext() {
+  const instantContext = window.MasterLabInstant?.getContext();
+  if (instantContext) return instantContext;
   // Read the original notation, not concatenated numerator/denominator or the
   // visual order of simultaneous scripts. This keeps display DOM out of AI data.
   const displayedSource = node => window.ScienceFormula?.sourceText(node) ?? node?.textContent ?? "";
@@ -6683,6 +6686,12 @@ function applyAIParameterPatch(patch) {
 
 window.MasterLabAIHost = Object.freeze({
   getContext: buildMasterLabAIContext,
+  restoreRetainedExperiment() {
+    if (state.hasGenerated && state.generatedQuestion) {
+      $("#questionInput").value = state.generatedQuestion;
+      clearRecognitionFeedback();
+    }
+  },
   applyParameterPatch: applyAIParameterPatch,
   showToast,
   setMentorSummary(message) {
@@ -7039,6 +7048,7 @@ function setGenerationStage(index) {
   const timing = generationTiming();
   const nextStart = index + 1 < timing.stageStarts.length ? timing.stageStarts[index + 1] : timing.complete;
   elements.generationOverlay.dataset.stage = String(index);
+  window.MasterLabBrandMotion?.loaderStage(elements.generationOverlay, index, stage.progress);
   elements.generationStatus.textContent = `${stage.label}：${stage.text}`;
   elements.generationProgress.style.transitionDuration = `${Math.max(0, nextStart - timing.stageStarts[index])}ms`;
   elements.generationProgress.style.width = `${stage.progress}%`;
@@ -7051,6 +7061,7 @@ function setGenerationStage(index) {
 function completeGenerationOverlay() {
   const overlay = elements.generationOverlay;
   overlay.dataset.stage = "complete";
+  window.MasterLabBrandMotion?.loaderComplete(overlay);
   $$(".gen-step", elements.generationSteps).forEach(item => { item.dataset.state = "done"; });
   moveGenerationHighlight();
   elements.generationProgress.style.transitionDuration = "240ms";
@@ -7071,6 +7082,7 @@ function showGenerationOverlay(stages = null, options = {}) {
   }));
   state.generationStages = activeStages;
   overlay.classList.remove("is-leaving");
+  window.MasterLabBrandMotion?.loaderReset(overlay);
   overlay.dataset.subject = GENERATION_SUBJECT_KEYS[options.subject] || "physics";
   elements.generationTitle.textContent = "正在把题目生成实验";
   elements.generationKicker.textContent = "SEMANTIC INPUT";
@@ -7871,6 +7883,16 @@ async function handOffUnmatchedQuestion(parseResult, question, detected, allowAi
   button.classList.add("loading");
   $("span", button).textContent = "AI 分析中";
   try {
+    if (window.MasterLabInstant && window.MasterLabAITutor?.explainQuestion) {
+      const sceneResult = await window.MasterLabInstant.generate(question, detected);
+      if (sceneResult.mode === "instant") {
+        setRecognitionFeedback({ recognitionText: "已生成 AI 科学示意图，可放大查看或继续向导师提问。" });
+        return sceneResult;
+      }
+      if (sceneResult.mode === "cancelled") { clearRecognitionFeedback(); return sceneResult; }
+      setRecognitionPending("本次图示未通过核查，已保留题目并转入 AI 导师讲解。");
+      return await window.MasterLabAITutor.explainQuestion(question, detected);
+    }
     const result = await window.MasterLabAITutor.resolveUnmatchedQuestion({
       question,
       preferredSubject: detected,
@@ -7918,6 +7940,7 @@ async function generateExperiment(options = {}) {
     }
     return;
   }
+  window.MasterLabInstant?.dismiss();
   let physicsParse = null;
   let boardSliderParse = null;
   let solenoidParse = null;

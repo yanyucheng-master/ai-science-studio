@@ -3,6 +3,7 @@ import { createServer as createHttpServer } from 'node:http';
 import { pathToFileURL } from 'node:url';
 import { config, DEEPSEEK_OFFICIAL_MODEL } from './config.js';
 import { DeepSeekClient } from './deepseek-client.js';
+import { InstantSceneService } from './instant-scene-service.js';
 import { localGenerateFallback, localTutorChatFallback, localTutorFallback } from './local-fallback.js';
 import {
   sanitizeTutorChatRequest,
@@ -117,6 +118,7 @@ async function readJsonBody(request) {
 
 export function createMasterLabServer(options = {}) {
   const deepSeek = options.deepSeekClient || new DeepSeekClient();
+  const instantScenes = options.instantSceneService || new InstantSceneService();
   const allowedOrigins = options.allowedOrigins || config.allowedOrigins;
   const limiter = options.rateLimiter || new RateLimiter(config.rateLimitMax, config.rateLimitWindowMs);
 
@@ -163,6 +165,22 @@ export function createMasterLabServer(options = {}) {
       if (!limiter.allow(clientAddress(request))) {
         status = 429;
         sendJson(response, status, { error: 'RATE_LIMITED' }, requestId);
+        return;
+      }
+
+      if (url.pathname === '/api/v1/scene/generate') {
+        const body = await readJsonBody(request);
+        if (typeof body?.question !== 'string' || !body.question.trim() || body.question.length > 2000) {
+          status = 400; sendJson(response, status, { error: 'INVALID_QUESTION' }, requestId); return;
+        }
+        const controller = new AbortController();
+        const cancel = () => { if (!response.writableEnded) controller.abort(); };
+        response.once('close', cancel);
+        try {
+          const result = await instantScenes.generate(body.question.trim(), { signal: controller.signal });
+          if (!response.destroyed) { status = 200; sendJson(response, status, { ...result, requestId }, requestId); }
+          else status = 499;
+        } finally { response.off('close', cancel); }
         return;
       }
 

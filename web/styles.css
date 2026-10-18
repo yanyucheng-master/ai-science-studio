@@ -10688,3 +10688,258 @@ body.subject-math-active.subject-generic-template-active:not(.awaiting-generatio
   cursor: not-allowed;
   opacity: .4;
 }
+
+/* ===== 轨道烧瓶动效（2026-10-17）：开屏、AI 思考、生成加载、完成反馈、断网 ===== */
+/* ===== Orbit-flask rig ===== */
+.fx { display: block; width: 100%; height: 100%; overflow: visible; }
+.fx-root { --c-outline: #2d73f6; --c-liquid: #74b1fc; --c-ring: #74adfb; --c-comet: #2d73f6; }
+.fx-ring { fill: var(--c-ring); transition: fill .5s ease; }
+.fx-outline, .fx-half { fill: none; stroke: var(--c-outline); stroke-linejoin: round; transition: stroke .5s ease; }
+.fx-half { stroke-linecap: round; }
+.fx-interior { fill: #fff; }
+.fx-liquid { fill: var(--c-liquid); transition: fill .5s ease; }
+.fx-liquid-back { opacity: .5; }
+.fx-bub, .fx-mb { fill: #fff; transform-box: fill-box; transform-origin: center; transition: opacity .35s ease; }
+.fx-mb { opacity: 0; }
+.fx-liq-wrap { transform-origin: 626px 860px; }
+.fx-liq-drop { transition: transform .7s cubic-bezier(.3, .7, .3, 1); }
+.fx-comet use { fill: none; stroke: var(--c-comet); stroke-linecap: round; opacity: 0; transition: stroke .45s ease; }
+.fx-comet .h { stroke-dasharray: 1.2 98.8; stroke-width: 58; }
+.fx-comet .t1 { stroke-dasharray: 7 93; stroke-width: 40; }
+.fx-comet .t2 { stroke-dasharray: 16 84; stroke-width: 26; }
+.fx-sheen use, .fx-streak use { fill: none; stroke: #fff; stroke-linecap: round; opacity: 0; }
+.fx-sheen use { stroke-width: 16; stroke-dasharray: 9 91; }
+.fx-streak use { stroke-width: 24; stroke-dasharray: 18 82; }
+.fx-dot { fill: #5f9ff9; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.fx-g-small .fx-comet .h { stroke-width: 72; }
+.fx-g-small .fx-comet .t1 { stroke-width: 50; }
+.fx-g-small .fx-comet .t2 { stroke-width: 32; }
+.fx-burst circle { opacity: 0; transform-box: fill-box; transform-origin: center; }
+.fx-burst .l { fill: #74b1fc; }
+.fx-burst .d { fill: #2d73f6; }
+.fx-ripple { fill: none; stroke: #74adfb; opacity: 0; transform-origin: 626px 640px; }
+.fx-popwrap { transform-origin: 626px 640px; }
+.fx-badge { opacity: 0; transform-box: fill-box; transform-origin: center; }
+.fx-badge circle { fill: #fff; stroke: #2d73f6; stroke-width: 22; }
+.fx-check { fill: none; stroke: #2d73f6; stroke-width: 34; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 100; stroke-dashoffset: 100; }
+.fx-brk { fill: none; stroke: #000; stroke-width: 120; stroke-dasharray: 0 100; stroke-dashoffset: -8; transition: stroke-dasharray .45s cubic-bezier(.3, .7, .3, 1) .1s, stroke-dashoffset .45s cubic-bezier(.3, .7, .3, 1) .1s; }
+.fx-spark { fill: #f08b55; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.fx-joint { fill: #9cc4ff; opacity: 0; transform-box: fill-box; transform-origin: center; }
+
+/* A · comet orbit (thinking) */
+.fx-think-a .fx-comet use, .fx-load .fx-comet use { opacity: 1; animation: 2.4s linear infinite; }
+.fx-think-a .fx-comet .h, .fx-load .fx-comet .h { animation-name: fxCometH; }
+.fx-think-a .fx-comet .t1, .fx-load .fx-comet .t1 { animation-name: fxCometT1; }
+.fx-think-a .fx-comet .t2, .fx-load .fx-comet .t2 { animation-name: fxCometT2; }
+.fx-think-a .fx-liq-wrap, .fx-think-b .fx-liq-wrap { animation: fxSlosh 3.2s ease-in-out infinite; }
+.fx-think-a .fx-b1 { --rise: -98px; animation: fxBubRise 2.6s cubic-bezier(.45, .05, .55, .95) infinite; }
+.fx-think-a .fx-b2 { --rise: -150px; animation: fxBubRise 2.6s cubic-bezier(.45, .05, .55, .95) -1.3s infinite; }
+/* B · bubbles out of the mouth (thinking) */
+.fx-think-b .fx-b1 { --rise: -98px; animation: fxBubRise 2.1s cubic-bezier(.45, .05, .55, .95) infinite; }
+.fx-think-b .fx-b2 { --rise: -150px; animation: fxBubRise 2.1s cubic-bezier(.45, .05, .55, .95) -1.05s infinite; }
+.fx-think-b .fx-dot { animation: fxDotUp 2.1s cubic-bezier(.33, .66, .5, 1) infinite; }
+.fx-think-b .d2 { animation-delay: -.7s; }
+.fx-think-b .d3 { animation-delay: -1.4s; }
+.fx-think-b .fx-sheen use { animation: fxSheen 4.2s linear infinite; }
+/* loading: liquid level = progress */
+.fx-load .fx-wave-lv { transform: translateY(calc(1000px - var(--lv, 0) * 440px)); transition: transform .68s cubic-bezier(.3, .7, .25, 1); }
+.fx-load .fx-wave-f { animation: fxWaveL 2.2s linear infinite; }
+.fx-load .fx-wave-b { animation: fxWaveR 3.1s linear infinite; }
+.fx-load .fx-mb { animation: fxMicro 2s cubic-bezier(.5, 0, .8, .6) infinite; }
+.fx-load .m1 { animation-duration: 1.7s; animation-delay: -.3s; }
+.fx-load .m2 { animation-duration: 2.3s; animation-delay: -1.1s; }
+.fx-load .m3 { animation-duration: 1.9s; animation-delay: -.8s; }
+.fx-load .m4 { animation-duration: 2.5s; animation-delay: -1.7s; }
+/* complete (one shot) */
+.is-done .fx-popwrap { animation: fxPop .62s cubic-bezier(.34, 1.56, .64, 1) both; }
+.is-done .fx-ripple { animation: fxRipple .95s cubic-bezier(.2, .7, .2, 1) both; }
+.is-done .fx-burst circle { animation: fxBurst .95s cubic-bezier(.15, .7, .3, 1) both; animation-delay: var(--d, 0s); }
+.is-done .fx-ring { animation: fxRingFlash .8s ease-out both; }
+.is-done .fx-streak use { animation: fxStreak .62s cubic-bezier(.5, 0, .3, 1) both; }
+.is-done .fx-surge { animation: fxSurge .7s ease-out both; }
+.is-done.with-badge .fx-badge { animation: fxBadge .5s cubic-bezier(.34, 1.56, .64, 1) .2s both; }
+.is-done.with-badge .fx-check { animation: fxDraw .36s cubic-bezier(.65, 0, .35, 1) .42s both; }
+/* error / offline */
+.is-error .fx-root { --c-outline: #8e9db7; --c-liquid: #c8d3e3; --c-ring: #cfd8e5; --c-comet: #a9b5c9; }
+.is-error .fx-bub, .is-error .fx-mb, .is-error .fx-dot, .is-error .fx-sheen use { opacity: 0 !important; }
+.is-error .fx-liq-drop { transform: translateY(22px); }
+.is-error .fx-brk { stroke-dasharray: 8 92; stroke-dashoffset: -4; }
+.is-error .fx-shake { animation: fxShake .42s ease-out 1; }
+.is-error .fx-spark { animation: fxSpark .55s ease-out .14s 1 both; }
+.is-relink .fx-joint { animation: fxJoint .65s ease-out 1 both; }
+.is-relink .fx-ring { animation: fxRingFlash .7s ease-out both; }
+
+@keyframes fxSlosh { 0%, 100% { transform: rotate(0deg) translateY(0); } 25% { transform: rotate(-2.2deg) translateY(-6px); } 75% { transform: rotate(1.8deg) translateY(5px); } }
+@keyframes fxBubRise { 0% { opacity: 0; transform: translateY(30px) scale(.4); } 16% { opacity: 1; transform: translateY(12px) scale(.92); } 32% { transform: translateY(0) scale(1); } 78% { opacity: 1; } 92%, 100% { opacity: 0; transform: translateY(var(--rise, -100px)) scale(1.08); } }
+@keyframes fxDotUp { 0% { opacity: 0; transform: translate(0, 30px) scale(.25); } 16% { opacity: 1; transform: translate(0, -10px) scale(.75); } 72% { opacity: .9; } 100% { opacity: 0; transform: translate(var(--dx, 0px), -200px) scale(1.12); } }
+@keyframes fxSheen { 0% { stroke-dashoffset: 9; opacity: 0; } 8%, 92% { opacity: .75; } 100% { stroke-dashoffset: -91; opacity: 0; } }
+@keyframes fxWaveL { from { transform: translateX(0); } to { transform: translateX(-250px); } }
+@keyframes fxWaveR { from { transform: translateX(-250px); } to { transform: translateX(0); } }
+@keyframes fxMicro { 0% { opacity: 0; transform: translateY(0) scale(.5); } 12% { opacity: .95; } 100% { opacity: .95; transform: translateY(-520px) scale(1.15); } }
+@keyframes fxPop { 0% { transform: scale(1); } 32% { transform: scale(1.065); } 100% { transform: scale(1); } }
+@keyframes fxRipple { 0% { opacity: .6; transform: scale(.7); stroke-width: 24; } 100% { opacity: 0; transform: scale(1.22); stroke-width: 2; } }
+@keyframes fxBurst { 0% { opacity: 0; transform: translate(0, 70px) scale(.2); } 14% { opacity: 1; } 70% { opacity: .9; } 100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(var(--s, 1)); } }
+@keyframes fxRingFlash { 0% { fill: var(--c-ring); } 28% { fill: #3d84fb; } 100% { fill: var(--c-ring); } }
+@keyframes fxStreak { 0% { stroke-dashoffset: -59; opacity: 0; } 12% { opacity: .95; } 82% { opacity: .85; } 100% { stroke-dashoffset: -159; opacity: 0; } }
+@keyframes fxSurge { 0% { transform: translateY(0); } 35% { transform: translateY(-46px); } 100% { transform: translateY(0); } }
+@keyframes fxBadge { from { opacity: 0; transform: scale(.3); } to { opacity: 1; transform: scale(1); } }
+@keyframes fxDraw { to { stroke-dashoffset: 0; } }
+@keyframes fxShake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(16px); } 45% { transform: translateX(-12px); } 70% { transform: translateX(6px); } }
+@keyframes fxSpark { 0% { opacity: 0; transform: translate(0, 0) scale(.4); } 25% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1); } }
+@keyframes fxJoint { 0% { opacity: .95; transform: scale(.3); } 100% { opacity: 0; transform: scale(1.8); } }
+
+@keyframes fxCometH {
+  0.000% { stroke-dashoffset: 1.200; opacity: 1.000; }
+  4.167% { stroke-dashoffset: -0.599; opacity: 1.000; }
+  8.333% { stroke-dashoffset: -3.349; opacity: 1.000; }
+  12.500% { stroke-dashoffset: -7.249; opacity: 1.000; }
+  16.667% { stroke-dashoffset: -12.154; opacity: 1.000; }
+  20.833% { stroke-dashoffset: -17.787; opacity: 1.000; }
+  25.000% { stroke-dashoffset: -23.800; opacity: 1.000; }
+  29.167% { stroke-dashoffset: -29.813; opacity: 1.000; }
+  33.333% { stroke-dashoffset: -35.446; opacity: 1.000; }
+  37.500% { stroke-dashoffset: -40.351; opacity: 1.000; }
+  41.667% { stroke-dashoffset: -44.251; opacity: 1.000; }
+  45.833% { stroke-dashoffset: -47.001; opacity: 1.000; }
+  50.000% { stroke-dashoffset: -48.800; opacity: 1.000; }
+  54.167% { stroke-dashoffset: -50.599; opacity: 0.922; }
+  58.333% { stroke-dashoffset: -53.349; opacity: 0.850; }
+  62.500% { stroke-dashoffset: -57.249; opacity: 0.788; }
+  66.667% { stroke-dashoffset: -62.154; opacity: 0.740; }
+  70.833% { stroke-dashoffset: -67.787; opacity: 0.710; }
+  75.000% { stroke-dashoffset: -73.800; opacity: 0.700; }
+  79.167% { stroke-dashoffset: -79.813; opacity: 0.710; }
+  83.333% { stroke-dashoffset: -85.446; opacity: 0.740; }
+  87.500% { stroke-dashoffset: -90.351; opacity: 0.788; }
+  91.667% { stroke-dashoffset: -94.251; opacity: 0.850; }
+  95.833% { stroke-dashoffset: -97.001; opacity: 0.922; }
+  100.000% { stroke-dashoffset: -98.800; opacity: 1.000; }
+}
+@keyframes fxCometT1 {
+  0.000% { stroke-dashoffset: 7.000; opacity: 0.420; }
+  4.167% { stroke-dashoffset: 5.201; opacity: 0.420; }
+  8.333% { stroke-dashoffset: 2.451; opacity: 0.420; }
+  12.500% { stroke-dashoffset: -1.449; opacity: 0.420; }
+  16.667% { stroke-dashoffset: -6.354; opacity: 0.420; }
+  20.833% { stroke-dashoffset: -11.987; opacity: 0.420; }
+  25.000% { stroke-dashoffset: -18.000; opacity: 0.420; }
+  29.167% { stroke-dashoffset: -24.013; opacity: 0.420; }
+  33.333% { stroke-dashoffset: -29.646; opacity: 0.420; }
+  37.500% { stroke-dashoffset: -34.551; opacity: 0.420; }
+  41.667% { stroke-dashoffset: -38.451; opacity: 0.420; }
+  45.833% { stroke-dashoffset: -41.201; opacity: 0.420; }
+  50.000% { stroke-dashoffset: -43.000; opacity: 0.420; }
+  54.167% { stroke-dashoffset: -44.799; opacity: 0.387; }
+  58.333% { stroke-dashoffset: -47.549; opacity: 0.357; }
+  62.500% { stroke-dashoffset: -51.449; opacity: 0.331; }
+  66.667% { stroke-dashoffset: -56.354; opacity: 0.311; }
+  70.833% { stroke-dashoffset: -61.987; opacity: 0.298; }
+  75.000% { stroke-dashoffset: -68.000; opacity: 0.294; }
+  79.167% { stroke-dashoffset: -74.013; opacity: 0.298; }
+  83.333% { stroke-dashoffset: -79.646; opacity: 0.311; }
+  87.500% { stroke-dashoffset: -84.551; opacity: 0.331; }
+  91.667% { stroke-dashoffset: -88.451; opacity: 0.357; }
+  95.833% { stroke-dashoffset: -91.201; opacity: 0.387; }
+  100.000% { stroke-dashoffset: -93.000; opacity: 0.420; }
+}
+@keyframes fxCometT2 {
+  0.000% { stroke-dashoffset: 16.000; opacity: 0.180; }
+  4.167% { stroke-dashoffset: 14.201; opacity: 0.180; }
+  8.333% { stroke-dashoffset: 11.451; opacity: 0.180; }
+  12.500% { stroke-dashoffset: 7.551; opacity: 0.180; }
+  16.667% { stroke-dashoffset: 2.646; opacity: 0.180; }
+  20.833% { stroke-dashoffset: -2.987; opacity: 0.180; }
+  25.000% { stroke-dashoffset: -9.000; opacity: 0.180; }
+  29.167% { stroke-dashoffset: -15.013; opacity: 0.180; }
+  33.333% { stroke-dashoffset: -20.646; opacity: 0.180; }
+  37.500% { stroke-dashoffset: -25.551; opacity: 0.180; }
+  41.667% { stroke-dashoffset: -29.451; opacity: 0.180; }
+  45.833% { stroke-dashoffset: -32.201; opacity: 0.180; }
+  50.000% { stroke-dashoffset: -34.000; opacity: 0.180; }
+  54.167% { stroke-dashoffset: -35.799; opacity: 0.166; }
+  58.333% { stroke-dashoffset: -38.549; opacity: 0.153; }
+  62.500% { stroke-dashoffset: -42.449; opacity: 0.142; }
+  66.667% { stroke-dashoffset: -47.354; opacity: 0.133; }
+  70.833% { stroke-dashoffset: -52.987; opacity: 0.128; }
+  75.000% { stroke-dashoffset: -59.000; opacity: 0.126; }
+  79.167% { stroke-dashoffset: -65.013; opacity: 0.128; }
+  83.333% { stroke-dashoffset: -70.646; opacity: 0.133; }
+  87.500% { stroke-dashoffset: -75.551; opacity: 0.142; }
+  91.667% { stroke-dashoffset: -79.451; opacity: 0.153; }
+  95.833% { stroke-dashoffset: -82.201; opacity: 0.166; }
+  100.000% { stroke-dashoffset: -84.000; opacity: 0.180; }
+}
+.lv-instant .fx-wave-lv { transition: none !important; }
+
+/* 开屏（brand-motion.js 生成，只在打开网站时播放一次） */
+.ml-splash { --logo: clamp(120px, 24vmin, 184px); position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; cursor: pointer; }
+.ml-splash-bg { position: absolute; inset: 0; background:
+  radial-gradient(42% 46% at 50% 44%, rgba(116, 173, 251, .2), rgba(116, 173, 251, 0) 70%),
+  radial-gradient(60% 60% at 80% 90%, rgba(99, 113, 255, .08), rgba(99, 113, 255, 0) 70%),
+  #f7f9fd; }
+.ml-splash-bg::after { position: absolute; inset: 0; opacity: .5; background-image: linear-gradient(rgba(45, 115, 246, .05) 1px, transparent 1px), linear-gradient(90deg, rgba(45, 115, 246, .05) 1px, transparent 1px); background-size: 32px 32px; -webkit-mask-image: radial-gradient(50% 55% at 50% 45%, #000, transparent 75%); mask-image: radial-gradient(50% 55% at 50% 45%, #000, transparent 75%); content: ""; }
+.ml-splash-center { position: relative; display: grid; justify-items: center; }
+.ml-splash-logo { position: relative; width: var(--logo); height: var(--logo); transform-origin: 50% 50%; will-change: transform; }
+.ml-splash-svg { position: absolute; inset: 0; z-index: 1; }
+.ml-splash-tile { position: absolute; inset: -16.667%; border: 1px solid #dce6f7; border-radius: 33.333%; background: #fff; opacity: 0; }
+.ml-splash-glow { position: absolute; top: 50%; left: 50%; width: 220%; height: 220%; margin: -110% 0 0 -110%; border-radius: 50%; background: radial-gradient(closest-side, rgba(116, 173, 251, .34), rgba(116, 173, 251, .12) 55%, rgba(116, 173, 251, 0)); opacity: 0; }
+.ml-splash-word { display: grid; justify-items: center; gap: calc(var(--logo) * .05); margin-top: calc(var(--logo) * .12); }
+.ml-splash-word b { color: #152445; font: 800 calc(var(--logo) * .23)/1.1 "DM Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; letter-spacing: .06em; opacity: 0; }
+.ml-splash-word span { padding-left: .32em; color: #2d73f6; font: 700 calc(var(--logo) * .074)/1 "DM Sans", "Noto Sans SC", sans-serif; letter-spacing: .32em; opacity: 0; }
+.ml-splash-skip { position: absolute; right: 26px; bottom: 22px; padding: 7px 14px; color: #5b6f92; font-size: 13px; border: 1px solid #dce6f7; border-radius: 999px; background: rgba(255, 255, 255, .8); opacity: 0; }
+.ml-splashing .topbar-logo { opacity: 0; }
+
+/* AI 思考卡片：轨道烧瓶（方案 B，瓶口冒泡），替换原随机配色星球 */
+.ai-thinking-field.ai-thinking-flask { display: grid; place-items: center; background: none; }
+.ai-thinking-field.ai-thinking-flask::before,
+.ai-thinking-field.ai-thinking-flask::after { display: none; }
+.ai-thinking-flask .fx { width: 54px; height: 54px; }
+
+/* 生成实验等待层：液面就是进度 */
+.gen-core.gen-core-flask .fx { width: 100%; height: 100%; }
+.gen-core-flask .fx-burst { transform: scale(.72); transform-origin: 626px 208px; }
+.generation-overlay:not(.show) .gen-core-flask * { animation-play-state: paused; }
+
+/* 连不上 AI 服务：错误气泡里的断环小图标 */
+.ai-message.error.is-offline .ai-message-bubble { display: grid; grid-template-columns: 30px minmax(0, 1fr); column-gap: 10px; align-items: start; }
+.ai-message.error.is-offline .ai-message-bubble > * { grid-column: 2; }
+.ai-message.error.is-offline .ai-message-bubble > .ai-offline-mark { grid-row: 1 / span 2; grid-column: 1; width: 30px; height: 30px; margin-top: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fx, .fx * { animation: none !important; transition: none !important; }
+  .fx-think-a .fx-comet use, .fx-load .fx-comet use { opacity: 1; }
+  .fx-comet .h { stroke-dashoffset: -10.8; }
+  .fx-comet .t1 { stroke-dashoffset: -5; opacity: .42; }
+  .fx-comet .t2 { stroke-dashoffset: 4; opacity: .18; }
+  .fx-think-b .fx-dot.d1 { opacity: .9; transform: translate(14px, -80px) scale(.8); }
+  .is-done.with-badge .fx-badge { opacity: 1; }
+  .is-done.with-badge .fx-check { stroke-dashoffset: 0; }
+}
+
+/* AI 思考卡片：光晕、顶部流光和“思考中”圆点改为品牌蓝（原为青绿 / 紫色） */
+.ai-thinking-card {
+  background:
+    radial-gradient(circle at 10% 18%, rgba(116, 177, 252, .14), transparent 30%),
+    radial-gradient(circle at 92% 76%, rgba(45, 115, 246, .08), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, .99), rgba(244, 248, 255, .98));
+}
+.ai-thinking-card::before { background: linear-gradient(90deg, rgba(116, 173, 251, .05), rgba(45, 115, 246, .2), rgba(116, 177, 252, .2), rgba(116, 173, 251, .04)); }
+.ai-thinking-card::after { background: linear-gradient(90deg, transparent, #9cc6ff 22%, #2d73f6 60%, #74b1fc 88%, transparent); box-shadow: 0 0 10px rgba(45, 115, 246, .4); }
+.ai-thinking-badge i { background: #2d73f6; box-shadow: 0 0 0 4px rgba(45, 115, 246, .1); }
+
+/* 生成实验等待层：背景光晕、卡片边框流光、标题流光、步骤与进度条改为品牌蓝（原为青绿 / 紫色） */
+.generation-overlay { --gen-cyan: #74adfb; --gen-mint: #74b1fc; --gen-violet: #1a56d6; }
+.gen-aurora-blob.blob-b { background-image: radial-gradient(circle, rgba(116, 177, 252, .3), rgba(116, 177, 252, 0) 62%); }
+.gen-aurora-blob.blob-c { background-image: radial-gradient(circle, rgba(45, 115, 246, .2), rgba(45, 115, 246, 0) 62%); }
+.gen-halo-blob.halo-b { background-image: radial-gradient(closest-side, rgba(116, 177, 252, .5), rgba(116, 177, 252, 0)); }
+.gen-halo-blob.halo-c { background-image: radial-gradient(closest-side, rgba(45, 115, 246, .34), rgba(45, 115, 246, 0)); }
+.gen-edge i { background-image: conic-gradient(from 0deg, rgba(91, 142, 248, 0) 0deg, #5b8ef8 58deg, #9cc6ff 112deg, rgba(156, 198, 255, 0) 168deg, rgba(45, 115, 246, 0) 188deg, #2d73f6 246deg, #5b8ef8 300deg, rgba(91, 142, 248, 0) 360deg); }
+.generation-overlay[data-stage="complete"] .gen-kicker { color: #1a56d6; background: rgba(45, 115, 246, .12); }
+.gen-question::after { background-image: linear-gradient(90deg, rgba(91, 142, 248, 0), rgba(91, 142, 248, .2) 45%, rgba(116, 177, 252, .24) 58%, rgba(116, 177, 252, 0)); }
+.gen-token { background-image: linear-gradient(120deg, rgba(59, 123, 246, .15), rgba(116, 177, 252, .2)); }
+.gen-steps-highlight { background-image: linear-gradient(100deg, rgba(59, 123, 246, .08), rgba(45, 115, 246, .06) 60%, rgba(116, 177, 252, .08)); }
+.gen-step-spinner { background-image: conic-gradient(from 0deg, rgba(59, 123, 246, 0), var(--gen-blue) 55%, var(--gen-mint) 82%, rgba(116, 177, 252, 0)); }
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .gen-title { background-image: linear-gradient(100deg, #152445 0%, #152445 38%, #3b7bf6 46%, #74b1fc 52%, #2d73f6 58%, #152445 66%, #152445 100%); }
+  .generation-overlay[data-stage="complete"] .gen-title { background-image: linear-gradient(100deg, #1a56d6, #2d73f6 55%, #5b95f8); }
+}

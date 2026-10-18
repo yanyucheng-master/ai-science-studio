@@ -1,0 +1,1358 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Master Lab Instant Scene V1",
+  "description": "Only a structural contract. The shared validator also enforces resource budgets, evidence, geometry and supported scientific laws.",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "status": {
+          "const": "declined"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        }
+      },
+      "required": [
+        "version",
+        "status",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "status": {
+          "const": "scene"
+        },
+        "subject": {
+          "enum": [
+            "物理",
+            "数学",
+            "化学",
+            "生物"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "givens": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "minItems": 1,
+          "maxItems": 12
+        },
+        "basis": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
+          },
+          "minItems": 1,
+          "maxItems": 5
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "图形仅作示意，不按比例。",
+              "观察窗口仅用于展示，不代表完整定义域。",
+              "颜色和位置仅用于区分结构。"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 3
+        },
+        "explanation": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 360
+          },
+          "minItems": 1,
+          "maxItems": 4
+        },
+        "objects": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                  },
+                  "type": {
+                    "const": "line"
+                  },
+                  "role": {
+                    "enum": [
+                      "structure",
+                      "surface",
+                      "body",
+                      "gravity",
+                      "normal_force",
+                      "tension",
+                      "friction",
+                      "motion",
+                      "gravity_parallel",
+                      "gravity_normal",
+                      "mirror",
+                      "interface",
+                      "normal",
+                      "incident_ray",
+                      "reflected_ray",
+                      "refracted_ray",
+                      "lens",
+                      "optical_axis",
+                      "virtual_focus",
+                      "ray_extension",
+                      "reaction_vessel",
+                      "gas_tube",
+                      "collection_vessel",
+                      "stopper",
+                      "water_trough",
+                      "water",
+                      "wire",
+                      "component",
+                      "rope",
+                      "support",
+                      "fluid"
+                    ]
+                  },
+                  "color": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "fill": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "dashed": {
+                    "type": "boolean"
+                  },
+                  "from": {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": 30,
+                        "maximum": 550
+                      },
+                      {
+                        "type": "number",
+                        "minimum": 30,
+                        "maximum": 420
+                      }
+                    ],
+                    "items": false,
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "to": {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": 30,
+                        "maximum": 550
+                      },
+                      {
+                        "type": "number",
+                        "minimum": 30,
+                        "maximum": 420
+                      }
+                    ],
+                    "items": false,
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "from",
+                  "to"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                  },
+                  "type": {
+                    "const": "arrow"
+                  },
+                  "role": {
+                    "enum": [
+                      "structure",
+                      "surface",
+                      "body",
+                      "gravity",
+                      "normal_force",
+                      "tension",
+                      "friction",
+                      "motion",
+                      "gravity_parallel",
+                      "gravity_normal",
+                      "mirror",
+                      "interface",
+                      "normal",
+                      "incident_ray",
+                      "reflected_ray",
+                      "refracted_ray",
+                      "lens",
+                      "optical_axis",
+                      "virtual_focus",
+                      "ray_extension",
+                      "reaction_vessel",
+                      "gas_tube",
+                      "collection_vessel",
+                      "stopper",
+                      "water_trough",
+                      "water",
+                      "wire",
+                      "component",
+                      "rope",
+                      "support",
+                      "fluid"
+                    ]
+                  },
+                  "color": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "fill": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "dashed": {
+                    "type": "boolean"
+                  },
+                  "from": {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": 30,
+                        "maximum": 550
+                      },
+                      {
+                        "type": "number",
+                        "minimum": 30,
+                        "maximum": 420
+                      }
+                    ],
+                    "items": false,
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "to": {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": 30,
+                        "maximum": 550
+                      },
+                      {
+                        "type": "number",
+                        "minimum": 30,
+                        "maximum": 420
+                      }
+                    ],
+                    "items": false,
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "from",
+                  "to"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                  },
+                  "type": {
+                    "const": "rect"
+                  },
+                  "role": {
+                    "enum": [
+                      "structure",
+                      "surface",
+                      "body",
+                      "gravity",
+                      "normal_force",
+                      "tension",
+                      "friction",
+                      "motion",
+                      "gravity_parallel",
+                      "gravity_normal",
+                      "mirror",
+                      "interface",
+                      "normal",
+                      "incident_ray",
+                      "reflected_ray",
+                      "refracted_ray",
+                      "lens",
+                      "optical_axis",
+                      "virtual_focus",
+                      "ray_extension",
+                      "reaction_vessel",
+                      "gas_tube",
+                      "collection_vessel",
+                      "stopper",
+                      "water_trough",
+                      "water",
+                      "wire",
+                      "component",
+                      "rope",
+                      "support",
+                      "fluid"
+                    ]
+                  },
+                  "color": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "fill": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "dashed": {
+                    "type": "boolean"
+                  },
+                  "x": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "width": {
+                    "type": "number",
+                    "minimum": 3,
+                    "maximum": 520
+                  },
+                  "height": {
+                    "type": "number",
+                    "minimum": 3,
+                    "maximum": 520
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "x",
+                  "y",
+                  "width",
+                  "height"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                  },
+                  "type": {
+                    "const": "circle"
+                  },
+                  "role": {
+                    "enum": [
+                      "structure",
+                      "surface",
+                      "body",
+                      "gravity",
+                      "normal_force",
+                      "tension",
+                      "friction",
+                      "motion",
+                      "gravity_parallel",
+                      "gravity_normal",
+                      "mirror",
+                      "interface",
+                      "normal",
+                      "incident_ray",
+                      "reflected_ray",
+                      "refracted_ray",
+                      "lens",
+                      "optical_axis",
+                      "virtual_focus",
+                      "ray_extension",
+                      "reaction_vessel",
+                      "gas_tube",
+                      "collection_vessel",
+                      "stopper",
+                      "water_trough",
+                      "water",
+                      "wire",
+                      "component",
+                      "rope",
+                      "support",
+                      "fluid"
+                    ]
+                  },
+                  "color": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "fill": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "dashed": {
+                    "type": "boolean"
+                  },
+                  "cx": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "cy": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "r": {
+                    "type": "number",
+                    "minimum": 3,
+                    "maximum": 520
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "cx",
+                  "cy",
+                  "r"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                  },
+                  "type": {
+                    "const": "ellipse"
+                  },
+                  "role": {
+                    "enum": [
+                      "structure",
+                      "surface",
+                      "body",
+                      "gravity",
+                      "normal_force",
+                      "tension",
+                      "friction",
+                      "motion",
+                      "gravity_parallel",
+                      "gravity_normal",
+                      "mirror",
+                      "interface",
+                      "normal",
+                      "incident_ray",
+                      "reflected_ray",
+                      "refracted_ray",
+                      "lens",
+                      "optical_axis",
+                      "virtual_focus",
+                      "ray_extension",
+                      "reaction_vessel",
+                      "gas_tube",
+                      "collection_vessel",
+                      "stopper",
+                      "water_trough",
+                      "water",
+                      "wire",
+                      "component",
+                      "rope",
+                      "support",
+                      "fluid"
+                    ]
+                  },
+                  "color": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "fill": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "dashed": {
+                    "type": "boolean"
+                  },
+                  "cx": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "cy": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "rx": {
+                    "type": "number",
+                    "minimum": 3,
+                    "maximum": 520
+                  },
+                  "ry": {
+                    "type": "number",
+                    "minimum": 3,
+                    "maximum": 520
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "cx",
+                  "cy",
+                  "rx",
+                  "ry"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                  },
+                  "type": {
+                    "const": "polygon"
+                  },
+                  "role": {
+                    "enum": [
+                      "structure",
+                      "surface",
+                      "body",
+                      "gravity",
+                      "normal_force",
+                      "tension",
+                      "friction",
+                      "motion",
+                      "gravity_parallel",
+                      "gravity_normal",
+                      "mirror",
+                      "interface",
+                      "normal",
+                      "incident_ray",
+                      "reflected_ray",
+                      "refracted_ray",
+                      "lens",
+                      "optical_axis",
+                      "virtual_focus",
+                      "ray_extension",
+                      "reaction_vessel",
+                      "gas_tube",
+                      "collection_vessel",
+                      "stopper",
+                      "water_trough",
+                      "water",
+                      "wire",
+                      "component",
+                      "rope",
+                      "support",
+                      "fluid"
+                    ]
+                  },
+                  "color": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "fill": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "dashed": {
+                    "type": "boolean"
+                  },
+                  "points": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": 30,
+                          "maximum": 550
+                        },
+                        {
+                          "type": "number",
+                          "minimum": 30,
+                          "maximum": 420
+                        }
+                      ],
+                      "items": false,
+                      "minItems": 2,
+                      "maxItems": 2
+                    },
+                    "minItems": 3,
+                    "maxItems": 96
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "points"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                  },
+                  "type": {
+                    "const": "polyline"
+                  },
+                  "role": {
+                    "enum": [
+                      "structure",
+                      "surface",
+                      "body",
+                      "gravity",
+                      "normal_force",
+                      "tension",
+                      "friction",
+                      "motion",
+                      "gravity_parallel",
+                      "gravity_normal",
+                      "mirror",
+                      "interface",
+                      "normal",
+                      "incident_ray",
+                      "reflected_ray",
+                      "refracted_ray",
+                      "lens",
+                      "optical_axis",
+                      "virtual_focus",
+                      "ray_extension",
+                      "reaction_vessel",
+                      "gas_tube",
+                      "collection_vessel",
+                      "stopper",
+                      "water_trough",
+                      "water",
+                      "wire",
+                      "component",
+                      "rope",
+                      "support",
+                      "fluid"
+                    ]
+                  },
+                  "color": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "fill": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "dashed": {
+                    "type": "boolean"
+                  },
+                  "points": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": 30,
+                          "maximum": 550
+                        },
+                        {
+                          "type": "number",
+                          "minimum": 30,
+                          "maximum": 420
+                        }
+                      ],
+                      "items": false,
+                      "minItems": 2,
+                      "maxItems": 2
+                    },
+                    "minItems": 2,
+                    "maxItems": 96
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "points"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                  },
+                  "type": {
+                    "const": "arc"
+                  },
+                  "role": {
+                    "enum": [
+                      "structure",
+                      "surface",
+                      "body",
+                      "gravity",
+                      "normal_force",
+                      "tension",
+                      "friction",
+                      "motion",
+                      "gravity_parallel",
+                      "gravity_normal",
+                      "mirror",
+                      "interface",
+                      "normal",
+                      "incident_ray",
+                      "reflected_ray",
+                      "refracted_ray",
+                      "lens",
+                      "optical_axis",
+                      "virtual_focus",
+                      "ray_extension",
+                      "reaction_vessel",
+                      "gas_tube",
+                      "collection_vessel",
+                      "stopper",
+                      "water_trough",
+                      "water",
+                      "wire",
+                      "component",
+                      "rope",
+                      "support",
+                      "fluid"
+                    ]
+                  },
+                  "color": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "fill": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "dashed": {
+                    "type": "boolean"
+                  },
+                  "cx": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "cy": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "r": {
+                    "type": "number",
+                    "minimum": 3,
+                    "maximum": 520
+                  },
+                  "start": {
+                    "type": "number",
+                    "minimum": -360,
+                    "maximum": 360
+                  },
+                  "end": {
+                    "type": "number",
+                    "minimum": -360,
+                    "maximum": 360
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "cx",
+                  "cy",
+                  "r",
+                  "start",
+                  "end"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                  },
+                  "type": {
+                    "const": "axes"
+                  },
+                  "role": {
+                    "enum": [
+                      "structure",
+                      "surface",
+                      "body",
+                      "gravity",
+                      "normal_force",
+                      "tension",
+                      "friction",
+                      "motion",
+                      "gravity_parallel",
+                      "gravity_normal",
+                      "mirror",
+                      "interface",
+                      "normal",
+                      "incident_ray",
+                      "reflected_ray",
+                      "refracted_ray",
+                      "lens",
+                      "optical_axis",
+                      "virtual_focus",
+                      "ray_extension",
+                      "reaction_vessel",
+                      "gas_tube",
+                      "collection_vessel",
+                      "stopper",
+                      "water_trough",
+                      "water",
+                      "wire",
+                      "component",
+                      "rope",
+                      "support",
+                      "fluid"
+                    ]
+                  },
+                  "color": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "fill": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "dashed": {
+                    "type": "boolean"
+                  },
+                  "x": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "width": {
+                    "type": "number",
+                    "minimum": 3,
+                    "maximum": 520
+                  },
+                  "height": {
+                    "type": "number",
+                    "minimum": 3,
+                    "maximum": 520
+                  },
+                  "xMin": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "xMax": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "yMin": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "yMax": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "x",
+                  "y",
+                  "width",
+                  "height",
+                  "xMin",
+                  "xMax",
+                  "yMin",
+                  "yMax"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                  },
+                  "type": {
+                    "const": "curve"
+                  },
+                  "role": {
+                    "enum": [
+                      "structure",
+                      "surface",
+                      "body",
+                      "gravity",
+                      "normal_force",
+                      "tension",
+                      "friction",
+                      "motion",
+                      "gravity_parallel",
+                      "gravity_normal",
+                      "mirror",
+                      "interface",
+                      "normal",
+                      "incident_ray",
+                      "reflected_ray",
+                      "refracted_ray",
+                      "lens",
+                      "optical_axis",
+                      "virtual_focus",
+                      "ray_extension",
+                      "reaction_vessel",
+                      "gas_tube",
+                      "collection_vessel",
+                      "stopper",
+                      "water_trough",
+                      "water",
+                      "wire",
+                      "component",
+                      "rope",
+                      "support",
+                      "fluid"
+                    ]
+                  },
+                  "color": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "fill": {
+                    "enum": [
+                      "blue",
+                      "teal",
+                      "orange",
+                      "ink",
+                      "muted",
+                      "pale",
+                      "white",
+                      "none"
+                    ]
+                  },
+                  "dashed": {
+                    "type": "boolean"
+                  },
+                  "x": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "width": {
+                    "type": "number",
+                    "minimum": 3,
+                    "maximum": 520
+                  },
+                  "height": {
+                    "type": "number",
+                    "minimum": 3,
+                    "maximum": 520
+                  },
+                  "xMin": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "xMax": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "yMin": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "yMax": {
+                    "type": "number",
+                    "minimum": -10000,
+                    "maximum": 10000
+                  },
+                  "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "quote": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "x",
+                  "y",
+                  "width",
+                  "height",
+                  "xMin",
+                  "xMax",
+                  "yMin",
+                  "yMax",
+                  "expression",
+                  "quote"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 48
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "target": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 70
+              }
+            },
+            "required": [
+              "target",
+              "text"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 12
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "enum": [
+                  "perpendicular",
+                  "parallel",
+                  "opposite",
+                  "equalLength",
+                  "connected",
+                  "inside"
+                ]
+              },
+              "objects": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 24
+                },
+                "minItems": 2,
+                "maxItems": 2
+              }
+            },
+            "required": [
+              "type",
+              "objects"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 24
+        },
+        "calculations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rule": {
+                "enum": [
+                  "ohm",
+                  "weight",
+                  "force",
+                  "pythagoras",
+                  "torque"
+                ]
+              },
+              "inputs": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 8
+                    },
+                    "value": {
+                      "type": "number",
+                      "minimum": 0.000001,
+                      "maximum": 1000000
+                    },
+                    "unit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 12
+                    },
+                    "quote": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "value",
+                    "unit",
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 2,
+                "maxItems": 2
+              }
+            },
+            "required": [
+              "rule",
+              "inputs"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 4
+        }
+      },
+      "required": [
+        "version",
+        "status",
+        "subject",
+        "title",
+        "givens",
+        "basis",
+        "assumptions",
+        "explanation",
+        "objects",
+        "labels",
+        "relations",
+        "calculations"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}
