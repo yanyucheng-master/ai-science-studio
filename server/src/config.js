@@ -36,5 +36,7 @@ export const config = Object.freeze({
   // 0 disables address-based quotas; upstream concurrency remains bounded.
   rateLimitMax: integerFromEnv('RATE_LIMIT_MAX', 0, 0, 500),
   rateLimitWindowMs: integerFromEnv('RATE_LIMIT_WINDOW_MS', 600000, 60000, 3600000),
+  // Trust no forwarding headers until the deployment's proxy chain is verified.
+  trustedProxyHops: /^[0-8]$/.test(process.env.TRUST_PROXY_HOPS || '') ? Number(process.env.TRUST_PROXY_HOPS) : 0,
   allowedOrigins: listFromEnv('ALLOWED_ORIGINS')
 });

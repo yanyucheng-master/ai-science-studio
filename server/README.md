@@ -23,6 +23,7 @@ unmatched question returns `AI_NOT_CONFIGURED` instead of a fabricated answer.
 ## Endpoints
 
 - `GET /health`
+- `POST /api/v1/scene/generate` for validated, structured science diagrams
 - `POST /api/v1/experiment/generate`
 - `POST /api/v1/tutor/suggest` for HarmonyOS compatibility
 - `POST /api/v1/tutor/chat` for structured multi-turn tutoring
