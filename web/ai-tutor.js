@@ -278,6 +278,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     const message = text(value.question).slice(0, 2000);
     const sceneQuestion = text(value.sceneQuestion).slice(0, 2000);
     const scene = value.scene && window.MasterLabInstantScene?.validate(value.scene, sceneQuestion);
+    if (scene?.ok && !payload.suggestedQuestions.length) payload.suggestedQuestions = diagramSuggestedQuestions(scene.scene);
     return { role: "assistant", payload, context, level, question: message, ...id,
       ...(scene?.ok ? { scene: scene.scene, sceneQuestion } : {}),
       content: structuredToHistoryText(payload, { responseLevel: level, message }) };
@@ -688,10 +689,29 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     const end = source.lastIndexOf("}");
     if (start >= 0 && end > start) candidates.push(source.slice(start, end + 1));
     for (const candidate of candidates) {
-      const parsed = tryParseJson(candidate) || tryParseJson(repairJsonText(candidate));
+      const normalized = repairMathJsonText(candidate);
+      const parsed = tryParseJson(normalized) || tryParseJson(repairJsonText(normalized));
       if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) return parsed;
     }
     return null;
+  }
+
+  // Models sometimes put textbook LaTeX in JSON with one backslash. Repair only
+  // known math escapes inside strings; do not invent fields or complete JSON.
+  // Do this before parsing: \frac, \theta and \beta otherwise become JSON's
+  // form-feed/tab/backspace escapes and silently corrupt the displayed formula.
+  function repairMathJsonText(source) {
+    const mathEscape = /^\\(?:[()[\]{}]|(?:frac|dfrac|tfrac|sqrt|left|right|times|cdot|div|leq?|geq?|neq|approx|pm|Delta|theta|omega|rho|mu|alpha|beta|gamma|pi|sigma|lambda|infty|mathrm|mathbf|text|overline|vec|begin|end|quad|qquad|sin|cos|tan|log|ln|abs)(?![A-Za-z]))/;
+    let result = "", inString = false;
+    for (let i = 0; i < source.length; i += 1) {
+      const char = source[i];
+      if (char === '"') inString = !inString;
+      if (inString && char === "\\") {
+        if (mathEscape.test(source.slice(i))) result += "\\\\";
+        else { result += char + (source[i + 1] || ""); i += 1; }
+      } else result += char;
+    }
+    return result;
   }
 
   function tryParseJson(value) {
@@ -2845,6 +2865,43 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     return /(?:^|[。！？；;，,\n])\s*(?:(?:请|帮我|给我|麻烦|能否|可以|重新|再|直接)\s*)*(?:画(?:出|一|个|张|幅)?|绘制|作图)/.test(message);
   }
 
+  // These questions use only the validated scene's category, never fabricated
+  // givens or an extra model call. Answers keep the original scene context.
+  function diagramSuggestedQuestions(scene) {
+    const objects = scene.objects || [], roles = new Set(objects.map(object => object.role));
+    if (objects.some(object => object.type === "curve")) return [
+      "怎样用这个函数的表达式计算当前观察区间两端的坐标？",
+      "这条函数图像有哪些单调区间，判断依据是什么？",
+      "如果把这条图像向上平移，表达式和对应点的坐标会怎样变化？"
+    ];
+    if (["gravity", "normal_force", "friction", "tension"].some(role => roles.has(role))) return [
+      "图中的各个力分别由哪个物体施加，方向怎样判断？",
+      "怎样根据这个受力图判断物体所受的合力？",
+      "如果物体的运动状态改变，哪些力需要重新分析？"
+    ];
+    if (["lens", "mirror", "interface", "incident_ray"].some(role => roles.has(role))) return [
+      "图中的光线分别遵循什么规律，方向怎样判断？",
+      "改变入射光线的方向后，哪些光路需要重新作图？",
+      "图里的实线和辅助线分别表示什么？"
+    ];
+    if (roles.has("wire") || roles.has("component")) return [
+      "怎样从图中的连接关系判断电路的电流路径？",
+      "图中各元件分别起什么作用？",
+      "分析这个电路时，哪些量不能直接从示意图读出？"
+    ];
+    if (scene.subject === "化学") return [
+      "图中各部分装置分别起什么作用？",
+      "这个装置的连接和操作需要注意哪些条件？",
+      "哪些实验现象能帮助检验图示中的解释？"
+    ];
+    if (scene.subject === "生物") return [
+      "图中主要结构分别有什么功能？",
+      "这些结构之间有什么联系？",
+      "这幅示意图省略了哪些实际细节？"
+    ];
+    return ["图中各个标注分别表示什么？", "怎样从题目条件推导出图中的关系？", "这幅示意图有哪些适用条件和限制？"];
+  }
+
   async function requestChatDiagram(question) {
     if (!wantsDiagram(question)) return null;
     if (!window.MasterLabInstant?.createScene) return { notice: "图示模块尚未就绪，请刷新页面后重试。以下保留文字解答。" };
@@ -2860,6 +2917,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       return { scene: result.scene, payload: {
         mode: "explain", summary: result.scene.explanation.map(window.MasterLabInstantScene.displayText).join("\n\n"),
         steps: [], formulas: [], finalAnswer: null, checks: [], followUp: "", parameterPatch: null,
+        suggestedQuestions: diagramSuggestedQuestions(result.scene),
         warnings: ["科学示意图，不按比例。"]
       } };
     } catch (error) {

@@ -12,7 +12,9 @@
   border: 0;
 }
 .ai-tutor-workspace .ai-tutor-context[hidden] { display: none !important; }
-.ai-tutor-workspace .ai-session-toolbar { gap: 7px; margin-top: 8px; }
+.ai-tutor-workspace .ai-session-toolbar { flex: 1; gap: 6px; margin-top: 0; }
+.ai-tutor-workspace .ai-session-toolbar > button { padding: 5px 8px; background: transparent; }
+.ai-tutor-workspace .ai-tutor-header .ai-tutor-identity { flex: 0 0 auto; }
 .ai-session-toolbar .ai-response-controls { margin-left: auto; }
 .ai-session-toolbar #aiTutorStorageStatus:not(.is-error) { display: none; }
 .ai-session-toolbar #aiTutorStorageStatus.is-error { flex-basis: 100%; }
@@ -24,32 +26,41 @@
 .ai-tutor-workspace .ai-tutor-composer textarea { min-height: 46px; max-height: 112px; font-size: 14px; }
 .ai-tutor-workspace .ai-message.assistant { max-width: 100%; }
 .ai-tutor-workspace .ai-message.assistant .ai-message-bubble { font-size: 15px; line-height: 1.85; }
-.ai-tutor-workspace .ai-tutor-header { min-height: 40px; gap: 8px; }
-.ai-tutor-workspace .ai-tutor-header-actions { gap: 7px; }
+.ai-tutor-workspace .ai-tutor-header { min-height: 32px; gap: 12px; flex-wrap: nowrap; }
+.ai-tutor-workspace .ai-tutor-header-actions { gap: 6px; margin-left: auto; }
 .ai-tutor-workspace .ai-tutor-header-actions > button:not(.icon-button) { min-height: 32px; padding: 0 11px; }
-.ai-tutor-workspace.is-fullscreen { padding: 12px max(18px, calc((100vw - 1120px) / 2)); }
+.ai-tutor-workspace.is-fullscreen { padding: 8px 12px; }
+.ai-tutor-workspace.is-fullscreen > :is(.ai-tutor-conversation, .ai-tutor-context, .ai-tutor-composer, .ai-tutor-footer, .ai-session-undo) {
+  width: min(1040px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
 .ai-tutor-workspace.is-fullscreen .ai-tutor-avatar,
 .ai-tutor-workspace.is-floating .ai-tutor-avatar {
   display: flex;
-  --mentor-mark-size: 40px;
-  --mentor-mark-radius: 12px;
-  flex-basis: 40px;
+  --mentor-mark-size: 32px;
+  --mentor-mark-radius: 10px;
+  flex-basis: 32px;
 }
 .ai-tutor-workspace.is-fullscreen .ai-tutor-conversation,
 .ai-tutor-workspace.is-floating .ai-tutor-conversation { margin-top: 8px; }
 .ai-tutor-workspace.is-fullscreen .ai-tutor-messages { height: 100%; min-height: 0; max-height: none; }
-.ai-tutor-workspace.is-floating .ai-tutor-header { display: flex; }
-.ai-tutor-workspace.is-floating .ai-tutor-header-actions { margin-left: auto; }
+.ai-tutor-workspace.is-floating .ai-tutor-header { display: flex; flex-wrap: wrap; }
+.ai-tutor-workspace.is-floating .ai-tutor-header-actions { margin-left: auto; order: 1; }
+.ai-tutor-workspace.is-floating .ai-session-toolbar { order: 2; flex-basis: 100%; }
 .ai-tutor-workspace.is-floating .ai-tutor-identity { flex: 0 0 auto; }
 .ai-diagram { margin: 10px 0 16px; }
 .ai-tutor-workspace .ai-message.assistant:has(.ai-diagram) { width: min(940px, 100%); }
 .ai-message.assistant:has(.ai-diagram) .ai-message-bubble { width: 100%; min-width: 0; }
 .ai-diagram figcaption { margin-bottom: 8px; color: #406188; font-size: 12px; font-weight: 600; }
 .ai-diagram-canvas { max-width: 900px; }
-@media (max-width: 640px) {
-  .ai-tutor-workspace.is-fullscreen { padding: max(10px, env(safe-area-inset-top)) 10px max(8px, env(safe-area-inset-bottom)); }
-  .ai-tutor-workspace .ai-session-toolbar { gap: 5px; }
-  .ai-tutor-workspace .ai-session-toolbar > button { padding: 5px 7px; }
+@media (max-width: 760px) {
+  .ai-tutor-workspace.is-fullscreen { padding: max(6px, env(safe-area-inset-top)) 10px max(6px, env(safe-area-inset-bottom)); }
+  .ai-tutor-workspace.is-fullscreen .ai-tutor-header { flex-wrap: wrap; gap: 6px; }
+  .ai-tutor-workspace.is-fullscreen .ai-tutor-header-actions { order: 1; }
+  .ai-tutor-workspace.is-fullscreen .ai-session-toolbar { order: 2; flex-basis: 100%; gap: 4px; }
+  .ai-tutor-workspace .ai-session-toolbar > button { padding: 5px 6px; }
+  .ai-tutor-workspace .ai-response-mode select { padding-left: 5px; padding-right: 5px; }
   .ai-tutor-workspace .ai-tutor-composer textarea { min-height: 44px; }
   .ai-tutor-workspace .ai-message.assistant .ai-message-bubble { font-size: 14px; }
 }
