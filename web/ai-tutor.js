@@ -3228,6 +3228,15 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") persistConversation(); });
 
   window.MasterLabAITutor = Object.freeze({
+    async explainQuestion(question, subject = "") {
+      const originalQuestion = text(question);
+      if (!originalQuestion) return { mode: "unavailable" };
+      adoptContext({ mode: "question", subject, originalQuestion, templateId: "", parameters: {}, deterministicResult: {}, formula: "", currentStep: "" });
+      openStandalone(state.context);
+      addMessage("user", originalQuestion);
+      const tutorial = await sendChat(UNMATCHED_TUTORIAL_REQUEST, "steps", { silentUser: true });
+      return { mode: tutorial ? "explanation" : "unavailable", tutorial };
+    },
     askQuickAction,
     openInline() {
       state.followHost = true;
