@@ -10,6 +10,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="vendor/katex/katex.min.css?v=0.19.0">
   <link rel="stylesheet" href="styles.css?v=20261017-motion-3">
+  <link rel="stylesheet" href="instant-experiment.css?v=20261018-instant-1">
 </head>
 <body class="awaiting-generation">
   <script src="brand-motion.js?v=20261017-motion-1"></script>
@@ -212,6 +213,24 @@
         </div>
       </section>
 
+      <section class="instant-panel card" id="instantExperiment" hidden aria-labelledby="instantTitle" aria-busy="false">
+        <div class="instant-heading">
+          <div><span class="instant-badge">AI 即时生成 · 科学示意图</span><h2 id="instantTitle">科学示意图</h2></div>
+          <button id="instantCancel" type="button" hidden>取消生成</button>
+          <div id="instantActions" class="instant-actions" hidden>
+            <button id="instantExpand" type="button">放大查看</button>
+            <button id="instantAsk" type="button">请导师讲解</button>
+            <button id="instantBack" type="button">返回原实验</button>
+          </div>
+        </div>
+        <p id="instantStatus" class="instant-status" role="status" aria-live="polite"></p>
+        <div id="instantCanvas" class="instant-canvas"></div>
+        <div id="instantDetails" class="instant-details"></div>
+      </section>
+      <dialog id="instantZoom" class="instant-zoom" aria-label="放大查看科学示意图">
+        <div class="instant-zoom-toolbar"><label>缩放 <input id="instantZoomRange" type="range" min="100" max="250" step="25" value="100"></label><button type="button" id="instantZoomClose">关闭</button></div>
+        <div class="instant-zoom-scroll"><div id="instantZoomCanvas"></div></div>
+      </dialog>
       <div class="content-grid">
         <section class="experiment-card card">
           <div class="card-header">
@@ -950,11 +969,14 @@
   <script src="physics-extra.js?v=20261016-week2-1"></script>
   <script src="math-extra.js?v=20261016-week2-1"></script>
   <script src="chemistry-extra.js?v=20261016-week2-1"></script>
-  <script src="app.js?v=20261017-motion-1"></script>
+  <script src="instant-scene.js?v=20261019-instant-acceptance-1"></script>
+  <script src="app.js?v=20261019-instant-acceptance-1"></script>
   <script src="vendor/katex/katex.min.js?v=0.19.0"></script>
   <script src="vendor/katex/mhchem.min.js?v=0.19.0"></script>
   <script src="tutor-checks.js?v=20261011-tutor-round-1"></script>
-  <script src="ai-tutor.js?v=20261017-motion-public-1"></script>
+  <script src="ai-tutor.js?v=20261019-instant-acceptance-1"></script>
+  <script src="instant-scene-renderer.js?v=20261018-instant-1"></script>
+  <script src="instant-experiment.js?v=20261019-instant-acceptance-1"></script>
   <script src="announcements.js?v=20261008-announcements-2"></script>
 </body>
 </html>

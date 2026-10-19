@@ -6233,6 +6233,7 @@ function renderWaitingReasoning() {
 }
 
 function applyWaitingState(subject = state.subject, options = {}) {
+  window.MasterLabInstant?.dismiss();
   clearDemoTimers();
   clearReasoningTimers();
   pauseExperiment();
@@ -6587,6 +6588,8 @@ function dispatchAIContextChanged(reason = "context") {
 }
 
 function buildMasterLabAIContext() {
+  const instantContext = window.MasterLabInstant?.getContext();
+  if (instantContext) return instantContext;
   // Read the original notation, not concatenated numerator/denominator or the
   // visual order of simultaneous scripts. This keeps display DOM out of AI data.
   const displayedSource = node => window.ScienceFormula?.sourceText(node) ?? node?.textContent ?? "";
@@ -6683,6 +6686,12 @@ function applyAIParameterPatch(patch) {
 
 window.MasterLabAIHost = Object.freeze({
   getContext: buildMasterLabAIContext,
+  restoreRetainedExperiment() {
+    if (state.hasGenerated && state.generatedQuestion) {
+      $("#questionInput").value = state.generatedQuestion;
+      clearRecognitionFeedback();
+    }
+  },
   applyParameterPatch: applyAIParameterPatch,
   showToast,
   setMentorSummary(message) {
@@ -7874,6 +7883,38 @@ async function handOffUnmatchedQuestion(parseResult, question, detected, allowAi
   button.classList.add("loading");
   $("span", button).textContent = "AI 分析中";
   try {
+    if (window.MasterLabInstant && window.MasterLabAITutor?.explainQuestion) {
+      // Keep the existing route first: an equivalent question whose conditions all come from the
+      // original is mapped onto a local interactive experiment. Only unmapped questions try a diagram.
+      const mapped = await window.MasterLabAITutor.resolveUnmatchedQuestion({
+        question,
+        preferredSubject: detected,
+        localMessage: message,
+        mapOnly: true,
+        acceptPlan: plan => mappedPlanFitsOriginal(question, plan?.question)
+      });
+      if (mapped?.mode === "experiment" && mappedPlanFitsOriginal(question, mapped.question)) return mapped;
+      if (mapped?.mode === "unavailable") {
+        window.MasterLabInstant.dismiss();
+        setRecognitionPending("AI 模板识别暂不可用，原题与当前实验已保留。");
+        const detail = elements.parseFeedback?.querySelector("strong");
+        if (detail && mapped.message) detail.textContent = mapped.message;
+        return mapped;
+      }
+      setRecognitionPending("暂无对应的交互实验模板，正在尝试生成 AI 科学示意图……");
+      const sceneResult = await window.MasterLabInstant.generate(question, detected);
+      if (sceneResult.mode === "instant") {
+        setRecognitionFeedback({ recognitionText: "已生成 AI 科学示意图，可放大查看或继续向导师提问。" });
+        return sceneResult;
+      }
+      if (sceneResult.mode === "cancelled") { clearRecognitionFeedback(); return sceneResult; }
+      const reason = sceneResult.code === "DECLINED" && sceneResult.reason ? String(sceneResult.reason) : "";
+      setRecognitionPending("本次图示未通过核查，已保留题目并转入 AI 导师讲解。");
+      // The refusal reason is model text: insert it with textContent, never through the HTML template.
+      const detail = reason && elements.parseFeedback?.querySelector("strong");
+      if (detail) detail.textContent = `暂不绘图：${reason.length > 120 ? `${reason.slice(0, 120)}…` : reason} 已保留题目并转入 AI 导师讲解。`;
+      return await window.MasterLabAITutor.explainQuestion(question, detected);
+    }
     const result = await window.MasterLabAITutor.resolveUnmatchedQuestion({
       question,
       preferredSubject: detected,
@@ -7921,6 +7962,7 @@ async function generateExperiment(options = {}) {
     }
     return;
   }
+  window.MasterLabInstant?.dismiss();
   let physicsParse = null;
   let boardSliderParse = null;
   let solenoidParse = null;
