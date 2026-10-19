@@ -533,6 +533,11 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     elements.retry.disabled = isBusy || !state.lastRequest;
   }
 
+  // 连不上服务或断网：错误气泡显示断开的星环
+  function isOfflineError(error) {
+    return ["GATEWAY_UNREACHABLE", "NETWORK_ERROR"].includes(error?.code || error?.message);
+  }
+
   function errorMessage(error) {
     const code = error?.code || error?.message;
     const messages = {
@@ -1816,6 +1821,15 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     state.previewUnits = 0;
   }
 
+  // 回答到达：思考卡片里的烧瓶先播一次完成动效（约 0.6 秒），再换成回答
+  function celebratePending() {
+    const svg = state.pendingNode?.querySelector(".ai-thinking-flask svg");
+    const motion = window.MasterLabBrandMotion;
+    if (!svg || !motion || motion.reducedMotion()) return Promise.resolve();
+    motion.retrigger(svg, "is-done");
+    return new Promise(resolve => window.setTimeout(resolve, 600));
+  }
+
   function thinkingCopy(responseLevel) {
     const titles = {
       hint: "正在提炼一个关键线索",
@@ -1841,42 +1855,6 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       return value[0] / 0xFFFFFFFF;
     }
     return Math.random();
-  }
-
-  function applyThinkingPalette(field) {
-    const baseHue = Math.round(randomUnit() * 359);
-    const ringHue = (baseHue + 95 + Math.round(randomUnit() * 35)) % 360;
-    const moonHue = (baseHue + 205 + Math.round(randomUnit() * 35)) % 360;
-    field.style.setProperty("--thinking-planet-hue", String(baseHue));
-    field.style.setProperty("--thinking-ring-hue", String(ringHue));
-    field.style.setProperty("--thinking-moon-hue", String(moonHue));
-    field.style.setProperty("--thinking-spectrum-delay", `${(-randomUnit() * 9).toFixed(2)}s`);
-    field.style.setProperty("--thinking-orbit-delay", `${(-randomUnit() * 3.4).toFixed(2)}s`);
-  }
-
-  function attachThinkingPointerEffects(field) {
-    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    const reset = () => {
-      field.classList.remove("is-pointer-active");
-      field.style.setProperty("--thinking-tilt-x", "0deg");
-      field.style.setProperty("--thinking-tilt-y", "0deg");
-      field.style.setProperty("--thinking-light-x", "50%");
-      field.style.setProperty("--thinking-light-y", "52%");
-    };
-    field.addEventListener("pointermove", (event) => {
-      if (event.pointerType === "touch" || reducedMotion?.matches) return;
-      const bounds = field.getBoundingClientRect();
-      if (!bounds.width || !bounds.height) return;
-      const xRatio = Math.min(1, Math.max(0, (event.clientX - bounds.left) / bounds.width));
-      const yRatio = Math.min(1, Math.max(0, (event.clientY - bounds.top) / bounds.height));
-      field.style.setProperty("--thinking-tilt-x", `${((xRatio - .5) * 10).toFixed(2)}deg`);
-      field.style.setProperty("--thinking-tilt-y", `${((.5 - yRatio) * 8).toFixed(2)}deg`);
-      field.style.setProperty("--thinking-light-x", `${Math.round(28 + xRatio * 44)}%`);
-      field.style.setProperty("--thinking-light-y", `${Math.round(30 + yRatio * 42)}%`);
-      field.classList.add("is-pointer-active");
-    });
-    field.addEventListener("pointerleave", reset);
-    field.addEventListener("pointercancel", reset);
   }
 
   function thinkingElapsedLabel(seconds, live = true) {
@@ -2082,21 +2060,13 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     const body = createElement("div", "ai-thinking-body");
     const visual = createElement("div", "ai-thinking-visual");
     visual.setAttribute("aria-hidden", "true");
-    const field = createElement("div", "ai-thinking-field");
-    applyThinkingPalette(field);
-    attachThinkingPointerEffects(field);
-    const orbit = createElement("span", "ai-thinking-orbit");
-    const planet = createElement("span", "ai-thinking-planet");
-    planet.append(createElement("span", "ai-thinking-planet-core"));
-    const moon = createElement("span", "ai-thinking-moon");
-    moon.append(createElement("span", "ai-thinking-moon-core"));
-    orbit.append(
-      createElement("span", "ai-thinking-orbit-track orbit-back"),
-      planet,
-      createElement("span", "ai-thinking-orbit-track orbit-front"),
-      moon
-    );
-    field.append(orbit);
+    const field = createElement("div", "ai-thinking-field ai-thinking-flask");
+    // 轨道烧瓶思考图标（瓶口冒泡），由 brand-motion.js 生成
+    const motion = window.MasterLabBrandMotion;
+    if (motion) {
+      field.innerHTML = motion.rig({ geo: "small", dots: true, sheen: true, burst: true, cls: "fx-think-b" });
+      motion.hoverBoost(field);
+    }
     visual.append(field);
 
     const copyNode = createElement("div", "ai-thinking-copy");
@@ -2752,6 +2722,11 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       state.messages.push({ role, text: text(payload), quotes: savedQuotes(options.quotes), context, id,
         content: composeQuotedMessage(text(payload), options.quotes, context) });
     } else if (options.error) {
+      const offlineMark = options.offline ? window.MasterLabBrandMotion?.offlineMark() : null;
+      if (offlineMark) {
+        row.classList.add("is-offline");
+        bubble.prepend(offlineMark);
+      }
       bubble.append(createElement("p", "", text(payload)));
       state.messages.push({ role, content: text(payload), error: true, context, id });
     } else {
@@ -2893,6 +2868,8 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
         elements.status.textContent = "AI 服务繁忙，正在自动排队";
       });
       if (requestSerial !== state.requestSerial) return null;
+      await celebratePending();
+      if (requestSerial !== state.requestSerial) return null;
       clearPending();
       addMessage("assistant", payload, { source: payload.source, responseLevel, message: question, context: request.context });
       state.lastOutcome = "answered";
@@ -2903,7 +2880,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       clearPending();
       state.lastError = error;
       state.lastOutcome = "failed";
-      addMessage("assistant", errorMessage(error), { error: true });
+      addMessage("assistant", errorMessage(error), { error: true, offline: isOfflineError(error) });
       elements.status.textContent = "本次回答未完成，题目与实验状态已保留";
       return null;
     } finally {
@@ -3034,7 +3011,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       });
       openStandalone(state.context);
       addMessage("user", cleanQuestion);
-      addMessage("assistant", errorMessage(error), { error: true });
+      addMessage("assistant", errorMessage(error), { error: true, offline: isOfflineError(error) });
       // Retry goes straight to the tutor explanation; the failed step was only template routing.
       state.lastRequest = { message: UNMATCHED_TUTORIAL_REQUEST, responseLevel: "steps", quotes: [], request: null };
       state.lastOutcome = "failed";
@@ -3105,6 +3082,8 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
   });
   elements.retry?.addEventListener("click", () => {
     if (!state.lastRequest || state.controller) return;
+    const offlineMarks = elements.messages.querySelectorAll(".ai-message.is-offline .ai-offline-mark svg");
+    window.MasterLabBrandMotion?.relink(offlineMarks[offlineMarks.length - 1]);
     sendChat(state.lastRequest.message, state.lastRequest.responseLevel,
       { silentUser: true, quotes: state.lastRequest.quotes, replay: state.lastRequest });
   });

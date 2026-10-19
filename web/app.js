@@ -7039,6 +7039,7 @@ function setGenerationStage(index) {
   const timing = generationTiming();
   const nextStart = index + 1 < timing.stageStarts.length ? timing.stageStarts[index + 1] : timing.complete;
   elements.generationOverlay.dataset.stage = String(index);
+  window.MasterLabBrandMotion?.loaderStage(elements.generationOverlay, index, stage.progress);
   elements.generationStatus.textContent = `${stage.label}：${stage.text}`;
   elements.generationProgress.style.transitionDuration = `${Math.max(0, nextStart - timing.stageStarts[index])}ms`;
   elements.generationProgress.style.width = `${stage.progress}%`;
@@ -7051,6 +7052,7 @@ function setGenerationStage(index) {
 function completeGenerationOverlay() {
   const overlay = elements.generationOverlay;
   overlay.dataset.stage = "complete";
+  window.MasterLabBrandMotion?.loaderComplete(overlay);
   $$(".gen-step", elements.generationSteps).forEach(item => { item.dataset.state = "done"; });
   moveGenerationHighlight();
   elements.generationProgress.style.transitionDuration = "240ms";
@@ -7071,6 +7073,7 @@ function showGenerationOverlay(stages = null, options = {}) {
   }));
   state.generationStages = activeStages;
   overlay.classList.remove("is-leaving");
+  window.MasterLabBrandMotion?.loaderReset(overlay);
   overlay.dataset.subject = GENERATION_SUBJECT_KEYS[options.subject] || "physics";
   elements.generationTitle.textContent = "正在把题目生成实验";
   elements.generationKicker.textContent = "SEMANTIC INPUT";
