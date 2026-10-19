@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
+import Scene from '../../web/instant-scene.js';
 
 const source = (await readFile(new URL('../../web/ai-tutor.js', import.meta.url), 'utf8')).replaceAll('\r\n', '\n');
 const checksSource = await readFile(new URL('../../web/tutor-checks.js', import.meta.url), 'utf8');
@@ -23,19 +24,37 @@ function loadTutor(fetchImpl = () => { throw new Error('Unexpected network reque
     location: { hostname: 'localhost' }, addEventListener() {}
   };
   sandbox.window = sandbox;
+  sandbox.MasterLabInstantScene = Scene;
   vm.runInNewContext(checksSource, sandbox);
   vm.runInNewContext(source.replace(/\n  initializeTutor\(\);/, `
     globalThis.tutorTest = { readSseChat, extractJsonObject, fallbackChatFromText,
       completeTutorChat, apiRequest, state, contextScope, gatewayChatRequest,
       selectResponseLevel, getAnswerPresentation, softValidateChat, composeQuotedMessage,
       savedSession, savedQuotes, contextSnapshot, boundedHistory, readSessionStore,
-      requestWithQueue, BUSY_RETRY_DELAYS_MS, partialChatContent, checkedTutorChat, answerPlainText };`), sandbox);
+      requestWithQueue, BUSY_RETRY_DELAYS_MS, partialChatContent, checkedTutorChat, answerPlainText, wantsDiagram };`), sandbox);
   return sandbox.tutorTest;
 }
 
 function sseFrame(delta = {}, finishReason = null) {
   return `data: ${JSON.stringify({ choices: [{ delta, finish_reason: finishReason }] })}\n\n`;
 }
+
+test('web: explicit drawing requests use diagrams without treating explanations or quotes as commands', () => {
+  const tutor = loadTutor();
+  for (const q of ['绘制函数 y=abs(x-1)+0.5 的图像，不需要动画。', '请画出电路图。', '物块静止在粗糙斜面上。请画出受力示意图。']) assert.equal(tutor.wantsDiagram(q), true, q);
+  for (const q of ['不要画图，只解释绝对值函数。', '请解释图像为什么有折点。', '请解释“绘制函数图像”是什么意思。', '不需要图像，只要说明。']) assert.equal(tutor.wantsDiagram(q), false, q);
+});
+
+test('web: saved diagrams are revalidated and tampered fields never restore a drawing', () => {
+  const tutor = loadTutor(), q = '画一条线段。';
+  const scene = { version: 1, status: 'scene', subject: '物理', title: '线段', givens: [q], basis: ['表示位置关系。'], assumptions: [], explanation: ['线段示意。'], objects: [{ id: 'a', type: 'line', from: [100, 100], to: [400, 100] }], labels: [{ target: 'a', text: '线段' }], relations: [], calculations: [] };
+  const message = { role: 'assistant', level: 'explain', question: q, sceneQuestion: q, scene, payload: { ...answer, mode: 'explain', summary: '线段示意。', steps: [], formulas: [], finalAnswer: null } };
+  const restore = () => tutor.savedSession({ id: 'diagram-session', context: {}, messages: [message] }).messages[0];
+  assert.equal(restore().scene.objects[0].id, 'a');
+  scene.objects[0].onclick = 'unsafe()';
+  assert.equal(restore().scene, undefined);
+  assert.equal(restore().payload.summary, '线段示意。');
+});
 
 test('web: malformed optional suggestions preserve the answer and concrete questions are deduplicated', () => {
   const question = '为什么末速度为零时仍要考虑初速度？';

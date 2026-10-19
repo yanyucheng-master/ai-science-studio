@@ -65,6 +65,26 @@
     }
     return { mode: 'instant', scene };
   }
+  // Conversation drawings use the same request and validation without changing
+  // the retained experiment, opening its panel, or navigating out of the tutor.
+  async function createScene(question, { signal } = {}) {
+    if (!Core.validQuestion(question)) throw new Error('INVALID_QUESTION');
+    const config = window.MasterLabAITutor.sceneServiceConfig;
+    let key = ''; try { key = (localStorage.getItem('masterLab.deepseekApiKey') || '').trim(); } catch { /* use the configured gateway */ }
+    const result = await request(question, key, config, signal);
+    if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
+    if (result.mode !== 'instant') {
+      if (result.code === 'DECLINED') {
+        const declined = Core.validate({ version: 1, status: 'declined', reason: result.reason }, question);
+        if (declined.code !== 'DECLINED') throw new Error('INVALID_DECLINE');
+        return { ...result, reason: declined.reason };
+      }
+      return result;
+    }
+    const checked = Core.validate(result.scene, question);
+    if (!checked.ok) throw new Error(checked.code);
+    return { ...result, scene: checked.scene };
+  }
   // A failed attempt must not leave a stale "正在构建" panel above the retained experiment.
   function settleFallback(code, message, reason = '') {
     canvas.replaceChildren(); details.replaceChildren(); current = null;
@@ -120,5 +140,5 @@
   window.addEventListener('masterlab:context-changed', event => { if (event.detail?.reason !== 'instant') dismiss(); }, { capture: true });
   window.addEventListener('hashchange', () => { if (pending) dismiss(); });
   window.addEventListener('pagehide', dismiss);
-  window.MasterLabInstant = Object.freeze({ generate, dismiss, getContext });
+  window.MasterLabInstant = Object.freeze({ generate, createScene, dismiss, getContext });
 })();
