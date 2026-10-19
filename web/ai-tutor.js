@@ -2969,7 +2969,9 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
   }
 
   // acceptPlan：由页面核对 AI 改写后的模板题是否仍符合原题全部条件；不符合时改走导师讲解
-  async function resolveUnmatchedQuestion({ question, preferredSubject = "", localMessage = "", acceptPlan = null }) {
+  // mapOnly: only ask whether the question maps onto an existing interactive template. The caller then
+  // decides the next step (instant diagram, then tutor) instead of this function opening the tutor.
+  async function resolveUnmatchedQuestion({ question, preferredSubject = "", localMessage = "", acceptPlan = null, mapOnly = false }) {
     const cleanQuestion = text(question);
     if (!cleanQuestion) return { mode: "unavailable" };
     host().setMentorSummary?.("本地模板暂未匹配，正在请 AI 判断题型与所需条件……");
@@ -2997,6 +2999,9 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
           return { mode: "experiment", ...mapped, response };
         }
       }
+      if (mapOnly) return response.source === "local_fallback"
+        ? { mode: "unavailable", message: "AI 模板识别暂不可用，原题与当前实验已保留；请稍后重试或配置个人密钥。", response }
+        : { mode: "unmapped", response };
       adoptContext({
         mode: "question",
         subject: preferredSubject,
@@ -3013,6 +3018,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       const tutorial = await sendChat(UNMATCHED_TUTORIAL_REQUEST, "steps", { silentUser: true });
       return { mode: tutorial ? "explanation" : "unavailable", response, tutorial };
     } catch (error) {
+      if (mapOnly) return { mode: "unavailable", message: errorMessage(error), code: error?.code };
       adoptContext({
         mode: "question",
         subject: preferredSubject,

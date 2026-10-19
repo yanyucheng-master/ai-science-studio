@@ -56,7 +56,8 @@ export class InstantSceneService {
   async generate(question, { signal } = {}) {
     const started = Date.now();
     const fallback = code => ({ mode: 'explanation', code, reason: '本次未生成可核查的图示，将保留题目并转入 AI 导师。', durationMs: Date.now() - started });
-    if (typeof question !== 'string' || !question.trim() || question.length > 2000) return fallback('INVALID_QUESTION');
+    // Apply the shared validator's question rule before paying for a generation it would reject.
+    if (typeof question !== 'string' || !question.trim() || question.length > 2000 || !Scene.validQuestion(question)) return fallback('INVALID_QUESTION');
     if (signal?.aborted) return fallback('ABORTED');
     const cached = this.cache.get(question);
     if (cached && Date.now() - cached.time < 300000) return { ...structuredClone(cached.value), cached: true, durationMs: 0, usage: {} };

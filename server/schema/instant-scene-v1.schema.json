@@ -98,7 +98,7 @@
                 "properties": {
                   "id": {
                     "type": "string",
-                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                    "pattern": "^[A-Za-z][A-Za-z0-9_]{0,23}$"
                   },
                   "type": {
                     "const": "line"
@@ -215,7 +215,7 @@
                 "properties": {
                   "id": {
                     "type": "string",
-                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                    "pattern": "^[A-Za-z][A-Za-z0-9_]{0,23}$"
                   },
                   "type": {
                     "const": "arrow"
@@ -332,7 +332,7 @@
                 "properties": {
                   "id": {
                     "type": "string",
-                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                    "pattern": "^[A-Za-z][A-Za-z0-9_]{0,23}$"
                   },
                   "type": {
                     "const": "rect"
@@ -435,7 +435,7 @@
                 "properties": {
                   "id": {
                     "type": "string",
-                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                    "pattern": "^[A-Za-z][A-Za-z0-9_]{0,23}$"
                   },
                   "type": {
                     "const": "circle"
@@ -532,7 +532,7 @@
                 "properties": {
                   "id": {
                     "type": "string",
-                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                    "pattern": "^[A-Za-z][A-Za-z0-9_]{0,23}$"
                   },
                   "type": {
                     "const": "ellipse"
@@ -635,7 +635,7 @@
                 "properties": {
                   "id": {
                     "type": "string",
-                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                    "pattern": "^[A-Za-z][A-Za-z0-9_]{0,23}$"
                   },
                   "type": {
                     "const": "polygon"
@@ -738,7 +738,7 @@
                 "properties": {
                   "id": {
                     "type": "string",
-                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                    "pattern": "^[A-Za-z][A-Za-z0-9_]{0,23}$"
                   },
                   "type": {
                     "const": "polyline"
@@ -841,7 +841,7 @@
                 "properties": {
                   "id": {
                     "type": "string",
-                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                    "pattern": "^[A-Za-z][A-Za-z0-9_]{0,23}$"
                   },
                   "type": {
                     "const": "arc"
@@ -950,7 +950,7 @@
                 "properties": {
                   "id": {
                     "type": "string",
-                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                    "pattern": "^[A-Za-z][A-Za-z0-9_]{0,23}$"
                   },
                   "type": {
                     "const": "axes"
@@ -1077,7 +1077,7 @@
                 "properties": {
                   "id": {
                     "type": "string",
-                    "pattern": "^[a-z][a-z0-9_]{0,23}$"
+                    "pattern": "^[A-Za-z][A-Za-z0-9_]{0,23}$"
                   },
                   "type": {
                     "const": "curve"

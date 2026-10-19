@@ -42,17 +42,20 @@ const web = createServer(async (req, res) => {
 });
 web.listen(0, '127.0.0.1'); await once(web, 'listening');
 const base = `http://127.0.0.1:${web.address().port}`;
-const gateway = createMasterLabServer({ instantSceneService: service, allowedOrigins: [base], rateLimiter: new RateLimiter(300, 600000), deepSeekClient: { configured: true, async chat() { tutorCalls++; return { mode: 'explain', summary: '保留原题中的条件，根据题目明确的关系进行分析。缺少关键条件时先补充信息，再判断能否绘图。', steps: [], formulas: [], finalAnswer: null, checks: [], followUp: '可以补充题目中的空间关系。', parameterPatch: null, warnings: [] }; } } });
+const gateway = createMasterLabServer({ instantSceneService: service, allowedOrigins: [base], rateLimiter: new RateLimiter(300, 600000), deepSeekClient: { configured: true,
+  async generate() { return { schemaVersion: '1.0', mode: 'explanation', title: '无对应模板', answer: '可继续分析题目。', plan: null, visual: { kind: 'none', title: '' } }; },
+  async chat() { tutorCalls++; return { mode: 'explain', summary: '保留原题中的条件，根据题目明确的关系进行分析。缺少关键条件时先补充信息，再判断能否绘图。', steps: [], formulas: [], finalAnswer: null, checks: [], followUp: '可以补充题目中的空间关系。', parameterPatch: null, warnings: [] }; } } });
 gateway.listen(0, '127.0.0.1'); await once(gateway, 'listening');
 const gatewayBase = `http://127.0.0.1:${gateway.address().port}`;
 const browser = await chromium.launch({ channel: process.env.BROWSER_CHANNEL || 'msedge', headless: true });
-const report = { browser: browser.version(), checks: [], consoleErrors: [], bank: [], viewports: [] };
+const report = { browser: browser.version(), checks: [], consoleErrors: [], bank: [], viewports: [], requests: [] };
 let currentContext;
 async function pageAt(width = 1366, suffix = '') {
   if (currentContext) await currentContext.close();
   currentContext = await browser.newContext({ viewport: { width, height: 960 }, reducedMotion: 'reduce' });
   await currentContext.route('**/*', route => new URL(route.request().url()).hostname === '127.0.0.1' ? route.continue() : route.fulfill({ status: 204, body: '' }));
   const page = await currentContext.newPage();
+  page.on('request', request => { if (/\/api\/v1\/|\/chat\/completions|\/health/.test(request.url())) report.requests.push({ method: request.method(), url: request.url() }); });
   page.on('pageerror', error => report.consoleErrors.push(error.message));
   page.on('console', message => { if (message.type() === 'error') report.consoleErrors.push(message.text()); });
   await page.addInitScript(url => { window.MASTER_LAB_API_URL = url; }, gatewayBase);
@@ -92,6 +95,19 @@ try {
   assert.ok(plans.every(p => !p.local), JSON.stringify(plans.filter(p => p.local))); report.bank = plans; mark('all 30 questions are outside strict local templates');
   const before = calls; await generate(page, '一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。');
   assert.equal(calls, before); assert.equal(await page.locator('#instantExperiment').isVisible(), false); mark('matched templates make zero scene requests');
+  // Acceptance 2026-10-18: an equivalent question that AI maps onto a local template must still open the interactive experiment.
+  const paraphrase = '一辆车的速度是20米每秒，刹车时加速度大小为5米每二次方秒，刹车距离是多少？';
+  assert.equal(await page.evaluate(text => window.planLocalExperiment(text).ok, paraphrase), false);
+  let mappingCalls = 0;
+  await page.route(`${gatewayBase}/api/v1/experiment/generate`, async route => { mappingCalls++; await route.fulfill({ status: 200, contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': base }, body: JSON.stringify({ mode: 'experiment', title: '刹车距离', plan: { modules: [{ templateId: 'brake', parameters: { initialSpeed: 20, deceleration: 5 } }] }, source: 'fixture' }) }); });
+  const beforeMapped = calls; await generate(page, paraphrase);
+  report.mapping = { mappingCalls, sceneCalls: calls - beforeMapped, state: await page.evaluate(() => ({ hasGenerated: state.hasGenerated, template: state.physicsTemplate, question: state.generatedQuestion, p1: state.p1, p2: state.p2, context: window.MasterLabAIHost.getContext() })) };
+  await page.screenshot({ path: resolve(output, 'mapped-template.png'), fullPage: true });
+  await page.waitForFunction(original => state.hasGenerated && state.physicsTemplate === 'brake' && state.generatedQuestion === original, paraphrase);
+  assert.deepEqual(await page.evaluate(() => [state.p1, state.p2]), [20, 5]);
+  assert.equal(await page.evaluate(() => window.MasterLabAIHost.getContext().originalQuestion), paraphrase);
+  assert.equal(mappingCalls, 1); assert.equal(calls, beforeMapped); assert.equal(await page.locator('#instantExperiment').isVisible(), false);
+  await page.unroute(`${gatewayBase}/api/v1/experiment/generate`); mark('AI-mapped template questions still open the local interactive experiment before any scene request');
   const originalContext = await page.evaluate(() => window.MasterLabAIHost.getContext());
   await generate(page); await page.waitForSelector('#instantCanvas svg');
   assert.equal(await page.evaluate(() => window.MasterLabAIHost.getContext().originalQuestion), q); mark('unknown question renders a safe scene with its own tutor context');
@@ -111,23 +127,43 @@ try {
   await page.locator('.subject-tab[data-subject="化学"]').click();
   assert.equal(await page.locator('#instantExperiment').isVisible(), false); assert.equal(await page.evaluate(() => window.MasterLabInstant.getContext()), null); mark('subject switch clears instant context and restores normal controls');
 
-  page = await pageAt(); let directCalls = 0; const beforeDirect = calls;
+  page = await pageAt(); let directCalls = 0, directMappingCalls = 0, directDecline = false; const beforeDirect = calls;
   await page.route('https://api.deepseek.com/chat/completions', async route => {
-    const req = route.request(), body = req.postDataJSON(); directCalls++;
+    const req = route.request(), body = req.postDataJSON();
+    if (body.messages[0].content.includes('AI 导师')) {
+      const answer = { mode: 'clarification', summary: '缺少电路连接方式，无法唯一作图。', steps: [], formulas: [], finalAnswer: null, checks: [], followUp: '', parameterPatch: null, warnings: [] };
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(answer) } }] }) });
+      return;
+    }
+    if (!body.messages[0].content.includes('科学可视化设计师')) {
+      // Template routing runs first with the personal key as well; this fixture has no template.
+      directMappingCalls++;
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ choices: [{ finish_reason: 'stop', message: { content: JSON.stringify({ mode: 'explanation', title: '无模板', answer: '暂无对应模板', plan: null }) } }] }) });
+      return;
+    }
+    directCalls++;
+    if (directDecline) { await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ choices: [{ finish_reason: 'stop', message: { content: JSON.stringify({ version: 1, status: 'declined', reason: '缺少电路连接方式，无法唯一作图。' }) } }] }) }); return; }
     assert.equal(req.headers().authorization, 'Bearer fixture-only-never-valid');
     assert.equal(body.model, Scene.DEFAULT_MODEL); assert.equal(body.stream, false); assert.equal(body.max_tokens, Scene.LIMITS.tokens);
     assert.ok(body.messages[0].content.includes('科学可视化设计师'));
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(fixture(q)) } }] }) });
   });
   await page.evaluate(() => localStorage.setItem('masterLab.deepseekApiKey', 'fixture-only-never-valid'));
-  await generate(page); await page.waitForSelector('#instantCanvas svg'); assert.equal(directCalls, 1); assert.equal(calls, beforeDirect); mark('personal key route calls the provider directly without sending a key or question to the gateway');
+  await generate(page); await page.waitForSelector('#instantCanvas svg'); assert.equal(directCalls, 1); assert.equal(directMappingCalls, 1); assert.equal(calls, beforeDirect); mark('personal key route calls the provider directly without sending a key or question to the gateway');
+  directDecline = true; await generate(page, q + '（直连拒绘测试）');
+  assert.equal(await page.locator('#instantCanvas svg').count(), 0);
+  assert.match(await page.locator('#parseFeedback').textContent(), /缺少电路连接方式/); mark('personal key refusals keep their reason, like the gateway path');
 
   for (const failure of ['malicious', 'decline', 'error']) {
     mode = failure; service.cache.clear(); page = await pageAt(); const initial = tutorCalls;
     await generate(page, q + `（${({ malicious: '安全拦截', decline: '缺少条件', error: '服务故障' })[failure]}测试）`);
     assert.equal(await page.locator('#instantCanvas svg').count(), 0); assert.ok(tutorCalls > initial);
     assert.equal(await page.locator('.ai-message.error').count(), 0);
-    assert.equal(await page.evaluate(() => window.__unsafeScene || false), false); mark(`${failure} falls back to the text tutor without a diagram`);
+    assert.equal(await page.evaluate(() => window.__unsafeScene || false), false);
+    if (failure === 'decline') assert.match(await page.locator('#parseFeedback').textContent(), /缺少确定空间关系的条件/);
+    if (await page.evaluate(() => document.body.classList.contains('ai-tutor-route'))) await page.locator('#aiTutorBackButton').click();
+    assert.equal(await page.locator('#instantExperiment').isVisible(), false, 'no stale "building" panel after returning from the tutor');
+    mark(`${failure} falls back to the text tutor without a diagram`);
   }
   mode = 'hang'; service.cache.clear(); page = await pageAt();
   await page.locator('#questionInput').fill(q); await page.locator('#generateButton').click(); await page.waitForSelector('#instantCancel:visible');

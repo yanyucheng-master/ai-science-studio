@@ -7,7 +7,12 @@
   const fail = code => { throw new Error(code); };
   const object = v => v && typeof v === 'object' && !Array.isArray(v);
   const num = (v, min, max) => typeof v === 'number' && Number.isFinite(v) && v >= min && v <= max;
+  const bidiControl = /[\u202a-\u202e\u2066-\u2069]/;
   const text = (v, max = 240) => typeof v === 'string' && v.length > 0 && v.length <= max && !/[\u0000-\u0008\u000b-\u001f]|<[a-z!/]|(?:javascript|data|https?):|\\(?:href|url|html|includegraphics|def|newcommand)\b/i.test(v);
+  // The user's question and verbatim quotes of it are only ever shown with textContent.
+  // They need bounds and control-character checks, not the markup filter used for model prose
+  // (otherwise inequalities such as "a<b" would be rejected after a paid generation).
+  const questionText = (v, max = 2000) => typeof v === 'string' && v.trim().length > 0 && v.length <= max && !/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(v) && !bidiControl.test(v);
   function keys(v, allowed, required = allowed) {
     if (!object(v) || Object.keys(v).some(k => !allowed.includes(k)) || required.some(k => !Object.hasOwn(v, k))) fail('INVALID_FIELDS');
   }
@@ -19,6 +24,17 @@
   const vector = o => [o.to[0] - o.from[0], o.to[1] - o.from[1]];
   const dot = (a, b) => a[0] * b[0] + a[1] * b[1];
   const cross = (a, b) => a[0] * b[1] - a[1] * b[0];
+  const segmentDistance = (p, a, b) => {
+    const d = [b[0] - a[0], b[1] - a[1]], t = Math.max(0, Math.min(1, dot([p[0] - a[0], p[1] - a[1]], d) / (dot(d, d) || 1)));
+    return distance(p, [a[0] + t * d[0], a[1] + t * d[1]]);
+  };
+  const segmentTouchesRect = (a, b, r, pad = 1) => {
+    for (let i = 0; i <= 24; i++) {
+      const p = [a[0] + (b[0] - a[0]) * i / 24, a[1] + (b[1] - a[1]) * i / 24];
+      if (p[0] >= r[0] - pad && p[0] <= r[2] + pad && p[1] >= r[1] - pad && p[1] <= r[3] + pad) return true;
+    }
+    return false;
+  };
   const inPolygon = (p, points) => {
     let inside = false;
     for (let i = 0, j = points.length - 1; i < points.length; j = i++) {
@@ -75,7 +91,8 @@
     const fields = SHAPES[o.type];
     keys(o, ['id', 'type', 'role', 'color', 'fill', 'dashed', ...fields], ['id', 'type', ...fields]);
     if (o.role !== undefined && !ROLES.includes(o.role)) fail('INVALID_ROLE');
-    if (!/^[a-z][a-z0-9_]{0,23}$/.test(o.id)) fail('INVALID_ID');
+    // Component names such as res_R1 or focus_F are common; ids only become attribute values and map keys.
+    if (typeof o.id !== 'string' || !/^[A-Za-z][A-Za-z0-9_]{0,23}$/.test(o.id)) fail('INVALID_ID');
     for (const k of ['color', 'fill']) if (o[k] !== undefined && !Object.hasOwn(palette, o[k])) fail('INVALID_COLOR');
     if (o.dashed !== undefined && typeof o.dashed !== 'boolean') fail('INVALID_STYLE');
     if (o.from && (!point(o.from) || !point(o.to) || distance(o.from, o.to) < 2)) fail('INVALID_COORDINATE');
@@ -86,12 +103,32 @@
     if (o.type === 'arc' && (!num(o.start, -360, 360) || !num(o.end, -360, 360) || Math.abs(o.end - o.start) < 1 || Math.abs(o.end - o.start) >= 360)) fail('INVALID_ARC');
     if (['axes', 'curve'].includes(o.type) && (o.xMax <= o.xMin || o.yMax <= o.yMin || o.xMax - o.xMin < .01 || o.yMax - o.yMin < .01)) fail('INVALID_DOMAIN');
     if (o.type === 'curve') {
-      if (!text(o.quote, 160) || !question.includes(o.quote) || !normalized(o.quote).includes(normalized(o.expression))) fail('UNSUPPORTED_FUNCTION');
-      expression(o.expression);
+      if (!questionText(o.quote, 160) || !question.includes(o.quote) || !normalized(o.quote).includes(normalized(o.expression))) fail('UNSUPPORTED_FUNCTION');
+      const plotted = expression(o.expression);
+      // A fragment of the stated function (sin(x) out of sin(x)+0.5*x, x^2+4 out of -x^2+4) is not
+      // the function. The plotted expression must equal a function the question defines (y=… / f(x)=…).
+      const stated = [...normalized(question).matchAll(/(?:y|f\(x\))=([0-9a-z+\-*/^().]+)/g)].map(m => { try { return expression(m[1]); } catch { return null; } }).filter(Boolean);
+      if (!stated.length) fail('UNSUPPORTED_FUNCTION');
+      const same = target => {
+        let compared = 0;
+        for (let i = 0; i <= 16; i++) {
+          const x = o.xMin + (o.xMax - o.xMin) * i / 16, a = plotted(x), b = target(x);
+          if (Number.isFinite(a) !== Number.isFinite(b)) return false;
+          if (Number.isFinite(a)) { compared++; if (Math.abs(a - b) > 1e-9 * Math.max(1, Math.abs(b))) return false; }
+        }
+        return compared >= 3;
+      };
+      if (!stated.some(same)) fail('FUNCTION_MISMATCH');
     }
   }
 
-  function scienceChecks(scene, question) {
+  // Optical density order used only to decide the direction of bending in a stated refraction.
+  const MEDIA = { 真空: 0, 空气: 1, 水: 2, 玻璃: 3 };
+  function refractionOrder(question) {
+    const m = question.match(/(真空|空气|水|玻璃)中?[^。；;，,]{0,6}?(?:斜射|射|进)入[^。；;，,]{0,4}?(真空|空气|水|玻璃)/);
+    return m && m[1] !== m[2] ? [MEDIA[m[1]], MEDIA[m[2]]] : null;
+  }
+  function scienceChecks(scene, question, verified = []) {
     let count = 0;
     const find = role => scene.objects.filter(o => o.role === role);
     const one = (role, arrow = false) => {
@@ -114,6 +151,8 @@
       for (const t of find('tension')) if (/沿斜面向上/.test(question) && (t.type !== 'arrow' || !sameDirection(vector(t), uphill))) fail('WRONG_TENSION');
       if (/光滑/.test(question) && find('friction').length) fail('INVENTED_FRICTION');
       if (/粗糙/.test(question) && /上滑|向上滑动/.test(question)) { if (!sameDirection(vector(one('friction', true)), uphill.map(n => -n))) fail('WRONG_FRICTION'); }
+      // At rest on a rough incline with no applied force, the tendency is to slide down, so static friction acts up the slope.
+      else if (/粗糙/.test(question) && /静止/.test(question) && !/拉|推|外力/.test(question.replace(/(?:不受|没有|无)外力/g, '')) && !find('tension').length) { if (!sameDirection(vector(one('friction', true)), uphill)) fail('WRONG_FRICTION'); }
       if (/分解/.test(question)) {
         const g = one('gravity', true), a = one('gravity_parallel', true), b = one('gravity_normal', true);
         if (!sameDirection(vector(a), uphill.map(n => -n)) || !sameDirection(vector(b), normal.map(n => -n))) fail('WRONG_DECOMPOSITION');
@@ -128,11 +167,22 @@
       }
       count++;
     }
-    if (/摩擦/.test(question) && (/相对带面向左/.test(question) || /向右加速/.test(question) || /向左.*拉力.*静止/.test(question))) {
-      if (!sameDirection(vector(one('friction', true)), [1, 0])) fail('WRONG_FRICTION'); count++;
+    if (/摩擦/.test(question)) {
+      // Friction opposes motion (or its tendency) relative to the contact surface, not the body's velocity.
+      // A belt only drags a body forward in the stated belt cases; a fixed rough floor or desk opposes the motion.
+      const belt = /传送带/.test(question);
+      const beltRight = belt && (/相对带面向左/.test(question) || (/向右加速/.test(question) && /相对静止/.test(question)));
+      const restingPulledLeft = !belt && /向左[^。；]*拉力[^。；]*静止/.test(question);
+      const restingPulledRight = !belt && /向右[^。；]*拉力[^。；]*静止/.test(question);
+      const fixedFloor = !belt && /粗糙/.test(question) && /桌面|地面|水平面/.test(question) && !/静止/.test(question);
+      const moving = side => new RegExp(`向${side}(?:做)?(?:加速|减速|匀速)?(?:直线)?(?:运动|滑动|滑行)|向${side}加速`).test(question);
+      const right = fixedFloor && moving('右'), left = fixedFloor && moving('左');
+      const expected = beltRight || restingPulledLeft ? [1, 0] : restingPulledRight ? [-1, 0] : right !== left ? (right ? [-1, 0] : [1, 0]) : null;
+      if (expected) { if (!sameDirection(vector(one('friction', true)), expected)) fail('WRONG_FRICTION'); count++; }
     }
     const reflection = /平面镜/.test(question) && /反射/.test(question);
-    const refraction = /空气/.test(question) && /水中/.test(question) && /折射/.test(question);
+    const order = /折射/.test(question) ? refractionOrder(question) : null;
+    const refraction = !reflection && Boolean(order);
     if (reflection || refraction) {
       const face = one(reflection ? 'mirror' : 'interface'), normal = one('normal'), incoming = one('incident_ray', true), outgoing = one(reflection ? 'reflected_ray' : 'refracted_ray', true);
       if (face.type !== 'line' || normal.type !== 'line') fail('MISSING_SCIENCE_ANCHOR');
@@ -142,19 +192,37 @@
       if (reflection) {
         const factor = 2 * dot(u, n) / dot(n, n), expected = [u[0] - factor * n[0], u[1] - factor * n[1]];
         if (!sameDirection(expected, v)) fail('WRONG_REFLECTION');
-        const angle = question.match(/入射角(?:为|是)?\s*(\d+(?:\.\d+)?)°/);
-        if (angle && Math.abs(Math.acos(Math.min(1, Math.abs(dot(u, n)) / Math.hypot(...u) / Math.hypot(...n))) * 180 / Math.PI - Number(angle[1])) > 1) fail('WRONG_INCIDENT_ANGLE');
+        // "入射角30°" and "与法线成30°" give the incident angle; "与镜面成30°" gives its complement.
+        const angle = question.match(/入射角(?:为|是)?\s*(\d+(?:\.\d+)?)°/) || question.match(/与法线[^。；，,]{0,3}?(?:成|夹角(?:为|是)?)\s*(\d+(?:\.\d+)?)°/);
+        const withMirror = question.match(/与[^。；，,]{0,10}?镜面?[^。；，,]{0,3}?(?:成|夹角(?:为|是)?)\s*(\d+(?:\.\d+)?)°/);
+        const expectedAngle = angle ? Number(angle[1]) : withMirror ? 90 - Number(withMirror[1]) : null;
+        const measured = Math.acos(Math.min(1, Math.abs(dot(u, n)) / Math.hypot(...u) / Math.hypot(...n))) * 180 / Math.PI;
+        if (expectedAngle !== null) {
+          if (Math.abs(measured - expectedAngle) > 1) fail('WRONG_INCIDENT_ANGLE');
+          verified.push({ value: expectedAngle, unit: '°' });
+        }
       } else {
         const cosine = a => Math.abs(dot(a, n)) / Math.hypot(...a) / Math.hypot(...n);
-        if (cosine(v) <= cosine(u) || dot(u, n) * dot(v, n) <= 0 || dot(u, f) * dot(v, f) <= 0) fail('WRONG_REFRACTION');
+        const normalIncidence = Math.abs(dot(u, f)) / Math.hypot(...u) / Math.hypot(...f) < 1e-6;
+        const statedNormalIncidence = /垂直(?:入射|射入)/.test(question);
+        if (statedNormalIncidence && !normalIncidence) fail('WRONG_INCIDENT_ANGLE');
+        if (dot(u, n) * dot(v, n) <= 0 || (normalIncidence ? !sameDirection(u, v) : dot(u, f) * dot(v, f) <= 0)) fail('WRONG_REFRACTION');
+        // Into an optically denser medium the ray bends toward the normal; into a rarer one, away from it.
+        if (!normalIncidence && (order[1] > order[0] ? cosine(v) <= cosine(u) : cosine(v) >= cosine(u))) fail('WRONG_REFRACTION');
+        // Zero degrees follows from the stated normal incidence and checked rays,
+        // not from a number invented by the model or the chosen drawing geometry.
+        if (statedNormalIncidence) verified.push({ value: 0, unit: '°' });
       }
       count++;
     }
-    if (scene.subject === '数学' && /函数|图像/.test(question) && /y\s*[=＝]/i.test(question)) {
+    if (scene.subject === '数学' && /函数|图像/.test(question) && /(?:y|f\(x\))\s*[=＝]/i.test(question)) {
       const curves = scene.objects.filter(o => o.type === 'curve');
       if (!curves.length) fail('UNVERIFIED_FUNCTION_PLOT');
+      // A stated observation window ("x=-4 到 x=4") is part of the question, not a layout choice.
+      const window = normalized(question).match(/x=(-?\d+(?:\.\d+)?)(?:到|至|~|～|—|–)x=?(-?\d+(?:\.\d+)?)/);
       for (const curve of curves) {
         if (!scene.objects.some(a => a.type === 'axes' && ['x', 'y', 'width', 'height', 'xMin', 'xMax', 'yMin', 'yMax'].every(k => a[k] === curve[k]))) fail('INCONSISTENT_AXES');
+        if (window && (Math.abs(curve.xMin - Number(window[1])) > 1e-9 || Math.abs(curve.xMax - Number(window[2])) > 1e-9)) fail('WRONG_DOMAIN');
       }
       count++;
     }
@@ -183,15 +251,27 @@
       if (Math.abs(a[1] - b[1]) > 1 || Math.abs(a[0] - b[0]) < 12 || Math.abs(a[1] - bb[3]) > 1 || a[1] <= wb[1] || a[1] >= wb[3] || Math.min(a[0], b[0]) < tb[0] || Math.max(a[0], b[0]) > tb[2] || wb[0] < tb[0] || wb[1] < tb[1] || wb[2] > tb[2] || wb[3] > tb[3]) fail('CLOSED_OR_UNSUBMERGED_BOTTLE');
       const ends = [tube.points[0], tube.points.at(-1)], source = ends.find(p => inPolygon(p, vessel.points)), outlet = ends.find(p => p !== source);
       if (!source || !outlet || outlet[0] <= Math.min(a[0], b[0]) || outlet[0] >= Math.max(a[0], b[0]) || outlet[1] < a[1] - 12 || outlet[1] > a[1] + 30 || outlet[1] >= wb[3]) fail('DISCONNECTED_GAS_TUBE');
-      const neck = vessel.points.filter(p => Math.abs(p[1] - vb[1]) < 1).map(p => p[0]);
-      if (neck.length < 2 || stopper.x > Math.min(...neck) || stopper.x + stopper.width < Math.max(...neck) || Math.abs(stopper.y + stopper.height - vb[1]) > 2) fail('UNSEALED_REACTION_VESSEL');
-      if (source[1] - vb[1] < 3) fail('DISCONNECTED_GAS_TUBE');
-      const crossesNeck = tube.points.slice(1).some((p, i) => {
-        const q = tube.points[i]; if ((p[1] < vb[1]) === (q[1] < vb[1]) || p[1] === q[1]) return false;
-        const x = p[0] + (vb[1] - p[1]) * (q[0] - p[0]) / (q[1] - p[1]);
-        return x > Math.min(...neck) && x < Math.max(...neck);
-      });
-      if (!crossesNeck || find('fluid').some(o => inPolygon([(bounds(o)[0] + bounds(o)[2]) / 2, (bounds(o)[1] + bounds(o)[3]) / 2], vessel.points) && source[1] >= bounds(o)[1])) fail('DISCONNECTED_GAS_TUBE');
+      if (/加热/.test(question)) {
+        // Heated solids (KMnO4, KClO3) use a clamped test tube whose stoppered mouth is at the side,
+        // so the upright-flask neck test below does not apply. The tube must still pass through the
+        // stopper, and a heated test tube must not point its mouth upward (condensate runs back).
+        const sb = [stopper.x, stopper.y, stopper.x + stopper.width, stopper.y + stopper.height];
+        if (!tube.points.slice(1).some((p, i) => segmentTouchesRect(tube.points[i], p, sb))) fail('UNSEALED_REACTION_VESSEL');
+        const mouth = [(sb[0] + sb[2]) / 2, (sb[1] + sb[3]) / 2];
+        const closedEnd = vessel.points.reduce((far, p) => distance(p, mouth) > distance(far, mouth) ? p : far);
+        if (/试管/.test(question) && mouth[1] < closedEnd[1] - 2) fail('TEST_TUBE_MOUTH_UPWARD');
+      } else {
+        const neck = vessel.points.filter(p => Math.abs(p[1] - vb[1]) < 1).map(p => p[0]);
+        if (neck.length < 2 || stopper.x > Math.min(...neck) || stopper.x + stopper.width < Math.max(...neck) || Math.abs(stopper.y + stopper.height - vb[1]) > 2) fail('UNSEALED_REACTION_VESSEL');
+        if (source[1] - vb[1] < 3) fail('DISCONNECTED_GAS_TUBE');
+        const crossesNeck = tube.points.slice(1).some((p, i) => {
+          const q = tube.points[i]; if ((p[1] < vb[1]) === (q[1] < vb[1]) || p[1] === q[1]) return false;
+          const x = p[0] + (vb[1] - p[1]) * (q[0] - p[0]) / (q[1] - p[1]);
+          return x > Math.min(...neck) && x < Math.max(...neck);
+        });
+        if (!crossesNeck) fail('DISCONNECTED_GAS_TUBE');
+      }
+      if (find('fluid').some(o => inPolygon([(bounds(o)[0] + bounds(o)[2]) / 2, (bounds(o)[1] + bounds(o)[3]) / 2], vessel.points) && source[1] >= bounds(o)[1])) fail('DISCONNECTED_GAS_TUBE');
       count++;
     }
     return count;
@@ -212,7 +292,8 @@
     else if (r.type === 'parallel') ok = Math.abs(cross(u, v)) / scale < .035;
     else if (r.type === 'opposite') ok = dot(u, v) / scale < -.998;
     else if (r.type === 'equalLength') ok = Math.abs(Math.hypot(...u) - Math.hypot(...v)) <= 2;
-    else if (r.type === 'connected') ok = [distance(a.from, b.from), distance(a.from, b.to), distance(a.to, b.from), distance(a.to, b.to)].some(d => d < 2);
+    // Wires also connect where one end meets the other segment (a T-junction at a battery plate or bus line).
+    else if (r.type === 'connected') ok = [distance(a.from, b.from), distance(a.from, b.to), distance(a.to, b.from), distance(a.to, b.to)].some(d => d < 2) || [a.from, a.to].some(p => segmentDistance(p, b.from, b.to) < 2) || [b.from, b.to].some(p => segmentDistance(p, a.from, a.to) < 2);
     else fail('UNKNOWN_RELATION');
     if (!ok) fail('RELATION_MISMATCH');
   }
@@ -229,7 +310,7 @@
     const rule = RULES[c.rule]; list(c.inputs, rule.names.length, rule.names.length);
     const values = c.inputs.map((p, i) => {
       keys(p, ['name', 'value', 'unit', 'quote']);
-      if (p.name !== rule.names[i] || p.unit !== rule.units[i] || !num(p.value, .000001, 1000000) || !text(p.quote, 160) || !question.includes(p.quote)) fail('UNVERIFIED_INPUT');
+      if (p.name !== rule.names[i] || p.unit !== rule.units[i] || !num(p.value, .000001, 1000000) || !questionText(p.quote, 160) || !question.includes(p.quote)) fail('UNVERIFIED_INPUT');
       const pairs = [...normalized(p.quote).matchAll(/(\d+(?:\.\d+)?)([A-Za-zΩ·/^²0-9]+)/g)];
       if (!pairs.some(match => Number(match[1]) === p.value && match[2] === normalized(p.unit))) fail('UNVERIFIED_INPUT');
       return p.value;
@@ -242,18 +323,20 @@
 
   function validate(raw, question) {
     try {
-      if (!text(question, 2000)) fail('INVALID_QUESTION');
+      if (!questionText(question)) fail('INVALID_QUESTION');
       const encoded = JSON.stringify(raw); if (!encoded || new TextEncoder().encode(encoded).byteLength > LIMITS.bytes) fail('SCENE_TOO_LARGE');
       // Bound traversal before processing potentially nested untrusted JSON.
       const stack = [[raw, 0]]; let count = 0;
       while (stack.length) {
         const [v, depth] = stack.pop(); if (++count > 6500 || depth > 8) fail('SCENE_TOO_COMPLEX');
+        if (typeof v === 'string' && bidiControl.test(v)) fail('INVALID_TEXT');
         if (v && typeof v === 'object') for (const [k, child] of Object.entries(v)) { if (['__proto__', 'constructor', 'prototype'].includes(k)) fail('UNSAFE_KEY'); stack.push([child, depth + 1]); }
       }
       if (raw?.status === 'declined') { keys(raw, ['version', 'status', 'reason']); if (raw.version !== 1 || !text(raw.reason, 300)) fail('INVALID_DECLINE'); return { ok: false, code: 'DECLINED', reason: raw.reason }; }
       keys(raw, ['version', 'status', 'subject', 'title', 'givens', 'basis', 'assumptions', 'explanation', 'objects', 'labels', 'relations', 'calculations']);
       if (raw.version !== 1 || raw.status !== 'scene' || !['物理', '数学', '化学', '生物'].includes(raw.subject) || !text(raw.title, 50)) fail('INVALID_SCENE');
-      strings(raw.givens, 1, 12, 2000); if (!raw.givens.every(q => question.includes(q))) fail('INVENTED_GIVEN');
+      list(raw.givens, 1, 12); if (!raw.givens.every(q => questionText(q))) fail('INVALID_TEXT');
+      if (!raw.givens.every(q => question.includes(q))) fail('INVENTED_GIVEN');
       strings(raw.basis, 1, 5); strings(raw.assumptions, 0, 3); strings(raw.explanation, 1, 4, 360);
       // Assumptions may describe the drawing only, never missing scientific conditions.
       if (raw.assumptions.some(s => !ASSUMPTIONS.includes(s))) fail('INVENTED_ASSUMPTION');
@@ -267,11 +350,17 @@
       }
       list(raw.relations, 0, 24); raw.relations.forEach(r => checkRelation(r, byId));
       list(raw.calculations, 0, 4); const results = raw.calculations.map(c => calculation(c, question));
-      const science = scienceChecks(raw, question);
-      // V1 free diagrams must not claim numerical solutions that bypass program verification.
+      const verified = results.map(r => ({ value: r.value, unit: r.unit }));
+      const science = scienceChecks(raw, question, verified);
+      // V1 free diagrams must not state values that neither appear in the question nor were verified
+      // by the program. "为/是/约/≈" phrasings are claims just like "="; program-verified values
+      // (calculation results, an incident angle fixed by the question) may be stated.
       const prose = [...raw.explanation, ...raw.basis, ...raw.labels.map(l => l.text)].join(' ');
-      const numericClaims = prose.match(/(?:=|＝|约为|等于|大小为)\s*[-+]?\d+(?:\.\d+)?\s*(?:N|A|V|Ω|kg|cm|m(?:\/s)?|J|Pa|°)/g) || [];
-      if (numericClaims.some(claim => !normalized(question).includes(normalized(claim)))) fail('UNVERIFIED_NUMERIC_CLAIM');
+      const unit = '(m/s\\^2|m/s|N/kg|N·m|N|A|V|Ω|kg|cm|m|J|Pa|°)(?![A-Za-z0-9/^²³])';
+      const stated = [...normalized(question).matchAll(new RegExp(`([-+]?\\d+(?:\\.\\d+)?)${unit}`, 'g'))].map(m => ({ value: Number(m[1]), unit: m[2] }));
+      const known = (value, u) => [...stated, ...verified].some(v => v.unit === u && Math.abs(v.value - value) <= Math.max(1e-9, Math.abs(v.value) * 1e-6));
+      const claims = [...normalized(prose).matchAll(new RegExp(`(?:=|＝|≈|约为|约|等于|大小为|大小是|为|是)([-+]?\\d+(?:\\.\\d+)?)${unit}`, 'g'))];
+      if (claims.some(m => !known(Number(m[1]), m[2]))) fail('UNVERIFIED_NUMERIC_CLAIM');
       return { ok: true, scene: JSON.parse(encoded), results, checks: { geometry: raw.relations.length, calculations: results.length, science }, scientificStatus: 'schematic' };
     } catch (error) { return { ok: false, code: error.message || 'INVALID_SCENE', reason: '本次场景未通过约束检查，改用文字讲解。' }; }
   }
@@ -294,6 +383,14 @@ calculations通常为空。需要数值复核时仅可用 {rule,inputs:[{name,va
   // Display-only conversion; the original question and mathematical expression remain unchanged.
   const displayText = value => {
     let output = value.replace(/\bsqrt\s*(?=\()/g, '√');
+    // Programming notation reads as code to students: abs(u) → |u|, 0.5*x → 0.5x, other * → ·.
+    for (let start = output.search(/\babs\(/); start >= 0; start = output.search(/\babs\(/)) {
+      let depth = 0, end = -1;
+      for (let i = start + 3; i < output.length; i++) { if (output[i] === '(') depth++; else if (output[i] === ')' && --depth === 0) { end = i; break; } }
+      if (end < 0) break;
+      output = `${output.slice(0, start)}|${output.slice(start + 4, end)}|${output.slice(end + 1)}`;
+    }
+    output = output.replace(/(\d)\s*\*\s*(?=[a-zA-Zπ(√])/g, '$1').replace(/\s*\*\s*/g, '·');
     // In "串联在 R1/R2 支路" the slash enumerates components, not a resistance ratio.
     // Preserve actual ratio statements and the original stored model/question text.
     if (/串联在/.test(output) && /支路/.test(output) && !/比值|之比|比为/.test(output)) output = output.replace(/(R_?\d+)\s*\/\s*(R_?\d+)/g, '$1、$2');
@@ -308,7 +405,7 @@ calculations通常为空。需要数值复核时仅可用 {rule,inputs:[{name,va
     const numeric = { type: 'number', minimum: -10000, maximum: 10000 };
     const coord = { type: 'array', prefixItems: [{ type: 'number', minimum: 30, maximum: 550 }, { type: 'number', minimum: 30, maximum: 420 }], items: false, minItems: 2, maxItems: 2 };
     const shape = Object.entries(SHAPES).map(([type, fields]) => {
-      const properties = { id: { type: 'string', pattern: '^[a-z][a-z0-9_]{0,23}$' }, type: { const: type }, role: { enum: ROLES }, color: { enum: Object.keys(palette) }, fill: { enum: Object.keys(palette) }, dashed: { type: 'boolean' } };
+      const properties = { id: { type: 'string', pattern: '^[A-Za-z][A-Za-z0-9_]{0,23}$' }, type: { const: type }, role: { enum: ROLES }, color: { enum: Object.keys(palette) }, fill: { enum: Object.keys(palette) }, dashed: { type: 'boolean' } };
       for (const field of fields) properties[field] = ['from', 'to'].includes(field) ? coord : field === 'points' ? array(coord, type === 'polygon' ? 3 : 2, LIMITS.points) : field === 'expression' ? string(100) : field === 'quote' ? string(160) : ['width', 'height', 'r', 'rx', 'ry'].includes(field) ? { type: 'number', minimum: 3, maximum: 520 } : ['start', 'end'].includes(field) ? { type: 'number', minimum: -360, maximum: 360 } : numeric;
       return record(properties, ['id', 'type', ...fields]);
     });
@@ -321,7 +418,7 @@ calculations通常为空。需要数值复核时仅可用 {rule,inputs:[{name,va
       ]
     };
   }
-  const api = Object.freeze({ LIMITS, DEFAULT_MODEL, palette, validate, bounds, expression, displayText, schema, requestBody, SYSTEM_PROMPT });
+  const api = Object.freeze({ LIMITS, DEFAULT_MODEL, palette, validate, validQuestion: v => questionText(v), bounds, expression, displayText, schema, requestBody, SYSTEM_PROMPT });
   if (typeof window !== 'undefined') window.MasterLabInstantScene = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })();

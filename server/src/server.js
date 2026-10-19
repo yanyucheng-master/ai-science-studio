@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { isIP } from 'node:net';
 import { createServer as createHttpServer } from 'node:http';
 import { pathToFileURL } from 'node:url';
 import { config, DEEPSEEK_OFFICIAL_MODEL } from './config.js';
@@ -56,12 +57,18 @@ export class RateLimiter {
   }
 }
 
-function clientAddress(request) {
+function clientAddress(request, trustedProxyHops = 0) {
+  const peer = request.socket.remoteAddress || 'unknown';
+  if (!Number.isInteger(trustedProxyHops) || trustedProxyHops < 1) return peer;
   const forwarded = request.headers['x-forwarded-for'];
-  if (typeof forwarded === 'string' && forwarded.length > 0) {
-    return forwarded.split(',')[0].trim();
-  }
-  return request.socket.remoteAddress || 'unknown';
+  if (typeof forwarded !== 'string' || forwarded.length > 4096) return peer;
+  const addresses = forwarded.split(',').map(value => value.trim());
+  // Only the suffix appended by the configured proxy chain is trusted. A client
+  // may prepend arbitrary addresses; none of them may create another rate bucket.
+  if (addresses.length < trustedProxyHops || !addresses.slice(-trustedProxyHops).every(value => isIP(value) && !value.includes('%'))) return peer;
+  const address = addresses[addresses.length - trustedProxyHops];
+  if (address.startsWith('::ffff:') && isIP(address.slice(7)) === 4) return address.slice(7);
+  return isIP(address) === 6 ? new URL(`http://[${address}]/`).hostname : address;
 }
 
 function applyCors(request, response, allowedOrigins) {
@@ -121,6 +128,7 @@ export function createMasterLabServer(options = {}) {
   const instantScenes = options.instantSceneService || new InstantSceneService();
   const allowedOrigins = options.allowedOrigins || config.allowedOrigins;
   const limiter = options.rateLimiter || new RateLimiter(config.rateLimitMax, config.rateLimitWindowMs);
+  const trustedProxyHops = options.trustedProxyHops ?? config.trustedProxyHops;
 
   return createHttpServer(async (request, response) => {
     const startedAt = Date.now();
@@ -162,7 +170,7 @@ export function createMasterLabServer(options = {}) {
         sendJson(response, status, { error: 'NOT_FOUND' }, requestId);
         return;
       }
-      if (!limiter.allow(clientAddress(request))) {
+      if (!limiter.allow(clientAddress(request, trustedProxyHops))) {
         status = 429;
         sendJson(response, status, { error: 'RATE_LIMITED' }, requestId);
         return;

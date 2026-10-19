@@ -57,7 +57,20 @@
     const payload = await boundedJson(response);
     if (!direct) return payload;
     if (payload?.choices?.[0]?.finish_reason !== 'stop') throw new Error('INCOMPLETE_RESPONSE');
-    return { mode: 'instant', scene: JSON.parse(payload.choices[0].message.content) };
+    const scene = JSON.parse(payload.choices[0].message.content);
+    // Same outcome as the gateway path: a well-formed refusal keeps its reason for the student.
+    if (scene?.status === 'declined') {
+      const checked = Core.validate(scene, question);
+      return { mode: 'explanation', code: checked.code || 'INVALID_DECLINE', ...(checked.code === 'DECLINED' ? { reason: checked.reason } : {}) };
+    }
+    return { mode: 'instant', scene };
+  }
+  // A failed attempt must not leave a stale "正在构建" panel above the retained experiment.
+  function settleFallback(code, message, reason = '') {
+    canvas.replaceChildren(); details.replaceChildren(); current = null;
+    title.textContent = '科学示意图'; status.textContent = message;
+    panel.hidden = true; document.body.classList.remove('instant-active');
+    return { mode: 'explanation', code, ...(reason ? { reason } : {}) };
   }
   async function generate(question, subject = '') {
     dismiss(); const requestSerial = serial;
@@ -77,17 +90,16 @@
       const result = cache?.signature === signature && Date.now() - cache.time < 300000 ? { ...cache.value, cached: true } : await request(question, key, config, controller.signal);
       if (requestSerial !== serial || controller.signal.aborted) return { mode: 'cancelled' };
       if (result.mode !== 'instant') {
-        status.textContent = result.code === 'DECLINED' ? `暂不绘图：${result.reason}` : '当前图示无法可靠生成，正在转入 AI 导师。';
-        return { mode: 'explanation', code: result.code || 'DECLINED' };
+        const declined = (result.code || 'DECLINED') === 'DECLINED';
+        return settleFallback(result.code || 'DECLINED', declined ? `暂不绘图：${result.reason}` : '当前图示无法可靠生成，正在转入 AI 导师。', declined ? result.reason : '');
       }
       present(result.scene, question, result);
       cache = { signature, value: { mode: 'instant', scene: current.scene }, time: Date.now() };
       return { mode: 'instant', durationMs: Date.now() - started };
     } catch (error) {
       if (requestSerial !== serial || controller.signal.reason === 'user') return { mode: 'cancelled' };
-      canvas.replaceChildren(); current = null;
-      status.textContent = controller.signal.reason === 'timeout' ? '图示生成超时，正在转入 AI 导师；原实验已保留。' : '本次图示未通过生成或校验，正在转入 AI 导师；原实验已保留。';
-      return { mode: 'explanation', code: controller.signal.reason === 'timeout' ? 'AI_TIMEOUT' : error.message };
+      const timedOut = controller.signal.reason === 'timeout';
+      return settleFallback(timedOut ? 'AI_TIMEOUT' : error.message, timedOut ? '图示生成超时，正在转入 AI 导师；原实验已保留。' : '本次图示未通过生成或校验，正在转入 AI 导师；原实验已保留。');
     } finally {
       clearTimeout(timer); clearInterval(progress);
       if (requestSerial === serial) { pending = null; panel.setAttribute('aria-busy', 'false'); $('instantCancel').hidden = true; }
