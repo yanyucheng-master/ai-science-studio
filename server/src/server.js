@@ -1,8 +1,10 @@
 import { randomUUID } from 'node:crypto';
+import { isIP } from 'node:net';
 import { createServer as createHttpServer } from 'node:http';
 import { pathToFileURL } from 'node:url';
 import { config, DEEPSEEK_OFFICIAL_MODEL } from './config.js';
 import { DeepSeekClient } from './deepseek-client.js';
+import { InstantSceneService } from './instant-scene-service.js';
 import { localGenerateFallback, localTutorChatFallback, localTutorFallback } from './local-fallback.js';
 import {
   sanitizeTutorChatRequest,
@@ -55,12 +57,18 @@ export class RateLimiter {
   }
 }
 
-function clientAddress(request) {
+function clientAddress(request, trustedProxyHops = 0) {
+  const peer = request.socket.remoteAddress || 'unknown';
+  if (!Number.isInteger(trustedProxyHops) || trustedProxyHops < 1) return peer;
   const forwarded = request.headers['x-forwarded-for'];
-  if (typeof forwarded === 'string' && forwarded.length > 0) {
-    return forwarded.split(',')[0].trim();
-  }
-  return request.socket.remoteAddress || 'unknown';
+  if (typeof forwarded !== 'string' || forwarded.length > 4096) return peer;
+  const addresses = forwarded.split(',').map(value => value.trim());
+  // Only the suffix appended by the configured proxy chain is trusted. A client
+  // may prepend arbitrary addresses; none of them may create another rate bucket.
+  if (addresses.length < trustedProxyHops || !addresses.slice(-trustedProxyHops).every(value => isIP(value) && !value.includes('%'))) return peer;
+  const address = addresses[addresses.length - trustedProxyHops];
+  if (address.startsWith('::ffff:') && isIP(address.slice(7)) === 4) return address.slice(7);
+  return isIP(address) === 6 ? new URL(`http://[${address}]/`).hostname : address;
 }
 
 function applyCors(request, response, allowedOrigins) {
@@ -117,8 +125,10 @@ async function readJsonBody(request) {
 
 export function createMasterLabServer(options = {}) {
   const deepSeek = options.deepSeekClient || new DeepSeekClient();
+  const instantScenes = options.instantSceneService || new InstantSceneService();
   const allowedOrigins = options.allowedOrigins || config.allowedOrigins;
   const limiter = options.rateLimiter || new RateLimiter(config.rateLimitMax, config.rateLimitWindowMs);
+  const trustedProxyHops = options.trustedProxyHops ?? config.trustedProxyHops;
 
   return createHttpServer(async (request, response) => {
     const startedAt = Date.now();
@@ -160,9 +170,25 @@ export function createMasterLabServer(options = {}) {
         sendJson(response, status, { error: 'NOT_FOUND' }, requestId);
         return;
       }
-      if (!limiter.allow(clientAddress(request))) {
+      if (!limiter.allow(clientAddress(request, trustedProxyHops))) {
         status = 429;
         sendJson(response, status, { error: 'RATE_LIMITED' }, requestId);
+        return;
+      }
+
+      if (url.pathname === '/api/v1/scene/generate') {
+        const body = await readJsonBody(request);
+        if (typeof body?.question !== 'string' || !body.question.trim() || body.question.length > 2000) {
+          status = 400; sendJson(response, status, { error: 'INVALID_QUESTION' }, requestId); return;
+        }
+        const controller = new AbortController();
+        const cancel = () => { if (!response.writableEnded) controller.abort(); };
+        response.once('close', cancel);
+        try {
+          const result = await instantScenes.generate(body.question.trim(), { signal: controller.signal });
+          if (!response.destroyed) { status = 200; sendJson(response, status, { ...result, requestId }, requestId); }
+          else status = 499;
+        } finally { response.off('close', cancel); }
         return;
       }
 

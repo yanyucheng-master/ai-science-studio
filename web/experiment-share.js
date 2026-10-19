@@ -5,11 +5,14 @@
   const PREFIX = "#/share/";
   const MAX_URL = 12000;
   const MAX_BYTES = 8000;
-  const MAX_ENCODED = Math.ceil(MAX_BYTES / 3) * 4;
+  // Padded-length coarse screen: 10668. Actual unpadded output is at most 10667.
+  // The decoded 8000-byte limit remains authoritative.
+  const MAX_ENCODED_SCAN = Math.ceil(MAX_BYTES / 3) * 4;
   const MAX_QUESTION = 2000;
   const SUBJECT_NAMES = ["物理", "化学", "数学", "生物"];
   const SPECIAL = Object.freeze({ brake: "物理", boardSlider: "物理", solenoid: "物理", projectile: "物理", circuit: "物理", chemistry: "化学", math: "数学", biology: "生物" });
   const preparedValues = new WeakSet();
+  const importedStates = new Set();
   let lastRoute = null;
   let restoring = false;
 
@@ -46,13 +49,18 @@
       .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   }
   function decode(hash) {
-    if (location.href.length > MAX_URL || hash.length > PREFIX.length + MAX_ENCODED) fail("分享链接过长");
+    if (location.href.length > MAX_URL || hash.length > PREFIX.length + MAX_ENCODED_SCAN) fail("分享链接过长");
     const encoded = hash.slice(PREFIX.length);
     if (!encoded || !/^[A-Za-z0-9_-]+$/.test(encoded) || encoded.length % 4 === 1) fail("分享链接编码已损坏");
+    let binary;
+    try {
+      binary = atob(encoded.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat((4 - encoded.length % 4) % 4));
+    } catch {
+      fail("分享链接编码已损坏");
+    }
+    if (binary.length > MAX_BYTES) fail("分享数据过长");
     let data;
     try {
-      const binary = atob(encoded.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat((4 - encoded.length % 4) % 4));
-      if (binary.length > MAX_BYTES) fail("分享数据过长");
       const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
       data = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
     } catch {
@@ -157,6 +165,7 @@
 
   function capture() {
     if (restoring || $("#generateButton").classList.contains("loading")) fail("实验正在生成，请完成后再分享");
+    if (window.MasterLabInstant?.getContext()) fail("AI 即时科学示意图暂不支持分享，请返回原本地实验后分享");
     if (!state.hasGenerated || !state.generatedSubjects.has(state.subject)) fail("请先生成实验，再分享当前实验");
     const generic = activeGenericTemplate();
     const template = generic?.id || (state.subject === "物理" ? state.physicsTemplate
@@ -240,10 +249,10 @@
     }
   }
 
-  async function restoreRoute(force = false) {
+  async function restoreRoute() {
     const hash = location.hash;
-    if ((!force && hash === lastRoute) || restoring) return;
-    if (!hash.startsWith("#/share")) {
+    if (hash === lastRoute || restoring) return;
+    if (!isExperimentShareRoute(hash)) {
       // Legacy fragments only select a subject; no experiment was encoded in them.
       let subject;
       try { subject = decodeURIComponent(hash.slice(1)); } catch { return; }
@@ -272,6 +281,9 @@
       reportFailure(`未恢复实验：${error.message}`);
       return;
     }
+    // Canonical whitelist order also deduplicates equivalent payloads with different JSON key order.
+    const importKey = encode(prepared.payload);
+    if (importedStates.has(importKey)) return;
     restoring = true;
     const previousGrade = state.gradeLevel;
     const previousSnapshot = state.subjectSnapshots[prepared.payload.subject];
@@ -284,6 +296,7 @@
       renderFavoriteList();
       const restored = await generateExperiment({ shared: prepared, questionOverride: prepared.payload.question, allowAiFallback: false });
       if (!restored) fail("实验生成未完成，请手动重试");
+      importedStates.add(importKey);
       showToast("已恢复分享实验、学段与参数，动画从初始暂停状态开始");
     } catch (error) {
       // Unexpected rendering failures leave an explicit waiting surface, never a default experiment.
@@ -317,6 +330,7 @@
   }
 
   window.MasterLabShare = Object.freeze({ copy, restoreRoute, applyParameters,
+    get hasImportedState() { return importedStates.size > 0; },
     planFor: value => trusted(value).plan });
   window.addEventListener("hashchange", () => restoreRoute());
   restoreRoute();
