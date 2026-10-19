@@ -129,6 +129,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     workspace: document.querySelector("#aiTutorWorkspace"),
     header: document.querySelector(".ai-tutor-header"),
     status: document.querySelector("#aiTutorStatus"),
+    context: document.querySelector("#aiTutorContext"),
     contextTitle: document.querySelector("#aiTutorContextTitle"),
     contextText: document.querySelector("#aiTutorContextText"),
     messages: document.querySelector("#aiTutorMessages"),
@@ -274,7 +275,10 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     // Persist display data only. Never restore executable patches or provider reasoning.
     payload.source = value.payload.source === "local_fallback" ? "local_fallback" : "saved";
     const message = text(value.question).slice(0, 2000);
+    const sceneQuestion = text(value.sceneQuestion).slice(0, 2000);
+    const scene = value.scene && window.MasterLabInstantScene?.validate(value.scene, sceneQuestion);
     return { role: "assistant", payload, context, level, question: message, ...id,
+      ...(scene?.ok ? { scene: scene.scene, sceneQuestion } : {}),
       content: structuredToHistoryText(payload, { responseLevel: level, message }) };
   }
 
@@ -418,7 +422,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       if (entry.role === "context") addContextChange(entry.previousContext, entry.context, entry.content);
       else addMessage(entry.role, entry.role === "user" ? entry.text : entry.error ? entry.content : entry.payload,
         { quotes: entry.quotes, context: entry.context, error: entry.error, source: entry.payload?.source,
-          responseLevel: entry.level, message: entry.question, id: entry.id });
+          responseLevel: entry.level, message: entry.question, id: entry.id, scene: entry.scene, sceneQuestion: entry.sceneQuestion });
     }
     state.restoring = false;
     renderQuotes();
@@ -2747,10 +2751,25 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
         bubble.append(detail);
       }
       state.messages.push({ role, content: structuredToHistoryText(payload, options), payload, context, id,
+        ...(options.scene ? { scene: options.scene, sceneQuestion: options.sceneQuestion } : {}),
         level: options.responseLevel || "explain", question: text(options.message) });
     }
     row.append(bubble);
     elements.messages.append(row);
+    if (role === "assistant" && options.scene) {
+      const figure = createElement("figure", "ai-diagram");
+      const canvas = createElement("div", "instant-canvas ai-diagram-canvas");
+      canvas.setAttribute("aria-label", window.MasterLabInstantScene.displayText(options.scene.title));
+      figure.append(createElement("figcaption", "", "科学示意图"), canvas);
+      bubble.querySelector(".ai-message-source").after(figure);
+      const draw = () => {
+        if (!canvas.isConnected) return;
+        try { window.MasterLabInstantRenderer.draw(canvas, options.scene, options.sceneQuestion); }
+        catch { figure.replaceChildren(createElement("p", "ai-answer-warning", "图示未通过显示核查，已保留文字说明。")); }
+      };
+      if (window.MasterLabInstantRenderer) draw();
+      else window.addEventListener("DOMContentLoaded", draw, { once: true });
+    }
     scrollToLatest(role === "user");
     scheduleConversationSave();
     return row;
@@ -2805,6 +2824,37 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
 
   function cloneRequest(request) {
     return JSON.parse(JSON.stringify(request));
+  }
+
+  function wantsDiagram(message) {
+    if (/(?:不要|不用|无需|不必|不需要)\s*(?:再)?(?:画|绘|作图|图示|图像)/.test(message)) return false;
+    return /(?:^|[。！？；;，,\n])\s*(?:(?:请|帮我|给我|麻烦|能否|可以|重新|再|直接)\s*)*(?:画(?:出|一|个|张|幅)?|绘制|作图)/.test(message);
+  }
+
+  async function requestChatDiagram(question) {
+    if (!wantsDiagram(question)) return null;
+    if (!window.MasterLabInstant?.createScene) return { notice: "图示模块尚未就绪，请刷新页面后重试。以下保留文字解答。" };
+    const controller = new AbortController();
+    state.controller = controller;
+    const timeout = window.setTimeout(() => controller.abort("timeout"), window.MasterLabInstantScene.LIMITS.timeout + 5000);
+    setPendingStage("正在生成并核查图示，可随时停止。");
+    try {
+      const result = await window.MasterLabInstant.createScene(question, { signal: controller.signal });
+      if (controller.signal.aborted) throw new TutorRequestError("ABORTED");
+      if (result.mode !== "instant") return { notice: result.code === "DECLINED" && result.reason
+        ? `暂不绘图：${result.reason} 以下保留文字解答。` : "图示暂未通过核查，以下保留文字解答。" };
+      return { scene: result.scene, payload: {
+        mode: "explain", summary: result.scene.explanation.map(window.MasterLabInstantScene.displayText).join("\n\n"),
+        steps: [], formulas: [], finalAnswer: null, checks: [], followUp: "", parameterPatch: null,
+        warnings: ["科学示意图，不按比例。"]
+      } };
+    } catch (error) {
+      if (controller.signal.aborted && controller.signal.reason !== "timeout") throw new TutorRequestError("ABORTED");
+      return { notice: "图示暂未通过生成或核查，以下保留文字解答。" };
+    } finally {
+      window.clearTimeout(timeout);
+      if (state.controller === controller) state.controller = null;
+    }
   }
 
   async function sendChat(message, responseLevel = "hint", options = {}) {
@@ -2863,15 +2913,26 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     setBusy(true, responseLevel === "steps" || responseLevel === "check" ? "正在严谨核对步骤，这可能需要更长时间" :
       responseLevel === "explain" ? "正在结合当前题目组织讲解" : "正在结合当前题目整理提示");
     try {
-      const payload = await requestWithQueue("/api/v1/tutor/chat", request, CHAT_TIMEOUT_MS, attempt => {
+      const diagram = responseLevel === "hint" ? null : await requestChatDiagram(question);
+      if (requestSerial !== state.requestSerial) return null;
+      const payload = diagram?.payload || await requestWithQueue("/api/v1/tutor/chat", request, CHAT_TIMEOUT_MS, attempt => {
         setPendingStage(`公益 AI 正在处理其他同学的问题，已自动排队，第 ${attempt} 次重新提交……`);
         elements.status.textContent = "AI 服务繁忙，正在自动排队";
       });
+      if (diagram?.notice) payload.warnings = [diagram.notice, ...(payload.warnings || [])];
       if (requestSerial !== state.requestSerial) return null;
+      const answerContext = diagram?.scene ? contextSnapshot({ mode: "question", subject: diagram.scene.subject,
+        originalQuestion: question, templateId: "", parameters: {}, deterministicResult: {}, formula: "", currentStep: "" }) : request.context;
+      if (diagram?.scene) {
+        state.followHost = false;
+        updateContext(answerContext);
+        state.lastRequest.request.context = cloneRequest(answerContext);
+      }
       await celebratePending();
       if (requestSerial !== state.requestSerial) return null;
       clearPending();
-      addMessage("assistant", payload, { source: payload.source, responseLevel, message: question, context: request.context });
+      addMessage("assistant", payload, { source: payload.source, responseLevel, message: question, context: answerContext,
+        scene: diagram?.scene, sceneQuestion: diagram?.scene ? question : "" });
       state.lastOutcome = "answered";
       elements.status.textContent = payload.source === "local_fallback" ? "AI 未连接，当前显示本地教学提示" : "回答完成，可继续追问";
       return payload;
@@ -3100,6 +3161,10 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     if (!message) return;
     state.context = state.context || currentHostContext();
     sendChat(message, selectResponseLevel(message), { quotes: state.quotes, consumeDraft: true });
+  });
+  document.querySelector("#aiTutorContextToggle")?.addEventListener("click", event => {
+    elements.context.hidden = !elements.context.hidden;
+    event.currentTarget.setAttribute("aria-expanded", String(!elements.context.hidden));
   });
   elements.input.addEventListener("keydown", (event) => {
     if (event.isComposing || state.composing || event.keyCode === 229) return;
