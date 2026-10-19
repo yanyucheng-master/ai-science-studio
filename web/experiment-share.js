@@ -12,8 +12,11 @@
   const SUBJECT_NAMES = ["物理", "化学", "数学", "生物"];
   const SPECIAL = Object.freeze({ brake: "物理", boardSlider: "物理", solenoid: "物理", projectile: "物理", circuit: "物理", chemistry: "化学", math: "数学", biology: "生物" });
   const preparedValues = new WeakSet();
-  const importedStates = new Set();
-  let lastRoute = null;
+  let activeImportKey = null;
+  let lastLegacyHash = null;
+  // Only delegates BFCache handling to this router instead of resetting the homepage.
+  // It never skips an import or decides whether a historical share is still active.
+  let hasShareNavigation = false;
   let restoring = false;
 
   const fail = message => { throw new Error(message); };
@@ -163,13 +166,22 @@
     return prepared;
   }
 
+  function currentShareTemplateId() {
+    return activeGenericTemplate()?.id || (state.subject === "物理" ? state.physicsTemplate
+      : state.subject === "化学" ? "chemistry" : state.subject === "数学" ? "math" : "biology");
+  }
+
+  function leaveContext() {
+    activeImportKey = null;
+    lastLegacyHash = null;
+  }
+
   function capture() {
     if (restoring || $("#generateButton").classList.contains("loading")) fail("实验正在生成，请完成后再分享");
     if (window.MasterLabInstant?.getContext()) fail("AI 即时科学示意图暂不支持分享，请返回原本地实验后分享");
     if (!state.hasGenerated || !state.generatedSubjects.has(state.subject)) fail("请先生成实验，再分享当前实验");
     const generic = activeGenericTemplate();
-    const template = generic?.id || (state.subject === "物理" ? state.physicsTemplate
-      : state.subject === "化学" ? "chemistry" : state.subject === "数学" ? "math" : "biology");
+    const template = currentShareTemplateId();
     let mode = {};
     if (generic?.level === "both") mode = { level: generic.contentLevel(state.extraFixed[generic.id]), locked: Boolean(generic.fixedWithDefaults(state.extraFixed[generic.id]).levelLocked) };
     else if (template === "brake") mode = { braking: state.brakeMode };
@@ -251,17 +263,19 @@
 
   async function restoreRoute() {
     const hash = location.hash;
-    if (hash === lastRoute || restoring) return;
+    if (restoring) return;
     if (!isExperimentShareRoute(hash)) {
       // Legacy fragments only select a subject; no experiment was encoded in them.
       let subject;
       try { subject = decodeURIComponent(hash.slice(1)); } catch { return; }
       if (!SUBJECT_NAMES.includes(subject)) return;
-      lastRoute = hash;
+      if (hash === lastLegacyHash && !state.hasGenerated && state.subject === subject) return;
+      hasShareNavigation = true;
       state.userGeneratedOnce = true;
       if (state.autoDemoTimer) clearTimeout(state.autoDemoTimer);
       saveCurrentSubjectSnapshot();
       applyWaitingState(subject, { presetQuestion: true });
+      lastLegacyHash = hash;
       showToast("旧链接仅包含学科，请输入题目并生成实验");
       return;
     }
@@ -269,7 +283,7 @@
       showToast("实验正在生成；完成后请重新打开分享链接");
       return;
     }
-    lastRoute = hash;
+    hasShareNavigation = true;
     // An invalid share must not start the optional homepage demo either.
     state.userGeneratedOnce = true;
     if (state.autoDemoTimer) clearTimeout(state.autoDemoTimer);
@@ -281,9 +295,12 @@
       reportFailure(`未恢复实验：${error.message}`);
       return;
     }
-    // Canonical whitelist order also deduplicates equivalent payloads with different JSON key order.
+    // Only the currently active share is deduplicated. A -> B -> A must restore A again.
+    // Keep the anchor while parameters change, so AI round trips preserve those adjustments.
     const importKey = encode(prepared.payload);
-    if (importedStates.has(importKey)) return;
+    if (activeImportKey === importKey && state.hasGenerated
+      && state.subject === prepared.payload.subject && currentShareTemplateId() === prepared.payload.template
+      && !window.MasterLabInstant?.getContext()) return;
     restoring = true;
     const previousGrade = state.gradeLevel;
     const previousSnapshot = state.subjectSnapshots[prepared.payload.subject];
@@ -296,7 +313,7 @@
       renderFavoriteList();
       const restored = await generateExperiment({ shared: prepared, questionOverride: prepared.payload.question, allowAiFallback: false });
       if (!restored) fail("实验生成未完成，请手动重试");
-      importedStates.add(importKey);
+      activeImportKey = importKey;
       showToast("已恢复分享实验、学段与参数，动画从初始暂停状态开始");
     } catch (error) {
       // Unexpected rendering failures leave an explicit waiting surface, never a default experiment.
@@ -329,9 +346,12 @@
     elements.parseFeedback.classList.remove("pending");
   }
 
-  window.MasterLabShare = Object.freeze({ copy, restoreRoute, applyParameters,
-    get hasImportedState() { return importedStates.size > 0; },
+  window.MasterLabShare = Object.freeze({ copy, restoreRoute, applyParameters, leaveContext,
+    get handlesCacheReturn() { return hasShareNavigation; },
     planFor: value => trusted(value).plan });
   window.addEventListener("hashchange", () => restoreRoute());
+  window.addEventListener("masterlab:context-changed", () => {
+    if (window.MasterLabInstant?.getContext()) leaveContext();
+  });
   restoreRoute();
 })();

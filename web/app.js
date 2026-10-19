@@ -6233,6 +6233,7 @@ function renderWaitingReasoning() {
 }
 
 function applyWaitingState(subject = state.subject, options = {}) {
+  window.MasterLabShare?.leaveContext();
   window.MasterLabInstant?.dismiss();
   clearDemoTimers();
   clearReasoningTimers();
@@ -6797,6 +6798,7 @@ function refreshGeneratedSubjectSurface(subject = state.subject, options = {}) {
 }
 
 function applySubject(subject, updateQuestion = true, options = {}) {
+  window.MasterLabShare?.leaveContext();
   clearDemoTimers();
   clearReasoningTimers();
   pauseExperiment();
@@ -7963,6 +7965,7 @@ async function generateExperiment(options = {}) {
     }
     return;
   }
+  window.MasterLabShare?.leaveContext();
   window.MasterLabInstant?.dismiss();
   let physicsParse = null;
   let boardSliderParse = null;
@@ -8770,7 +8773,7 @@ if (document.body.classList.contains("demo-mode") && !isExperimentShareRoute()) 
 window.addEventListener("pageshow", event => {
   if (!event.persisted) return;
   updateGreeting();
-  if (isExperimentShareRoute() || window.MasterLabShare?.hasImportedState) {
+  if (isExperimentShareRoute() || window.MasterLabShare?.handlesCacheReturn) {
     window.MasterLabShare?.restoreRoute();
     return;
   }
