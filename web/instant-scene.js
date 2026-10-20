@@ -373,13 +373,16 @@
     const q = question.replace(/\s/g, '');
     if (!/斜面/.test(q) || !/受力(?:示意)?图|受力示意/.test(q)) return reject('UNSUPPORTED_DIAGRAM', '当前仅支持条件明确的单物块粗糙斜面受力图。');
     if (/如图|见图|图示|附图|图中|两个|两块|多个|两物|[2-9二三四五六七八九十]+(?:个|块)(?:物块|木块|滑块)|物块[AB甲乙]|[甲乙]物块|连接体|相连|连接|绳|弹簧|滑轮|叠放|接触另|另一个|另一物|一对物/.test(q)) return reject('UNSUPPORTED_SYSTEM', '题目涉及题图、多个物体或连接关系，保留文字讲解。');
+    const counts = [...q.matchAll(/([0-9零〇一二三四五六七八九十百千万两]+)(?:个|块)(?:物块|木块|滑块)/g)];
+    if (counts.some(m => !['1', '一'].includes(m[1]))) return reject('UNSUPPORTED_SYSTEM', '当前仅支持单物块，保留文字讲解。');
+    if (/(?:不|未|非)(?:是|再|呈|为)?(?:静止|静置|保持不动|粗糙|左低右高|右高左低|左高右低|右低左高)/.test(q)) return reject('AMBIGUOUS_CONDITIONS', '关键条件被否定，保留文字讲解。');
     if (!/(?:物块|木块|滑块)/.test(q)) return reject('UNSUPPORTED_BODY', '尚不能确认单物块模型。');
     if (/可能|不一定|是否|未知|不清楚|未说明|未明确|并非|不是|未必|不确定|如果|假设|假定|比较|忽略|改为|或静止|静止或|临界|即将|恰好|刚好|摩擦系数|摩擦因数/.test(q)) return reject('AMBIGUOUS_CONDITIONS', '题目含有不确定条件、分情况或尚未核对的数值约束，保留文字讲解。');
     const right = /左低右高|右高左低/.test(q), left = /左高右低|右低左高/.test(q);
     if (right === left) return reject('UNCLEAR_INCLINE_DIRECTION', '需要明确且一致的斜面左右朝向。');
     const rough = /粗糙/.test(q), smooth = /光滑/.test(q);
     if (smooth || !rough) return reject(smooth ? 'SMOOTH_NOT_SUPPORTED' : 'UNCLEAR_SURFACE', smooth ? '本次绘图范围不包含光滑斜面，保留文字分析。' : '需要明确斜面粗糙条件。');
-    const noOther = /(?:不受|没有|无|不存在)(?:任何)?(?:其他|其它|额外)?外力|(?:不受|没有|无)(?:任何)?(?:其他|其它|额外)力/.test(q)
+    const noOther = /(?:不受|没有|无|不存在)(?:任何)?(?:其他|其它|额外)外力|(?:不受|没有|无)(?:任何)?(?:其他|其它|额外)力/.test(q)
       || /(?:只受|仅受)重力(?:和|与|及|、)斜面对(?:它|物块|木块|滑块)?的?接触力/.test(q);
     if (!noOther) return reject('OTHER_FORCES_UNSPECIFIED', '需要明确除重力和斜面接触力外没有其他施加力。');
     if (/推|拉|牵引|恒力|施加|外加|另有|另受|还受|受到[^。；，,]*\d+(?:\.\d+)?N|受到[^。；，,]*作用|磁|电场|风|浮力|水中|液体|斜面(?:可以|能够|可|向左|向右|正在)?移动|斜面运动/.test(q)) return reject('OTHER_FORCES_OR_MOVING_SURFACE', '题目含其他作用或移动斜面，超出当前绘图范围。');
