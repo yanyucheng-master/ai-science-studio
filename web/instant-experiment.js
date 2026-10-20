@@ -24,6 +24,8 @@
     details.append(section);
   }
   function present(scene, question, metadata = {}) {
+    const strict = Core.validateDiagram(scene, question);
+    if (!strict.ok) throw new Error(strict.code);
     const { checked } = window.MasterLabInstantRenderer.draw(canvas, scene, question);
     current = { scene: checked.scene, question };
     title.textContent = Core.displayText(scene.title); window.ScienceFormula?.enhance(title); details.replaceChildren();
@@ -69,6 +71,8 @@
   // the retained experiment, opening its panel, or navigating out of the tutor.
   async function createScene(question, { signal } = {}) {
     if (!Core.validQuestion(question)) throw new Error('INVALID_QUESTION');
+    const admission = Core.inspectIncline(question);
+    if (!admission.ok) return { mode: 'explanation', code: 'DECLINED', reason: admission.reason };
     const config = window.MasterLabAITutor.sceneServiceConfig;
     let key = ''; try { key = (localStorage.getItem('masterLab.deepseekApiKey') || '').trim(); } catch { /* use the configured gateway */ }
     const result = await request(question, key, config, signal);
@@ -81,7 +85,7 @@
       }
       return result;
     }
-    const checked = Core.validate(result.scene, question);
+    const checked = Core.validateDiagram(result.scene, question);
     if (!checked.ok) throw new Error(checked.code);
     return { ...result, scene: checked.scene };
   }
@@ -94,6 +98,8 @@
   }
   async function generate(question, subject = '') {
     dismiss(); const requestSerial = serial;
+    const admission = Core.inspectIncline(question);
+    if (!admission.ok) return settleFallback('DECLINED', `暂不绘图：${admission.reason}`, admission.reason);
     const controller = new AbortController(); pending = controller;
     const config = window.MasterLabAITutor.sceneServiceConfig;
     let key = ''; try { key = (localStorage.getItem('masterLab.deepseekApiKey') || '').trim(); } catch { /* existing default gateway mechanism */ }

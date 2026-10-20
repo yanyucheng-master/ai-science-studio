@@ -53,7 +53,7 @@ test('web: saved diagrams are revalidated and tampered fields never restore a dr
   const scene = { version: 1, status: 'scene', subject: '物理', title: '线段', givens: [q], basis: ['表示位置关系。'], assumptions: [], explanation: ['线段示意。'], objects: [{ id: 'a', type: 'line', from: [100, 100], to: [400, 100] }], labels: [{ target: 'a', text: '线段' }], relations: [], calculations: [] };
   const message = { role: 'assistant', level: 'explain', question: q, sceneQuestion: q, scene, payload: { ...answer, mode: 'explain', summary: '线段示意。', steps: [], formulas: [], finalAnswer: null } };
   const restore = () => tutor.savedSession({ id: 'diagram-session', context: {}, messages: [message] }).messages[0];
-  assert.equal(restore().scene.objects[0].id, 'a');
+  assert.equal(restore().scene, undefined, 'saved unsupported diagrams retain text only');
   scene.objects[0].onclick = 'unsafe()';
   assert.equal(restore().scene, undefined);
   assert.equal(restore().payload.summary, '线段示意。');

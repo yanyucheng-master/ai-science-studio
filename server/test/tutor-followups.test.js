@@ -75,7 +75,7 @@ test('followups: diagrams offer specific questions without inventing numeric con
   }
 });
 
-test('followups: old saved diagrams receive suggestions only after their scene passes validation', () => {
+test('followups: unsupported saved diagrams retain text without drawing suggestions', () => {
   const api = load(), q = '画一条线段。';
   const scene = { version: 1, status: 'scene', subject: '物理', title: '线段', givens: [q], basis: ['表示位置关系。'],
     assumptions: [], explanation: ['线段示意。'], objects: [{ id: 'a', type: 'line', from: [100, 100], to: [400, 100] }],
@@ -83,7 +83,8 @@ test('followups: old saved diagrams receive suggestions only after their scene p
   const message = { role: 'assistant', level: 'explain', question: q, sceneQuestion: q, scene,
     payload: { mode: 'explain', summary: '线段示意。', steps: [], formulas: [], finalAnswer: null } };
   const restore = () => api.savedSession({ id: 'old-diagram', context: {}, messages: [message] }).messages[0];
-  assert.equal(restore().payload.suggestedQuestions.length, 3);
+  assert.equal(restore().scene, undefined);
+  assert.equal(restore().payload.suggestedQuestions.length, 0);
   scene.objects[0].onclick = 'unsafe()';
   assert.equal(restore().scene, undefined);
   assert.equal(restore().payload.suggestedQuestions.length, 0);
