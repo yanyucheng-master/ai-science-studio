@@ -10943,3 +10943,9 @@ body.subject-math-active.subject-generic-template-active:not(.awaiting-generatio
   .gen-title { background-image: linear-gradient(100deg, #152445 0%, #152445 38%, #3b7bf6 46%, #74b1fc 52%, #2d73f6 58%, #152445 66%, #152445 100%); }
   .generation-overlay[data-stage="complete"] .gen-title { background-image: linear-gradient(100deg, #1a56d6, #2d73f6 55%, #5b95f8); }
 }
+
+/* Incline diagrams: one unframed canvas, measured content and readable direct labels. */
+.instant-canvas.is-incline { display: grid; place-items: center; min-width: 0; overflow: visible; border-radius: 0; background: transparent; }
+.instant-canvas.is-incline .instant-svg { display: block; max-width: 100%; }
+.ai-diagram .instant-canvas.is-incline { padding: 0; border: 0; box-shadow: none; }
+#instantZoomCanvas.is-incline { min-width: 0; }
