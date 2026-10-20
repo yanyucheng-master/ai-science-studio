@@ -1,6 +1,6 @@
 // 轨道烧瓶品牌动效：开屏、AI 思考图标、生成加载、完成反馈、断网状态。
 // 几何取自 assets/brand/orbit-flask-2026-10-04；样式在 styles.css 末尾的“轨道烧瓶动效”区块。
-// 本文件在 <body> 最前面同步加载，开屏不必等页面其余脚本。
+// 本文件在 <body> 最前面建立开屏；首屏初始化和布局完成后才开始动画计时。
 (() => {
   "use strict";
 
@@ -31,7 +31,10 @@
     const id = "mlfx" + (++uid);
     const w = WT[o.geo || "full"];
     const u = n => id + n;
-    const M = 'maskUnits="userSpaceOnUse" x="-900" y="-900" width="3058" height="3058"';
+    // 开屏没有飞出画布的粒子；按实际 viewBox 收紧每层遮罩的边界。
+    const M = o.boundedMasks
+      ? 'maskUnits="userSpaceOnUse" x="137.1" y="136.6" width="984.7" height="984.7"'
+      : 'maskUnits="userSpaceOnUse" x="-900" y="-900" width="3058" height="3058"';
     const R = '<rect x="-900" y="-900" width="3058" height="3058" fill="#fff"/>';
     const orb = c => `<use class="${c}" href="#${u("o")}"/>`;
     const comet = o.comet ? `<g class="fx-comet">${orb("t2")}${orb("t1")}${orb("h")}</g>` : "";
@@ -210,14 +213,14 @@
   const PIECES = [["h", 1.2, 58, 1], ["t1", 7, 40, .42], ["t2", 16, 26, .18]];
   function setComet(R, phi, op) {
     const s = sAt(phi), sn = Math.sin(phi * Math.PI / 180);
-    R.comets.forEach(gp => PIECES.forEach(([c, L, w, o]) => {
-      const el = gp.querySelector("." + c);
+    R.comets.forEach(parts => PIECES.forEach(([, L, w, o], i) => {
+      const el = parts[i];
       el.style.strokeDashoffset = (L - s).toFixed(3);
       el.style.strokeWidth = (w * (1 + .16 * sn)).toFixed(1);
       el.style.opacity = (op * o * (1 - .28 * Math.max(0, -sn))).toFixed(3);
     }));
   }
-  const REST = 2050, EXIT_AT = 2300, EXIT_DUR = 620, MAX_WAIT = 6000;
+  const REST = 2100, EXIT_AT = 2300, EXIT_DUR = 620, MAX_WAIT = 6000, INTRO_FRAME_MS = 1000 / 60;
   function renderIntro(R, t) {
     const g = seg(t, 0, 900);
     R.glowOp = E.oc(g) * .78;
@@ -237,14 +240,14 @@
     // 光点从瓶颈后面绕出，一圈画出星环，收尾时又转回瓶颈后面
     const rp = seg(t, 860, 1700), phi0 = 285, phi = phi0 + 360 * E.ioc(rp);
     R.rv.setAttribute("d", wedge(alphaAt(phi0), rp >= 1 ? alphaAt(phi0) + 360 : alphaAt(phi)));
-    if (t > REST) setComet(R, phi0 + 360 * (t - REST) / 2400, E.clamp((t - REST) / 300));
-    else setComet(R, phi, rp <= 0 || rp >= 1 ? 0 : E.clamp(rp * 10) * E.clamp((1 - rp) * 8));
+    setComet(R, phi, rp <= 0 || rp >= 1 ? 0 : E.clamp(rp * 10) * E.clamp((1 - rp) * 8));
     const w1 = seg(t, 1250, 1780), w2 = seg(t, 1400, 1950);
     R.title.style.opacity = E.oc(w1).toFixed(3);
     R.title.style.transform = `translateY(${(16 * (1 - E.oc(w1))).toFixed(1)}px)`;
     R.title.style.filter = w1 < 1 ? `blur(${(6 * (1 - w1)).toFixed(2)}px)` : "";
     R.kick.style.opacity = E.oc(w2).toFixed(3);
-    R.kick.style.letterSpacing = E.lerp(.62, .32, E.oc(w2)).toFixed(3) + "em";
+    // 字间距会改变居中容器的宽度并触发整页布局；只缩放固定尺寸的字标。
+    R.kick.style.transform = `scaleX(${E.lerp(1.4, 1, E.oc(w2)).toFixed(3)})`;
     const gl = seg(t, 1560, 2080);
     R.glint.setAttribute("transform", `translate(${E.lerp(170, 1110, E.ios(gl)).toFixed(1)} 0) rotate(20 -30 630)`);
     R.glint.setAttribute("opacity", (Math.sin(Math.PI * gl) * .7).toFixed(3));
@@ -254,9 +257,9 @@
   function splashWanted() {
     let q = null;
     try { q = new URLSearchParams(location.search).get("splash"); } catch { /* 无参数 */ }
-    if (q === "0") return false;
+    if (q === "0" || reducedMotion()) return false;
     if (q === "1") return true;
-    if (reducedMotion() || navigator.webdriver) return false;
+    if (navigator.webdriver) return false;
     try { if (sessionStorage.getItem("masterLab.splashSeen.v1")) return false; } catch { /* 存储不可用时照常播放 */ }
     return true;
   }
@@ -267,25 +270,29 @@
     const el = document.createElement("div");
     el.className = "ml-splash";
     el.setAttribute("aria-hidden", "true");
-    el.innerHTML = `<div class="ml-splash-bg"></div><div class="ml-splash-center"><div class="ml-splash-logo"><div class="ml-splash-glow"></div><div class="ml-splash-tile"></div><div class="ml-splash-svg">${rig({ geo: "full", split: true, reveal: true, comet: true, glint: true, liquidReveal: true })}</div></div><div class="ml-splash-word"><b>大师实验室</b><span>AI SCIENCE STUDIO</span></div></div><div class="ml-splash-skip">点击任意处跳过</div>`;
+    el.innerHTML = `<div class="ml-splash-bg"></div><div class="ml-splash-center"><div class="ml-splash-logo"><div class="ml-splash-glow"></div><div class="ml-splash-tile"></div><div class="ml-splash-svg">${rig({ geo: "full", split: true, reveal: true, comet: true, glint: true, liquidReveal: true, boundedMasks: true })}</div></div><div class="ml-splash-word"><b>大师实验室</b><span>AI SCIENCE STUDIO</span></div></div><div class="ml-splash-skip">点击任意处跳过</div>`;
     document.body.prepend(el);
     root.classList.add("ml-splashing");
     const svg = el.querySelector(".ml-splash-svg svg"), q = s => svg.querySelector(s), qa = s => [...svg.querySelectorAll(s)];
     const R = {
-      bg: el.querySelector(".ml-splash-bg"), logo: el.querySelector(".ml-splash-logo"), glow: el.querySelector(".ml-splash-glow"),
+      bg: el.querySelector(".ml-splash-bg"), center: el.querySelector(".ml-splash-center"), logo: el.querySelector(".ml-splash-logo"), glow: el.querySelector(".ml-splash-glow"),
       tile: el.querySelector(".ml-splash-tile"), word: el.querySelector(".ml-splash-word"), title: el.querySelector(".ml-splash-word b"),
       kick: el.querySelector(".ml-splash-word span"), skip: el.querySelector(".ml-splash-skip"),
       halves: qa(".fx-half"), interior: q(".fx-interior"), lq: q(".fx-lq"), rv: q(".fx-rv"), liq: q(".fx-liq-wrap"),
-      b1: q(".fx-b1"), b2: q(".fx-b2"), comets: qa(".fx-comet"), glint: q(".fx-glint"), glowOp: 0
+      b1: q(".fx-b1"), b2: q(".fx-b2"), comets: qa(".fx-comet").map(gp => PIECES.map(([c]) => gp.querySelector("." + c))), glint: q(".fx-glint"), glowOp: 0
     };
     let ready = document.readyState !== "loading";
-    document.addEventListener("DOMContentLoaded", () => { ready = true; }, { once: true });
-    const t0 = performance.now();
-    let exitAt = null, flip = null, target = null, done = false, lastT = 0;
+    let t0 = null, exitAt = null, flip = null, target = null, done = false, lastT = 0, lastPaint = null;
+    let resting = false, skipRequested = false, revealAt = null, revealLast = null, revealStable = 0;
+    let raf = 0, prepareRaf = 0, fontTimer = 0, waitTimer = 0, safetyTimer = 0;
     const finish = () => {
       if (done) return; done = true;
-      el.remove(); root.classList.remove("ml-splashing");
+      cancelAnimationFrame(raf); cancelAnimationFrame(prepareRaf);
+      clearTimeout(fontTimer); clearTimeout(waitTimer); clearTimeout(safetyTimer);
+      el.remove(); root.classList.remove("ml-splashing", "ml-splash-revealing");
       if (target) target.style.opacity = "";
+      document.removeEventListener("DOMContentLoaded", prepare);
+      reduceQuery?.removeEventListener?.("change", onReduceChange);
       removeEventListener("pointerdown", skip, true); removeEventListener("keydown", skip, true);
     };
     const startExit = now => {
@@ -303,16 +310,80 @@
         R.tile.style.boxShadow = `0 ${(10 / s).toFixed(1)}px ${(22 / s).toFixed(1)}px rgba(31, 91, 236, .12)`;
       }
     };
-    function skip() { startExit(performance.now()); }
+    function scheduleFrame() { if (!done && !raf) raf = requestAnimationFrame(frame); }
+    function revealPage(now) {
+      if (revealAt !== null) return;
+      revealAt = revealLast = now;
+      root.classList.add("ml-splash-revealing");
+      // 极小透明度解除合成器的遮挡剔除，让背后的首页真正完成 GPU 预绘。
+      R.bg.style.opacity = ".999";
+    }
+    function pagePaintReady(now) {
+      revealStable = now - revealLast <= 34 ? revealStable + 1 : 0;
+      revealLast = now;
+      // Logo 定格时预绘背后的首页；跨过首次 GPU 栅格化后才开始移动退场。
+      const elapsed = now - revealAt;
+      return elapsed >= 200 && (revealStable >= 2 || elapsed >= 600);
+    }
+    function skip() {
+      if (done || exitAt !== null || skipRequested) return;
+      if (!ready) { finish(); return; }
+      skipRequested = true;
+      R.center.style.opacity = "";
+      renderIntro(R, REST); resting = true;
+      revealPage(performance.now()); scheduleFrame();
+    }
+    function onReduceChange() { if (reducedMotion()) finish(); }
+    function prepare() {
+      ready = true;
+      let prepared = false;
+      const afterFonts = () => {
+        if (prepared || done || skipRequested) return;
+        prepared = true; clearTimeout(fontTimer); fontTimer = 0;
+        // 在几乎透明的中间帧预热 SVG 遮罩、字标与模糊效果，避免冷启动时
+        // 第一次遇到这些绘制管线就阻塞正在播放的描线动画。
+        R.center.style.opacity = ".001";
+        renderIntro(R, 1600); R.skip.style.opacity = "0";
+        const warmAt = performance.now();
+        let warmLast = null, warmStable = 0;
+        const warm = now => {
+          prepareRaf = 0;
+          if (done) return;
+          if (skipRequested) { R.center.style.opacity = ""; scheduleFrame(); return; }
+          warmStable = warmLast !== null && now - warmLast <= 34 ? warmStable + 1 : 0;
+          warmLast = now;
+          const elapsed = now - warmAt;
+          if ((elapsed >= 100 && warmStable >= 2) || elapsed >= 400) {
+            renderIntro(R, 0); R.center.style.opacity = ""; scheduleFrame();
+          } else prepareRaf = requestAnimationFrame(warm);
+        };
+        prepareRaf = requestAnimationFrame(warm);
+      };
+      if (document.fonts?.status === "loading") {
+        // 给已在加载的字体一次短暂准备机会，远程字体慢时仍按时播放。
+        fontTimer = setTimeout(afterFonts, 500);
+        document.fonts.ready.then(afterFonts, afterFonts);
+      } else afterFonts();
+    }
     addEventListener("pointerdown", skip, true);
     addEventListener("keydown", skip, true);
+    reduceQuery?.addEventListener?.("change", onReduceChange);
     const frame = now => {
+      raf = 0;
       if (done) return;
       try {
         if (exitAt === null) {
+          // 描线/液体/遮罩按约 60 次/秒更新，避免高刷屏重复栅格化多层 SVG。
+          // 退场只改 transform/opacity，继续跟随屏幕刷新率。
+          if (t0 === null) t0 = now;
           lastT = now - t0;
-          renderIntro(R, lastT);
-          if ((lastT >= EXIT_AT && ready) || lastT >= MAX_WAIT) startExit(now);
+          if (!resting) {
+            if (lastPaint !== null && now - lastPaint < INTRO_FRAME_MS - .5) { scheduleFrame(); return; }
+            lastPaint = now;
+            renderIntro(R, Math.min(lastT, REST));
+            if (lastT >= REST) { resting = true; revealPage(now); }
+          }
+          if (resting && pagePaintReady(now) && (skipRequested || lastT >= EXIT_AT)) startExit(now);
         } else {
           const x = E.clamp((now - exitAt) / EXIT_DUR), e = E.ioc(x);
           if (flip) {
@@ -333,18 +404,20 @@
           if (x >= 1) { finish(); return; }
         }
       } catch { finish(); return; }
-      requestAnimationFrame(frame);
+      scheduleFrame();
     };
     renderIntro(R, 0);
-    requestAnimationFrame(frame);
-    setTimeout(finish, 12000);
+    if (ready) prepare();
+    else document.addEventListener("DOMContentLoaded", prepare, { once: true });
+    waitTimer = setTimeout(finish, MAX_WAIT);
+    safetyTimer = setTimeout(finish, 12000);
   }
 
   window.MasterLabBrandMotion = {
     rig, mount, rampRate, retrigger, reducedMotion, hoverBoost,
     loaderReset, loaderStage, loaderComplete, offlineMark, breakLink, relink
   };
-  try { runSplash(); } catch { document.querySelector(".ml-splash")?.remove(); document.documentElement.classList.remove("ml-splashing"); }
+  try { runSplash(); } catch { document.querySelector(".ml-splash")?.remove(); document.documentElement.classList.remove("ml-splashing", "ml-splash-revealing"); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => mount());
   else mount();
 })();

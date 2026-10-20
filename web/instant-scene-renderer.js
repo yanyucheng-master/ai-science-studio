@@ -28,14 +28,29 @@
     }
     return true;
   }
-  function placeLabel({ tip, direction }, placed, segments, { scale, measure }) {
+  function boxHitsPolygon(box, polygon, gap = 0) {
+    const r = [box[0] - gap, box[1] - gap, box[2] + gap, box[3] + gap];
+    const corners = [[r[0], r[1]], [r[0], r[3]], [r[2], r[1]], [r[2], r[3]]];
+    const inside = p => {
+      let yes = false;
+      for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const a = polygon[i], b = polygon[j];
+        if ((a[1] > p[1]) !== (b[1] > p[1]) && p[0] < (b[0] - a[0]) * (p[1] - a[1]) / (b[1] - a[1]) + a[0]) yes = !yes;
+      }
+      return yes;
+    };
+    return corners.some(inside) || polygon.some(p => p[0] >= r[0] && p[0] <= r[2] && p[1] >= r[1] && p[1] <= r[3])
+      || polygon.some((p, i) => segmentHitsBox(p, polygon[(i + 1) % polygon.length], r));
+  }
+  function placeLabel({ tip, direction }, placed, segments, { scale, measure, polygons = [] }) {
     const initial = measure(0, 0), corners = [[0, 1], [0, 3], [2, 1], [2, 3]];
     const near = Math.min(...corners.map(([x, y]) => initial[x] * direction[0] + initial[y] * direction[1]));
     const base = add(tip, direction, 12 / scale - near), sideways = [-direction[1], direction[0]];
-    for (const offset of [0, 14, -14, 28, -28, 42, -42, 56, -56, 70, -70]) {
+    for (const offset of [0, 14, -14, 28, -28, 42, -42, 56, -56, 70, -70, 98, -98, 112, -112]) {
       const position = add(base, sideways, offset / scale), box = measure(...position);
       if (box.every(Number.isFinite) && !placed.some(b => boxesOverlap(b, box, 3 / scale))
-        && !segments.some(([a, b]) => segmentHitsBox(a, b, box, 3 / scale))) return { position, box };
+        && !segments.some(([a, b]) => segmentHitsBox(a, b, box, 3 / scale))
+        && !polygons.some(p => boxHitsPolygon(box, p, 3 / scale))) return { position, box };
     }
     throw new Error('LABEL_COLLISION');
   }
@@ -48,7 +63,7 @@
     observers.get(host)?.disconnect();
     const prefix = `incline-${++serial}`, svg = svgNode('svg', { role: 'img', 'aria-labelledby': `${prefix}-title ${prefix}-desc`, class: 'instant-svg', 'data-scene-layout': 'incline' });
     svg.append(svgNode('title', { id: `${prefix}-title` }, scene.title), svgNode('desc', { id: `${prefix}-desc` },
-      `${scene.explanation.join(' ')} 重力 G，支持力 F_N，摩擦力 f。字母紧邻箭头端点，三个箭头等长只表示方向。`));
+      `${scene.explanation.join(' ')} 重力 G，支持力 F_N，摩擦力 f。字母紧邻箭头端点，三个箭头等长只表示方向。${program.annotations.map(a => a.text).join("，")} 角度标签为题给值，图形不按比例。`));
     const defs = svgNode('defs'), content = svgNode('g', { class: 'instant-content' }); svg.append(defs, content);
     for (const name of ['orange', 'blue', 'teal']) {
       const marker = svgNode('marker', { id: `${prefix}-${name}`, viewBox: '0 0 10 10', refX: 10, refY: 5, markerWidth: 9, markerHeight: 9, markerUnits: 'userSpaceOnUse', orient: 'auto' });
@@ -91,6 +106,15 @@
       else text.textContent = o.role === 'gravity' ? 'G' : 'f';
       labelGroup.append(text); return { node: text, tip: o.to, direction };
     });
+    const dataGroup = svgNode('g', { class: 'instant-data-labels', 'font-family': 'Microsoft YaHei, sans-serif', 'font-weight': 600 }); content.append(dataGroup);
+    for (const annotation of program.annotations) {
+      const isMass = annotation.kind === 'mass', direction = isMass ? normal : [0, 1];
+      const tip = isMass ? body.points[2].map((v, i) => (v + body.points[3][i]) / 2) : (tangent[1] < 0 ? surface.from : surface.to);
+      const node = svgNode('text', { class: 'instant-data-label', 'data-given-kind': annotation.kind, 'data-source-quote': annotation.quote,
+        'text-anchor': isMass ? (normal[0] < 0 ? 'end' : 'start') : (tangent[1] < 0 ? 'start' : 'end'), 'dominant-baseline': 'central', fill: Core.palette.ink,
+        stroke: '#ffffff', 'paint-order': 'stroke' }, annotation.text);
+      dataGroup.append(node); labels.push({ node, tip, direction, given: true });
+    }
     host.classList.remove('is-compact'); host.classList.add('is-incline'); host.replaceChildren(svg);
     let lastWidth = 0;
     const layout = () => {
@@ -103,10 +127,22 @@
         angle.setAttribute('points', points([add(foot, tangent, size), add(add(foot, tangent, size), normal, size), add(foot, normal, size)]));
         const placed = [];
         for (const label of labels) {
-          label.node.setAttribute('font-size', 16 / scale); label.node.setAttribute('stroke-width', 3 / scale);
+          label.node.setAttribute('font-size', (label.given ? 13 : 16) / scale); label.node.setAttribute('stroke-width', 3 / scale);
           label.node.querySelector('.instant-force-subscript')?.setAttribute('font-size', 12 / scale);
           const measure = (x, y) => { label.node.setAttribute('x', x); label.node.setAttribute('y', y); return boxOf(label.node); };
-          placed.push(placeLabel(label, placed, segments, { scale, measure }).box);
+          const tips = label.given ? scene.objects.filter(o => o.type === 'arrow').map(o => [o.to[0] - 5 / scale, o.to[1] - 5 / scale, o.to[0] + 5 / scale, o.to[1] + 5 / scale]) : [];
+          const options = { scale, measure, polygons: label.given ? [wedgePoints, body.points] : [] };
+          const mass = label.node.getAttribute('data-given-kind') === 'mass';
+          if (mass) label.node.setAttribute('text-anchor', normal[0] < 0 ? 'end' : 'start');
+          let positioned;
+          try { positioned = placeLabel(label, [...placed, ...tips], segments, options); }
+          catch (error) { if (!mass) throw error; }
+          // A long mass label stays above the block instead of widening the whole view.
+          if (mass && (!positioned || positioned.box[0] < Math.min(surface.from[0], surface.to[0]) || positioned.box[2] > Math.max(surface.from[0], surface.to[0]))) {
+            label.node.setAttribute('text-anchor', 'middle');
+            positioned = placeLabel(label, [...placed, ...tips], segments, options);
+          }
+          placed.push(positioned.box);
         }
         for (const marker of defs.querySelectorAll('marker')) { marker.setAttribute('markerWidth', 9 / scale); marker.setAttribute('markerHeight', 9 / scale); }
         const b = content.getBBox(), pad = 28 / scale;
@@ -128,7 +164,7 @@
     observer.observe(host); observers.set(host, observer);
     return { svg, checked };
   }
-  const api = Object.freeze({ draw, boxesOverlap, segmentHitsBox, placeLabel });
+  const api = Object.freeze({ draw, boxesOverlap, segmentHitsBox, boxHitsPolygon, placeLabel });
   if (typeof window !== 'undefined') window.MasterLabInstantRenderer = api;
   if (nodeModule) module.exports = api;
 })();

@@ -494,5 +494,407 @@
         "direction": "up_left"
       }
     ]
+  },
+  {
+    "id": "data-output-in-picture",
+    "q": "一个质量为 2 kg 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_left"
+      },
+      {
+        "role": "friction",
+        "kind": "static",
+        "direction": "up_right"
+      }
+    ]
+  },
+  {
+    "id": "data-output-direct",
+    "q": "一个质量为 2 kg 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，标注质量 m=2 kg 和倾角 θ=30°。箭头不按比例。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_left"
+      },
+      {
+        "role": "friction",
+        "kind": "static",
+        "direction": "up_right"
+      }
+    ]
+  },
+  {
+    "id": "data-left",
+    "q": "一个质量为 2 kg 的物块静止在左高右低、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "left",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_right"
+      },
+      {
+        "role": "friction",
+        "kind": "static",
+        "direction": "up_left"
+      }
+    ]
+  },
+  {
+    "id": "data-mass-only",
+    "q": "一个质量为 2 kg 的物块静止在左低右高 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量。箭头不按比例。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_left"
+      },
+      {
+        "role": "friction",
+        "kind": "static",
+        "direction": "up_right"
+      }
+    ]
+  },
+  {
+    "id": "data-angle-only",
+    "q": "一个物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的倾角。箭头不按比例。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_left"
+      },
+      {
+        "role": "friction",
+        "kind": "static",
+        "direction": "up_right"
+      }
+    ]
+  },
+  {
+    "id": "data-unit-chinese",
+    "q": "一个质量为 2000 克 的物块静止在左低右高、倾角为 30 度 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_left"
+      },
+      {
+        "role": "friction",
+        "kind": "static",
+        "direction": "up_right"
+      }
+    ]
+  },
+  {
+    "id": "data-equivalent-repeat",
+    "q": "一个质量为 2 kg 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，图中标注 m=2000 g、θ=30°。箭头不按比例。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_left"
+      },
+      {
+        "role": "friction",
+        "kind": "static",
+        "direction": "up_right"
+      }
+    ]
+  },
+  {
+    "id": "data-reject-mass-conflict",
+    "q": "一个质量为 2 kg 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，标注 m=3 kg。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-angle-conflict",
+    "q": "一个质量为 2 kg 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，标注 θ=45°。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-mass-range",
+    "q": "一个质量为 2～3 kg 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-mass-approx",
+    "q": "一个质量约为 2 kg 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-mass-negative",
+    "q": "一个质量为 -2 kg 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-mass-zero",
+    "q": "一个质量为 0 kg 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-angle-zero",
+    "q": "一个质量为 2 kg 的物块静止在左低右高、倾角为 0° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-angle-vertical",
+    "q": "一个质量为 2 kg 的物块静止在左低右高、倾角为 90° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-angle-unknown-unit",
+    "q": "一个质量为 2 kg 的物块静止在左低右高、倾角为 0.5 rad 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-mass-unknown-unit",
+    "q": "一个质量为 2 t 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-mass-number-without-unit",
+    "q": "一个质量为 2 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-mass-scientific",
+    "q": "一个质量为 2e3 kg 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-mass-alternative",
+    "q": "一个质量为 2 kg或3 kg 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-reference-as-shown",
+    "q": "如图，一个质量为 2 kg 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-reference-input-label",
+    "q": "一个质量为 2 kg 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，图中标注的物块质量为2 kg。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-mass-bound",
+    "q": "一个质量小于 2 kg 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-angle-bound",
+    "q": "一个质量为 2 kg 的物块静止在左低右高、倾角 θ≤30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-mass-approx-is",
+    "q": "一个质量大约是 2 kg 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-mass-malformed-unit",
+    "q": "一个质量为 2 kg2 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-angle-range",
+    "q": "一个质量为 2 kg 的物块静止在左低右高、倾角为 30～40° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-reject-mass-uncertainty",
+    "q": "一个质量为 2±0.1 kg 的物块静止在左低右高、倾角为 30° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "text",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": []
+  },
+  {
+    "id": "data-long-givens",
+    "q": "一个质量为 999999.12345 kg 的物块静止在左低右高、倾角为 89.99999° 的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。取 g=10 N/kg。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，并在图中标出题目给定的质量和倾角。箭头不按比例。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_left"
+      },
+      {
+        "role": "friction",
+        "kind": "static",
+        "direction": "up_right"
+      }
+    ]
   }
 ]

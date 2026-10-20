@@ -34,3 +34,14 @@ test('renderer refuses types without a supported layout',()=>{
   const raw=Incline.createScene(bank[0].q).scene;
   assert.throws(()=>Renderer.draw({},raw,'请画出串联电路图。'),/UNSUPPORTED_DIAGRAM/);
 });
+
+test('data labels avoid whole solid regions as well as their boundary lines',()=>{
+  const polygon=[[0,0],[100,0],[100,100],[0,100]];
+  assert.equal(Renderer.boxHitsPolygon([20,20,30,30],polygon),true,'text fully inside a solid must collide');
+  assert.equal(Renderer.boxHitsPolygon([-10,-10,110,110],polygon),true,'a box containing the whole solid must collide');
+  assert.equal(Renderer.boxHitsPolygon([110,20,130,30],polygon),false);
+  assert.equal(Renderer.boxHitsPolygon([101,20,120,30],polygon,3),true,'respect a visible gap');
+  const label={tip:[50,50],direction:[0,-1]},measure=(x,y)=>[x-20,y-7,x+20,y+7];
+  const result=Renderer.placeLabel(label,[],[],{scale:1,measure,polygons:[polygon]});
+  assert.equal(Renderer.boxHitsPolygon(result.box,polygon,3),false);
+});

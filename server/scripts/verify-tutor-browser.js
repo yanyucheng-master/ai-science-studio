@@ -13,6 +13,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const baseline = process.argv.includes('--baseline');
+const chatTimeout = Number((await readFile(resolve(root, 'web/ai-tutor.js'), 'utf8')).match(/const CHAT_TIMEOUT_MS = ([0-9]+);/)[1]);
 const output = process.env.TUTOR_QA_OUTPUT || resolve(root, 'outputs/tutor-sse', baseline ? 'before' : 'after');
 await mkdir(output, { recursive: true });
 const answer = {
@@ -61,7 +62,7 @@ function fixtureAnswer() {
   return answer;
 }
 const mime = { html: 'text/html', css: 'text/css', js: 'text/javascript' };
-const webFiles = new Set(['index.html', 'styles.css', 'app.js', 'physics-extra.js', 'science-motion.js', 'science-formulas.js', 'tutor-checks.js', 'ai-tutor.js']);
+const webFiles = new Set(['index.html', 'styles.css', 'tutor-focus.css', 'app.js', 'physics-extra.js', 'science-motion.js', 'science-formulas.js', 'tutor-checks.js', 'ai-tutor.js']);
 const server = createServer(async (req, res) => {
   const path = new URL(req.url, 'http://localhost').pathname;
   if (path === '/fixture/chat/completions') {
@@ -194,8 +195,8 @@ try {
       : '请完整解答，保留必要条件、公式、代入和最终结论。');
     await page.locator('#aiTutorSendButton').click();
     if (scenario === 'timeout' || scenario === 'stop') {
-      await page.waitForFunction(() => document.querySelector('.ai-thinking-trace-text')?.textContent.includes('本地测试'));
-      if (scenario === 'timeout') await page.clock.fastForward(540001);
+      await page.waitForFunction(() => document.querySelector('.ai-thinking-stage') && document.querySelector('#aiTutorStopButton')?.disabled === false);
+      if (scenario === 'timeout') await page.clock.fastForward(chatTimeout + 1);
       else await page.locator('#aiTutorStopButton').click();
     }
     await page.waitForFunction(() => document.querySelector('#aiTutorWorkspace')?.getAttribute('aria-busy') === 'false');
@@ -242,10 +243,10 @@ try {
       assert.doesNotMatch(ui.text, /\{"mode"|"summary"\s*:/, name);
       assert.equal(ui.oldSections, 0, name);
       assert.doesNotMatch(ui.text, /结果自检|内部复核专用|context\.mode|deterministicResult/, name);
-      assert.equal(ui.bodySize, 14, name);
+      assert.equal(ui.bodySize, name.startsWith('default_mobile') ? 14 : 15, name);
       assert.ok(ui.formulaSize <= ui.bodySize, name);
       assert.equal(ui.horizontalOverflow, false, name);
-      if (ui.formulas) assert.equal(ui.formulaBackground, 'rgb(246, 249, 255)', name);
+      if (ui.formulas) assert.equal(ui.formulaBackground, 'rgba(0, 0, 0, 0)', name);
       if (name !== 'hint' && name !== 'default_clarification') assert.equal(ui.followUps, 0, name);
       for (const call of calls) {
         assert.equal(call.model, 'deepseek-flash', name);
@@ -303,8 +304,8 @@ try {
         assert.doesNotMatch(ui.warning, /AI 讲解可能存在误差/, name);
       }
       if (name === 'default_multi_goals') {
-        assert.equal(ui.formulas, 3, name);
-        assert.match(ui.final, /3 m.*6 N.*36 J/, name);
+        assert.equal(ui.formulas, 1, name);
+        assert.match(ui.final.replace(/\s+/g, ' '), /3 m.*6 N.*36 J/, name);
       }
       if (name === 'default_live_replay') {
         assert.equal(ui.appendedResults, 0, name);

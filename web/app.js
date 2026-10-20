@@ -138,43 +138,23 @@ function restoreSubjectBaseFields(subject) {
 const FAVORITES_STORAGE_KEY = "master-lab-favorites-v1";
 const FAVORITE_LIMIT = 8;
 const FAVORITE_VISUALS = new Set(["brake", "gravity", "solenoid", "circuit", "flask", "math", "cell", "physics"]);
-const RECOMMENDED_EXPERIMENTS = Object.freeze([
+// 仅用于清理旧版自动填充的完整记录，不作为新访客的收藏或推荐。
+const LEGACY_DEFAULT_FAVORITES = Object.freeze([
   {
     subject: "物理",
-    question: SUBJECTS["物理"].question,
+    question: "一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。",
     title: "刹车距离实验 · 速度如何归零",
     detail: "物理 · 运动学模板",
     visual: "brake"
   },
   {
     subject: "化学",
-    question: SUBJECTS["化学"].question,
+    question: "将 5.6g 铁粉加入含有 0.20mol 硫酸铜的溶液中，充分反应。请计算最多生成多少 mol 铜？生成铜的质量是多少？并判断哪种反应物过量。",
     title: "铁与硫酸铜定量反应",
     detail: "化学 · 定量反应模板",
     visual: "flask"
   }
 ]);
-
-// 收藏区推荐随学段：高中推荐刹车、铁 + 硫酸铜，初中推荐杠杆、浮力。只在从未保存过收藏时显示，不写入收藏。
-const RECOMMENDED_BY_LEVEL = Object.freeze({
-  senior: RECOMMENDED_EXPERIMENTS,
-  junior: Object.freeze([
-    {
-      subject: "物理",
-      question: window.EXTRA_PHYSICS_TEMPLATES?.lever?.examples?.[0]?.question || "",
-      title: "杠杆平衡条件探究",
-      detail: "物理 · 初中力学模板",
-      visual: "physics"
-    },
-    {
-      subject: "物理",
-      question: window.EXTRA_PHYSICS_TEMPLATES?.buoyancy?.examples?.[0]?.question || "",
-      title: "浮力与阿基米德原理验证",
-      detail: "物理 · 初中力学模板",
-      visual: "physics"
-    }
-  ].filter(item => item.question))
-});
 
 // 学段：默认高中；用户的选择保存在独立的本机键里，读写失败（隐私模式、禁用存储）时本页仍可切换
 const GRADE_LEVEL_STORAGE_KEY = "masterLab.gradeLevel.v1";
@@ -1000,15 +980,30 @@ function loadFavoriteRecords() {
     const stored = window.localStorage.getItem(FAVORITES_STORAGE_KEY);
     const source = stored === null ? [] : JSON.parse(stored);
     if (!Array.isArray(source)) return [];
-    hasSavedFavorites = stored !== null;
-    return source.map(sanitizeFavoriteRecord).filter(Boolean).slice(0, FAVORITE_LIMIT);
+    const records = source.map(sanitizeFavoriteRecord).filter(Boolean);
+    // 完整匹配旧默认项，避免仅凭同题或同名删除用户保存的实验。
+    const saved = records.filter(record => !LEGACY_DEFAULT_FAVORITES.some(legacy =>
+      record.subject === legacy.subject
+      && record.question === normalizeFavoriteQuestion(legacy.question)
+      && record.title === legacy.title
+      && record.detail === legacy.detail
+      && record.visual === legacy.visual
+    ));
+    const limited = saved.slice(0, FAVORITE_LIMIT);
+    if (saved.length !== records.length) {
+      try {
+        window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(limited));
+      } catch {
+        // 存储不可写时仍使用清理后的本页记录，不丢弃其余收藏。
+      }
+    }
+    return limited;
   } catch {
     return [];
   }
 }
 
 function persistFavoriteRecords() {
-  hasSavedFavorites = true;
   try {
     window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteRecords));
   } catch {
@@ -1059,24 +1054,20 @@ function renderFavoriteList() {
   const count = $("#favoriteCount");
   if (!list || !empty || !count) return;
 
-  const recommended = !hasSavedFavorites && favoriteRecords.length === 0;
-  const recommendations = RECOMMENDED_BY_LEVEL[state.gradeLevel] || RECOMMENDED_EXPERIMENTS;
-  const records = recommended ? recommendations.map(sanitizeFavoriteRecord).filter(Boolean) : favoriteRecords;
   const heading = $("#favoritesTitle");
-  if (heading) heading.textContent = recommended ? "推荐实验" : "已收藏的实验";
-  count.textContent = `${records.length} 个`;
-  empty.hidden = records.length > 0;
+  if (heading) heading.textContent = "已收藏的实验";
+  count.textContent = `${favoriteRecords.length} 个`;
+  empty.hidden = favoriteRecords.length > 0;
   list.replaceChildren();
 
-  records.forEach(record => {
+  favoriteRecords.forEach(record => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "history-item favorite-item";
     button.dataset.favoriteId = record.id;
     button.dataset.subject = record.subject;
     button.dataset.question = record.question;
-    button.setAttribute("aria-label", `载入${recommended ? "推荐" : "收藏"}实验：${record.title}`);
-    button.dataset.recommended = String(recommended);
+    button.setAttribute("aria-label", `载入收藏实验：${record.title}`);
 
     const visual = document.createElement("span");
     visual.className = `history-visual ${record.visual}`;
@@ -1086,7 +1077,7 @@ function renderFavoriteList() {
     const title = document.createElement("strong");
     const detail = document.createElement("small");
     title.textContent = record.title;
-    detail.textContent = `${recommended ? "推荐 · " : ""}${record.detail}`;
+    detail.textContent = record.detail;
     copy.append(title, detail);
 
     button.append(visual, copy, createFavoriteChevron());
@@ -1137,7 +1128,6 @@ function toggleCurrentFavorite(event) {
   showToast(state.favorite ? "已收藏到右侧实验列表" : "已取消收藏");
 }
 
-let hasSavedFavorites = false;
 let favoriteRecords = loadFavoriteRecords();
 
 function updateSubjectBodyClass(subject = state.subject) {
@@ -1711,7 +1701,7 @@ function buildPhysicsBoardSliderQuestionText(params = state.boardSliderParams) {
   const isDefault = ["blockMass", "boardMass", "boardLength", "frictionCoefficient", "initialSpeed", "gravity"]
     .every(key => Math.abs(model[key] - BOARD_SLIDER_DEFAULTS[key]) <= BOARD_SLIDER_LIMITS.epsilon);
   if (isDefault && !model.gravityWasDefaulted) return BOARD_SLIDER_DEFAULT_QUESTION;
-  return `光滑水平地面上有一块质量为${boardSliderNumber(model.boardMass)}kg、长度为${boardSliderNumber(model.boardLength)}m且初始静止的木板B。质量为${boardSliderNumber(model.blockMass)}kg的滑块A从木板左端以${boardSliderNumber(model.initialSpeed)}m/s向右滑动，二者间动摩擦因数μ=${boardSliderNumber(model.frictionCoefficient, 2)}，取g=${boardSliderNumber(model.gravity)}m/s²。求两者加速度、共同速度时间，并判断滑块是否从右端滑落。`;
+  return `光滑水平地面上有一块初始静止的木板B，木板质量为${boardSliderNumber(model.boardMass)}kg，长度为${boardSliderNumber(model.boardLength)}m。滑块A质量为${boardSliderNumber(model.blockMass)}kg，可视为质点，从木板左端以${boardSliderNumber(model.initialSpeed)}m/s的初速度向右滑动，二者间动摩擦因数μ=${boardSliderNumber(model.frictionCoefficient, 2)}，取g=${boardSliderNumber(model.gravity)}m/s²。求两者加速度、共同速度时间，并判断滑块是否会从木板右端滑落。`;
 }
 
 function buildPhysicsBoardSliderContent(params = state.boardSliderParams) {
@@ -6233,6 +6223,7 @@ function renderWaitingReasoning() {
 }
 
 function applyWaitingState(subject = state.subject, options = {}) {
+  window.MasterLabShare?.leaveContext();
   window.MasterLabInstant?.dismiss();
   clearDemoTimers();
   clearReasoningTimers();
@@ -6797,6 +6788,7 @@ function refreshGeneratedSubjectSurface(subject = state.subject, options = {}) {
 }
 
 function applySubject(subject, updateQuestion = true, options = {}) {
+  window.MasterLabShare?.leaveContext();
   clearDemoTimers();
   clearReasoningTimers();
   pauseExperiment();
@@ -7952,7 +7944,8 @@ async function generateExperiment(options = {}) {
     return;
   }
 
-  const plan = options.mapped ? planLocalExperiment(question, MAPPED_PLAN_CONTEXT) : planLocalExperiment(question);
+  const plan = options.shared ? window.MasterLabShare.planFor(options.shared)
+    : options.mapped ? planLocalExperiment(question, MAPPED_PLAN_CONTEXT) : planLocalExperiment(question);
   const detected = plan.subject;
   if (!plan.ok) {
     const remote = await handOffUnmatchedQuestion(plan.parse, displayQuestion, detected, allowAiFallback);
@@ -7962,6 +7955,7 @@ async function generateExperiment(options = {}) {
     }
     return;
   }
+  window.MasterLabShare?.leaveContext();
   window.MasterLabInstant?.dismiss();
   let physicsParse = null;
   let boardSliderParse = null;
@@ -8101,13 +8095,14 @@ async function generateExperiment(options = {}) {
         : templateRecognition
           ? SUBJECTS["生物"].generationStages
       : null;
-  await showGenerationOverlay(generationStages, { question: displayQuestion, subject: detected });
+  if (!options.shared) await showGenerationOverlay(generationStages, { question: displayQuestion, subject: detected });
   applySubject(detected, false);
   if (genericParse) {
     syncGenericContent(genericParse.templateId, genericParse.p1, genericParse.p2);
     syncPhysicsControlsFromState();
     refreshGeneratedSubjectSurface(GENERIC_TEMPLATES[genericParse.templateId].subject, { preserveProblemText: true });
   }
+  if (options.shared) window.MasterLabShare.applyParameters(options.shared);
   $("#questionInput").value = displayQuestion;
   $("#problemText").textContent = displayQuestion;
   state.generatedQuestion = displayQuestion;
@@ -8128,12 +8123,15 @@ async function generateExperiment(options = {}) {
   hideGenerationOverlay();
   clearDemoTimers();
   resetExperiment();
-  setTimeout(focusExperimentCard, 80);
-  scheduleReasoningAutoAdvance();
+  if (!options.shared) {
+    setTimeout(focusExperimentCard, 80);
+    scheduleReasoningAutoAdvance();
+  }
   updateGradeTag();
   dispatchAIContextChanged();
   setDemoStep(3, "点击播放或请求 AI 导师提示");
-  showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : genericParse ? `${GENERIC_TEMPLATES[genericParse.templateId].subject}典型题模板已生成，可拖动参数观察变化` : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
+  if (!options.shared) showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : genericParse ? `${GENERIC_TEMPLATES[genericParse.templateId].subject}典型题模板已生成，可拖动参数观察变化` : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
+  return true;
 }
 
 $("#generateButton").addEventListener("click", () => generateExperiment());
@@ -8533,7 +8531,7 @@ $("#favoriteList")?.addEventListener("click", event => {
   applyWaitingState(item.dataset.subject);
   $("#questionInput").value = item.dataset.question;
   window.scrollTo({ top: 0, behavior: motionPreference.matches ? "auto" : "smooth" });
-  showToast(`${item.dataset.subject}${item.dataset.recommended === "true" ? "推荐" : "收藏"}实验已载入，点击生成实验开始建模`);
+  showToast(`${item.dataset.subject}收藏实验已载入，点击生成实验开始建模`);
 });
 
 $("#playbackButton").addEventListener("click", event => {
@@ -8578,13 +8576,13 @@ document.addEventListener("keydown", event => {
   button.addEventListener("click", toggleCurrentFavorite);
 });
 
-$("#shareButton").addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText(`${location.href}#${encodeURIComponent(state.subject)}`);
-    showToast("实验分享链接已复制");
-  } catch {
-    showToast("复制失败，请检查浏览器权限");
-  }
+function isExperimentShareRoute(hash = location.hash) {
+  return hash === "#/share" || hash.startsWith("#/share/");
+}
+
+$("#shareButton").addEventListener("click", () => {
+  if (window.MasterLabShare) window.MasterLabShare.copy();
+  else showToast("分享模块尚未加载，请刷新页面后重试");
 });
 
 document.addEventListener("keydown", event => {
@@ -8758,12 +8756,16 @@ $("#questionInput").defaultValue = $("#questionInput").value;
 updatePhysicsPresetOption();
 setDemoStep(1, "输入题目，生成实验");
 animationClock.reconcile();
-if (document.body.classList.contains("demo-mode")) {
+if (document.body.classList.contains("demo-mode") && !isExperimentShareRoute()) {
   scheduleAutoDemo();
 }
 
 window.addEventListener("pageshow", event => {
   if (!event.persisted) return;
   updateGreeting();
+  if (isExperimentShareRoute() || window.MasterLabShare?.handlesCacheReturn) {
+    window.MasterLabShare?.restoreRoute();
+    return;
+  }
   applyWaitingState("物理", { presetQuestion: true });
 });

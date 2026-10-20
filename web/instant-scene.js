@@ -365,6 +365,37 @@
     } catch (error) { return { ok: false, code: error.message || 'INVALID_SCENE', reason: '本次场景未通过约束检查，改用文字讲解。' }; }
   }
 
+  // Data labels are independently parsed from the original question, never from AI labels.
+  function inclineData(question) {
+    const annotations = [], reject = () => ({ ok: false, code: 'UNCLEAR_GIVEN_DATA', reason: '题给质量或倾角的数值、单位或重复条件无法可靠核对，保留文字讲解。' });
+    const numericStart = '[+\\-−.0-9零〇一二三四五六七八九十百千万两]';
+    const definitions = [
+      { kind: 'mass', symbol: 'm', prefix: new RegExp('(?:质量\\s*(?:(?:约等于|大约为|大约是|大约|约为|约|为|是|等于|小于|大于|至少|至多|不超过|超过)\\s*)?(?:m\\s*)?[=＝:：<>≤≥]?\\s*|(?<![A-Za-z])m\\s*[=＝<>≤≥]\\s*)(?=' + numericStart + ')', 'g'), value: /^([+\-−]?(?:\d+(?:\.\d+)?|\.\d+))\s*(kg|千克|g|克)(?![A-Za-z0-9/／])/ },
+      { kind: 'angle', symbol: 'θ', prefix: new RegExp('(?:(?:倾角|斜面与水平(?:面|线|方向)?的?夹角)\\s*(?:(?:约等于|大约为|大约是|大约|约为|约|为|是|等于|小于|大于|至少|至多|不超过|超过)\\s*)?(?:θ\\s*)?[=＝:：<>≤≥]?\\s*|(?:θ|theta)\\s*[=＝<>≤≥]\\s*)(?=' + numericStart + ')', 'g'), value: /^([+\-−]?(?:\d+(?:\.\d+)?|\.\d+))\s*(°|度)(?![A-Za-z0-9])/ }
+    ];
+    for (const definition of definitions) {
+      let kept;
+      for (const match of question.matchAll(definition.prefix)) {
+        const start = match.index + match[0].length, valueMatch = question.slice(start).match(definition.value);
+        if (!valueMatch || /约|小于|大于|至少|至多|不超过|超过|[<>≤≥]/.test(match[0])) return reject();
+        const end = start + valueMatch[0].length, tail = question.slice(end);
+        if (/^\s*(?:[~～±—–/、-]|或|至|到)\s*[+\-−.\d]/.test(tail)) return reject();
+        const value = Number(valueMatch[1].replace('−', '-')), unit = valueMatch[2];
+        if (!Number.isFinite(value) || valueMatch[1].length > 12 || value <= 0
+          || (definition.kind === 'angle' ? value >= 90 : value > 1000000)) return reject();
+        const comparable = value * (definition.kind === 'mass' && ['kg', '千克'].includes(unit) ? 1000 : 1);
+        if (kept && Math.abs(kept.comparable - comparable) > Math.max(1e-9, Math.abs(comparable) * 1e-12)) return reject();
+        if (!kept) {
+          const display = valueMatch[1] + (/^[a-z]/i.test(unit) ? ' ' : '') + unit;
+          const annotation = { kind: definition.kind, value, unit, quote: question.slice(match.index, end),
+            text: definition.symbol + ' = ' + display + (definition.kind === 'angle' ? '（题给）' : '') };
+          annotations.push(annotation); kept = { comparable };
+        }
+      }
+    }
+    return { ok: true, annotations };
+  }
+
   // Competition admission is deliberately narrower than the reusable primitive validator.
   // Missing or ambiguous conditions never become defaults inferred from model coordinates.
   function inspectIncline(question) {
@@ -372,7 +403,9 @@
     if (!questionText(question)) return reject('INVALID_QUESTION', '题目格式无效。');
     const q = question.replace(/\s/g, '');
     if (!/斜面/.test(q) || !/受力(?:示意)?图|受力示意/.test(q)) return reject('UNSUPPORTED_DIAGRAM', '当前仅支持条件明确的单物块粗糙斜面受力图。');
-    if (/如图|见图|图示|附图|图中|两个|两块|多个|两物|[2-9二三四五六七八九十]+(?:个|块)(?:物块|木块|滑块)|物块[AB甲乙]|[甲乙]物块|连接体|相连|连接|绳|弹簧|滑轮|叠放|接触另|另一个|另一物|一对物/.test(q)) return reject('UNSUPPORTED_SYSTEM', '题目涉及题图、多个物体或连接关系，保留文字讲解。');
+    // Only explicit output clauses are exempt; descriptions of an existing picture still decline.
+    const referenceText = q.replace(/(^|[，,。；;！!？?])(?:请|并请|并|再|同时|还请)?(?:在)?图中(?:标出|标注|标明|注明|标示|写上)(?!的|了|着|有|为|是)/g, '$1标注');
+    if (/如图|见图|图示|附图|图中|两个|两块|多个|两物|[2-9二三四五六七八九十]+(?:个|块)(?:物块|木块|滑块)|物块[AB甲乙]|[甲乙]物块|连接体|相连|连接|绳|弹簧|滑轮|叠放|接触另|另一个|另一物|一对物/.test(referenceText)) return reject('UNSUPPORTED_SYSTEM', '题目涉及题图、多个物体或连接关系，保留文字讲解。');
     const counts = [...q.matchAll(/([0-9零〇一二三四五六七八九十百千万两]+)(?:个|块)(?:物块|木块|滑块)/g)];
     if (counts.some(m => !['1', '一'].includes(m[1]))) return reject('UNSUPPORTED_SYSTEM', '当前仅支持单物块，保留文字讲解。');
     if (/(?:不|未|非)(?:是|再|呈|为)?(?:静止|静置|保持不动|粗糙|左低右高|右高左低|左高右低|右低左高)/.test(q)) return reject('AMBIGUOUS_CONDITIONS', '关键条件被否定，保留文字讲解。');
@@ -392,7 +425,9 @@
     const uniformUp = /匀速(?:沿斜面)?(?:向上|上滑)|沿斜面向上做匀速/.test(q);
     if (uniformUp || Number(resting) + Number(uniformDown) !== 1) return reject('UNSUPPORTED_MOTION', '仅支持明确静止或匀速下滑的状态。');
     if (/(?:求|计算|算出|求出)[^。；;]*(?:大小|数值|质量|倾角|角度|系数|加速度)/.test(q)) return reject('UNSUPPORTED_ASK', '本次图示只分析受力及方向，数值问题保留文字解答。');
-    return { ok: true, conditions: { scene: 'incline', rises: right ? 'right' : 'left', surface: 'rough', motion: resting ? 'static' : 'uniform_down',
+    const data = inclineData(question);
+    if (!data.ok) return data;
+    return { ok: true, annotations: data.annotations, conditions: { scene: 'incline', rises: right ? 'right' : 'left', surface: 'rough', motion: resting ? 'static' : 'uniform_down',
       otherForces: [], directionOnly: /只表示方向|仅表示方向|只画方向|仅画方向|不按比例|不表示大小/.test(q), asks: ['force_diagram'] } };
   }
 
@@ -420,7 +455,11 @@
       if ([g, n, f].some(o => !raw.labels.some(label => label.target === o.id))) fail('MISSING_FORCE_LABEL');
       const frictionText = raw.labels.filter(label => label.target === f.id).map(label => label.text).join(' ');
       if (admission.conditions.motion === 'uniform_down' ? /静摩擦/.test(frictionText) : /滑动摩擦/.test(frictionText)) fail('WRONG_FRICTION_KIND');
-      return { ...checked, conditions: admission.conditions };
+      for (const label of raw.labels) {
+        if (/^(?:m|θ|质量|倾角)\s*(?:=|＝|为|是)/.test(label.text)
+          && !admission.annotations.some(a => a.text === label.text && label.target === (a.kind === 'mass' ? body.id : surface.id))) fail('UNVERIFIED_DIAGRAM_DATA');
+      }
+      return { ...checked, conditions: admission.conditions, annotations: admission.annotations };
     } catch (error) { return { ok: false, code: error.message, reason: '受力图未通过题意、方向或共点核对，保留文字讲解。' }; }
   }
 

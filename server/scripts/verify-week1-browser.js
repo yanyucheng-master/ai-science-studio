@@ -125,10 +125,10 @@ try {
   }
 
   const {context,page}=await fresh();
-  assert.equal(await page.locator('#favoritesTitle').textContent(),'推荐实验');
-  assert.equal(await page.locator('[data-recommended="true"]').count(),2);
+  assert.equal(await page.locator('#favoritesTitle').textContent(),'已收藏的实验');
+  assert.equal(await page.locator('.favorite-item').count(),0);
+  assert.ok(await page.locator('#favoriteEmpty').isVisible());
   assert.equal(await page.evaluate(key=>localStorage.getItem(key),key),null);
-  await page.locator('.favorite-item').first().click();
   await generate(page,await page.locator('#questionInput').inputValue());
   assert.equal(await page.locator('#favoriteButton').getAttribute('aria-pressed'),'false');
   assert.equal(await page.evaluate(key=>localStorage.getItem(key),key),null);
@@ -146,13 +146,19 @@ try {
   await page.reload();assert.equal(await page.locator('.favorite-item').count(),0);
   assert.equal(await page.locator('#favoritesTitle').textContent(),'已收藏的实验');
   assert.ok(await page.locator('#favoriteEmpty').isVisible());
-  // Pre-existing saved defaults remain the user's saved records.
-  await page.evaluate(key=>localStorage.setItem(key,JSON.stringify(RECOMMENDED_EXPERIMENTS)),key);await page.reload();
-  assert.equal(await page.locator('.favorite-item').count(),2);
-  assert.equal(await page.locator('[data-recommended="true"]').count(),0);
+  // Historical auto-filled records are removed; a manually saved version of the same experiment remains.
+  await page.evaluate(({key,stored})=>localStorage.setItem(key,JSON.stringify([
+    {subject:'物理',question:'一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。',title:'刹车距离实验 · 速度如何归零',detail:'物理 · 运动学模板',visual:'brake'},
+    {subject:'化学',question:'将 5.6g 铁粉加入含有 0.20mol 硫酸铜的溶液中，充分反应。请计算最多生成多少 mol 铜？生成铜的质量是多少？并判断哪种反应物过量。',title:'铁与硫酸铜定量反应',detail:'化学 · 定量反应模板',visual:'flask'},
+    ...stored
+  ])),{key,stored});await page.reload();
+  assert.equal(await page.locator('.favorite-item').count(),1);
+  assert.deepEqual(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key),stored);
   await page.evaluate(key=>localStorage.setItem(key,'{broken'),key);await page.reload();
-  assert.equal(await page.locator('#favoritesTitle').textContent(),'推荐实验');
-  report.favorites.push('new visitor, unstarred recommendation, first save, persistence, last removal, legacy records, corrupt storage');
+  assert.equal(await page.locator('#favoritesTitle').textContent(),'已收藏的实验');
+  assert.equal(await page.locator('.favorite-item').count(),0);
+  assert.ok(await page.locator('#favoriteEmpty').isVisible());
+  report.favorites.push('empty new visitor, first save, persistence, last removal, legacy default cleanup preserving manual saves, corrupt storage');
 
   await preset(page,'parallelCircuit');
   await page.evaluate(()=>{week1Audit.costs=[];week1Audit.times=[];week1Audit.maxPending=week1Audit.pending.size;});
@@ -225,12 +231,13 @@ try {
     Storage.prototype.getItem=function(key){if(key==='master-lab-favorites-v1')throw new DOMException('blocked','SecurityError');return get.call(this,key);};
     Storage.prototype.setItem=function(key,value){if(key==='master-lab-favorites-v1')throw new DOMException('blocked','QuotaExceededError');return set.call(this,key,value);};
   });
-  await unavailable.page.reload();assert.equal(await unavailable.page.locator('#favoritesTitle').textContent(),'推荐实验');
+  await unavailable.page.reload();assert.equal(await unavailable.page.locator('#favoritesTitle').textContent(),'已收藏的实验');
+  assert.equal(await unavailable.page.locator('.favorite-item').count(),0);
   await preset(unavailable.page,'parallelCircuit');await unavailable.page.locator('#favoriteButton').click();
   assert.equal(await unavailable.page.locator('#favoritesTitle').textContent(),'已收藏的实验');
   assert.equal(await unavailable.page.locator('.favorite-item').count(),1);
   await unavailable.page.locator('#favoriteButton').click();assert.equal(await unavailable.page.locator('.favorite-item').count(),0);
-  report.favorites.push('storage unavailable: recommendation stays separate, in-page favorite and removal work');
+  report.favorites.push('storage unavailable: starts empty, in-page favorite and removal work');
   await unavailable.context.close();
 } catch(error) {report.failures.push(error.stack||String(error));}
 finally {

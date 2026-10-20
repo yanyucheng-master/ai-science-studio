@@ -10872,22 +10872,26 @@ body.subject-math-active.subject-generic-template-active:not(.awaiting-generatio
 .lv-instant .fx-wave-lv { transition: none !important; }
 
 /* 开屏（brand-motion.js 生成，只在打开网站时播放一次） */
-.ml-splash { --logo: clamp(120px, 24vmin, 184px); position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; cursor: pointer; }
+.ml-splash { --logo: clamp(120px, 24vmin, 184px); position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; contain: strict; font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif; cursor: pointer; }
 .ml-splash-bg { position: absolute; inset: 0; background:
   radial-gradient(42% 46% at 50% 44%, rgba(116, 173, 251, .2), rgba(116, 173, 251, 0) 70%),
   radial-gradient(60% 60% at 80% 90%, rgba(99, 113, 255, .08), rgba(99, 113, 255, 0) 70%),
   #f7f9fd; }
 .ml-splash-bg::after { position: absolute; inset: 0; opacity: .5; background-image: linear-gradient(rgba(45, 115, 246, .05) 1px, transparent 1px), linear-gradient(90deg, rgba(45, 115, 246, .05) 1px, transparent 1px); background-size: 32px 32px; -webkit-mask-image: radial-gradient(50% 55% at 50% 45%, #000, transparent 75%); mask-image: radial-gradient(50% 55% at 50% 45%, #000, transparent 75%); content: ""; }
-.ml-splash-center { position: relative; display: grid; justify-items: center; }
+.ml-splash-center { position: relative; display: grid; width: calc(var(--logo) * 2.3); justify-items: center; }
 .ml-splash-logo { position: relative; width: var(--logo); height: var(--logo); transform-origin: 50% 50%; will-change: transform; }
 .ml-splash-svg { position: absolute; inset: 0; z-index: 1; }
+.ml-splash .fx-bub { transition: none; }
 .ml-splash-tile { position: absolute; inset: -16.667%; border: 1px solid #dce6f7; border-radius: 33.333%; background: #fff; opacity: 0; }
 .ml-splash-glow { position: absolute; top: 50%; left: 50%; width: 220%; height: 220%; margin: -110% 0 0 -110%; border-radius: 50%; background: radial-gradient(closest-side, rgba(116, 173, 251, .34), rgba(116, 173, 251, .12) 55%, rgba(116, 173, 251, 0)); opacity: 0; }
-.ml-splash-word { display: grid; justify-items: center; gap: calc(var(--logo) * .05); margin-top: calc(var(--logo) * .12); }
-.ml-splash-word b { color: #152445; font: 800 calc(var(--logo) * .23)/1.1 "DM Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; letter-spacing: .06em; opacity: 0; }
-.ml-splash-word span { padding-left: .32em; color: #2d73f6; font: 700 calc(var(--logo) * .074)/1 "DM Sans", "Noto Sans SC", sans-serif; letter-spacing: .32em; opacity: 0; }
-.ml-splash-skip { position: absolute; right: 26px; bottom: 22px; padding: 7px 14px; color: #5b6f92; font-size: 13px; border: 1px solid #dce6f7; border-radius: 999px; background: rgba(255, 255, 255, .8); opacity: 0; }
+.ml-splash-word { display: grid; width: 100%; grid-template-rows: calc(var(--logo) * .253) calc(var(--logo) * .074); justify-items: center; gap: calc(var(--logo) * .05); margin-top: calc(var(--logo) * .12); }
+.ml-splash-word b { color: #152445; font-size: calc(var(--logo) * .23); font-weight: 800; line-height: 1.1; letter-spacing: .06em; opacity: 0; }
+.ml-splash-word span { padding-left: .32em; color: #2d73f6; font-size: calc(var(--logo) * .074); font-weight: 700; line-height: 1; letter-spacing: .32em; opacity: 0; }
+.ml-splash-skip { position: absolute; right: 26px; bottom: 22px; padding: 7px 14px; color: #929db0; font-size: 13px; border: 0; background: transparent; opacity: 0; }
 .ml-splashing .topbar-logo { opacity: 0; }
+/* 保留尺寸与初始化，只暂停开屏背后的首次绘制；Logo 定格时再预绘首页。 */
+.ml-splashing:not(.ml-splash-revealing) .app-shell,
+.ml-splashing:not(.ml-splash-revealing) .app-shell * { visibility: hidden !important; }
 
 /* AI 思考卡片：轨道烧瓶（方案 B，瓶口冒泡），替换原随机配色星球 */
 .ai-thinking-field.ai-thinking-flask { display: grid; place-items: center; background: none; }
@@ -10949,3 +10953,63 @@ body.subject-math-active.subject-generic-template-active:not(.awaiting-generatio
 .instant-canvas.is-incline .instant-svg { display: block; max-width: 100%; }
 .ai-diagram .instant-canvas.is-incline { padding: 0; border: 0; box-shadow: none; }
 #instantZoomCanvas.is-incline { min-width: 0; }
+
+/* Tutor reading layout: one page surface, quiet controls, no nested answer cards. */
+.ai-tutor-workspace.is-fullscreen { background: #fcfdff; }
+.ai-tutor-workspace .ai-tutor-header { position: relative; z-index: 5; padding-bottom: 8px; border-bottom: 1px solid #e7edf5; }
+.ai-tutor-workspace.is-fullscreen .ai-tutor-header { width: min(1040px, 100%); margin: 0 auto; }
+.ai-tutor-workspace .ai-session-toolbar > button,
+.ai-tutor-workspace .ai-tutor-header-actions > button:not(.icon-button) { min-height: 36px; padding: 6px 10px; border: 0; border-radius: 8px; background: transparent; color: #476387; font: inherit; font-size: 13px; cursor: pointer; }
+.ai-tutor-workspace .ai-session-toolbar > button:hover,
+.ai-tutor-workspace .ai-tutor-header-actions > button:not(.icon-button):hover { background: #edf4fd; color: #245caa; }
+.ai-tutor-workspace .ai-response-mode select { min-height: 34px; border-color: #e2eaf5; background-color: transparent; font-size: 13px; }
+.ai-tutor-more { position: relative; flex: 0 0 auto; font-size: 13px; }
+.ai-tutor-more > summary { display: flex; gap: 6px; align-items: center; min-height: 36px; padding: 6px 10px; list-style: none; color: #476387; border-radius: 8px; cursor: pointer; }
+.ai-tutor-more > summary::-webkit-details-marker { display: none; }
+.ai-tutor-more > summary:hover, .ai-tutor-more[open] > summary { color: #245caa; background: #edf4fd; }
+.ai-tutor-more-panel { position: absolute; top: calc(100% + 6px); right: 0; z-index: 20; display: grid; gap: 2px; width: 176px; padding: 6px; border: 1px solid #e2eaf5; border-radius: 12px; background: #fff; box-shadow: 0 10px 30px #264b7920; }
+.ai-tutor-more:not([open]) > .ai-tutor-more-panel { display: none; }
+.ai-tutor-more-panel button { width: 100%; min-height: 38px; padding: 8px 12px; text-align: left; color: #3e5776; border: 0; border-radius: 7px; background: transparent; font: inherit; font-size: 13px; cursor: pointer; }
+.ai-tutor-more-panel button:hover { color: #245caa; background: #edf4fd; }
+.ai-tutor-more :is(summary, button):focus-visible,
+.ai-tutor-workspace :is(.ai-session-toolbar > button, .ai-suggested-question):focus-visible { outline: 2px solid #3174e8; outline-offset: 2px; }
+.ai-tutor-workspace .ai-tutor-messages { padding: 18px 10px; gap: 26px; border: 0; border-radius: 0; background: transparent; }
+.ai-tutor-workspace .ai-message.assistant { width: 100%; max-width: 100%; }
+.ai-tutor-workspace .ai-message.assistant:not(.error) .ai-message-bubble { width: 100%; min-width: 0; padding: 0 6px; color: #30445f; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.ai-tutor-workspace .ai-message-source { margin-bottom: 10px; color: #5c7699; font-size: 12px; font-weight: 600; }
+.ai-tutor-workspace .ai-message.user { max-width: min(760px, 88%); }
+.ai-tutor-workspace .ai-message.user .ai-message-bubble { padding: 11px 16px; color: #244b79; border: 0; border-radius: 16px 16px 4px 16px; background: #edf4ff; box-shadow: none; }
+.ai-tutor-workspace .ai-message.user .ai-message-source { margin-bottom: 4px; color: #5b7da9; }
+.ai-tutor-workspace .ai-message.user .ai-quote-source { color: #466b9a; }
+.ai-tutor-workspace .ai-message.user .ai-sent-quote { border-left-color: #91b3e0; background: #ffffff80; }
+.ai-tutor-workspace .ai-message.user .ai-quote-jump { color: #245caa; border-color: #b5cdea; background: transparent; }
+.ai-tutor-workspace .ai-answer-section { margin-top: 16px; padding-top: 0; border: 0; }
+.ai-tutor-workspace .ai-answer-section h4 { margin-bottom: 8px; color: #3b587e; font-size: 13px; }
+.ai-tutor-workspace .ai-answer-section ol { gap: 12px; padding-left: 22px; }
+.ai-tutor-workspace .ai-formula-line { margin-top: 4px; padding: 5px 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.ai-tutor-workspace .ai-answer-prose .ai-answer-conclusion { padding: 0; background: transparent; border-radius: 0; }
+.ai-tutor-workspace .ai-hint-card { padding: 2px 0 2px 13px; border: 0; border-left: 3px solid #8fb8f4; border-radius: 0; background: transparent; }
+.ai-tutor-workspace .ai-hint-label { padding: 0; color: #346ab6; font-size: 12px; background: transparent; }
+.ai-tutor-workspace .ai-suggested-questions { display: grid; justify-items: start; gap: 2px; margin-top: 18px; padding-top: 0; border: 0; }
+.ai-tutor-workspace .ai-suggestions-label { margin: 0 0 4px; color: #71839b; font-size: 12px; }
+.ai-tutor-workspace .ai-suggested-question { padding: 5px 0; color: #3265a9; border: 0; border-radius: 3px; background: transparent; font-size: 13px; line-height: 1.65; }
+.ai-tutor-workspace .ai-suggested-question:hover:not(:disabled) { background: transparent; color: #1d53a1; text-decoration: underline; text-underline-offset: 3px; }
+.ai-tutor-workspace .ai-answer-tools { justify-content: flex-start; margin-top: 10px; }
+.ai-tutor-workspace .ai-copy-answer { min-height: 32px; padding: 4px 0; color: #687e9b; border: 0; border-radius: 3px; background: transparent; font-size: 12px; }
+.ai-tutor-workspace .ai-copy-answer::before { content: "⧉"; margin-right: 5px; font-size: 15px; }
+.ai-tutor-workspace .ai-copy-answer:hover { color: #245caa; background: transparent; text-decoration: underline; text-underline-offset: 3px; }
+.ai-tutor-workspace .ai-message-context { margin-top: 2px; padding: 0; border: 0; background: transparent; font-size: 12px; }
+.ai-tutor-workspace .ai-thinking-card::before, .ai-tutor-workspace .ai-thinking-card::after { display: none; }
+.ai-tutor-workspace .ai-thinking-body { padding: 8px 0; }
+.ai-tutor-workspace .ai-thinking-meta, .ai-tutor-workspace .ai-thinking-badge { font-size: 12px; }
+.ai-tutor-workspace .ai-stream-preview { padding: 10px 0 0; border: 0; border-radius: 0; background: transparent; }
+.ai-tutor-workspace .ai-tutor-footer button { color: #71839b; }
+@media (max-width: 760px) {
+  .ai-tutor-workspace .ai-tutor-messages { padding: 16px 2px; gap: 22px; }
+  .ai-tutor-workspace .ai-message.assistant:not(.error) .ai-message-bubble { padding: 0 2px; }
+  .ai-tutor-workspace .ai-message.user { max-width: 94%; }
+  .ai-tutor-workspace .ai-message.user .ai-message-bubble { padding: 10px 12px; }
+  .ai-tutor-workspace .ai-session-toolbar { gap: 6px; }
+  .ai-tutor-workspace .ai-session-toolbar > button { min-height: 36px; padding: 6px 10px; }
+  .ai-tutor-workspace .ai-tutor-header-actions { width: auto; }
+}

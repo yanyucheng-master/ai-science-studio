@@ -70,7 +70,8 @@ const snapshot = page => page.evaluate(key => ({
   subject: state.subject,
   template: state.physicsTemplate,
   favoritesTitle: document.querySelector('#favoritesTitle').textContent,
-  recommendations: [...document.querySelectorAll('.favorite-item[data-recommended="true"] strong')].map(node => node.textContent),
+  favorites: [...document.querySelectorAll('.favorite-item strong')].map(node => node.textContent),
+  favoritesEmpty: !document.querySelector('#favoriteEmpty').hidden,
   tag: document.querySelector('#experimentGradeTag').hidden ? '' : document.querySelector('#experimentGradeTag').textContent,
   otherLevel: document.querySelector('#experimentGradeTag').classList.contains('is-other-level'),
   toast: document.querySelector('#toast.show p')?.textContent || ''
@@ -166,14 +167,14 @@ async function settle(page) {
 const visibleText = page => page.evaluate(() => [...document.querySelectorAll('.experiment-card, .reasoning-card, .mentor-card')].map(node => node.innerText).join('\n'));
 
 try {
-  // 1. 新访客：默认高中，推荐刹车与铁 + 硫酸铜；菜单按板块分组，初中实验折叠在底部
+  // 1. 新访客：默认高中，收藏为空；菜单按板块分组，初中实验折叠在底部
   section = '新访客（高中）';
   {
     const { context, page, errors } = await fresh();
     const s = await snapshot(page);
     check(s.level === 'senior' && s.pressed.join() === 'senior' && s.stored === null, '默认高中且未写入学段', s);
     check(s.input === BRAKE && s.template === 'brake', '默认题为刹车', s.input);
-    check(s.favoritesTitle === '推荐实验' && s.recommendations.join('|') === '刹车距离实验 · 速度如何归零|铁与硫酸铜定量反应', '高中推荐：刹车、铁 + 硫酸铜', s.recommendations);
+    check(s.favoritesTitle === '已收藏的实验' && !s.favorites.length && s.favoritesEmpty, '高中新访客收藏为空', s);
     const menu = await openMenu(page);
     check(menu.head === '高中 · 物理实验', '菜单标题', menu.head);
     check(menu.items.filter(item => item.group === 'mine').every(item => item.level !== 'junior') && menu.items.filter(item => item.group === 'other').every(item => item.level === 'junior'), '高中实验在前，初中实验在折叠组', menu.items);
@@ -194,7 +195,7 @@ try {
     await context.close();
   }
 
-  // 2. 切换到初中：默认题、推荐、菜单随学段变化，选择写入本机；刷新后保留
+  // 2. 切换到初中：默认题、菜单随学段变化，收藏仍为空；选择写入本机，刷新后保留
   section = '切换初中';
   {
     const { context, page, errors } = await fresh();
@@ -203,9 +204,9 @@ try {
     const leverQuestion = await page.evaluate(() => GENERIC_TEMPLATES.lever.examples[0].question);
     check(s.level === 'junior' && s.pressed.join() === 'junior' && s.stored === 'junior', '学段为初中并保存', s);
     check(s.input === leverQuestion && s.template === 'lever', '未改动的默认题换成初中默认题（杠杆）', s.input);
-    check(s.recommendations.join('|') === '杠杆平衡条件探究|浮力与阿基米德原理验证', '初中推荐：杠杆、浮力', s.recommendations);
+    check(!s.favorites.length && s.favoritesEmpty, '切换初中不自动填入收藏', s);
     check(s.toast === '已切换到初中学段', '切换提示', s.toast);
-    check(await page.evaluate(key => localStorage.getItem(key), FAVORITES_KEY) === null, '推荐不写入收藏');
+    check(await page.evaluate(key => localStorage.getItem(key), FAVORITES_KEY) === null, '切换学段不写入收藏');
     const menu = await openMenu(page);
     check(menu.head === '初中 · 物理实验', '菜单标题', menu.head);
     const mineBlocks = [...new Set(menu.items.filter(item => item.group === 'mine').map(item => item.block))];
@@ -481,14 +482,14 @@ try {
     }
   }
 
-  // 7. 老用户：已保存过收藏的浏览器不显示推荐，切换学段不改收藏
-  section = '收藏与推荐';
+  // 7. 老用户：切换学段不改动手动保存的收藏
+  section = '手动收藏';
   {
     const saved = JSON.stringify([{ id: 'saved-1', subject: '物理', question: BRAKE, title: '我的刹车题', detail: '物理', visual: 'brake' }]);
     const { context, page, errors } = await fresh({ storage: { [FAVORITES_KEY]: saved } });
     await page.locator('.grade-switch-header [data-grade="junior"]').click();
     const s = await snapshot(page);
-    check(s.favoritesTitle === '已收藏的实验' && !s.recommendations.length, '已有收藏时不显示推荐', s);
+    check(s.favoritesTitle === '已收藏的实验' && s.favorites.join() === '我的刹车题' && !s.favoritesEmpty, '只显示已保存的收藏', s);
     check(await page.evaluate(key => localStorage.getItem(key), FAVORITES_KEY) === saved, '切换学段不改动收藏');
     check(!errors.length, '无页面错误', errors);
     await context.close();
