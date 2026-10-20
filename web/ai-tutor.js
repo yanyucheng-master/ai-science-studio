@@ -2786,7 +2786,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       const figure = createElement("figure", "ai-diagram");
       const canvas = createElement("div", "instant-canvas ai-diagram-canvas");
       canvas.setAttribute("aria-label", window.MasterLabInstantScene.displayText(options.scene.title));
-      figure.append(createElement("figcaption", "", "科学示意图"), canvas);
+      figure.append(createElement("figcaption", "", window.MasterLabInstantScene.displayText(options.scene.title)), canvas);
       bubble.querySelector(".ai-message-source").after(figure);
       const draw = () => {
         if (!canvas.isConnected) return;

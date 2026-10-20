@@ -3,7 +3,7 @@
   'use strict';
   const Core = typeof module !== 'undefined' && module.exports ? require('./instant-scene.js') : window.MasterLabInstantScene;
   const FIELDS = ['scene', 'rises', 'surface', 'motion', 'otherForces', 'directionOnly', 'asks'];
-  const VERSION = 1;
+  const VERSION = 2;
   function schema() {
     return { $schema: 'https://json-schema.org/draft/2020-12/schema', type: 'object', additionalProperties: false, required: [...FIELDS], properties: {
       scene: { const: 'incline' }, rises: { enum: ['left', 'right'] }, surface: { enum: ['rough', 'smooth'] },
@@ -28,7 +28,7 @@
     // The drawing angle and lengths are display constants, never physical inputs or magnitudes.
     const angle = 28 * Math.PI / 180, cos = Math.cos(angle), sin = Math.sin(angle), right = c.rises === 'right';
     const tangent = [cos, right ? -sin : sin], normal = [tangent[1], -tangent[0]], uphill = right ? tangent : tangent.map(v => -v);
-    const foot = [280, 265], height = 46, width = 90, length = 80;
+    const foot = [280, 265], height = 46, width = 90, length = 70;
     const shift = (p, v, k) => [p[0] + v[0] * k, p[1] + v[1] * k];
     const center = shift(foot, normal, height / 2), p0 = shift(foot, tangent, -width / 2), p1 = shift(foot, tangent, width / 2);
     const surfaceFrom = [70, foot[1] - tangent[1] / tangent[0] * 210], surfaceTo = [490, foot[1] + tangent[1] / tangent[0] * 210];

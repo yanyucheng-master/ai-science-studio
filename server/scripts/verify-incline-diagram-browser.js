@@ -8,7 +8,7 @@ import { resolve, extname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url), { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root = fileURLToPath(new URL('../../', import.meta.url));
-const phase = process.argv.includes('--guard-only') ? 1 : 2;
+const phase = process.argv.includes('--guard-only') ? 1 : process.argv.includes('--competition') ? 4 : process.argv.includes('--render') ? 3 : 2;
 const output = process.env.DIAGRAM_QA_OUTPUT || resolve(root, `artifacts/incline-competition-2026-10-20/step${phase}-browser`);
 const bank = JSON.parse(await readFile(resolve(root, 'server/eval/tutor-diagram-bank.json'), 'utf8'));
 await mkdir(output, { recursive: true });
@@ -59,6 +59,48 @@ async function send(page, q) {
   await page.locator('#aiTutorInput').fill(q); await page.locator('#aiTutorSendButton').click();
   await page.waitForFunction(() => document.querySelector('#aiTutorWorkspace').getAttribute('aria-busy') === 'false');
 }
+async function verifyFigure(page) {
+  const measured = await page.evaluate(() => {
+    const svg = document.querySelector('.ai-diagram-canvas svg');
+    if (!svg) return { missing: true };
+    const content = svg.querySelector('.instant-content'), b = content.getBBox(), v = svg.viewBox.baseVal, r = svg.getBoundingClientRect();
+    const scale = r.width / v.width;
+    const labels = [...svg.querySelectorAll('.instant-force-label')].map(node => {
+      const b = node.getBBox(), force = svg.querySelector('[data-object-id="' + node.dataset.labelTarget + '"]');
+      return { text: node.textContent, box: [b.x,b.y,b.x+b.width,b.y+b.height], size: +node.getAttribute('font-size') * scale,
+        color: node.getAttribute('fill'), forceColor: force.getAttribute('stroke') };
+    });
+    const segments = [...svg.querySelectorAll('.instant-objects line, .instant-wedge polygon')].flatMap(node => {
+      if (node.tagName === 'line') return [[[+node.getAttribute('x1'),+node.getAttribute('y1')],[+node.getAttribute('x2'),+node.getAttribute('y2')]]];
+      const p = [...node.points].map(p=>[p.x,p.y]); return p.map((a,i)=>[a,p[(i+1)%p.length]]);
+    });
+    const body = svg.querySelector('[data-object-id="body"] polygon'), p = [...body.points].map(p=>[p.x,p.y]);
+    segments.push(...p.map((a,i)=>[a,p[(i+1)%p.length]]));
+    const collisions = labels.some((l,i)=>labels.some((o,j)=>i!==j&&MasterLabInstantRenderer.boxesOverlap(l.box,o.box,2/scale))
+      ||segments.some(([a,b])=>MasterLabInstantRenderer.segmentHitsBox(a,b,l.box,2/scale)));
+    const sub = svg.querySelector('.instant-force-subscript');
+    return { labels, scale, width:r.width, height:r.height, collisions,
+      margins:[b.x-v.x,b.y-v.y,v.x+v.width-b.x-b.width,v.y+v.height-b.y-b.height].map(n=>n*scale),
+      legend:svg.querySelectorAll('.instant-legend,.instant-pin,.instant-legend-right').length,
+      mobileLegend:document.querySelectorAll('.ai-diagram-canvas .instant-mobile-legend').length,
+      wedge:svg.querySelector('.instant-wedge polygon').points.numberOfItems,
+      hatches:svg.querySelectorAll('.instant-rough-hatching line').length,
+      rightAngle:svg.querySelector('.instant-right-angle')?.points.numberOfItems,
+      subscript:+sub.getAttribute('font-size')*scale,
+      canvasBackground:getComputedStyle(svg.parentElement).backgroundColor,
+      overflow:document.documentElement.scrollWidth>innerWidth+1 };
+  });
+  assert.equal(measured.missing,undefined,'renderer must keep a complete diagram');
+  assert.equal(measured.height<=320.1,true); assert.equal(measured.overflow,false);
+  assert.equal(measured.collisions,false,'direct labels must avoid each other and line segments');
+  assert.equal(measured.labels.length,3); assert.deepEqual(measured.labels.map(x=>x.text),['G','FN','f']);
+  for(const l of measured.labels){ assert(l.size>=15.8&&l.size<=16.2,'force letter must remain 16 screen px'); assert.equal(l.color,l.forceColor); }
+  assert(measured.subscript>=11.8&&measured.subscript<=12.2);
+  assert(measured.margins.every(n=>n>=27&&n<=29),'measured content must have 28 screen px margins');
+  assert.equal(measured.legend,0); assert.equal(measured.mobileLegend,0); assert.equal(measured.wedge,3);
+  assert(measured.hatches>=10); assert.equal(measured.rightAngle,3); assert.equal(measured.canvasBackground,'rgba(0, 0, 0, 0)');
+  return measured;
+}
 try {
   for (const width of [1366, 820, 390]) await run('original-' + width, width, false, async (page, row) => {
     await send(page, bank[0].q);
@@ -72,12 +114,24 @@ try {
     });
     assert.equal(geometry.overflow, false);
     for (const force of geometry.forces) assert.deepEqual(force.from, geometry.forces[0].from);
-    if (phase === 2) { const lengths = geometry.forces.map(f => Math.hypot(f.to[0] - f.from[0], f.to[1] - f.from[1])); assert(lengths.every(n => Math.abs(n - lengths[0]) < 1e-8)); }
+    if (phase >= 2) { const lengths = geometry.forces.map(f => Math.hypot(f.to[0] - f.from[0], f.to[1] - f.from[1])); assert(lengths.every(n => Math.abs(n - lengths[0]) < 1e-8)); }
     row.geometry = geometry;
+    if (phase >= 3) row.layout = await verifyFigure(page);
     await page.locator('.ai-diagram').screenshot({ path: resolve(output, 'figure-' + width + '.png') });
     await page.reload(); await page.waitForSelector('.ai-diagram-canvas svg');
     assert.equal(row.coordinateRequests, phase === 1 ? 1 : 0, 'restoration must not call a scene provider');
   });
+  if (phase >= 3) {
+    for (const id of ['static-left','uniform-down-right','uniform-down-left']) await run('mobile-'+id,390,false,async (page,row)=>{
+      await send(page,bank.find(r=>r.id===id).q); row.layout=await verifyFigure(page);
+    });
+    await run('responsive-resize',1366,false,async (page,row)=>{
+      await send(page,bank[0].q); await verifyFigure(page);
+      await page.setViewportSize({width:390,height:844}); await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+      row.layout=await verifyFigure(page); await page.setViewportSize({width:820,height:900});
+      await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))); await verifyFigure(page);
+    });
+  }
   await run('personal-original', 1366, true, async (page, row) => {
     await send(page, bank[0].q); assert.equal(await page.locator('.ai-diagram-canvas svg').count(), 1);
     assert.equal(row.coordinateRequests, phase === 1 ? 1 : 0); assert.equal(row.chatRequests, 0);
@@ -92,7 +146,7 @@ try {
     assert.equal(await page.locator('.ai-diagram-canvas svg').count(), 0); assert.equal(row.chatRequests, 1);
     assert.match(await page.locator('.ai-message.assistant').innerText(), /文字|光滑/);
   });
-  if (phase === 2) await run('legacy-scene-rebuilt-locally', 820, false, async (page, row) => {
+  if (phase >= 2) await run('legacy-scene-rebuilt-locally', 820, false, async (page, row) => {
     await send(page, bank[0].q);
     const old = await page.evaluate(scene => {
       const data = JSON.parse(localStorage.getItem('masterLab.tutorSessions.v1'));
