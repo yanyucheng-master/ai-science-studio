@@ -92,6 +92,26 @@ try {
     assert.equal(await page.locator('.ai-diagram-canvas svg').count(), 0); assert.equal(row.chatRequests, 1);
     assert.match(await page.locator('.ai-message.assistant').innerText(), /文字|光滑/);
   });
+  if (phase === 2) await run('legacy-scene-rebuilt-locally', 820, false, async (page, row) => {
+    await send(page, bank[0].q);
+    const old = await page.evaluate(scene => {
+      const data = JSON.parse(localStorage.getItem('masterLab.tutorSessions.v1'));
+      const message = data.sessions.flatMap(s => s.messages).find(m => m.scene);
+      message.scene = scene;
+      return data;
+    }, legacyFixture(bank[0].q));
+    await page.addInitScript(data => localStorage.setItem('masterLab.tutorSessions.v1', JSON.stringify(data)), old);
+    await page.reload(); await page.waitForSelector('.ai-diagram-canvas svg');
+    const rebuilt = await page.evaluate(q => {
+      const expected = MasterLabInclineDiagram.createScene(q).scene.objects.filter(o => o.type === 'arrow');
+      return expected.every(o => {
+        const line = document.querySelector('[data-object-id="' + o.id + '"] line');
+        return line && ['x1', 'y1', 'x2', 'y2'].every((a, i) => Math.abs(+line.getAttribute(a) - [...o.from, ...o.to][i]) < 1e-8);
+      });
+    }, bank[0].q);
+    assert.equal(rebuilt, true, 'old valid AI coordinates must be replaced with program geometry');
+    assert.equal(row.coordinateRequests, 0); assert.equal(row.chatRequests, 0);
+  });
   await run('supported-session-and-tampering', 820, false, async (page, row) => {
     await send(page, bank[0].q);
     const tampered = await page.evaluate(() => { const data = JSON.parse(localStorage.getItem('masterLab.tutorSessions.v1')); const message = data.sessions.flatMap(s => s.messages).find(m => m.scene); message.scene.objects.find(o => o.role === 'friction').to = [206, 275]; return data; });

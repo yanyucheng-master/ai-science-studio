@@ -276,7 +276,13 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     payload.source = value.payload.source === "local_fallback" ? "local_fallback" : "saved";
     const message = text(value.question).slice(0, 2000);
     const sceneQuestion = text(value.sceneQuestion).slice(0, 2000);
-    const scene = value.scene && window.MasterLabInstantScene?.validateDiagram(value.scene, sceneQuestion);
+    const validated = value.scene && window.MasterLabInstantScene?.validateDiagram(value.scene, sceneQuestion);
+    const rebuilt = validated?.ok && window.MasterLabInclineDiagram?.createScene(sceneQuestion);
+    const scene = rebuilt?.mode === "instant" ? { ok: true, scene: rebuilt.scene } : null;
+    if (scene?.ok) {
+      payload.summary = scene.scene.explanation.join("\n\n");
+      payload.suggestedQuestions = diagramSuggestedQuestions(scene.scene);
+    }
     if (scene?.ok && !payload.suggestedQuestions.length) payload.suggestedQuestions = diagramSuggestedQuestions(scene.scene);
     return { role: "assistant", payload, context, level, question: message, ...id,
       ...(scene?.ok ? { scene: scene.scene, sceneQuestion } : {}),
@@ -2894,7 +2900,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     const controller = new AbortController();
     state.controller = controller;
     const timeout = window.setTimeout(() => controller.abort("timeout"), window.MasterLabInstantScene.LIMITS.timeout + 5000);
-    setPendingStage("正在生成并核查图示，可随时停止。");
+    setPendingStage("正在核对题意并推导受力方向，可随时停止。");
     try {
       const result = await window.MasterLabInstant.createScene(question, { signal: controller.signal });
       if (controller.signal.aborted) throw new TutorRequestError("ABORTED");

@@ -98,26 +98,9 @@
   {
     "id": "ordinary-no-force",
     "q": "一个滑块静止在左低右高的粗糙斜面上，不受外力，请画出受力图。",
-    "expect": "draw",
+    "expect": "text",
     "scene": "incline",
-    "rises": "right",
-    "motion": "static",
-    "directionOnly": false,
-    "forces": [
-      {
-        "role": "gravity",
-        "direction": "down"
-      },
-      {
-        "role": "normal_force",
-        "direction": "up_left"
-      },
-      {
-        "role": "friction",
-        "kind": "static",
-        "direction": "up_right"
-      }
-    ]
+    "forces": []
   },
   {
     "id": "numbers-remain-schematic",
@@ -425,6 +408,41 @@
   {
     "id": "coefficient-not-verified",
     "q": "一个物块静止在左低右高且倾角30°的粗糙斜面上，最大静摩擦系数为0.1，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "eleven-bodies",
+    "q": "11个物块静止在左低右高的粗糙斜面上，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "negated-rest",
+    "q": "一个物块在左低右高的粗糙斜面上，并不静止，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "negated-rough",
+    "q": "一个物块静止在左低右高的斜面上，斜面不粗糙，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "negated-rise",
+    "q": "一个物块静止在粗糙斜面上，斜面不呈左低右高，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "no-forces-contradiction",
+    "q": "一个物块静止在左低右高的粗糙斜面上，不受任何外力。请画受力图。",
     "expect": "text",
     "scene": "incline",
     "forces": []
