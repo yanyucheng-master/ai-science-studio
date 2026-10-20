@@ -1,0 +1,73 @@
+/* Generated from incline-presets.json by server/scripts/build-incline-presets.js. */
+(() => {
+  'use strict';
+  const data = {
+  "version": 1,
+  "presets": [
+    {
+      "id": "incline-static-right",
+      "q": "一个物块静止在左低右高的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，只表示方向，不设定质量、角度或力的数值。",
+      "conditions": {
+        "scene": "incline",
+        "rises": "right",
+        "surface": "rough",
+        "motion": "static",
+        "otherForces": [],
+        "directionOnly": true,
+        "asks": [
+          "force_diagram"
+        ]
+      }
+    },
+    {
+      "id": "incline-static-left",
+      "q": "一个物块静止在左高右低的粗糙斜面上，不受其他外力。请画出物块的受力示意图，只表示方向。",
+      "conditions": {
+        "scene": "incline",
+        "rises": "left",
+        "surface": "rough",
+        "motion": "static",
+        "otherForces": [],
+        "directionOnly": true,
+        "asks": [
+          "force_diagram"
+        ]
+      }
+    },
+    {
+      "id": "incline-slide-right",
+      "q": "一个物块在左低右高的粗糙斜面上匀速下滑，不受其他外力。请画出物块的受力示意图，分别标注重力、支持力和滑动摩擦力，只表示方向。",
+      "conditions": {
+        "scene": "incline",
+        "rises": "right",
+        "surface": "rough",
+        "motion": "uniform_down",
+        "otherForces": [],
+        "directionOnly": true,
+        "asks": [
+          "force_diagram"
+        ]
+      }
+    },
+    {
+      "id": "incline-slide-left",
+      "q": "一个物块在左高右低的粗糙斜面上匀速下滑，不受其他外力。请画出物块的受力示意图，分别标注重力、支持力和滑动摩擦力，只表示方向。",
+      "conditions": {
+        "scene": "incline",
+        "rises": "left",
+        "surface": "rough",
+        "motion": "uniform_down",
+        "otherForces": [],
+        "directionOnly": true,
+        "asks": [
+          "force_diagram"
+        ]
+      }
+    }
+  ]
+};
+  const freeze = value => { if (value && typeof value === 'object') { Object.values(value).forEach(freeze); Object.freeze(value); } return value; };
+  freeze(data);
+  if (typeof window !== 'undefined') window.MasterLabInclinePresets = data;
+  if (typeof module !== 'undefined' && module.exports) module.exports = data;
+})();

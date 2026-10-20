@@ -31,13 +31,14 @@ const legacyFixture = q => ({ version: 1, status: 'scene', subject: '物理', ti
   { id: 'friction', type: 'arrow', role: 'friction', color: 'teal', from: [274, 258], to: [342, 241] }
 ], labels: [{ target: 'surface', text: '粗糙斜面' }, { target: 'body', text: '物块' }, { target: 'gravity', text: '重力 G' }, { target: 'normal_force', text: '支持力 N' }, { target: 'friction', text: '静摩擦力 f' }], relations: [], calculations: [] });
 const reply = { mode: 'explain', summary: '题目条件不属于本次图示范围，保留文字分析。', steps: [], formulas: [], finalAnswer: null, warnings: [], suggestedQuestions: [] };
-async function run(name, width, personal, action) {
+async function run(name, width, personal, action, options = {}) {
   const context = await browser.newContext({ viewport: { width, height: width < 600 ? 844 : 900 }, reducedMotion: 'reduce' });
-  await context.addInitScript(({ base, personal }) => { window.MASTER_LAB_API_URL = base; if (personal) localStorage.setItem('masterLab.deepseekApiKey', 'fixture-only-never-valid'); }, { base, personal });
+  await context.addInitScript(({ base, personal, enabled }) => { window.MASTER_LAB_API_URL = base; if (enabled === false) window.MASTER_LAB_DIAGRAM_ENABLED = false; if (personal) localStorage.setItem('masterLab.deepseekApiKey', 'fixture-only-never-valid'); }, { base, personal, enabled: options.enabled });
   const page = await context.newPage(), row = { name, width, personal, coordinateRequests: 0, chatRequests: 0, errors: [] };
   page.on('pageerror', e => row.errors.push(e.message));
   await context.route('**/*', async route => {
     const req = route.request(), url = new URL(req.url()), json = data => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(data) });
+    if (options.blockPresets && url.pathname.endsWith('/incline-presets.js')) return route.fulfill({status:503,body:''});
     if (url.pathname === '/health') return json({ ok: true, aiConfigured: true });
     if (url.pathname === '/api/v1/scene/generate' || url.pathname === '/chat/completions') {
       const body = req.postDataJSON(), coordinate = url.pathname.includes('/scene/') || body.messages?.[0]?.content.includes('科学可视化设计师');
@@ -49,7 +50,7 @@ async function run(name, width, personal, action) {
     return route.continue();
   });
   try {
-    await page.goto(base + '/#/ai-tutor'); await page.waitForFunction(() => window.MasterLabInstant && window.MasterLabAITutor);
+    await page.goto(base + '/' + (options.search || '') + '#/ai-tutor'); await page.waitForFunction(() => window.MasterLabInstant && window.MasterLabAITutor);
     await action(page, row);
     assert.deepEqual(row.errors, []); row.pass = true; console.log('PASS ' + name);
   } catch (error) { row.pass = false; row.failure = error.stack; process.exitCode = 1; console.error('FAIL ' + name + ': ' + error.message); }
@@ -131,6 +132,46 @@ try {
       row.layout=await verifyFigure(page); await page.setViewportSize({width:820,height:900});
       await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))); await verifyFigure(page);
     });
+  }
+  if (phase >= 4) {
+    await run('explicit-zoom',390,false,async(page,row)=>{
+      await page.goto(base+'/');await page.waitForFunction(()=>window.MasterLabInstant);
+      await page.evaluate(q=>{if(window.state?.autoDemoTimer)clearTimeout(state.autoDemoTimer);return MasterLabInstant.generate(q);},bank[0].q);
+      await page.locator('#instantExpand').click();await page.waitForSelector('#instantZoom[open] svg');
+      const before=await page.locator('#instantZoomCanvas svg').boundingBox();
+      await page.locator('#instantZoomRange').evaluate(e=>{e.value='200';e.dispatchEvent(new Event('input',{bubbles:true}));});
+      await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+      const after=await page.locator('#instantZoomCanvas svg').boundingBox();assert(after.width>before.width*1.5,'explicit zoom must enlarge the geometry');
+      await page.locator('#instantZoomClose').click();assert.equal(await page.locator('#instantZoom[open]').count(),0);assert.equal(row.coordinateRequests,0);assert.equal(row.chatRequests,0);
+    });
+    const presets=JSON.parse(await readFile(resolve(web,'incline-presets.json'),'utf8')).presets;
+    for(const p of presets.filter(p=>p.conditions.motion==='uniform_down')) await run('preset-mobile-'+p.id,390,false,async(page,row)=>{
+      const result=await page.evaluate(q=>MasterLabInstant.createScene(q),p.q);assert.equal(result.presetId,p.id);
+      await send(page,p.q);row.layout=await verifyFigure(page);assert.equal(row.coordinateRequests,0);assert.equal(row.chatRequests,0);
+    });
+    await run('preset-and-nonpreset-paths',390,false,async(page,row)=>{
+      for(const p of presets){const result=await page.evaluate(q=>MasterLabInstant.createScene(q),p.q);assert.equal(result.presetId,p.id);}
+      const q=bank.find(r=>r.id==='numbers-remain-schematic').q;
+      const nonPreset=await page.evaluate(q=>MasterLabInstant.createScene(q),q);assert.equal(nonPreset.mode,'instant');assert.equal(nonPreset.presetId,undefined);
+      await send(page,q);row.layout=await verifyFigure(page);assert.equal(row.coordinateRequests,0);assert.equal(row.chatRequests,0);
+    });
+    for(const [name,options]of [['switch-url',{search:'?diagram=0'}],['switch-config',{enabled:false,search:'?diagram=1'}]]) await run(name,390,false,async(page,row)=>{
+      const result=await page.evaluate(q=>MasterLabInstant.createScene(q),bank[0].q);assert.equal(result.code,'DIAGRAM_DISABLED');
+      await send(page,bank[0].q);assert.equal(await page.locator('.ai-diagram').count(),0);assert.equal(row.chatRequests,1);assert.equal(row.coordinateRequests,0);
+      assert.equal(await page.locator('.ai-answer-warning').count(),0);assert.match(await page.locator('.ai-message.assistant').innerText(),/文字/);
+    },options);
+    await run('switch-saved-recovery',820,false,async(page,row)=>{
+      await send(page,bank[0].q);assert.equal(await page.locator('.ai-diagram-canvas svg').count(),1);
+      await page.goto(base+'/?diagram=0#/ai-tutor');await page.waitForSelector('.ai-message.assistant');
+      assert.equal(await page.locator('.ai-diagram').count(),0);assert.equal(await page.locator('.ai-answer-warning').count(),0);
+      await page.waitForTimeout(500);
+      const kept=await page.evaluate(()=>JSON.parse(localStorage.getItem('masterLab.tutorSessions.v1')).sessions.flatMap(s=>s.messages).some(m=>m.scene));assert.equal(kept,true);
+      await page.goto(base+'/?diagram=1#/ai-tutor');await page.waitForSelector('.ai-diagram-canvas svg');await verifyFigure(page);
+      assert.equal(row.coordinateRequests,0);assert.equal(row.chatRequests,0);
+    });
+    await run('missing-preset-bundle-text',820,false,async(page,row)=>{
+      await send(page,bank[0].q);assert.equal(await page.locator('.ai-diagram-canvas svg').count(),0);assert.equal(row.coordinateRequests,0);assert.equal(row.chatRequests,1);
+    },{blockPresets:true});
   }
   await run('personal-original', 1366, true, async (page, row) => {
     await send(page, bank[0].q); assert.equal(await page.locator('.ai-diagram-canvas svg').count(), 1);

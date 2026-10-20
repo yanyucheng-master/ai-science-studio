@@ -2566,7 +2566,8 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       // Remove only the duplicate page-level disclaimer. Actual limitations,
       // incomplete-answer alerts and offline-status warnings remain visible.
       warnings: asTextList(payload.warnings, 5, 300).filter((warning) =>
-        warning !== "AI 讲解可能存在误差，请结合教材与教师要求核对。")
+        warning !== "AI 讲解可能存在误差，请结合教材与教师要求核对。" &&
+        !(options.scene && window.MasterLabInclineDiagram?.enabled?.() === false && warning === "科学示意图，不按比例。"))
     };
   }
 
@@ -2796,7 +2797,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     }
     row.append(bubble);
     elements.messages.append(row);
-    if (role === "assistant" && options.scene) {
+    if (role === "assistant" && options.scene && window.MasterLabInclineDiagram?.canDraw(options.sceneQuestion)) {
       const figure = createElement("figure", "ai-diagram");
       const canvas = createElement("div", "instant-canvas ai-diagram-canvas");
       canvas.setAttribute("aria-label", window.MasterLabInstantScene.displayText(options.scene.title));
@@ -2909,6 +2910,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
   }
 
   async function requestChatDiagram(question) {
+    if (window.MasterLabInclineDiagram?.enabled?.() === false) return null;
     if (!wantsDiagram(question)) return null;
     if (!window.MasterLabInstant?.createScene) return { notice: "图示模块尚未就绪，请刷新页面后重试。以下保留文字解答。" };
     const controller = new AbortController();

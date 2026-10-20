@@ -446,5 +446,53 @@
     "expect": "text",
     "scene": "incline",
     "forces": []
+  },
+  {
+    "id": "incline-slide-right",
+    "q": "一个物块在左低右高的粗糙斜面上匀速下滑，不受其他外力。请画出物块的受力示意图，分别标注重力、支持力和滑动摩擦力，只表示方向。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "uniform_down",
+    "directionOnly": true,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_left"
+      },
+      {
+        "role": "friction",
+        "kind": "kinetic",
+        "direction": "up_right"
+      }
+    ]
+  },
+  {
+    "id": "incline-slide-left",
+    "q": "一个物块在左高右低的粗糙斜面上匀速下滑，不受其他外力。请画出物块的受力示意图，分别标注重力、支持力和滑动摩擦力，只表示方向。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "left",
+    "motion": "uniform_down",
+    "directionOnly": true,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_right"
+      },
+      {
+        "role": "friction",
+        "kind": "kinetic",
+        "direction": "up_left"
+      }
+    ]
   }
 ]
