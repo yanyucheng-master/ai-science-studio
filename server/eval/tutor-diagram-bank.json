@@ -1,0 +1,432 @@
+[
+  {
+    "id": "static-right-original",
+    "q": "一个物块静止在左低右高的粗糙斜面上，除重力和斜面对它的接触力外，不受其他外力。请画出物块的受力示意图，分别标注重力、支持力和静摩擦力，只表示方向，不设定质量、角度或力的数值。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_left"
+      },
+      {
+        "role": "friction",
+        "kind": "static",
+        "direction": "up_right"
+      }
+    ]
+  },
+  {
+    "id": "static-left",
+    "q": "一个物块静止在左高右低的粗糙斜面上，不受其他外力。请画出物块的受力示意图，只表示方向。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "left",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_right"
+      },
+      {
+        "role": "friction",
+        "kind": "static",
+        "direction": "up_left"
+      }
+    ]
+  },
+  {
+    "id": "contact-only-wording",
+    "q": "一个木块静止在右高左低的粗糙斜面上，除重力和斜面对它的接触力外不受其他力。请画出受力示意图，仅表示方向。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_left"
+      },
+      {
+        "role": "friction",
+        "kind": "static",
+        "direction": "up_right"
+      }
+    ]
+  },
+  {
+    "id": "only-two-sources",
+    "q": "一个物块静止在右低左高的粗糙斜面上，仅受重力和斜面对它的接触力。请画出物块的受力图。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "left",
+    "motion": "static",
+    "directionOnly": false,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_right"
+      },
+      {
+        "role": "friction",
+        "kind": "static",
+        "direction": "up_left"
+      }
+    ]
+  },
+  {
+    "id": "ordinary-no-force",
+    "q": "一个滑块静止在左低右高的粗糙斜面上，不受外力，请画出受力图。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": false,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_left"
+      },
+      {
+        "role": "friction",
+        "kind": "static",
+        "direction": "up_right"
+      }
+    ]
+  },
+  {
+    "id": "numbers-remain-schematic",
+    "q": "一个质量为2kg的物块静止在左低右高、倾角为30°的粗糙斜面上，不受其他外力。请画出受力示意图，只表示方向，不按比例。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "static",
+    "directionOnly": true,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_left"
+      },
+      {
+        "role": "friction",
+        "kind": "static",
+        "direction": "up_right"
+      }
+    ]
+  },
+  {
+    "id": "uniform-down-right",
+    "q": "一个物块在左低右高的粗糙斜面上匀速下滑，不受其他外力。请画出受力示意图，只表示方向。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "right",
+    "motion": "uniform_down",
+    "directionOnly": true,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_left"
+      },
+      {
+        "role": "friction",
+        "kind": "kinetic",
+        "direction": "up_right"
+      }
+    ]
+  },
+  {
+    "id": "uniform-down-left",
+    "q": "一个物块在左高右低的粗糙斜面上沿斜面向下做匀速直线运动，没有其他外力。请画出受力图，只表示方向。",
+    "expect": "draw",
+    "scene": "incline",
+    "rises": "left",
+    "motion": "uniform_down",
+    "directionOnly": true,
+    "forces": [
+      {
+        "role": "gravity",
+        "direction": "down"
+      },
+      {
+        "role": "normal_force",
+        "direction": "up_right"
+      },
+      {
+        "role": "friction",
+        "kind": "kinetic",
+        "direction": "up_left"
+      }
+    ]
+  },
+  {
+    "id": "smooth-static",
+    "q": "一个物块静止在左低右高的光滑斜面上，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "smooth-down",
+    "q": "一个物块沿左低右高的光滑斜面下滑，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "smooth-uniform",
+    "q": "一个物块在左高右低的光滑斜面上匀速下滑，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "smooth-accelerating",
+    "q": "一个物块在左低右高的光滑斜面上加速下滑，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "missing-no-other-force",
+    "q": "一个物块静止在左低右高的粗糙斜面上。请画出受力示意图，只表示方向。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "unfinished-except",
+    "q": "一个物块静止在左低右高的粗糙斜面上，除重力和斜面对它的接触力外。请画出受力示意图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "push",
+    "q": "一个物块静止在左低右高的粗糙斜面上，另受水平推力。请画出受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "pull-contradicts-none",
+    "q": "一个物块静止在左低右高的粗糙斜面上，不受其他外力，另有沿斜面向上的拉力。请画出受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "applied-force-symbol",
+    "q": "一个物块静止在左低右高的粗糙斜面上，不受其他外力，受到恒力F作用。请画出受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "uniform-up",
+    "q": "一个物块在左低右高的粗糙斜面上匀速上滑，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "accelerating-down",
+    "q": "一个物块在左低右高的粗糙斜面上加速下滑，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "slowing-up",
+    "q": "一个物块在左高右低的粗糙斜面上减速上滑，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "as-shown",
+    "q": "如图，一个物块静止在左低右高的粗糙斜面上，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "two-bodies",
+    "q": "两个物块静止在左低右高的粗糙斜面上，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "connected",
+    "q": "一个物块与另一个物体用绳连接，静止在左低右高的粗糙斜面上，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "missing-orientation",
+    "q": "一个物块静止在粗糙斜面上，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "conflicting-orientation",
+    "q": "一个物块静止在左低右高又左高右低的粗糙斜面上，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "missing-surface",
+    "q": "一个物块静止在左低右高的斜面上，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "conflicting-surface",
+    "q": "一个物块静止在左低右高的光滑且粗糙斜面上，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "missing-motion",
+    "q": "一个物块在左低右高的粗糙斜面上，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "uncertain-force",
+    "q": "一个物块静止在左低右高的粗糙斜面上，可能不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "conditional",
+    "q": "如果一个物块静止在左低右高的粗糙斜面上，不受其他外力，请画受力图并比较加速时情况。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "magnet",
+    "q": "一个物块静止在左低右高的粗糙斜面上，不受其他外力，但有磁场作用。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "moving-surface",
+    "q": "一个物块静止在左低右高的粗糙斜面上，不受其他外力，斜面可以移动。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "force-calculation",
+    "q": "一个物块静止在左低右高的粗糙斜面上，不受其他外力。请画受力图并求摩擦力大小。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "function-without-layout",
+    "q": "绘制函数y=abs(x-1)+0.5的图像。",
+    "expect": "text",
+    "scene": null,
+    "forces": []
+  },
+  {
+    "id": "optics-without-layout",
+    "q": "请画出光从空气斜射入水中的光路图。",
+    "expect": "text",
+    "scene": null,
+    "forces": []
+  },
+  {
+    "id": "circuit-without-layout",
+    "q": "请画出串联电路图。",
+    "expect": "text",
+    "scene": null,
+    "forces": []
+  },
+  {
+    "id": "negated-none",
+    "q": "一个物块静止在左低右高的粗糙斜面上，并非不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "negated-right",
+    "q": "一个物块静止在粗糙斜面上，斜面并不是左低右高，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "numeric-multiple",
+    "q": "2个物块静止在左低右高的粗糙斜面上，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "another-applied-force",
+    "q": "一个物块静止在左低右高的粗糙斜面上，不受其他外力，另有向上的力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "numeric-applied-force",
+    "q": "一个物块静止在左低右高的粗糙斜面上，不受其他外力，受到沿斜面向上的10N作用。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  },
+  {
+    "id": "coefficient-not-verified",
+    "q": "一个物块静止在左低右高且倾角30°的粗糙斜面上，最大静摩擦系数为0.1，不受其他外力。请画受力图。",
+    "expect": "text",
+    "scene": "incline",
+    "forces": []
+  }
+]

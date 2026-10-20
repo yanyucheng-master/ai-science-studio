@@ -277,7 +277,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     payload.source = value.payload.source === "local_fallback" ? "local_fallback" : "saved";
     const message = text(value.question).slice(0, 2000);
     const sceneQuestion = text(value.sceneQuestion).slice(0, 2000);
-    const scene = value.scene && window.MasterLabInstantScene?.validate(value.scene, sceneQuestion);
+    const scene = value.scene && window.MasterLabInstantScene?.validateDiagram(value.scene, sceneQuestion);
     if (scene?.ok && !payload.suggestedQuestions.length) payload.suggestedQuestions = diagramSuggestedQuestions(scene.scene);
     return { role: "assistant", payload, context, level, question: message, ...id,
       ...(scene?.ok ? { scene: scene.scene, sceneQuestion } : {}),
