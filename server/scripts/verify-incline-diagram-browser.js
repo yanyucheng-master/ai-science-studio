@@ -8,7 +8,7 @@ import { resolve, extname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url), { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root = fileURLToPath(new URL('../../', import.meta.url));
-const phase = process.argv.includes('--guard-only') ? 1 : process.argv.includes('--competition') ? 4 : process.argv.includes('--render') ? 3 : 2;
+const phase = process.argv.includes('--data') ? 5 : process.argv.includes('--guard-only') ? 1 : process.argv.includes('--competition') ? 4 : process.argv.includes('--render') ? 3 : 2;
 const output = process.env.DIAGRAM_QA_OUTPUT || resolve(root, `artifacts/incline-competition-2026-10-20/step${phase}-browser`);
 const bank = JSON.parse(await readFile(resolve(root, 'server/eval/tutor-diagram-bank.json'), 'utf8'));
 await mkdir(output, { recursive: true });
@@ -60,7 +60,7 @@ async function send(page, q) {
   await page.locator('#aiTutorInput').fill(q); await page.locator('#aiTutorSendButton').click();
   await page.waitForFunction(() => document.querySelector('#aiTutorWorkspace').getAttribute('aria-busy') === 'false');
 }
-async function verifyFigure(page) {
+async function verifyFigure(page, expectedData = []) {
   const measured = await page.evaluate(() => {
     const svg = document.querySelector('.ai-diagram-canvas svg');
     if (!svg) return { missing: true };
@@ -75,12 +75,19 @@ async function verifyFigure(page) {
       if (node.tagName === 'line') return [[[+node.getAttribute('x1'),+node.getAttribute('y1')],[+node.getAttribute('x2'),+node.getAttribute('y2')]]];
       const p = [...node.points].map(p=>[p.x,p.y]); return p.map((a,i)=>[a,p[(i+1)%p.length]]);
     });
+    const dataLabels = [...svg.querySelectorAll('.instant-data-label')].map(node => {
+      const b=node.getBBox();return {kind:node.dataset.givenKind,text:node.textContent,quote:node.dataset.sourceQuote,box:[b.x,b.y,b.x+b.width,b.y+b.height],size:+node.getAttribute('font-size')*scale};
+    });
     const body = svg.querySelector('[data-object-id="body"] polygon'), p = [...body.points].map(p=>[p.x,p.y]);
     segments.push(...p.map((a,i)=>[a,p[(i+1)%p.length]]));
-    const collisions = labels.some((l,i)=>labels.some((o,j)=>i!==j&&MasterLabInstantRenderer.boxesOverlap(l.box,o.box,2/scale))
+    const allLabels = [...labels,...dataLabels];
+    const collisions = allLabels.some((l,i)=>allLabels.some((o,j)=>i!==j&&MasterLabInstantRenderer.boxesOverlap(l.box,o.box,2/scale))
       ||segments.some(([a,b])=>MasterLabInstantRenderer.segmentHitsBox(a,b,l.box,2/scale)));
     const sub = svg.querySelector('.instant-force-subscript');
-    return { labels, scale, width:r.width, height:r.height, collisions,
+    const wedgePoints=[...svg.querySelector('.instant-wedge polygon').points].map(p=>[p.x,p.y]);
+    const dataCoversSolid=dataLabels.some(l=>[p,wedgePoints].some(poly=>MasterLabInstantRenderer.boxHitsPolygon(l.box,poly,2/scale)));
+    const clipped=allLabels.some(l=>l.box[0]<v.x||l.box[1]<v.y||l.box[2]>v.x+v.width||l.box[3]>v.y+v.height);
+    return { labels, dataLabels, dataCoversSolid, clipped, scale, width:r.width, height:r.height, collisions,
       margins:[b.x-v.x,b.y-v.y,v.x+v.width-b.x-b.width,v.y+v.height-b.y-b.height].map(n=>n*scale),
       legend:svg.querySelectorAll('.instant-legend,.instant-pin,.instant-legend-right').length,
       mobileLegend:document.querySelectorAll('.ai-diagram-canvas .instant-mobile-legend').length,
@@ -94,6 +101,10 @@ async function verifyFigure(page) {
   assert.equal(measured.missing,undefined,'renderer must keep a complete diagram');
   assert.equal(measured.height<=320.1,true); assert.equal(measured.overflow,false);
   assert.equal(measured.collisions,false,'direct labels must avoid each other and line segments');
+  assert.equal(measured.clipped,false,'every numeric and force label must fit inside the SVG');
+  assert.equal(measured.dataCoversSolid,false,'numeric labels must stay outside the block and wedge');
+  assert.deepEqual(measured.dataLabels.map(l=>({kind:l.kind,text:l.text})),expectedData);
+  for(const label of measured.dataLabels)assert(label.size>=12.8&&label.size<=13.2,'given data must remain 13 screen px');
   assert.equal(measured.labels.length,3); assert.deepEqual(measured.labels.map(x=>x.text),['G','FN','f']);
   for(const l of measured.labels){ assert(l.size>=15.8&&l.size<=16.2,'force letter must remain 16 screen px'); assert.equal(l.color,l.forceColor); }
   assert(measured.subscript>=11.8&&measured.subscript<=12.2);
@@ -153,7 +164,7 @@ try {
       for(const p of presets){const result=await page.evaluate(q=>MasterLabInstant.createScene(q),p.q);assert.equal(result.presetId,p.id);}
       const q=bank.find(r=>r.id==='numbers-remain-schematic').q;
       const nonPreset=await page.evaluate(q=>MasterLabInstant.createScene(q),q);assert.equal(nonPreset.mode,'instant');assert.equal(nonPreset.presetId,undefined);
-      await send(page,q);row.layout=await verifyFigure(page);assert.equal(row.coordinateRequests,0);assert.equal(row.chatRequests,0);
+      await send(page,q);row.layout=await verifyFigure(page,[{kind:'mass',text:'m = 2 kg'},{kind:'angle',text:'θ = 30°（题给）'}]);assert.equal(row.coordinateRequests,0);assert.equal(row.chatRequests,0);
     });
     for(const [name,options]of [['switch-url',{search:'?diagram=0'}],['switch-config',{enabled:false,search:'?diagram=1'}]]) await run(name,390,false,async(page,row)=>{
       const result=await page.evaluate(q=>MasterLabInstant.createScene(q),bank[0].q);assert.equal(result.code,'DIAGRAM_DISABLED');
@@ -172,6 +183,40 @@ try {
     await run('missing-preset-bundle-text',820,false,async(page,row)=>{
       await send(page,bank[0].q);assert.equal(await page.locator('.ai-diagram-canvas svg').count(),0);assert.equal(row.coordinateRequests,0);assert.equal(row.chatRequests,1);
     },{blockPresets:true});
+  }
+  if(phase>=5){
+    const expected=[{kind:'mass',text:'m = 2 kg'},{kind:'angle',text:'θ = 30°（题给）'}];
+    const dataQ=bank.find(r=>r.id==='data-output-in-picture').q;
+    for(const width of [1366,820,390])await run('data-original-'+width,width,false,async(page,row)=>{
+      await send(page,dataQ);row.layout=await verifyFigure(page,expected);
+      for(const label of row.layout.dataLabels)assert(dataQ.includes(label.quote),'numeric source must be verbatim');
+      assert.equal(row.coordinateRequests,0);assert.equal(row.chatRequests,0);
+      await page.locator('.ai-diagram').screenshot({path:resolve(output,'data-figure-'+width+'.png')});
+      await page.reload();await page.waitForSelector('.ai-diagram-canvas svg');await verifyFigure(page,expected);
+      assert.equal(row.coordinateRequests,0);assert.equal(row.chatRequests,0);
+    });
+    for(const [id,labels] of [['data-left',expected],['data-output-direct',expected],['data-mass-only',expected.slice(0,1)],['data-angle-only',expected.slice(1)],
+      ['data-unit-chinese',[{kind:'mass',text:'m = 2000克'},{kind:'angle',text:'θ = 30度（题给）'}]],['data-equivalent-repeat',expected]])await run('mobile-'+id,390,false,async(page,row)=>{
+      const q=bank.find(r=>r.id===id).q;await send(page,q);row.layout=await verifyFigure(page,labels);
+      for(const label of row.layout.dataLabels)assert(q.includes(label.quote));assert.equal(row.chatRequests,0);assert.equal(row.coordinateRequests,0);
+    });
+    await run('data-long-mobile',390,false,async(page,row)=>{
+      const q=bank.find(r=>r.id==='data-long-givens').q;await send(page,q);
+      row.layout=await verifyFigure(page,[{kind:'mass',text:'m = 999999.12345 kg'},{kind:'angle',text:'θ = 89.99999°（题给）'}]);
+      assert.equal(row.chatRequests,0);assert.equal(row.coordinateRequests,0);
+    });
+    await run('data-responsive-resize',1366,false,async(page,row)=>{
+      await send(page,dataQ);await verifyFigure(page,expected);
+      for(const width of [390,820]){await page.setViewportSize({width,height:width===390?844:900});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));row.layout=await verifyFigure(page,expected);}
+    });
+    await run('data-legacy-rebuild',390,false,async(page,row)=>{
+      await send(page,dataQ);const saved=await page.evaluate(scene=>{const d=JSON.parse(localStorage.getItem('masterLab.tutorSessions.v1'));d.sessions.flatMap(s=>s.messages).find(m=>m.scene).scene=scene;return d;},legacyFixture(dataQ));
+      await page.addInitScript(d=>localStorage.setItem('masterLab.tutorSessions.v1',JSON.stringify(d)),saved);await page.reload();await page.waitForSelector('.ai-diagram-canvas svg');row.layout=await verifyFigure(page,expected);assert.equal(row.chatRequests,0);
+    });
+    await run('data-tampered-saved-label',390,false,async(page,row)=>{
+      await send(page,dataQ);const saved=await page.evaluate(()=>{const d=JSON.parse(localStorage.getItem('masterLab.tutorSessions.v1'));d.sessions.flatMap(s=>s.messages).find(m=>m.scene).scene.labels.push({target:'body',text:'m = 3000 克'});return d;});
+      await page.addInitScript(d=>localStorage.setItem('masterLab.tutorSessions.v1',JSON.stringify(d)),saved);await page.reload();await page.waitForSelector('.ai-message.assistant');assert.equal(await page.locator('.ai-diagram-canvas svg').count(),0);assert.equal(row.chatRequests,0);
+    });
   }
   await run('personal-original', 1366, true, async (page, row) => {
     await send(page, bank[0].q); assert.equal(await page.locator('.ai-diagram-canvas svg').count(), 1);

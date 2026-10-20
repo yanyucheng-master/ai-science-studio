@@ -4,7 +4,7 @@
   const Core = typeof module !== 'undefined' && module.exports ? require('./instant-scene.js') : window.MasterLabInstantScene;
   const Presets = typeof module !== 'undefined' && module.exports ? require('./incline-presets.json') : window.MasterLabInclinePresets;
   const FIELDS = ['scene', 'rises', 'surface', 'motion', 'otherForces', 'directionOnly', 'asks'];
-  const VERSION = 2;
+  const VERSION = 3;
   function schema() {
     return { $schema: 'https://json-schema.org/draft/2020-12/schema', type: 'object', additionalProperties: false, required: [...FIELDS], properties: {
       scene: { const: 'incline' }, rises: { enum: ['left', 'right'] }, surface: { enum: ['rough', 'smooth'] },
@@ -25,7 +25,7 @@
     return [{ role: 'gravity', direction: 'down' }, { role: 'normal_force', direction: right ? 'up_left' : 'up_right' },
       { role: 'friction', kind: conditions.motion === 'static' ? 'static' : 'kinetic', direction: right ? 'up_right' : 'up_left' }];
   }
-  function layout(question, c) {
+  function layout(question, c, annotations) {
     // The drawing angle and lengths are display constants, never physical inputs or magnitudes.
     const angle = 28 * Math.PI / 180, cos = Math.cos(angle), sin = Math.sin(angle), right = c.rises === 'right';
     const tangent = [cos, right ? -sin : sin], normal = [tangent[1], -tangent[0]], uphill = right ? tangent : tangent.map(v => -v);
@@ -40,12 +40,13 @@
         c.motion === 'static' ? '物块有沿斜面下滑的趋势，静摩擦力沿斜面向上。' : '物块相对斜面向下滑动，滑动摩擦力沿斜面向上。'],
       assumptions: ['图形仅作示意，不按比例。'], explanation: [c.motion === 'static' ? '物块静止，受到重力、支持力和静摩擦力。' : '物块匀速下滑，受到重力、支持力和滑动摩擦力。',
         `重力竖直向下；支持力指向${right ? '左上' : '右上'}；${frictionName}沿斜面向${right ? '右上' : '左上'}。`,
-        '箭头等长只为表示方向，不表示各力大小相等；图中的倾角与长度不用于数值计算。'],
+        '箭头等长只为表示方向，不表示各力大小相等；绘制的斜面倾角与长度仅作示意，不用于测量。'],
       objects: [{ id: 'surface', type: 'line', role: 'surface', color: 'ink', from: surfaceFrom, to: surfaceTo },
         { id: 'body', type: 'polygon', role: 'body', color: 'ink', fill: 'pale', points: [p0, p1, shift(p1, normal, height), shift(p0, normal, height)] },
         arrow('gravity', 'gravity', [0, 1], 'orange'), arrow('normal_force', 'normal_force', normal, 'blue'), arrow('friction', 'friction', uphill, 'teal')],
       labels: [{ target: 'surface', text: '粗糙斜面' }, { target: 'body', text: '物块' }, { target: 'gravity', text: '重力 G' },
-        { target: 'normal_force', text: '支持力 N' }, { target: 'friction', text: frictionName + ' f' }],
+        { target: 'normal_force', text: '支持力 N' }, { target: 'friction', text: frictionName + ' f' },
+        ...annotations.map(a => ({ target: a.kind === 'mass' ? 'body' : 'surface', text: a.text }))],
       relations: [{ type: 'perpendicular', objects: ['surface', 'normal_force'] }, { type: 'parallel', objects: ['surface', 'friction'] },
         { type: 'equalLength', objects: ['gravity', 'normal_force'] }, { type: 'equalLength', objects: ['gravity', 'friction'] }], calculations: [] };
   }
@@ -59,9 +60,9 @@
     }
     const conditions = local.conditions;
     if (!validConditions(conditions) || conditions.surface !== 'rough' || !['static', 'uniform_down'].includes(conditions.motion)) return decline('当前条件没有可靠的受力图模型。');
-    const checked = Core.validateDiagram(layout(question, conditions), question);
+    const checked = Core.validateDiagram(layout(question, conditions, local.annotations), question);
     if (!checked.ok) return decline('程序受力图未通过独立几何核对，保留文字讲解。');
-    return { mode: 'instant', source: 'program-incline', layoutVersion: VERSION, conditions, forces: derive(conditions), scene: checked.scene, checks: checked.checks };
+    return { mode: 'instant', source: 'program-incline', layoutVersion: VERSION, conditions, annotations: local.annotations, forces: derive(conditions), scene: checked.scene, checks: checked.checks };
   }
   // The switch controls visible diagrams; the pure model remains available for safe saved text.
   const enabled = () => typeof window === 'undefined' || (window.MASTER_LAB_DIAGRAM_ENABLED !== false

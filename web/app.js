@@ -138,43 +138,23 @@ function restoreSubjectBaseFields(subject) {
 const FAVORITES_STORAGE_KEY = "master-lab-favorites-v1";
 const FAVORITE_LIMIT = 8;
 const FAVORITE_VISUALS = new Set(["brake", "gravity", "solenoid", "circuit", "flask", "math", "cell", "physics"]);
-const RECOMMENDED_EXPERIMENTS = Object.freeze([
+// 仅用于清理旧版自动填充的完整记录，不作为新访客的收藏或推荐。
+const LEGACY_DEFAULT_FAVORITES = Object.freeze([
   {
     subject: "物理",
-    question: SUBJECTS["物理"].question,
+    question: "一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。",
     title: "刹车距离实验 · 速度如何归零",
     detail: "物理 · 运动学模板",
     visual: "brake"
   },
   {
     subject: "化学",
-    question: SUBJECTS["化学"].question,
+    question: "将 5.6g 铁粉加入含有 0.20mol 硫酸铜的溶液中，充分反应。请计算最多生成多少 mol 铜？生成铜的质量是多少？并判断哪种反应物过量。",
     title: "铁与硫酸铜定量反应",
     detail: "化学 · 定量反应模板",
     visual: "flask"
   }
 ]);
-
-// 收藏区推荐随学段：高中推荐刹车、铁 + 硫酸铜，初中推荐杠杆、浮力。只在从未保存过收藏时显示，不写入收藏。
-const RECOMMENDED_BY_LEVEL = Object.freeze({
-  senior: RECOMMENDED_EXPERIMENTS,
-  junior: Object.freeze([
-    {
-      subject: "物理",
-      question: window.EXTRA_PHYSICS_TEMPLATES?.lever?.examples?.[0]?.question || "",
-      title: "杠杆平衡条件探究",
-      detail: "物理 · 初中力学模板",
-      visual: "physics"
-    },
-    {
-      subject: "物理",
-      question: window.EXTRA_PHYSICS_TEMPLATES?.buoyancy?.examples?.[0]?.question || "",
-      title: "浮力与阿基米德原理验证",
-      detail: "物理 · 初中力学模板",
-      visual: "physics"
-    }
-  ].filter(item => item.question))
-});
 
 // 学段：默认高中；用户的选择保存在独立的本机键里，读写失败（隐私模式、禁用存储）时本页仍可切换
 const GRADE_LEVEL_STORAGE_KEY = "masterLab.gradeLevel.v1";
@@ -1000,15 +980,30 @@ function loadFavoriteRecords() {
     const stored = window.localStorage.getItem(FAVORITES_STORAGE_KEY);
     const source = stored === null ? [] : JSON.parse(stored);
     if (!Array.isArray(source)) return [];
-    hasSavedFavorites = stored !== null;
-    return source.map(sanitizeFavoriteRecord).filter(Boolean).slice(0, FAVORITE_LIMIT);
+    const records = source.map(sanitizeFavoriteRecord).filter(Boolean);
+    // 完整匹配旧默认项，避免仅凭同题或同名删除用户保存的实验。
+    const saved = records.filter(record => !LEGACY_DEFAULT_FAVORITES.some(legacy =>
+      record.subject === legacy.subject
+      && record.question === normalizeFavoriteQuestion(legacy.question)
+      && record.title === legacy.title
+      && record.detail === legacy.detail
+      && record.visual === legacy.visual
+    ));
+    const limited = saved.slice(0, FAVORITE_LIMIT);
+    if (saved.length !== records.length) {
+      try {
+        window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(limited));
+      } catch {
+        // 存储不可写时仍使用清理后的本页记录，不丢弃其余收藏。
+      }
+    }
+    return limited;
   } catch {
     return [];
   }
 }
 
 function persistFavoriteRecords() {
-  hasSavedFavorites = true;
   try {
     window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteRecords));
   } catch {
@@ -1059,24 +1054,20 @@ function renderFavoriteList() {
   const count = $("#favoriteCount");
   if (!list || !empty || !count) return;
 
-  const recommended = !hasSavedFavorites && favoriteRecords.length === 0;
-  const recommendations = RECOMMENDED_BY_LEVEL[state.gradeLevel] || RECOMMENDED_EXPERIMENTS;
-  const records = recommended ? recommendations.map(sanitizeFavoriteRecord).filter(Boolean) : favoriteRecords;
   const heading = $("#favoritesTitle");
-  if (heading) heading.textContent = recommended ? "推荐实验" : "已收藏的实验";
-  count.textContent = `${records.length} 个`;
-  empty.hidden = records.length > 0;
+  if (heading) heading.textContent = "已收藏的实验";
+  count.textContent = `${favoriteRecords.length} 个`;
+  empty.hidden = favoriteRecords.length > 0;
   list.replaceChildren();
 
-  records.forEach(record => {
+  favoriteRecords.forEach(record => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "history-item favorite-item";
     button.dataset.favoriteId = record.id;
     button.dataset.subject = record.subject;
     button.dataset.question = record.question;
-    button.setAttribute("aria-label", `载入${recommended ? "推荐" : "收藏"}实验：${record.title}`);
-    button.dataset.recommended = String(recommended);
+    button.setAttribute("aria-label", `载入收藏实验：${record.title}`);
 
     const visual = document.createElement("span");
     visual.className = `history-visual ${record.visual}`;
@@ -1086,7 +1077,7 @@ function renderFavoriteList() {
     const title = document.createElement("strong");
     const detail = document.createElement("small");
     title.textContent = record.title;
-    detail.textContent = `${recommended ? "推荐 · " : ""}${record.detail}`;
+    detail.textContent = record.detail;
     copy.append(title, detail);
 
     button.append(visual, copy, createFavoriteChevron());
@@ -1137,7 +1128,6 @@ function toggleCurrentFavorite(event) {
   showToast(state.favorite ? "已收藏到右侧实验列表" : "已取消收藏");
 }
 
-let hasSavedFavorites = false;
 let favoriteRecords = loadFavoriteRecords();
 
 function updateSubjectBodyClass(subject = state.subject) {
@@ -8541,7 +8531,7 @@ $("#favoriteList")?.addEventListener("click", event => {
   applyWaitingState(item.dataset.subject);
   $("#questionInput").value = item.dataset.question;
   window.scrollTo({ top: 0, behavior: motionPreference.matches ? "auto" : "smooth" });
-  showToast(`${item.dataset.subject}${item.dataset.recommended === "true" ? "推荐" : "收藏"}实验已载入，点击生成实验开始建模`);
+  showToast(`${item.dataset.subject}收藏实验已载入，点击生成实验开始建模`);
 });
 
 $("#playbackButton").addEventListener("click", event => {
