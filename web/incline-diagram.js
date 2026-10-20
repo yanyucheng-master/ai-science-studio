@@ -2,6 +2,7 @@
 (() => {
   'use strict';
   const Core = typeof module !== 'undefined' && module.exports ? require('./instant-scene.js') : window.MasterLabInstantScene;
+  const Presets = typeof module !== 'undefined' && module.exports ? require('./incline-presets.json') : window.MasterLabInclinePresets;
   const FIELDS = ['scene', 'rises', 'surface', 'motion', 'otherForces', 'directionOnly', 'asks'];
   const VERSION = 2;
   function schema() {
@@ -62,7 +63,28 @@
     if (!checked.ok) return decline('程序受力图未通过独立几何核对，保留文字讲解。');
     return { mode: 'instant', source: 'program-incline', layoutVersion: VERSION, conditions, forces: derive(conditions), scene: checked.scene, checks: checked.checks };
   }
-  const api = Object.freeze({ VERSION, schema, createScene });
+  // The switch controls visible diagrams; the pure model remains available for safe saved text.
+  const enabled = () => typeof window === 'undefined' || (window.MASTER_LAB_DIAGRAM_ENABLED !== false
+    && !new URLSearchParams(window.location?.search || '').getAll('diagram').includes('0'));
+  function findPreset(question) {
+    if (!Presets || Presets.version !== 1 || !Array.isArray(Presets.presets) || Presets.presets.length > 5) return { ok: false, reason: '预设条件尚未就绪，保留文字讲解。' };
+    const found = Presets.presets.filter(p => p && p.q === question);
+    if (!found.length) return { ok: true };
+    const p = found[0], local = Core.inspectIncline(question);
+    if (found.length !== 1 || !local.ok || !validConditions(p.conditions) || Object.keys(p).some(k => !['id', 'q', 'conditions'].includes(k))
+      || typeof p.id !== 'string' || !/^[a-z][a-z0-9_-]{0,63}$/.test(p.id)
+      || !FIELDS.every(k => JSON.stringify(p.conditions[k]) === JSON.stringify(local.conditions[k]))) return { ok: false, reason: '预设条件与原题核对不一致，保留文字讲解。' };
+    return { ok: true, id: p.id, conditions: JSON.parse(JSON.stringify(p.conditions)) };
+  }
+  const canDraw = question => enabled() && findPreset(question).ok && Core.inspectIncline(question).ok;
+  function createCompetitionScene(question, options = {}) {
+    if (!enabled()) return { mode: 'explanation', code: 'DIAGRAM_DISABLED', reason: '本次页面已关闭绘图，继续文字讲解。' };
+    const preset = findPreset(question);
+    if (!preset.ok) return { mode: 'explanation', code: 'DECLINED', reason: preset.reason };
+    const result = createScene(question, { aiConditions: options.aiConditions ?? preset.conditions });
+    return result.mode === 'instant' && preset.id ? { ...result, presetId: preset.id } : result;
+  }
+  const api = Object.freeze({ VERSION, schema, createScene, createCompetitionScene, findPreset, enabled, canDraw });
   if (typeof window !== 'undefined') window.MasterLabInclineDiagram = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })();

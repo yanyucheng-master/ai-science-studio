@@ -45,7 +45,7 @@
   async function createScene(question, { signal, aiConditions } = {}) {
     if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
     if (!window.MasterLabInclineDiagram) return { mode: 'explanation', code: 'DECLINED', reason: '受力图模块尚未就绪，保留文字讲解。' };
-    const result = window.MasterLabInclineDiagram.createScene(question, { aiConditions });
+    const result = window.MasterLabInclineDiagram.createCompetitionScene(question, { aiConditions });
     if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
     return result;
   }

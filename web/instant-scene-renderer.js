@@ -42,7 +42,7 @@
   function draw(host, raw, question) {
     const validated = Core.validateDiagram(raw, question);
     if (!validated.ok) throw new Error(validated.code);
-    const program = Incline.createScene(question);
+    const program = Incline.createCompetitionScene(question);
     if (program.mode !== 'instant') throw new Error(program.code || 'UNSUPPORTED_LAYOUT');
     const checked = { ...validated, scene: program.scene }, scene = checked.scene;
     observers.get(host)?.disconnect();
