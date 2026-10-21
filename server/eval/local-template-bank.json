@@ -2678,5 +2678,213 @@
   "expect": "ai",
   "target": "caco3Hcl",
   "note": "新化学：不补条件、不丢所问、不夹值"
+ },
+ {
+  "q": "配制100g10%的氯化钠溶液，求所需盐和水的质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "naclSolution",
+  "answer": {
+   "p1": 100,
+   "p2": 10,
+   "saltMass": 10,
+   "waterMass": 90
+  },
+  "note": "NaCl质量分数：独立手算，不按水质量取分母"
+ },
+ {
+  "q": "配制50g6%的氯化钠溶液，求所需盐和水的质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "naclSolution",
+  "answer": {
+   "p1": 50,
+   "p2": 6,
+   "saltMass": 3,
+   "waterMass": 47
+  },
+  "note": "NaCl质量分数：独立手算，不按水质量取分母"
+ },
+ {
+  "q": "配制200g5%的氯化钠溶液，求所需盐和水的质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "naclSolution",
+  "answer": {
+   "p1": 200,
+   "p2": 5,
+   "saltMass": 10,
+   "waterMass": 190
+  },
+  "note": "NaCl质量分数：独立手算，不按水质量取分母"
+ },
+ {
+  "q": "配制100g0%的氯化钠溶液，求所需盐和水的质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "naclSolution",
+  "answer": {
+   "p1": 100,
+   "p2": 0,
+   "saltMass": 0,
+   "waterMass": 100
+  },
+  "note": "NaCl质量分数：独立手算，不按水质量取分母"
+ },
+ {
+  "q": "配制20g20%的氯化钠溶液，求所需盐和水的质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "naclSolution",
+  "answer": {
+   "p1": 20,
+   "p2": 20,
+   "saltMass": 4,
+   "waterMass": 16
+  },
+  "note": "NaCl质量分数：独立手算，不按水质量取分母"
+ },
+ {
+  "q": "氯化钠溶液总质量为0.2kg，质量分数为5%，求配制所需盐和水的质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "naclSolution",
+  "answer": {
+   "p1": 200,
+   "p2": 5,
+   "saltMass": 10,
+   "waterMass": 190
+  },
+  "note": "NaCl明确目标质量，单位换算"
+ },
+ {
+  "q": "向100g水加入10g盐，求配制氯化钠溶液的质量分数。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "NaCl：拒绝缺条件、越界、错分母或范围外所问"
+ },
+ {
+  "q": "配制氯化钠溶液，水的质量为100g，质量分数为10%，求所需盐的质量。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "NaCl：拒绝缺条件、越界、错分母或范围外所问"
+ },
+ {
+  "q": "配制100g质量分数为20.01%的氯化钠溶液，求所需盐和水的质量。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "NaCl：拒绝缺条件、越界、错分母或范围外所问"
+ },
+ {
+  "q": "配制501g质量分数为10%的氯化钠溶液，求所需盐和水的质量。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "NaCl：拒绝缺条件、越界、错分母或范围外所问"
+ },
+ {
+  "q": "配制100g质量分数为10%的氯化钠溶液，温度30°C，求所需盐和水的质量。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "NaCl：拒绝缺条件、越界、错分母或范围外所问"
+ },
+ {
+  "q": "配制100g质量分数为10%的氯化钠溶液，求水的质量和溶液体积。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "NaCl：拒绝缺条件、越界、错分母或范围外所问"
+ },
+ {
+  "q": "配制100g氯化钠溶液，求所需盐和水的质量。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "NaCl：拒绝缺条件、越界、错分母或范围外所问"
+ },
+ {
+  "q": "稀释20%氯化钠溶液配制100g10%溶液，求加水质量。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "NaCl：拒绝缺条件、越界、错分母或范围外所问"
+ },
+ {
+  "q": "10g纯碳酸钙与稀盐酸充分反应后，剩余HCl溶质质量为3.65g，求生成二氧化碳的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "P1: outcome mass is not initial mass; no inverse solver"
+ },
+ {
+  "q": "纯碳酸钙与足量稀盐酸充分反应后，剩余碳酸钙的质量为10g，求生成二氧化碳的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "P1: outcome mass is not initial mass; no inverse solver"
+ },
+ {
+  "q": "消耗5g纯碳酸钙与足量稀盐酸反应，求二氧化碳的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "P1: outcome mass is not initial mass; no inverse solver"
+ },
+ {
+  "q": "初中：10g纯碳酸钙与足量稀盐酸充分反应，求消耗HCl溶质的质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "caco3Hcl",
+  "level": "junior",
+  "answer": {
+   "p1": 10,
+   "p2": 0,
+   "consumedHcl": 7.3
+  },
+  "show": [
+   "7.3"
+  ],
+  "note": "P2: answer the consumed solute mass"
+ },
+ {
+  "q": "初中：足量纯碳酸钙与含HCl溶质3.65g的稀盐酸充分反应，求消耗碳酸钙的质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "caco3Hcl",
+  "level": "junior",
+  "answer": {
+   "p1": 0,
+   "p2": 3.65,
+   "consumedCa": 5
+  },
+  "show": [
+   "5"
+  ],
+  "note": "P2: answer the consumed solid mass"
+ },
+ {
+  "q": "高中：10g纯碳酸钙与足量稀盐酸充分反应，求消耗HCl溶质的质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "caco3Hcl",
+  "level": "senior",
+  "answer": {
+   "p1": 10,
+   "p2": 0,
+   "consumedHcl": 7.3
+  },
+  "show": [
+   "7.3"
+  ],
+  "note": "P2: answer the consumed solute mass"
+ },
+ {
+  "q": "高中：足量纯碳酸钙与含HCl溶质3.65g的稀盐酸充分反应，求消耗碳酸钙的质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "caco3Hcl",
+  "level": "senior",
+  "answer": {
+   "p1": 0,
+   "p2": 3.65,
+   "consumedCa": 5
+  },
+  "show": [
+   "5"
+  ],
+  "note": "P2: answer the consumed solid mass"
  }
 ]

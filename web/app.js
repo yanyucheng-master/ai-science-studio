@@ -8034,6 +8034,9 @@ async function generateExperiment(options = {}) {
     }
     return;
   }
+  // A prompt can switch subjects without clicking a subject tab. Save the
+  // still-active experiment before assigning the new template and parameters.
+  if (detected !== state.subject) saveCurrentSubjectSnapshot();
   window.MasterLabShare?.leaveContext();
   window.MasterLabInstant?.dismiss();
   let physicsParse = null;
@@ -8090,7 +8093,7 @@ async function generateExperiment(options = {}) {
     state.p1 = genericParse.p1;
     state.p2 = genericParse.p2;
     state.genericQuestionBaseline = GENERIC_TEMPLATES[genericParse.templateId].resetToQuestion
-      ? { id: genericParse.templateId, question } : null;
+      ? { id: genericParse.templateId, question: displayQuestion } : null;
     syncGenericContent(genericParse.templateId, genericParse.p1, genericParse.p2);
     syncPhysicsControlsFromState();
     setRecognitionFeedback(genericParse);

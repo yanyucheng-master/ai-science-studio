@@ -11051,12 +11051,24 @@ body.subject-math-active.subject-generic-template-active:not(.awaiting-generatio
 .chemistry-live-readouts > div > strong { display: block; margin-top: 4px; font-size: 14px; overflow-wrap: anywhere; }
 .chemistry-model-note { margin: 12px 0 0; font-size: 11px; line-height: 1.65; color: var(--muted); }
 .experiment-card:has(.chemistry-lab-scene) .header-tools .square-button { display: grid; place-items: center; flex-shrink: 0; }
+.solution-step-list { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 6px; list-style: none; margin: 14px 0; padding: 0; }
+.solution-step-list li { min-width: 0; border-radius: 9px; padding: 7px 4px; text-align: center; font-size: 11px; color: var(--muted); background: var(--surface); }
+.solution-step-list li.is-current { color: var(--blue); background: rgba(55,121,243,.12); font-weight: 700; }
+.solution-stations { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin-bottom: 14px; }
+.solution-station { min-width: 0; padding: 10px 6px; text-align: center; border: 1px solid rgba(140,166,196,.35); border-radius: 12px; background: var(--surface); }
+.solution-station > span { display: block; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.solution-station > strong { font-size: 14px; }
+.solution-apparatus { display: block; width: 100%; height: 135px; margin: 5px 0; }
+.solution-scale { fill: #e2eaf3; stroke: #93a9c0; stroke-width: 2; }
+.solution-stirrer { fill: none; stroke: #9aa9b6; stroke-width: 4; stroke-linecap: round; }
 @media (max-width: 600px) {
   .generic-physics-lab:has(.chemistry-lab-scene) { margin: 48px 6px 8px; padding: 10px; gap: 10px; }
   .chemistry-lab-scene { padding: 12px; }
   .chemistry-live-readouts { grid-template-columns: minmax(0,1fr); }
   .chemistry-live-readouts > div { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px; }
   .chemistry-live-readouts strong { margin-top: 0; }
+  .solution-stations { grid-template-columns: minmax(0,1fr); }
+  .solution-apparatus { height: 115px; }
   .experiment-card:has(.chemistry-lab-scene) .header-tools .square-button { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; }
   .experiment-card:has(.chemistry-lab-scene) .header-tools { flex-shrink: 0; }
   .experiment-card:has(.chemistry-lab-scene) .card-header > div:first-child { min-width: 0; }
