@@ -176,18 +176,43 @@
     return { ok: true, items };
   }
 
-  function gravityOf(text) {
-    const values = extractQuantities(text).filter(token => token.cls === "g").map(token => token.value);
-    if (!values.length) return { stated: false, value: 9.8 };
-    const unique = [...new Set(values.map(value => Number(value.toFixed(3))))];
-    if (unique.length !== 1 || ![9.8, 9.81, 10].includes(unique[0])) return { stated: true, value: NaN };
+  function gravityOf(text, { allowAny = false } = {}) {
+    const source = normalize(text);
+    const values = extractQuantities(source).filter(token => token.cls === "g").map(token => token.value);
+    if (!values.length) return { stated: /\bg\b|重力加速度/i.test(source), value: NaN };
+    const unique = [...new Set(values)];
+    if (unique.length !== 1 || unique[0] <= 0 || (!allowAny && ![9.8, 9.81, 10].includes(unique[0]))) return { stated: true, value: NaN };
     return { stated: true, value: unique[0] };
+  }
+
+  // A coefficient and an independently stated acceleration are different givens.
+  // Only the student can authorize treating the coefficient as background data.
+  const BRAKE_BACKGROUND_CONFIRMATION = "用户确认：本题采用已给加速度；摩擦因数为背景信息，不能据此反推加速度。";
+  function brakingOf(text) {
+    const source = normalize(text);
+    const candidate = /刹车|制动|停车|停下|停止距离|减速/.test(source)
+      && !/木板|传送带|线性阻力|(?:f|F)(?:阻)?\s*=\s*-?\s*k\s*v/i.test(source);
+    const tokens = candidate ? extractQuantities(source) : [];
+    const accelerations = tokens.filter(token => token.cls === "accel");
+    if (candidate && !accelerations.length) {
+      const match = source.match(/(?:加速度(?:大小)?|减速度|制动加速度|\ba)\s*(?:大小)?\s*(?:为|是|=|:)?\s*(-?\d+(?:\.\d+)?)/i);
+      if (match) accelerations.push({ value: Number(match[1]) });
+    }
+    const coefficients = tokens.filter(token => token.cls === "coef");
+    const accelValues = [...new Set(accelerations.map(token => Math.abs(token.value)))];
+    const muValues = [...new Set(coefficients.map(token => token.value))];
+    const simpleModel = !/斜坡|斜面|坡道|上坡|下坡|倾角|分段|两段|多段|第一段|第二段|先[^。]{0,30}(?:再|后)|两车|甲车|乙车|追及|碰撞|牵引力/.test(source);
+    const soleFriction = /(?:只|仅)(?:受|靠|由|有|考虑|存在)[^。；;]{0,24}(?:滑动)?摩擦|(?:减速|制动)[^。；;]{0,16}(?:完全|仅)[^。；;]{0,8}摩擦/.test(source);
+    return { candidate, simpleModel, accelValues, muValues, acceleration: accelValues[0], mu: muValues[0], soleFriction,
+      backgroundConfirmed: source.includes(normalize(BRAKE_BACKGROUND_CONFIRMATION)) && !soleFriction
+        && accelValues.length === 1 && muValues.length === 1 };
   }
 
   // 把数值整理成适合显示的有限位小数，避免 0.1+0.2 之类的浮点尾巴
   const tidy = value => Number(Number(value).toPrecision(12));
 
-  const api = Object.freeze({ normalize, extractQuantities, unconsumed, askItems, checkAsks, gravityOf, tidy, approx });
+  const api = Object.freeze({ normalize, extractQuantities, unconsumed, askItems, checkAsks, gravityOf, brakingOf,
+    BRAKE_BACKGROUND_CONFIRMATION, tidy, approx });
   const root = typeof window !== "undefined" ? window : globalThis;
   root.MasterLabQuestionGuard = api;
 })();
@@ -217,7 +242,7 @@
   const about = value => (exactPlaces(value) === null ? "约 " : "");
   const mark = value => (exactPlaces(value) === null ? "≈" : "");
   const fmtInput = value => fmt(value, 3);
-  const gravityClause = (fixed = {}) => Number.isFinite(fixed.g) && Math.abs(fixed.g - G) > 1e-9 ? `（g 取 ${fmtInput(fixed.g)}N/kg）` : "";
+  const gravityClause = (fixed = {}) => `（g 取 ${fmtInput(fixed.g ?? G)}N/kg）`;
   const guard = () => window.MasterLabQuestionGuard;
   const tokensOf = (tokens, cls) => tokens.filter(token => token.cls === cls);
   const leadOf = (source, token, size = 14) => source.slice(Math.max(0, token.index - size), token.index);
@@ -1364,7 +1389,7 @@
           const density = liquidDensity(source, tokens);
           if (!Number.isFinite(density)) return miss("当前浮力模板需要液体密度（水、酒精、煤油可直接识别）。");
           const gravity = guard().gravityOf(source);
-          if (!Number.isFinite(gravity.value)) return miss("题目中的 g 取值无法识别。");
+          if (!Number.isFinite(gravity.value)) return miss(gravity.stated ? "题目中的 g 取值无法识别或存在冲突。" : "计算浮力需要明确 g，请先确认是否取 10m/s²。");
           // 题中的力只有写明是物重时才按物重演示；弹簧测力计示数、拉力等不是物重，不能当作 G
           const forces = tokensOf(tokens, "force");
           if (forces.some(token => !/重|G/.test(lastLabel(source, token, /物重|重力|重|G|示数|读数|拉力|F示|F拉|F/, 12)))) {
@@ -1892,7 +1917,7 @@
           const density = liquidDensity(source, tokens);
           if (!Number.isFinite(density)) return miss("当前液体压强模板需要液体密度（水、酒精、煤油可直接识别）。");
           const gravity = guard().gravityOf(source);
-          if (!Number.isFinite(gravity.value)) return miss("题目中的 g 取值无法识别。");
+          if (!Number.isFinite(gravity.value)) return miss(gravity.stated ? "题目中的 g 取值无法识别或存在冲突。" : "计算液体压强需要明确 g，请先确认是否取 10m/s²。");
           return { ok: true, p1: lengths[0].value * 100, p2: density, fixed: { g: gravity.value } };
         },
         used: (hCm, rho, fixed) => [{ cls: "length", value: hCm / 100 }, { cls: "density", value: rho }, { cls: "g", value: fixed.g }],

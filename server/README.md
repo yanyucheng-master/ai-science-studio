@@ -95,12 +95,16 @@ checks do not establish that an arbitrary natural-language reply contains no spo
 Create `DEEPSEEK_API_KEY` as a Render secret. Do not put the key in `web`, a
 browser form, a build artifact, Git, or a HarmonyOS package. Keep
 `ALLOWED_ORIGINS` restricted to the deployed web origin. After deployment,
-verify `/health` reports `aiConfigured: true`, `model: deepseek-v4-pro`, and
-`modelVersion: DeepSeek-V4-Pro-0813`, then run the web and HarmonyOS
+verify `/health` reports `aiConfigured: true`, `model: deepseek-flash`, and
+`modelVersion: DeepSeek-V4.1-Flash-1017`, then run the web and HarmonyOS
 integration tests against the same service URL.
 
-The built-in model is pinned to DeepSeek V4 Pro GA. The official API ID is
-`deepseek-v4-pro`; as of 2026-08-13 this routes to `DeepSeek-V4-Pro-0813`.
+The built-in model uses DeepSeek V4.1 Flash. The official API ID is
+`deepseek-flash`; as of 2026-10-17 this routes to `DeepSeek-V4.1-Flash-1017`.
+The alias follows the latest Flash release; the version reported by `/health`
+records the official release verified when this configuration was updated,
+not a version measured from a live model response. See the
+[official update log](https://api-docs.deepseek.com/zh-cn/updates/).
 Do not override the model from the client, environment variables, or request
 bodies. Thinking requests send `reasoning_effort: "high"` per the official
 Chat Completions docs.

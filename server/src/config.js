@@ -18,9 +18,9 @@ function listFromEnv(name) {
 }
 
 export const DEEPSEEK_OFFICIAL_MODEL = Object.freeze({
-  id: 'deepseek-v4-pro',
-  version: 'DeepSeek-V4-Pro-0813',
-  label: 'DeepSeek V4 Pro 正式版'
+  id: 'deepseek-flash',
+  version: 'DeepSeek-V4.1-Flash-1017',
+  label: 'DeepSeek V4.1 Flash'
 });
 
 export const config = Object.freeze({

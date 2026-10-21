@@ -1028,7 +1028,7 @@ function currentFavoriteRecord() {
   if (!hasActiveExperiment || !question) return null;
   const subject = state.subject;
   const title = String($("#experimentTitle")?.textContent || config()?.title || "实验记录").trim();
-  const engine = String($("#engineBadge")?.textContent || "典型题型模板").trim();
+  const engine = String(config()?.engine || "典型题型模板").trim();
   return sanitizeFavoriteRecord({
     subject,
     question,
@@ -1571,7 +1571,10 @@ function buildPhysicsBrakeContent(v0 = state.p1, parameter = state.p2, options =
   const model = content.model;
   if (model.mode === "linear_drag") return content;
   const ask = options.ask || brakeAskFor(model);
-  if (!ask.time) return content;
+  const withConditions = value => ask.conditionNote ? { ...value,
+    steps: value.steps.map((step, index) => index === 0 ? [step[0], `${step[1]}；${ask.conditionNote}`, step[2]] : step),
+    recognitionText: `${value.recognitionText}｜${ask.conditionNote}` } : value;
+  if (!ask.time) return withConditions(content);
   const both = Boolean(ask.distance);
   const friction = model.mode === "friction";
   const vText = smartNumber(model.v0);
@@ -1596,7 +1599,7 @@ function buildPhysicsBrakeContent(v0 = state.p1, parameter = state.p2, options =
   }
   steps[3] = ["现象验证", `速度归零用时 ${tAbout}${tText}s，停止点 ${sAbout}${sText}m`, "结果与实验的停止时刻和停止点一致。"];
   const answer = both ? `刹车时间 ${tAbout}${tText}s，停止距离 ${sAbout}${sText}m` : `刹车时间 ${tAbout}${tText}s`;
-  return {
+  return withConditions({
     ...content,
     steps,
     formula: friction ? content.formula : both ? "v = v₀ + at，v² − v₀² = 2ax" : "v = v₀ + at",
@@ -1610,7 +1613,7 @@ function buildPhysicsBrakeContent(v0 = state.p1, parameter = state.p2, options =
       ? "为什么这里用两条公式？题目同时问时间和距离：求时间用 <strong>v = v₀ + at</strong>，求距离用不含 t 的 <strong>v² − v₀² = 2ax</strong>。"
       : `为什么这里选 <strong>v = v₀ + at</strong>？因为题目问的是刹车时间，已知初速度 ${vText}m/s、末速度 0 和加速度 −${aText}m/s²。`,
     hint: friction ? content.hint : "小提示：末速度为 0，把 v₀ 和 a 代入 v = v₀ + at 就能解出 t。"
-  };
+  });
 }
 
 function buildPhysicsBrakeQuestionText(v0 = state.p1, parameter = state.p2, options = {}) {
@@ -2931,7 +2934,6 @@ function switchBiologyCellType(type, options = {}) {
   $("#experimentTitle").textContent = content.title;
   $("#problemText").textContent = options.problemText || content.question;
   if ($("#arDescription")) $("#arDescription").textContent = content.ar;
-  $("#engineBadge").textContent = "典型题型模板演示";
   if (options.updateQuestion !== false) $("#questionInput").value = content.question;
   state.generatedQuestion = $("#questionInput").value || content.question;
   if (state.hasGenerated) saveCurrentSubjectSnapshot();
@@ -3021,7 +3023,7 @@ function projectileModel(speed = state.p1, height = state.p2, gravity = state.pr
 }
 
 function buildPhysicsProjectileQuestionText(speed = state.p1, height = state.p2, gravity = state.projectileGravity ?? PROJECTILE_LIMITS.gravity) {
-  const gravityText = Math.abs(gravity - PROJECTILE_LIMITS.gravity) > 1e-9 ? `，取 g = ${exactNumber(gravity)}m/s²` : "";
+  const gravityText = `，取 g = ${exactNumber(gravity)}m/s²`;
   return `小球以 ${exactNumber(speed)}m/s 的水平速度从 ${exactNumber(height)}m 高的平台水平抛出，不计空气阻力${gravityText}。求落地时间和水平位移，并观察运动轨迹。`;
 }
 
@@ -3540,11 +3542,16 @@ function firstNumberByPatterns(text, patterns) {
 
 function parsePhysicsBrakeCore(text) {
   const normalized = normalizeQuestionText(text);
+  const guard = questionGuard();
+  const conditions = guard?.brakingOf(text);
+  const conditionIssue = window.MasterLabQuestionConditions?.inspect(text, { forExperiment: true });
+  if (conditionIssue) return { ok: false, ...conditionIssue };
   const failMessage = "暂未识别该刹车题，请输入初速度，并给出刹车加速度、动摩擦因数，或线性阻力模型中的质量 m 与系数 k。";
   if (!normalized) return { ok: false, message: failMessage };
   const linearDragCandidate = /(?:f|F)(?:阻)?\s*(?:=|＝)\s*-?\s*k\s*v/i.test(normalized)
     || /线性阻力|阻力[^。；]{0,28}(?:与速度成正比|正比于速度)/.test(normalized);
-  const frictionCandidate = /动摩擦因数|滑动摩擦系数|摩擦系数|μ/.test(normalized) && !linearDragCandidate;
+  const frictionCandidate = /动摩擦因数|滑动摩擦因数|动摩擦系数|滑动摩擦系数|摩擦因数|摩擦系数|μ/.test(normalized)
+    && !linearDragCandidate && !conditions?.backgroundConfirmed;
   if (!/刹车|制动|减速|减速度|停止|停下|停车|阻力|极限位移/.test(normalized) && !linearDragCandidate) {
     return { ok: false, message: failMessage };
   }
@@ -3611,12 +3618,16 @@ function parsePhysicsBrakeCore(text) {
   }
 
   if (frictionCandidate) {
-    const mu = firstNumberByPatterns(normalized, [
-      /(?:动摩擦因数|滑动摩擦系数|摩擦系数|μ)\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)/i
+    const mu = conditions?.mu ?? firstNumberByPatterns(normalized, [
+      /(?:动摩擦因数|滑动摩擦因数|动摩擦系数|滑动摩擦系数|摩擦因数|摩擦系数|μ)\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)/i
     ]);
-    const gravity = firstNumberByPatterns(normalized, [
-      /(?:重力加速度|g)\s*(?:取|为|是|=|:|：)?\s*(9\.8|10)(?:\s*m\s*\/\s*s\s*(?:2|\^\s*2))?/i
-    ]) ?? 9.8;
+    const gravityInfo = guard?.gravityOf(text);
+    if (!Number.isFinite(gravityInfo?.value)) return { ok: false, code: gravityInfo?.stated ? "INVALID_GRAVITY" : "MISSING_GRAVITY",
+      message: gravityInfo?.stated ? "g 无法识别、存在冲突或超出当前摩擦制动模板范围（9.8、9.81、10m/s²）。" : "摩擦制动需要明确 g，请先确认是否取 10m/s²。" };
+    const gravity = gravityInfo.value;
+    if (conditions?.accelValues.length && !guard.approx(conditions.acceleration, mu * gravity)) {
+      return { ok: false, code: "BRAKE_MODEL_REQUIRED", message: "题给加速度与 μg 不一致，请先确认制动模型。" };
+    }
     if (!Number.isFinite(mu)) {
       return { ok: false, message: "摩擦制动题需要给出动摩擦因数 μ，例如：μ=0.5。" };
     }
@@ -3635,6 +3646,8 @@ function parsePhysicsBrakeCore(text) {
       mu,
       parameter: mu,
       gravity,
+      statedAcceleration: conditions?.acceleration,
+      conditionNote: conditions?.accelValues.length ? `题给加速度大小 ${smartNumber(conditions.acceleration, 3)}m/s²，已核对与 μg 一致。` : "",
       aAbs: model.aAbs,
       stopTime: model.stopTime,
       stopDistance: model.stopDistance,
@@ -3665,6 +3678,7 @@ function parsePhysicsBrakeCore(text) {
   }
 
   const model = physicsBrakeModel(v0, aAbs, { mode: "constant" });
+  const checkedGravity = conditions?.backgroundConfirmed ? guard.gravityOf(text, { allowAny: true }).value : undefined;
   return {
     ok: true,
     subject: "物理",
@@ -3673,6 +3687,9 @@ function parsePhysicsBrakeCore(text) {
     v0,
     parameter: aAbs,
     aAbs,
+    givenMu: conditions?.backgroundConfirmed ? conditions.mu : undefined,
+    gravity: checkedGravity,
+    conditionNote: conditions?.backgroundConfirmed ? `经用户确认，μ = ${smartNumber(conditions.mu, 3)} 为背景信息，按已给加速度计算，不采用 a = μg${Number.isFinite(checkedGravity) ? `；g = ${checkedGravity}m/s² 仅用于条件核对` : ""}。` : "",
     stopTime: model.stopTime,
     stopDistance: model.stopDistance,
     message: `已识别：初速度 ${smartNumber(v0)}m/s，刹车加速度 ${smartNumber(aAbs)}m/s²`
@@ -3696,7 +3713,7 @@ function parsePhysicsBrakeQuestion(text) {
   if (!check.ok) return { ok: false, message: check.message };
   const mode = result.mode || "constant";
   const parameter = result.parameter ?? result.aAbs;
-  const ask = { ...brakeAskOf(text), v0: result.v0, mode, parameter };
+  const ask = { ...brakeAskOf(text), v0: result.v0, mode, parameter, conditionNote: result.conditionNote || "" };
   const options = { mode, gravity: result.gravity || 9.8, mass: result.mass || 1000, ask };
   return { ...result, brakeAsk: ask, recognitionText: buildPhysicsBrakeContent(result.v0, parameter, options).recognitionText };
 }
@@ -3761,11 +3778,11 @@ function parsePhysicsBoardSliderCore(text, massOverride = null) {
   const frictionCoefficient = firstNumberByPatterns(source, [
     /(?:动摩擦因数|滑动摩擦因数|动摩擦系数|摩擦因数|μ)\s*(?:为|是|=|:|：)?\s*(\d+(?:\.\d+)?)/i
   ]);
-  const gravityParsed = firstNumberByPatterns(source, [
-    /(?:重力加速度|g)\s*(?:取|为|是|=|:|：)?\s*(\d+(?:\.\d+)?)(?:\s*m\s*\/\s*s\s*(?:2|\^\s*2))?/i
-  ]);
-  const gravity = gravityParsed ?? 10;
-  const gravityWasDefaulted = gravityParsed === null;
+  const gravityInfo = questionGuard()?.gravityOf(text);
+  if (!Number.isFinite(gravityInfo?.value)) return { ok: false, code: gravityInfo?.stated ? "INVALID_GRAVITY" : "MISSING_GRAVITY",
+    message: gravityInfo?.stated ? "g 无法识别、存在冲突或超出当前木板—滑块模板范围（9.8、9.81、10m/s²）。" : "木板—滑块模型需要明确 g，请先确认是否取 10m/s²。" };
+  const gravity = gravityInfo.value;
+  const gravityWasDefaulted = false;
 
   if (![blockMass, boardMass, boardLength, initialSpeed, frictionCoefficient].every(Number.isFinite)) {
     return { ok: false, message: missingMessage };
@@ -4001,8 +4018,9 @@ function parsePhysicsProjectileQuestion(text) {
   const result = parsePhysicsProjectileCore(text);
   if (!result.ok) return result;
   const guard = questionGuard();
-  const gravity = guard ? guard.gravityOf(text) : { stated: false, value: PROJECTILE_LIMITS.gravity };
-  if (!Number.isFinite(gravity.value)) return { ok: false, message: "题目中的 g 取值无法识别。" };
+  const gravity = guard ? guard.gravityOf(text) : { stated: false, value: NaN };
+  if (!Number.isFinite(gravity.value)) return { ok: false, code: gravity.stated ? "INVALID_GRAVITY" : "MISSING_GRAVITY",
+    message: gravity.stated ? "g 无法识别、存在冲突或超出当前平抛模板范围（9.8、9.81、10m/s²）。" : "平抛运动需要明确 g，请先确认是否取 10m/s²。" };
   const model = projectileModel(result.speed, result.height, gravity.value);
   const asks = guard ? guard.askItems(guard.normalize(text)).join("｜") : "";
   const projectileAsk = { vy: /竖直(?:分)?速度|vᵧ|vy/i.test(asks), speed: result.speed, height: result.height, gravity: gravity.value };
@@ -4390,6 +4408,10 @@ function convertSpeedUnits(text) {
 }
 
 function brakeStrictCheck(text, result) {
+  const issue = window.MasterLabQuestionConditions?.inspect(text, { forExperiment: true });
+  if (issue) return { ok: false, ...issue };
+  if (result.mode === "constant" && questionGuard()?.brakingOf(text).muValues.length
+    && !questionGuard().brakingOf(text).backgroundConfirmed) return { ok: false, message: "摩擦因数的用途尚未经用户确认。" };
   if (result.mode === "linear_drag") {
     return strictTemplateCheck(text, QUESTION_SPECS.brakeLinearDrag, [
       { cls: "speed", value: result.v0 },
@@ -4401,12 +4423,15 @@ function brakeStrictCheck(text, result) {
     return strictTemplateCheck(text, QUESTION_SPECS.brake, [
       { cls: "speed", value: result.v0 },
       { cls: "coef", value: result.mu },
-      { cls: "g", value: result.gravity }
+      { cls: "g", value: result.gravity },
+      { cls: "accel", value: result.statedAcceleration, abs: true }
     ]);
   }
   return strictTemplateCheck(text, QUESTION_SPECS.brake, [
     { cls: "speed", value: result.v0 },
-    { cls: "accel", value: result.aAbs, abs: true }
+    { cls: "accel", value: result.aAbs, abs: true },
+    { cls: "coef", value: result.givenMu },
+    { cls: "g", value: result.gravity }
   ]);
 }
 
@@ -4501,6 +4526,8 @@ function parseBiologyCellQuestion(text, context = {}) {
 
 /* 本地实验规划：只做识别与核对，不改动页面状态。generateExperiment 和题库测试共用。 */
 function planLocalExperiment(question, context = {}) {
+  const conditionIssue = window.MasterLabQuestionConditions?.inspect(question, { forExperiment: true });
+  if (conditionIssue) return { ok: false, subject: "物理", parse: { ok: false, ...conditionIssue } };
   // 学段只用来给双学段实验选讲法（题目没写学段线索时），不影响能否本地生成
   const gradeLevel = normalizeGradeLevel(context.gradeLevel || state.gradeLevel);
   const subjectContext = context.subject ?? state.subject;
@@ -5889,6 +5916,10 @@ function updateScene() {
 }
 
 function renderReasoning() {
+  if (!state.hasGenerated) {
+    renderWaitingReasoning();
+    return;
+  }
   const steps = config().steps;
   $(".reasoning-steps").innerHTML = steps.map((step, index) => {
     const number = index + 1;
@@ -5896,7 +5927,7 @@ function renderReasoning() {
     const statusText = number < state.reasonStep ? "已完成" : number === state.reasonStep ? "当前步骤" : "待探索";
     const icon = number < state.reasonStep ? '<path d="m5 12 4 4L19 6"/>' : '<path d="m9 18 6-6-6-6"/>';
     const formulaClass = index === 1 || /[=≈<>]|<sub>|vfrac/.test(String(step[1])) ? "formula" : "";
-    return `<button class="reason-step ${status}" data-step="${number}">
+    return `<button type="button" class="reason-step ${status}" data-step="${number}">
       <span class="step-index">${number}</span>
       <div><small>${statusText}</small><strong>${step[0]}</strong><p class="${formulaClass}">${verticalizeFormulaHtml(step[1])}</p></div>
       <i><svg viewBox="0 0 24 24">${icon}</svg></i>
@@ -6214,7 +6245,7 @@ function renderWaitingReasoning() {
     $("p", spotlight).textContent = "AI 会根据题干条件选择公式，并展示代入与验证过程。";
   }
   $(".reasoning-steps").innerHTML = ["识别题干条件", "选择适用公式", "代入数据求解", "检验学习结论"]
-    .map((title, index) => `<button class="reason-step pending-placeholder" data-step="${index + 1}">
+    .map((title, index) => `<button type="button" class="reason-step pending-placeholder" data-step="${index + 1}" disabled aria-disabled="true">
       <span class="step-index">${index + 1}</span>
       <div><strong>${title}</strong></div>
     </button>`).join("");
@@ -6251,7 +6282,6 @@ function applyWaitingState(subject = state.subject, options = {}) {
   }
   $("#experimentTitle").textContent = "等待生成实验";
   $("#problemText").textContent = "输入题目并点击“生成实验”后，这里会构建对应的可视化实验。";
-  $("#engineBadge").textContent = "等待题目输入";
   if ($("#arDescription")) $("#arDescription").textContent = "生成实验后，可继续扩展移动端空间展示。";
   elements.scene.className = "scene subject-pending";
   $("#viewButton")?.classList.remove("selected");
@@ -6767,7 +6797,6 @@ function refreshGeneratedSubjectSurface(subject = state.subject, options = {}) {
   setActiveSubjectTab(subject);
   if (!options.preserveProblemText) $("#problemText").textContent = current.description;
   $("#experimentTitle").textContent = current.title;
-  $("#engineBadge").textContent = current.engine;
   if ($("#arDescription")) $("#arDescription").textContent = current.ar;
   elements.scene.className = `scene subject-${sceneClassFor(subject)}`;
   current.metrics.forEach((metric, index) => {
@@ -6813,7 +6842,6 @@ function applySubject(subject, updateQuestion = true, options = {}) {
   if (updateQuestion) $("#questionInput").value = restored ? state.generatedQuestion : current.question;
   $("#experimentTitle").textContent = current.title;
   $("#problemText").textContent = current.description;
-  $("#engineBadge").textContent = current.engine;
   if ($("#arDescription")) $("#arDescription").textContent = current.ar;
   elements.scene.className = `scene subject-${sceneClassFor(subject)}`;
   $("#viewButton")?.classList.remove("selected");
@@ -7127,6 +7155,7 @@ function focusExperimentCard() {
 }
 
 function setReasoningStep(step, message) {
+  if (!state.hasGenerated) return;
   state.reasonStep = step;
   renderReasoning();
   if (message) elements.sceneTip.innerHTML = message;
@@ -7154,6 +7183,7 @@ function applyReasoningStepEffect(step) {
 }
 
 function activateReasoningStep(step, options = {}) {
+  if (!state.hasGenerated) return;
   const maxStep = Math.max(config().steps.length, 4);
   const nextStep = Math.max(1, Math.min(maxStep, Number(step) || 1));
   if (options.manual) clearReasoningTimers();
@@ -7893,15 +7923,17 @@ async function handOffUnmatchedQuestion(parseResult, question, detected, allowAi
         if (detail && mapped.message) detail.textContent = mapped.message;
         return mapped;
       }
-      setRecognitionPending("暂无对应的交互实验模板，正在尝试生成 AI 科学示意图……");
+      setRecognitionPending("暂无对应的交互实验模板，正在核对本题是否支持受力示意图……");
       const sceneResult = await window.MasterLabInstant.generate(question, detected);
       if (sceneResult.mode === "instant") {
-        setRecognitionFeedback({ recognitionText: "已生成 AI 科学示意图，可放大查看或继续向导师提问。" });
+        setRecognitionFeedback({ recognitionText: "已生成受力方向示意图，可放大查看或继续向导师提问。" });
         return sceneResult;
       }
       if (sceneResult.mode === "cancelled") { clearRecognitionFeedback(); return sceneResult; }
       const reason = sceneResult.code === "DECLINED" && sceneResult.reason ? String(sceneResult.reason) : "";
-      setRecognitionPending("本次图示未通过核查，已保留题目并转入 AI 导师讲解。");
+      setRecognitionPending(sceneResult.code === "DECLINED"
+        ? "本题暂不支持受力图示，已保留题目并转入 AI 导师讲解。"
+        : "本次图示未通过核查，已保留题目并转入 AI 导师讲解。");
       // The refusal reason is model text: insert it with textContent, never through the HTML template.
       const detail = reason && elements.parseFeedback?.querySelector("strong");
       if (detail) detail.textContent = `暂不绘图：${reason.length > 120 ? `${reason.slice(0, 120)}…` : reason} 已保留题目并转入 AI 导师讲解。`;
@@ -7930,18 +7962,37 @@ async function handOffUnmatchedQuestion(parseResult, question, detected, allowAi
   }
 }
 
+let experimentConditionsPending = false;
 async function generateExperiment(options = {}) {
   const button = $("#generateButton");
-  if (button.classList.contains("loading")) return;
+  if (button.classList.contains("loading") || experimentConditionsPending) return;
   const allowAiFallback = options.allowAiFallback !== false;
   state.userGeneratedOnce = true;
   if (state.autoDemoTimer) clearTimeout(state.autoDemoTimer);
   clearReasoningTimers();
   let question = String(options.questionOverride ?? $("#questionInput").value).trim();
-  const displayQuestion = String(options.displayQuestion ?? question).trim();
+  let displayQuestion = String(options.displayQuestion ?? question).trim();
   if (!question) {
     showToast("请先输入一道理科题目");
     return;
+  }
+
+  const inputBefore = $("#questionInput").value;
+  const subjectBefore = state.subject;
+  experimentConditionsPending = true;
+  let prepared;
+  try {
+    prepared = await window.MasterLabQuestionConditions?.resolve(question, { forExperiment: true,
+      isCurrent: () => $("#questionInput").value === inputBefore && state.subject === subjectBefore });
+  } finally { experimentConditionsPending = false; }
+  if (!prepared?.ok) {
+    showToast(prepared?.cancelled ? "已保留题目，请补充或确认条件后再生成" : "条件检查组件未加载，请刷新后重试");
+    return;
+  }
+  if (prepared.changed) {
+    question = prepared.question;
+    displayQuestion = question;
+    $("#questionInput").value = question;
   }
 
   const plan = options.shared ? window.MasterLabShare.planFor(options.shared)
@@ -8137,8 +8188,9 @@ async function generateExperiment(options = {}) {
 $("#generateButton").addEventListener("click", () => generateExperiment());
 
 $(".reasoning-steps").addEventListener("click", event => {
+  if (!state.hasGenerated) return;
   const step = event.target.closest(".reason-step");
-  if (!step) return;
+  if (!step || step.disabled) return;
   if (window.getSelection()?.toString().trim()) return;
   activateReasoningStep(Number(step.dataset.step), { manual: true });
 });

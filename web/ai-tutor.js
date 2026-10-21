@@ -7,7 +7,7 @@
     (LOCAL_HOSTS.has(window.location.hostname) ? "http://127.0.0.1:10000" : DEFAULT_REMOTE_API)).replace(/\/$/, "");
   const DEEPSEEK_BASE_URL = "https://api.deepseek.com";
   const DEEPSEEK_MODEL = "deepseek-flash";
-  const DEEPSEEK_MODEL_VERSION = "DeepSeek-V4.1-Flash";
+  const DEEPSEEK_MODEL_VERSION = "DeepSeek-V4.1-Flash-1017";
   const DEEPSEEK_MODEL_LABEL = "DeepSeek V4.1 Flash";
   const API_KEY_STORAGE = "masterLab.deepseekApiKey";
   const CHAT_TIMEOUT_MS = 540000;
@@ -34,7 +34,7 @@
   const CHAT_SYSTEM_PROMPT = `你是“大师实验室”的中学数理化生 AI 导师。只返回一个 JSON 对象，不输出 HTML、URL、代码或内部推理过程。
 教学与核验规则：
 1. 原题及最新请求是约束，最新请求优先于历史。完整解题必须覆盖所有小问；只解释某一步时仅回答该子问题。
-2. 学科题目没有实验模板也必须正常解答。不得把“无模板”说成“无法解题”；题设充分就作答，缺少必要条件或条件矛盾才用 clarification，明确指出缺失条件并追问，不补造数值、接触面、反应物或模型。
+2. 学科题目没有实验模板也必须正常解答。不得把“无模板”说成“无法解题”；题设充分就作答，缺少必要条件或条件矛盾才用 clarification，明确指出缺失条件并追问，不补造数值、接触面、反应物或模型。 需要 g 的数值计算必须使用题给值或用户明确确认值；缺少时用 clarification 询问是否取 10m/s²，禁止默取 9.8 或 10。刹车题同时给出加速度与摩擦因数时，先核对制动模型；只有水平且减速完全由滑动摩擦提供时才用 a=μg，关系不明确或条件矛盾时先澄清，不能自行把其中一个条件当作无用数据。纯运动学已给加速度、只问受力方向或概念时不要求补 g。
 3. hint 只给一条关键线索和必要追问，不给完整答案；explain 解释指定概念；steps 完整解答；check 核对学生思路；variant 给请求的变式。无关请求用 refusal。
 4. 精简展示不等于省略验证。输出前独立复核公式适用条件、计算、单位、量纲、边界及所有小问。分类或概率核对各分支之和；函数与临界值代回；化学先配平并核对限量反应物；遗传题区分基因型与表现型。复核不成立时先纠正，不用泛泛的“检查无误”代替实际核算。
 5. 实验参数和原题条件不得改写；deterministicResult 可能是当前动画时刻，求最终值应按原题参数与公式计算，不把初始位移或当前速度当最终答案。摩擦方向按接触面间相对运动或趋势判断。
@@ -121,7 +121,8 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     undoTimer: null,
     prewarmedAt: 0,
     floatingSaveTimer: null,
-    previewUnits: 0
+    previewUnits: 0,
+    preparingQuestion: false
   };
 
   const elements = {
@@ -167,6 +168,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     appShell: document.querySelector(".app-shell"),
     apiKeyModal: document.querySelector("#apiKeyModal"),
     apiKeyInput: document.querySelector("#apiKeyInput"),
+    apiKeyModelInfo: document.querySelector("#apiKeyModelInfo"),
     apiKeyStatus: document.querySelector("#apiKeyStatus"),
     apiKeySave: document.querySelector("#apiKeySaveButton"),
     apiKeyClear: document.querySelector("#apiKeyClearButton"),
@@ -619,6 +621,9 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
   function syncApiKeyUi() {
     const key = readStoredApiKey();
     const ready = key.length > 0;
+    if (elements.apiKeyModelInfo) {
+      elements.apiKeyModelInfo.textContent = `本页当前配置：${DEEPSEEK_MODEL_LABEL}（API：${DEEPSEEK_MODEL}）。`;
+    }
     syncComposer();
     document.querySelectorAll(".mentor-card .online, .ai-tutor-identity .online").forEach((node) => {
       const label = node.childNodes[node.childNodes.length - 1];
@@ -1255,6 +1260,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       ? "格式（优先于通用格式说明）：像老师当面讲解，在 summary 中写 1 至 3 个连贯的自然段，段落之间换行；不编号、不分点、不加“列式：”“结论：”等标题，steps 为空数组，finalAnswer 为 null；需要的算式直接写在句中。followUp 留空。"
       : "格式：用必要的紧凑步骤，以短动作标题开始，不添加开场总结；计算放在前面的步骤，最后一步仅汇总各小问的简短结论，有物理量时写单位，纯数学不补“无单位”说明；finalAnswer 逐字复制该步结论，勿同义重写。本次只是概念或原理问题、无需求解时，改为在 summary 中写连贯段落，steps 为空数组。followUp 除变式或必要澄清外留空。";
     return "\n\n【回答规范】" + scope + "历史条件仅供对比，按本次context作答，不混用新旧参数。" +
+      "需要g的数值计算缺少题给或用户确认值时，先询问是否取10m/s²，不默取9.8或10；刹车题的加速度与摩擦因数并存时先核对模型，仅在水平且只有滑动摩擦制动时用a=μg；矛盾或关系不明先澄清，不自行舍弃条件。" +
       "输出前复核条件、计算、单位和边界。不展示内部思考过程或思考耗时；示意图由页面提供，不输出字符画、ASCII 图或绘图代码。formulas 只补充正文未出现的关键关系，不重复正文公式。" + layout +
       "核心公式用 LaTeX，行内公式用 \\( \\) 包围，分式用 \\frac，根号用 \\sqrt，下标和幂用花括号；化学式应整体放在同一数学片段内，勿只包住下标；formulas 不带分隔符且只列真正关键的关系。";
   }
@@ -2838,11 +2844,41 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
   }
 
   async function sendChat(message, responseLevel = "hint", options = {}) {
-    const question = text(message);
-    if (!question || state.controller || elements.workspace.classList.contains("is-busy")) return null;
+    let question = text(message);
+    if (!question || state.controller || state.preparingQuestion || elements.workspace.classList.contains("is-busy")) return null;
     // A retry or re-answer resends the original request: same conditions, same
     // history boundary, so the question is not repeated inside its own history.
     const replay = options.replay?.request ? options.replay : null;
+    const conditions = window.MasterLabQuestionConditions;
+    if (!conditions) { notify("条件检查组件未加载，请刷新后重试；草稿已保留"); return null; }
+    const contextBefore = state.context || currentHostContext();
+    const refersToOriginal = !/\d/.test(question) && /原题|本题|这道题|这题|完整解答|完整讲解/.test(question);
+    const targetQuestion = refersToOriginal && contextBefore.originalQuestion ? contextBefore.originalQuestion : question;
+    const checkpoint = state.requestSerial;
+    const draftBefore = elements.input.value;
+    state.preparingQuestion = true;
+    let prepared;
+    try {
+      prepared = await conditions.resolve(targetQuestion, {
+        isCurrent: () => state.requestSerial === checkpoint && elements.input.value === draftBefore
+          && (state.context || currentHostContext()).originalQuestion === contextBefore.originalQuestion
+      });
+    } finally { state.preparingQuestion = false; }
+    if (!prepared.ok) { notify("题目与草稿已保留，请确认或补充条件后再提问"); return null; }
+    // Never reuse a recorded request that predates a necessary clarification.
+    if (prepared.changed && replay) { notify("请将确认后的完整题目重新发送，原回答与草稿已保留"); elements.input.value = prepared.question; return null; }
+    if (prepared.changed && refersToOriginal) {
+      const previous = state.context;
+      state.followHost = false;
+      updateContext({ ...contextBefore, originalQuestion: prepared.question });
+      if (state.messages.length) addContextChange(previous || contextBefore, state.context, "已确认题目条件，后续回答使用下列题设");
+    } else if (prepared.changed) {
+      question = prepared.question;
+      // A newly clarified problem must not be attached to a previous experiment.
+      state.followHost = false;
+      updateContext({ mode: "question", subject: contextBefore.subject, originalQuestion: question,
+        templateId: "", parameters: {}, deterministicResult: {}, formula: "", currentStep: "" });
+    }
     const quotes = (replay ? replay.quotes || [] : options.quotes || []).map(quote => ({ ...quote }));
     const content = replay ? replay.request.message : composeQuotedMessage(question, quotes);
     if (content.length + (hasBrowserApiKey() ? 0 : gatewayAnswerRules(responseLevel).length) > 2000) {
@@ -2929,10 +2965,13 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     }
   }
 
-  function planToQuestion(plan) {
+  function planToQuestion(plan, originalQuestion = "") {
     if (!plan?.modules || plan.modules.length !== 1) return null;
     const module = plan.modules[0];
     const p = module.parameters || {};
+    const guard = window.MasterLabQuestionGuard;
+    const gravity = guard?.gravityOf(originalQuestion).value;
+    const gravityClause = Number.isFinite(gravity) ? `，取g=${gravity}m/s²` : "";
     const extraIdMap = {
       lever: "lever",
       lens: "lens",
@@ -2961,21 +3000,27 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       };
       const pair = parameterPairs[module.templateId];
       if (template?.question && pair?.every(Number.isFinite)) {
-        return { question: template.question(pair[0], pair[1]), subject: "物理" };
+        if (["buoyancy", "liquid_pressure"].includes(module.templateId) && !Number.isFinite(gravity)) return null;
+        return { question: template.question(pair[0], pair[1], Number.isFinite(gravity) ? { g: gravity } : {}), subject: "物理" };
       }
       return null;
     }
     if (module.templateId === "brake") {
-      return { question: `一辆汽车以 ${smartNumber(p.initialSpeed)}m/s 的速度行驶，紧急刹车后加速度大小为 ${smartNumber(p.deceleration)}m/s²，求刹车距离。`, subject: "物理" };
+      const brake = guard?.brakingOf(originalQuestion);
+      const background = brake?.backgroundConfirmed ? `，摩擦因数为${brake.mu}${gravityClause}` : "";
+      const confirmation = brake?.backgroundConfirmed ? `（${guard.BRAKE_BACKGROUND_CONFIRMATION}）` : "";
+      return { question: `一辆汽车以 ${smartNumber(p.initialSpeed)}m/s 的速度行驶，紧急刹车后加速度大小为 ${smartNumber(p.deceleration)}m/s²${background}，求刹车距离。${confirmation}`, subject: "物理" };
     }
     if (module.templateId === "solenoid") {
       return { question: `一个${smartNumber(p.turns, 0)}匝的通电螺线管接入${smartNumber(p.current)}A电流。从左端观察，线圈中的电流沿逆时针方向，请判断左右两端磁极。`, subject: "物理" };
     }
     if (module.templateId === "board_slider") {
-      return { question: `光滑水平地面上放有一块质量为1.0kg、长度为${smartNumber(p.boardLength)}m的木板B。质量为1.0kg的滑块A位于木板左端，以${smartNumber(p.initialSpeed)}m/s向右滑动，动摩擦因数为0.20，取g=10m/s²，判断是否滑落。`, subject: "物理" };
+      if (!Number.isFinite(gravity)) return null;
+      return { question: `光滑水平地面上放有一块质量为1.0kg、长度为${smartNumber(p.boardLength)}m的木板B。质量为1.0kg的滑块A位于木板左端，以${smartNumber(p.initialSpeed)}m/s向右滑动，动摩擦因数为0.20${gravityClause}，判断是否滑落。`, subject: "物理" };
     }
     if (module.templateId === "projectile") {
-      return { question: `小球以${smartNumber(p.horizontalSpeed)}m/s的水平速度从${smartNumber(p.height)}m高的平台水平抛出，不计空气阻力，求落地时间和水平位移。`, subject: "物理" };
+      if (!Number.isFinite(gravity)) return null;
+      return { question: `小球以${smartNumber(p.horizontalSpeed)}m/s的水平速度从${smartNumber(p.height)}m高的平台水平抛出，不计空气阻力${gravityClause}，求落地时间和水平位移。`, subject: "物理" };
     }
     if (module.templateId === "ohm_circuit") {
       return { question: `某纯电阻电路两端电压为${smartNumber(p.voltage)}V，电阻为${smartNumber(p.resistance)}Ω，求电路中的电流。`, subject: "物理" };
@@ -3020,7 +3065,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
         window.clearTimeout(wakeNotice);
       }
       if (response.mode === "experiment") {
-        const mapped = planToQuestion(response.plan);
+        const mapped = planToQuestion(response.plan, cleanQuestion);
         if (mapped && (typeof acceptPlan !== "function" || acceptPlan(mapped, response) !== false)) {
           host().setMentorSummary?.(`AI 已识别为“${response.title || "已有实验模板"}”，将由本地计算引擎生成。`);
           return { mode: "experiment", ...mapped, response };
@@ -3249,7 +3294,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       closeApiKeyModal();
       return;
     }
-    if (elements.apiKeyModal?.classList.contains("show")) return;
+    if (elements.apiKeyModal?.classList.contains("show") || document.querySelector("#questionConditionsDialog[open]")) return;
     if (event.key === "Escape" && more?.open) {
       event.preventDefault();
       more.open = false;
@@ -3290,8 +3335,17 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
 
   window.MasterLabAITutor = Object.freeze({
     async explainQuestion(question, subject = "") {
-      const originalQuestion = text(question);
+      let originalQuestion = text(question);
       if (!originalQuestion) return { mode: "unavailable" };
+      const checkpoint = state.requestSerial;
+      const draftBefore = elements.input.value;
+      const hostQuestionBefore = currentHostContext().originalQuestion;
+      const prepared = await window.MasterLabQuestionConditions?.resolve(originalQuestion, {
+        isCurrent: () => state.requestSerial === checkpoint && elements.input.value === draftBefore
+          && currentHostContext().originalQuestion === hostQuestionBefore
+      });
+      if (!prepared?.ok) return { mode: "cancelled" };
+      originalQuestion = prepared.question;
       adoptContext({ mode: "question", subject, originalQuestion, templateId: "", parameters: {}, deterministicResult: {}, formula: "", currentStep: "" });
       openStandalone(state.context);
       addMessage("user", originalQuestion);

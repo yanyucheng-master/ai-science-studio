@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { DEEPSEEK_OFFICIAL_MODEL } from '../src/config.js';
 import { DeepSeekClient } from '../src/deepseek-client.js';
 import { sanitizeTutorChatRequest, validateTutorChatResponse } from '../src/protocol.js';
 
@@ -72,7 +73,7 @@ for (const [index, item] of questions.entries()) {
       const validated = input && raw ? validateTutorChatResponse(raw, input) : null;
       response = { ok: Boolean(validated), status: validated ? 200 : 502 };
       payload = validated
-        ? { ...validated, source: 'deepseek_direct', model: 'deepseek-v4-pro' }
+        ? { ...validated, source: 'deepseek_direct', model: DEEPSEEK_OFFICIAL_MODEL.id }
         : { error: 'INVALID_AI_RESPONSE', rawModelResponse: raw };
     } else {
       response = await fetch(`${apiBaseUrl}/api/v1/tutor/chat`, {
@@ -131,7 +132,7 @@ const checkpointPassed = results.filter((item) => item.checkpointPassed).length;
 const report = {
   generatedAt: new Date().toISOString(),
   apiBaseUrl,
-  model: 'deepseek-v4-pro',
+  model: DEEPSEEK_OFFICIAL_MODEL.id,
   evaluationType: directMode ? 'hard-question-pre-demo-review-direct' : 'hard-question-pre-demo-review-api',
   automatedCheckpointPassed: checkpointPassed,
   total: results.length,

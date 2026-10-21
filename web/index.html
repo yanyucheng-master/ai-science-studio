@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" href="assets/brand/orbit-flask-2026-10-04/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="vendor/katex/katex.min.css?v=0.19.0">
-  <link rel="stylesheet" href="styles.css?v=20261021-tutor-cards-1">
+  <link rel="stylesheet" href="styles.css?v=20261021-experiment-surface-1">
   <link rel="stylesheet" href="instant-experiment.css?v=20261018-instant-1">
   <link rel="stylesheet" href="tutor-focus.css?v=20261019-tutor-followups-1">
 </head>
@@ -255,7 +255,6 @@
 
           <div class="scene" id="scene">
             <div class="scene-top">
-              <div class="scene-badge"><span></span><b id="engineBadge">等待题目输入</b></div>
               <button class="scene-fullscreen-button" id="sceneFullscreenButton" type="button" aria-label="全屏查看实验">
                 <svg viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M8 21H3v-5m13 5h5v-5"/></svg>
               </button>
@@ -694,19 +693,19 @@
             </div>
 
             <div class="reasoning-steps">
-              <button class="reason-step pending-placeholder" data-step="1">
+              <button type="button" class="reason-step pending-placeholder" data-step="1" disabled aria-disabled="true">
                 <span class="step-index">1</span>
                 <div><strong>识别题干条件</strong></div>
               </button>
-              <button class="reason-step pending-placeholder" data-step="2">
+              <button type="button" class="reason-step pending-placeholder" data-step="2" disabled aria-disabled="true">
                 <span class="step-index">2</span>
                 <div><strong>选择适用公式</strong></div>
               </button>
-              <button class="reason-step pending-placeholder" data-step="3">
+              <button type="button" class="reason-step pending-placeholder" data-step="3" disabled aria-disabled="true">
                 <span class="step-index">3</span>
                 <div><strong>代入数据求解</strong></div>
               </button>
-              <button class="reason-step pending-placeholder" data-step="4">
+              <button type="button" class="reason-step pending-placeholder" data-step="4" disabled aria-disabled="true">
                 <span class="step-index">4</span>
                 <div><strong>检验学习结论</strong></div>
               </button>
@@ -936,7 +935,7 @@
       </button>
       <span class="section-kicker">SECURE LOCAL KEY</span>
       <h2 id="apiKeyModalTitle">个人密钥（可选）</h2>
-      <p class="api-key-hint">不填密钥即可使用后台公益默认 AI，余额有限，用完后默认服务将不可用。填写个人密钥后优先直连 DeepSeek；个人密钥仅保存在本机浏览器，不上传公益后台，失败时不会自动消耗公益余额。两种模式均使用 <strong>DeepSeek V4.1 Flash</strong>（API：deepseek-flash，最高思考 max）。清除个人密钥可恢复公益默认模式。</p>
+      <p class="api-key-hint">不填密钥即可使用后台公益默认 AI，余额有限，用完后默认服务将不可用。填写个人密钥后优先直连 DeepSeek；个人密钥仅保存在本机浏览器，不上传公益后台，失败时不会自动消耗公益余额。<br>DeepSeek 最新模型为 <strong>DeepSeek V4.1 Flash</strong>（2026-10-17 更新），支持思考与非思考模式；本页深度解答沿用最高思考 max。<br><span id="apiKeyModelInfo">正在读取本页模型配置…</span>清除个人密钥可恢复公益默认模式。</p>
       <label class="api-key-label" for="apiKeyInput">API Key</label>
       <input id="apiKeyInput" class="api-key-input" type="password" autocomplete="off" spellcheck="false" placeholder="sk-…" maxlength="200">
       <p class="api-key-status" id="apiKeyStatus">未配置个人密钥：使用后台公益默认服务</p>
@@ -973,18 +972,19 @@
 
   <script src="science-formulas.js?v=20261015-formulas-1"></script>
   <script src="science-motion.js?v=20260922-motion-1"></script>
-  <script src="physics-extra.js?v=20261016-week2-1"></script>
+  <script src="physics-extra.js?v=20261021-question-conditions-1"></script>
+  <script src="question-conditions.js?v=20261021-question-conditions-1"></script>
   <script src="math-extra.js?v=20261016-week2-1"></script>
   <script src="chemistry-extra.js?v=20261016-week2-1"></script>
   <script src="instant-scene.js?v=20261020-incline-data-1"></script>
   <script src="incline-presets.js?v=20261020-incline-competition-1"></script>
   <script src="incline-diagram.js?v=20261020-incline-data-1"></script>
-  <script src="app.js?v=20261020-share-1"></script>
+  <script src="app.js?v=20261021-experiment-surface-1"></script>
   <script src="experiment-share.js?v=20261020-share-1"></script>
   <script src="vendor/katex/katex.min.js?v=0.19.0"></script>
   <script src="vendor/katex/mhchem.min.js?v=0.19.0"></script>
   <script src="tutor-checks.js?v=20261011-tutor-round-1"></script>
-  <script src="ai-tutor.js?v=20261020-tutor-clean-1"></script>
+  <script src="ai-tutor.js?v=20261021-public-conditions-flash-1"></script>
   <script src="instant-scene-renderer.js?v=20261020-incline-data-1"></script>
   <script src="instant-experiment.js?v=20261020-incline-competition-1"></script>
   <script src="announcements.js?v=20261008-announcements-2"></script>

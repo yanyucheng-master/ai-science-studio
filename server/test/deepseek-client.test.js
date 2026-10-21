@@ -32,7 +32,7 @@ test('uses the fixed model and retries only once', async () => {
   const result = await client.generate('测试题目');
   assert.equal(result.mode, 'explanation');
   assert.equal(calls, 2);
-  assert.equal(requests[0].model, 'deepseek-v4-pro');
+  assert.equal(requests[0].model, 'deepseek-flash');
   assert.deepEqual(requests[0].thinking, { type: 'disabled' });
   assert.equal(Object.hasOwn(requests[0], 'reasoning_effort'), false);
   assert.deepEqual(requests[0].response_format, { type: 'json_object' });
