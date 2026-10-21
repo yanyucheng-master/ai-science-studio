@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { DEEPSEEK_OFFICIAL_MODEL } from '../src/config.js';
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
 const questionsPath = path.resolve(directory, '../eval/questions.json');
@@ -82,7 +83,7 @@ const accuracy = results.length ? passedCount / results.length : 0;
 const report = {
   generatedAt: new Date().toISOString(),
   apiBaseUrl,
-  model: 'deepseek-v4-pro',
+  model: DEEPSEEK_OFFICIAL_MODEL.id,
   passed: passedCount,
   total: results.length,
   accuracy,

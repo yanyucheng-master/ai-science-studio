@@ -1064,32 +1064,11 @@ body.announcements-open {
   z-index: 7;
   top: 14px;
   right: 14px;
-  left: 14px;
+  left: auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-
-.scene-badge {
-  display: flex;
-  padding: 7px 10px;
-  gap: 7px;
-  align-items: center;
-  color: #45617f;
-  font-size: 9px;
-  font-weight: 700;
-  border: 1px solid rgba(195, 215, 240, 0.9);
-  border-radius: 9px;
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(8px);
-}
-
-.scene-badge span {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #28c795;
-  box-shadow: 0 0 0 4px rgba(40, 199, 149, 0.12);
+  justify-content: flex-end;
+  pointer-events: none;
 }
 
 .scene-actions {
@@ -1126,6 +1105,7 @@ body.announcements-open {
   background: rgba(255, 255, 255, 0.78);
   box-shadow: 0 10px 20px rgba(58, 90, 143, 0.08);
   backdrop-filter: blur(8px);
+  pointer-events: auto;
 }
 
 .scene-fullscreen-button svg {
@@ -1143,7 +1123,7 @@ body.subject-extra-physics-active:not(.awaiting-generation) .scene-fullscreen-bu
 .metric-panel {
   position: absolute;
   z-index: 6;
-  top: 60px;
+  top: 16px;
   left: 16px;
   display: flex;
   overflow: hidden;
@@ -1187,7 +1167,7 @@ body.subject-extra-physics-active:not(.awaiting-generation) .scene-fullscreen-bu
 .brake-model-indicator {
   position: absolute;
   z-index: 7;
-  top: 60px;
+  top: 16px;
   right: 16px;
   display: grid;
   min-width: 168px;
@@ -3804,11 +3784,6 @@ body.ai-tutor-route .ai-tutor-messages { min-height: 360px; max-height: calc(100
   .scene { height: 390px; }
 }
 
-.scene-badge b {
-  font-size: inherit;
-  font-weight: 700;
-}
-
 .square-button.selected {
   color: #fff;
   border-color: var(--blue);
@@ -5370,7 +5345,7 @@ body.ai-tutor-route .ai-tutor-messages { min-height: 360px; max-height: calc(100
 }
 
 .scene.subject-solenoid .metric-panel {
-  top: 58px;
+  top: 16px;
   left: 16px;
 }
 
@@ -5383,7 +5358,7 @@ body.ai-tutor-route .ai-tutor-messages { min-height: 360px; max-height: calc(100
 }
 
 .scene.subject-chemistry .metric-panel {
-  top: 52px;
+  top: 16px;
   background: rgba(255, 255, 255, 0.92);
   box-shadow: 0 10px 24px rgba(58, 90, 143, 0.11);
 }
@@ -6350,7 +6325,7 @@ body.subject-extra-physics-active:not(.awaiting-generation) .parameters {
 
 .scene.subject-math .metric-panel {
   top: 14px;
-  left: 146px;
+  left: 16px;
 }
 
 .scene.subject-math .metric-panel div {
@@ -7111,23 +7086,8 @@ body.fullscreen-lock {
   background-size: 30px 30px;
 }
 
-.demo-mode .scene-badge {
-  padding: 9px 13px;
-  color: #214a84;
-  font-size: 12px;
-  border-color: rgba(164, 192, 235, 0.95);
-  background: rgba(255, 255, 255, 0.86);
-}
-
-.demo-mode .scene-badge span {
-  width: 8px;
-  height: 8px;
-  background: #20d0a0;
-  box-shadow: 0 0 0 5px rgba(32, 208, 160, 0.14), 0 0 18px rgba(32, 208, 160, 0.48);
-}
-
 .demo-mode .metric-panel {
-  top: 52px;
+  top: 16px;
   left: 24px;
   gap: 10px;
   overflow: visible;
@@ -8474,7 +8434,7 @@ body.fullscreen-lock {
 }
 
 .demo-mode .metric-panel {
-  top: 58px;
+  top: 18px;
   left: 18px;
   gap: 8px;
 }
@@ -8704,13 +8664,16 @@ body.fullscreen-lock {
   background: #edf2f8;
 }
 
-.awaiting-generation .reason-step {
+.awaiting-generation .reasoning-card .reason-step {
   cursor: default;
+  background: transparent;
+  box-shadow: none;
 }
 
-.awaiting-generation .reason-step:hover {
+.awaiting-generation .reasoning-card .reason-step:hover {
   transform: none;
   border-color: #e7edf6;
+  background: transparent;
 }
 
 .awaiting-generation .pending-placeholder {
@@ -8741,7 +8704,7 @@ body.fullscreen-lock {
 }
 
 .scene.subject-board-slider .metric-panel {
-  top: 58px;
+  top: 16px;
   left: 18px;
 }
 
@@ -9192,7 +9155,7 @@ body.subject-solenoid-active:not(.awaiting-generation) .card-header {
 .scene.subject-solenoid .scene-top {
   top: 12px;
   right: 18px;
-  left: 18px;
+  left: auto;
 }
 
 .subject-solenoid .solenoid-stage {
@@ -9605,7 +9568,7 @@ body.ai-tutor-route .scene *, body.ai-tutor-route .scene *::before, body.ai-tuto
   box-shadow: none;
 }
 
-.reasoning-card .reason-step:hover {
+.reasoning-card .reason-step:hover:not(:disabled) {
   transform: none;
   background: #f5f8ff;
 }
@@ -9734,14 +9697,26 @@ body.ai-tutor-route .scene *, body.ai-tutor-route .scene *::before, body.ai-tuto
 }
 
 @media (max-width: 560px) {
-  /* 窄屏：模型说明移到右上角一行，不再盖住第三个读数 */
+  /* 窄屏：三项读数等分可用宽度，模型关系另起一行，避免遮住读数。 */
+  .scene:not(.subject-math) .metric-panel {
+    left: 12px;
+    width: min(270px, calc(100% - 24px));
+  }
+
+  .scene:not(.subject-math) .metric-panel div {
+    min-width: 0;
+    flex: 1 1 0;
+  }
+
   .brake-model-indicator {
-    top: 12px;
+    top: 96px;
     right: 12px;
+    left: 12px;
+    display: flex;
+    flex-wrap: wrap;
     min-width: 0;
     padding: 5px 10px;
     gap: 6px;
-    grid-auto-flow: column;
     align-items: baseline;
   }
 
@@ -9761,13 +9736,6 @@ body.ai-tutor-route .scene *, body.ai-tutor-route .scene *::before, body.ai-tuto
 
   .timecode {
     min-width: 0;
-  }
-}
-
-@media (max-width: 400px) {
-  /* 极窄屏：右上角留给模型说明，装饰性的引擎标签不再显示 */
-  .scene-badge {
-    display: none;
   }
 }
 
@@ -9841,10 +9809,10 @@ body.ai-tutor-route .scene *, body.ai-tutor-route .scene *::before, body.ai-tuto
 }
 
 @media (max-width: 560px) {
-  /* 函数切线：读数面板等分放在全屏按钮右侧；动点坐标已在面板和图中标出，窄屏不再重复 */
+  /* 函数切线：读数从左侧等分排列，右侧为全屏按钮留出空间。 */
   .scene.subject-math .metric-panel {
-    right: 12px;
-    left: 58px;
+    right: 58px;
+    left: 12px;
   }
 
   .scene.subject-math .metric-panel div {
@@ -9958,15 +9926,10 @@ body.ai-tutor-route .scene *, body.ai-tutor-route .scene *::before, body.ai-tuto
 }
 
 @media (max-width: 560px) {
-  /* 顶部一行留给读数面板 / 图示工具条和全屏按钮，装饰性的引擎标签不显示（与 ≤400px 一致）；
-     标签隐藏后全屏按钮靠左，读数面板（原有规则 left: 58px）和图示工具条都从按钮右侧开始 */
-  .scene.subject-math .scene-badge,
-  .scene.subject-generic-physics:has(.edu-diagram) .scene-badge {
-    display: none;
-  }
-
+  /* 图示工具条从左侧开始，右侧给场景全屏按钮留出空间。 */
   .generic-physics-visual:has(.edu-diagram) .diagram-mobile-toolbar {
-    left: 26px;
+    right: 40px;
+    left: 0;
   }
 }
 
@@ -10383,7 +10346,7 @@ body:has(.week1-scene) .reasoning-card .reason-step .formula { font-size: 15px; 
   .generic-physics-lab:has(.week1-scene) { margin: 50px 0 8px; padding: 0; grid-template-rows: auto auto; }
   .generic-physics-visual:has(.week1-scene) { height: auto; aspect-ratio: 360 / 520; }
   .generic-physics-visual:has(.week1-scene) .generic-visual-grid { inset: 4px; }
-  .generic-physics-visual:has(.week1-scene) .diagram-mobile-toolbar { left: 0; }
+  .generic-physics-visual:has(.week1-scene) .diagram-mobile-toolbar { right: 0; left: 0; }
   .generic-physics-visual:has(.week1-scene) .diagram-mobile-toolbar > span { display: none; }
   .generic-physics-visual:has(.week1-scene) .diagram-zoom-toggle { font-size: 14px; }
   .generic-physics-lab:has(.week1-scene) .stage-facts { grid-template-columns: minmax(0, 1fr); gap: 4px; }
@@ -10990,10 +10953,20 @@ body.subject-math-active.subject-generic-template-active:not(.awaiting-generatio
 .ai-tutor-workspace .ai-answer-prose .ai-answer-conclusion { padding: 0; background: transparent; border-radius: 0; }
 .ai-tutor-workspace .ai-hint-card { padding: 2px 0 2px 13px; border: 0; border-left: 3px solid #8fb8f4; border-radius: 0; background: transparent; }
 .ai-tutor-workspace .ai-hint-label { padding: 0; color: #346ab6; font-size: 12px; background: transparent; }
-.ai-tutor-workspace .ai-suggested-questions { display: grid; justify-items: start; gap: 2px; margin-top: 18px; padding-top: 0; border: 0; }
-.ai-tutor-workspace .ai-suggestions-label { margin: 0 0 4px; color: #71839b; font-size: 12px; }
-.ai-tutor-workspace .ai-suggested-question { padding: 5px 0; color: #3265a9; border: 0; border-radius: 3px; background: transparent; font-size: 13px; line-height: 1.65; }
-.ai-tutor-workspace .ai-suggested-question:hover:not(:disabled) { background: transparent; color: #1d53a1; text-decoration: underline; text-underline-offset: 3px; }
+.ai-tutor-workspace .ai-suggested-questions { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 9px; margin-top: 18px; padding-top: 0; border: 0; }
+.ai-tutor-workspace .ai-suggestions-label { flex-basis: 100%; margin: 0 0 2px; color: #71839b; font-size: 12px; }
+.ai-tutor-workspace .ai-suggested-question { width: fit-content; max-width: 100%; min-height: 44px; padding: 9px 13px; color: #3265a9; border: 1px solid #cfdef3; border-radius: 5px 15px 9px 13px; background: #f6faff; font-size: 13px; line-height: 1.65; white-space: normal; overflow-wrap: anywhere; }
+.ai-tutor-workspace .ai-suggested-question:nth-of-type(2n) { border-radius: 14px 5px 13px 8px; background: #f8fbff; }
+.ai-tutor-workspace .ai-suggested-question:hover:not(:disabled) { border-color: #8fb4e8; background: #edf5ff; color: #1d53a1; text-decoration: none; }
+
+.question-conditions-dialog { box-sizing: border-box; width: min(520px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); overflow: auto; padding: 24px; color: #29486e; border: 1px solid #d6e3f5; border-radius: 20px; background: #fff; box-shadow: 0 20px 80px #21477d35; }
+.question-conditions-dialog::backdrop { background: #142c4f66; }
+.question-conditions-dialog h2 { margin: 0 0 14px; font-size: 19px; }
+.question-conditions-dialog p { margin: 0; line-height: 1.8; font-size: 14px; overflow-wrap: anywhere; }
+.question-conditions-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.question-conditions-actions button { min-height: 44px; max-width: 100%; padding: 9px 14px; color: #355d94; border: 1px solid #cdddf2; border-radius: 11px; background: #f5f9ff; font: inherit; font-size: 14px; white-space: normal; cursor: pointer; }
+.question-conditions-actions .is-primary { color: #fff; border-color: #326add; background: #326add; }
+.question-conditions-actions button:focus-visible { outline: 3px solid #83b4fc; outline-offset: 3px; }
 .ai-tutor-workspace .ai-answer-tools { justify-content: flex-start; margin-top: 10px; }
 .ai-tutor-workspace .ai-copy-answer { min-height: 32px; padding: 4px 0; color: #687e9b; border: 0; border-radius: 3px; background: transparent; font-size: 12px; }
 .ai-tutor-workspace .ai-copy-answer::before { content: "⧉"; margin-right: 5px; font-size: 15px; }
