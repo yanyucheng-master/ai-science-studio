@@ -2570,5 +2570,113 @@
   "q": "将 30g 铁粉加入足量硫酸铜溶液中，求生成铜的质量。",
   "expect": "ai",
   "note": "铁的质量超出演示范围"
+ },
+ {
+  "q": "10g纯碳酸钙与足量稀盐酸充分反应，求生成二氧化碳的质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "caco3Hcl",
+  "level": "junior",
+  "answer": {
+   "p1": 10,
+   "p2": 0,
+   "co2Mass": 4.4,
+   "limiting": "caco3"
+  },
+  "show": [
+   "4.4"
+  ],
+  "note": "CaCO3：盐酸足量，余量不定量"
+ },
+ {
+  "q": "10g纯碳酸钙与含HCl溶质7.3g的稀盐酸充分反应，求生成二氧化碳的质量、限量反应物。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "caco3Hcl",
+  "level": "senior",
+  "answer": {
+   "p1": 10,
+   "p2": 7.3,
+   "co2Mass": 4.4,
+   "remainingCa": 0,
+   "remainingHcl": 0,
+   "limiting": "both"
+  },
+  "show": [
+   "恰好反应"
+  ],
+  "note": "CaCO3：恰好计量"
+ },
+ {
+  "q": "0.01kg碳酸钙与含HCl溶质3650mg的稀盐酸反应，求生成二氧化碳的质量和剩余碳酸钙的质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "caco3Hcl",
+  "answer": {
+   "p1": 10,
+   "p2": 3.65,
+   "co2Mass": 2.2,
+   "remainingCa": 5,
+   "limiting": "hcl"
+  },
+  "show": [
+   "2.2"
+  ],
+  "note": "CaCO3：换单位，HCl限量"
+ },
+ {
+  "q": "足量碳酸钙与含HCl溶质7.3g的稀盐酸反应，求二氧化碳的质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "caco3Hcl",
+  "answer": {
+   "p1": 0,
+   "p2": 7.3,
+   "co2Mass": 4.4,
+   "limiting": "hcl"
+  },
+  "note": "CaCO3足量"
+ },
+ {
+  "q": "10g碳酸钙与7.3g盐酸反应，求二氧化碳的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "新化学：不补条件、不丢所问、不夹值"
+ },
+ {
+  "q": "10g碳酸钙与足量稀盐酸反应，求二氧化碳的体积。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "新化学：不补条件、不丢所问、不夹值"
+ },
+ {
+  "q": "10g碳酸钙与足量稀盐酸反应，求剩余HCl溶质的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "新化学：不补条件、不丢所问、不夹值"
+ },
+ {
+  "q": "10g碳酸钙与含HCl溶质3.65g的稀盐酸恰好反应，求二氧化碳的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "新化学：不补条件、不丢所问、不夹值"
+ },
+ {
+  "q": "50.001g碳酸钙与足量稀盐酸反应，求二氧化碳的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "新化学：不补条件、不丢所问、不夹值"
+ },
+ {
+  "q": "10g碳酸钙与100g10%盐酸反应，求二氧化碳的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "新化学：不补条件、不丢所问、不夹值"
+ },
+ {
+  "q": "10g碳酸钙与足量稀盐酸反应5秒，求二氧化碳的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "新化学：不补条件、不丢所问、不夹值"
  }
 ]

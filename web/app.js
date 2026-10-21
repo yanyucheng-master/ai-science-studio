@@ -1024,7 +1024,8 @@ function favoriteVisualForCurrentExperiment() {
 
 function currentFavoriteRecord() {
   const hasActiveExperiment = state.hasGenerated && !document.body.classList.contains("awaiting-generation");
-  const question = normalizeFavoriteQuestion(state.generatedQuestion || (hasActiveExperiment ? $("#questionInput")?.value : ""));
+  const question = normalizeFavoriteQuestion(hasActiveExperiment && activeGenericTemplate()?.resetToQuestion
+    ? buildGenericQuestionText() : state.generatedQuestion || (hasActiveExperiment ? $("#questionInput")?.value : ""));
   if (!hasActiveExperiment || !question) return null;
   const subject = state.subject;
   const title = String($("#experimentTitle")?.textContent || config()?.title || "实验记录").trim();
@@ -1151,6 +1152,7 @@ function saveCurrentSubjectSnapshot() {
     time: state.time,
     physicsTemplate: state.physicsTemplate,
     subjectTemplate: subjectTemplateId(state.subject),
+    genericQuestionBaseline: state.genericQuestionBaseline ? { ...state.genericQuestionBaseline } : null,
     brakeMode: state.brakeMode,
     brakeGravity: state.brakeGravity,
     brakeMass: state.brakeMass,
@@ -1191,6 +1193,9 @@ function restoreSubjectSnapshot(subject) {
   if (genericId) {
     const savedFixed = snapshot.extraFixed?.[genericId];
     state.extraFixed = { ...state.extraFixed, [genericId]: savedFixed ? JSON.parse(JSON.stringify(savedFixed)) : null };
+    const baseline = snapshot.genericQuestionBaseline;
+    state.genericQuestionBaseline = baseline?.id === genericId && typeof baseline.question === "string"
+      ? { id: genericId, question: baseline.question } : null;
   }
   if (subject === "物理") {
     state.projectileGravity = snapshot.projectileGravity ?? PROJECTILE_LIMITS.gravity;
@@ -4580,6 +4585,11 @@ function planLocalExperiment(question, context = {}) {
     }
   }
   if (detected === "化学") {
+    for (const template of genericTemplatesOf("化学")) {
+      if (!template.keywords?.test(normalizeQuestionText(question))) continue;
+      const generic = attempt("extra", parseGenericQuestion(question, template.id, { subject: "化学", gradeLevel }), { templateId: template.id });
+      if (generic) return generic;
+    }
     const plan = attempt("chemistry", parseChemistryFeCuSO4Question(question, { gradeLevel }));
     if (plan) return plan;
   }
@@ -4664,7 +4674,7 @@ window.planLocalExperiment = planLocalExperiment;
 window.mappedPlanFitsOriginal = mappedPlanFitsOriginal;
 
 function duration() {
-  if (activeGenericTemplate()) return 6;
+  if (activeGenericTemplate()) return activeGenericTemplate().motion?.duration || 6;
   if (state.subject === "物理" && state.physicsTemplate === "brake") return physicsBrakeModel().duration;
   if (state.subject === "物理" && state.physicsTemplate === "boardSlider") return boardSliderModel().endTime;
   if (state.subject === "物理" && state.physicsTemplate === "solenoid") return 8;
@@ -5170,6 +5180,7 @@ function formatTime(seconds) {
 }
 
 function formatTimelineTime(seconds) {
+  if (activeGenericTemplate()?.motion) return `${Math.round(Math.max(0, Number(seconds) || 0) / duration() * 100)}%`;
   if (
     state.subject === "物理" &&
     ["brake", "boardSlider", "projectile"].includes(state.physicsTemplate)
@@ -5815,6 +5826,7 @@ function updateSubjectVisuals(values) {
   const generic = activeGenericTemplate();
   if (generic) {
     renderGenericVisual(values.generic || buildGenericContent());
+    generic.renderFrame?.(elements.genericPhysicsVisual, values.generic.model, values.progress, { reducedMotion: motionPreference.matches });
   }
 
   if (state.subject === "化学" && !generic) {
@@ -6483,7 +6495,7 @@ function updateParameters(reset = true, options = {}) {
     elements.sceneTip.innerHTML = `<span>实时结论</span>${content.sceneTip}`;
     renderGenericVisual(content);
     if (state.hasGenerated) {
-      if (options.syncQuestion) syncSubjectQuestionFromState(state.subject);
+      if (options.syncQuestion && !generic.resetToQuestion) syncSubjectQuestionFromState(state.subject);
       renderReasoning();
       elements.mentorMessage.innerHTML = config().mentor;
       setRecognitionFeedback({ ok: true, subject: state.subject, type: generic.id, recognitionText: content.recognitionText });
@@ -6523,7 +6535,7 @@ function updateParameters(reset = true, options = {}) {
       renderCellDetail(state.selectedOrganelle);
     }
   }
-  if (reset) resetExperiment();
+  if (reset) resetExperiment({ restoreQuestion: false });
   if (state.hasGenerated) dispatchAIContextChanged(options.syncQuestion ? "parameters" : "context");
 }
 
@@ -6879,7 +6891,7 @@ function applySubject(subject, updateQuestion = true, options = {}) {
 }
 
 function playExperiment() {
-  if (activeGenericTemplate()) {
+  if (activeGenericTemplate() && !activeGenericTemplate().motion) {
     showToast("该题型为参数即时探究：拖动下方滑块即可同步公式和结论");
     return;
   }
@@ -6915,9 +6927,25 @@ function pauseExperiment() {
   animationClock.reconcile();
 }
 
-function resetExperiment() {
+function resetExperiment({ restoreQuestion = true } = {}) {
   pauseExperiment();
   state.time = 0;
+  const resetTemplate = activeGenericTemplate();
+  const baseline = state.genericQuestionBaseline;
+  if (restoreQuestion && resetTemplate?.resetToQuestion && baseline?.id === resetTemplate.id) {
+    const parsed = resetTemplate.parseQuestion(baseline.question, { gradeLevel: state.gradeLevel });
+    if (parsed.ok) {
+      [state.p1, state.p2] = [parsed.p1, parsed.p2];
+      state.extraFixed = { ...state.extraFixed, [resetTemplate.id]: parsed.fixed };
+      state.generatedQuestion = baseline.question;
+      $("#questionInput").value = baseline.question;
+      $("#problemText").textContent = baseline.question;
+      syncGenericContent(resetTemplate.id);
+      syncPhysicsControlsFromState();
+      updateParameters(false);
+      saveCurrentSubjectSnapshot();
+    }
+  }
   // 只生成当前实验的提示：通用模板取模板结论，专用实验按学科
   const tips = {
     "物理": () => state.physicsTemplate === "boardSlider"
@@ -7240,7 +7268,7 @@ function playDemoSequence() {
 }
 
 function detectSubjectStrict(question) {
-  if (/化学|反应物|生成物|充分反应|恰好反应|完全反应|化学方程式|浓度|溶液|铁粉|硫酸铜|CuSO|Fe\b|生成铜|生成 Cu|物质的量|\dmol/i.test(question)) return "化学";
+  if (/化学|碳酸钙|CaCO[₃3]|盐酸|HCl|氯化钠|NaCl|反应物|生成物|充分反应|恰好反应|完全反应|化学方程式|浓度|溶液|铁粉|硫酸铜|CuSO|Fe\b|生成铜|生成 Cu|物质的量|\dmol/i.test(question)) return "化学";
   if (isPhysicsBoardSliderQuestion(question)) return "物理";
   if (/(?:f|F)(?:阻)?\s*(?:=|＝)\s*-?\s*k\s*v|阻力.{0,12}(?:速度|速率).{0,8}成正比|(?:质量|m\s*(?:=|＝)).{0,12}(?:kg|千克|吨).{0,24}(?:初速度|速度)|(?:动摩擦因数|摩擦系数|车轮抱死)/i.test(question)) return "物理";
   if (/遗传|基因|表现型|杂合|纯合|孟德尔|配子|有丝分裂|减数分裂|DNA/i.test(question)) return "生物";
@@ -8061,6 +8089,8 @@ async function generateExperiment(options = {}) {
     state.extraFixed = { ...state.extraFixed, [genericParse.templateId]: genericParse.fixed };
     state.p1 = genericParse.p1;
     state.p2 = genericParse.p2;
+    state.genericQuestionBaseline = GENERIC_TEMPLATES[genericParse.templateId].resetToQuestion
+      ? { id: genericParse.templateId, question } : null;
     syncGenericContent(genericParse.templateId, genericParse.p1, genericParse.p2);
     syncPhysicsControlsFromState();
     setRecognitionFeedback(genericParse);
@@ -8173,7 +8203,7 @@ async function generateExperiment(options = {}) {
   $("span", button).textContent = "生成实验";
   hideGenerationOverlay();
   clearDemoTimers();
-  resetExperiment();
+  resetExperiment({ restoreQuestion: false });
   if (!options.shared) {
     setTimeout(focusExperimentCard, 80);
     scheduleReasoningAutoAdvance();
