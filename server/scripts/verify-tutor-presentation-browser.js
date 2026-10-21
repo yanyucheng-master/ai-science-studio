@@ -124,7 +124,7 @@ try {
       await page.locator('#aiTutorResponseMode').selectOption('steps');
       await send(page,'一个质量为2 kg的物块静止在倾角30°的粗糙斜面上，不受其他外力，取g=10 N/kg。请完整解答三个力的大小与方向。');
       result.ui=await measure(page); assert.equal(result.ui.traces,0); assert.doesNotMatch(result.ui.text,new RegExp(sentinel+'|已思考|思维链|内部核验'));
-      assert.equal(result.ui.bubbleBorder,'0px'); assert.equal(result.ui.scrollBorder,'0px'); assert.equal(result.ui.overflow,false); assert.deepEqual(result.ui.overflows,[]);
+      assert.equal(result.ui.bubbleBorder,'1px'); assert.equal(result.ui.scrollBorder,'0px'); assert.equal(result.ui.overflow,false); assert.deepEqual(result.ui.overflows,[]);
       assert.equal(result.ui.formulas.length,0,'relations already appear in the steps');
       await page.screenshot({path:resolve(output,'full-answer-'+width+'-clean.png'),fullPage:true});
       await page.locator('.ai-copy-answer').click(); const copied=await page.evaluate(()=>window.qaCopied); assert.match(copied,/17.3/); assert.doesNotMatch(copied,/PRIVATE_REASONING|内部核验/);
@@ -166,7 +166,7 @@ try {
   for (const width of [1366,820,390]) await run('additional-formula-'+width,width,async(page,row)=>{
     activeReply={...reply,steps:['分析：质量和倾角确定后，根据垂直斜面的平衡条件求支持力。','结论：支持力垂直于斜面，指向斜面外侧。'],formulas:[String.raw`N=mg\cos\theta`],finalAnswer:'支持力垂直于斜面，指向斜面外侧。',suggestedQuestions:[]};
     await page.locator('#aiTutorResponseMode').selectOption('steps'); await send(page,'请完整说明斜面支持力的一般关系，不代入数值。');
-    row.ui=await measure(page); assert.equal(row.ui.formulas.length,1); assert(row.ui.formulas.every(f=>f.border==='0px'&&f.background==='rgba(0, 0, 0, 0)'));
+    row.ui=await measure(page); assert.equal(row.ui.formulas.length,1); assert(row.ui.formulas.every(f=>f.border==='1px'&&f.background==='rgb(246, 249, 255)'));
     assert.equal(row.ui.overflow,false); assert.deepEqual(row.ui.overflows,[]);
   });
   }
@@ -174,7 +174,7 @@ try {
     activeReply=fixture.response; await page.locator('#aiTutorResponseMode').selectOption('steps'); await send(page,fixture.q);
     row.realAiReplay=fixture.id;row.ui=await measure(page);assert.equal(row.ui.traces,0);assert.equal(row.ui.overflow,false);assert.deepEqual(row.ui.overflows,[]);
     assert.doesNotMatch(row.ui.text,/PRIVATE_REASONING|已思考|思维链/);
-    assert(row.ui.formulas.every(f=>f.border==='0px'&&f.background==='rgba(0, 0, 0, 0)'));
+    assert(row.ui.formulas.every(f=>f.border==='1px'&&f.background==='rgb(246, 249, 255)'));
     await page.locator('#aiTutorInput').blur();
   });
 } finally {

@@ -11013,3 +11013,44 @@ body.subject-math-active.subject-generic-template-active:not(.awaiting-generatio
   .ai-tutor-workspace .ai-session-toolbar > button { min-height: 36px; padding: 6px 10px; }
   .ai-tutor-workspace .ai-tutor-header-actions { width: auto; }
 }
+
+/* Restore tutor answer/waiting cards; keep the generation status unframed. */
+.ai-tutor-workspace .ai-message.assistant { width: auto; }
+.ai-tutor-workspace .ai-message.assistant:not(.error) .ai-message-bubble {
+  padding: 13px 15px;
+  color: #3f536f;
+  border: 1px solid #dce7f7;
+  border-radius: 16px 16px 16px 5px;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(46, 82, 132, .07);
+}
+.ai-tutor-workspace .ai-message.assistant.pending { width: min(100%, 560px); }
+.ai-tutor-workspace .ai-message.assistant.pending .ai-thinking-card {
+  padding: 14px 16px 13px;
+  border-color: rgba(122, 160, 228, .4);
+  background:
+    radial-gradient(circle at 10% 18%, rgba(116, 177, 252, .14), transparent 30%),
+    radial-gradient(circle at 92% 76%, rgba(45, 115, 246, .08), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, .99), rgba(244, 248, 255, .98));
+  box-shadow: 0 15px 34px rgba(43, 88, 159, .11);
+}
+.ai-tutor-workspace .ai-thinking-card::before,
+.ai-tutor-workspace .ai-thinking-card::after { display: block; }
+.ai-tutor-workspace .ai-thinking-body { padding: 0; }
+.ai-tutor-workspace .ai-thinking-card .ai-thinking-badge {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.ai-tutor-workspace .ai-formula-line { margin-top: 6px; padding: 8px 10px; border: 1px solid #dce8ff; background: #f6f9ff; }
+.ai-tutor-workspace .ai-answer-prose .ai-answer-conclusion { padding: 7px 10px; border-radius: 8px; background: #f0f6ff; }
+.ai-tutor-workspace .ai-hint-card { padding: 9px 12px 10px; border: 1px solid #d6e6ff; border-radius: 10px; background: linear-gradient(160deg, #f7faff 0%, #edf4ff 100%); }
+.ai-tutor-workspace .ai-hint-label { padding: 0 8px; color: #1a56d6; border-radius: 999px; background: #dcebff; }
+.ai-tutor-workspace .ai-stream-preview { padding: 9px 11px; border: 1px dashed #c6dbfb; border-radius: 10px; background: #fbfdff; }
+@media (max-width: 760px) {
+  .ai-tutor-workspace .ai-message.assistant:not(.error) .ai-message-bubble { padding: 11px 12px; }
+  .ai-tutor-workspace .ai-message.assistant.pending .ai-thinking-card { padding: 12px; }
+}

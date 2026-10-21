@@ -246,7 +246,7 @@ try {
       assert.equal(ui.bodySize, name.startsWith('default_mobile') ? 14 : 15, name);
       assert.ok(ui.formulaSize <= ui.bodySize, name);
       assert.equal(ui.horizontalOverflow, false, name);
-      if (ui.formulas) assert.equal(ui.formulaBackground, 'rgba(0, 0, 0, 0)', name);
+      if (ui.formulas) assert.equal(ui.formulaBackground, 'rgb(246, 249, 255)', name);
       if (name !== 'hint' && name !== 'default_clarification') assert.equal(ui.followUps, 0, name);
       for (const call of calls) {
         assert.equal(call.model, 'deepseek-flash', name);
