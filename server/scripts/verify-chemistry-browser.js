@@ -125,6 +125,8 @@ try{
  const receiver=await fresh();await receiver.page.goto(share);await receiver.page.waitForFunction(()=>activeGenericId()==='caco3Hcl'&&state.hasGenerated&&state.p1===20);
  check(await receiver.page.evaluate(()=>state.p2===0&&state.extraFixed.caco3Hcl.excess==='hcl'),'independent context restores current slider and excess mode');
  await receiver.page.locator('#resetButton').click();check(await receiver.page.evaluate(()=>state.p1===10&&state.p2===0),'shared reset uses question baseline, not comparison slider');
+ const caComparisonContext=await page.evaluate(()=>buildMasterLabAIContext());
+ check(caComparisonContext.originalQuestion===excessQ&&caComparisonContext.deterministicResult.metrics.includes('CaCO₃ 20 g')&&caComparisonContext.deterministicResult.metrics.includes('HCl 溶质 足量')&&caComparisonContext.deterministicResult.resultText.includes('8.8'),'tutor distinguishes original 10g question from current 20g comparison and excess mode');
  check(await page.evaluate(()=>localStorage.getItem('master-lab-favorites-v1').includes('保留的数学收藏')),'unrelated saved favourite retained');
  check(await receiver.page.evaluate(()=>localStorage.getItem('masterLab.tutorSessions.v1').includes('保留的聊天消息')&&localStorage.getItem('masterLab.tutorSessions.v1').includes('保留的聊天草稿')),'sharing keeps unrelated tutor messages and draft');
  await generate(page,solutionQ);await page.locator('#playButton').click();await page.waitForFunction(()=>state.playing&&state.time>.3);await page.locator('#playButton').click();
@@ -155,8 +157,9 @@ try{
  const bad=JSON.parse(Buffer.from(new URL(share).hash.slice('#/share/'.length),'base64url').toString());bad.params[1]=1;
  const badURL=base+'/#/share/'+Buffer.from(JSON.stringify(bad)).toString('base64url');await nav.goto(badURL);await nav.waitForFunction(()=>document.querySelector('#parseFeedback')?.classList.contains('error'));
  check(await nav.evaluate(()=>state.p1===20&&state.p2===0&&state.extraFixed.caco3Hcl.excess==='hcl'),'forged locked parameter rejects without replacing active experiment');
- await generate(page,solutionQ);await page.locator('#mentorExpandButton').click();await page.locator('#aiTutorMore > summary').click();await page.locator('#aiTutorPageButton').click();await page.locator('#aiTutorInput').fill('请解释这组配料怎样保持总质量。');await page.locator('#aiTutorSendButton').click();await page.waitForFunction(()=>document.querySelector('#aiTutorWorkspace').getAttribute('aria-busy')==='false');
- const request=report.mockRequests.findLast(x=>x.path==='/api/v1/tutor/chat');check(Boolean(request)&&JSON.stringify(request.body).includes('NaCl')&&JSON.stringify(request.body).includes('90'),'tutor request carries current solution deterministic context');
+ await generate(page,solutionQ);await change(page,0,150);await change(page,1,6);await page.locator('#mentorExpandButton').click();await page.locator('#aiTutorMore > summary').click();await page.locator('#aiTutorPageButton').click();await page.locator('#aiTutorInput').fill('请解释这组配料怎样保持总质量。');await page.locator('#aiTutorSendButton').click();await page.waitForFunction(()=>document.querySelector('#aiTutorWorkspace').getAttribute('aria-busy')==='false');
+ const request=report.mockRequests.findLast(x=>x.path==='/api/v1/tutor/chat'),sentContext=request?.body.context;
+ check(sentContext?.originalQuestion===solutionQ&&sentContext.deterministicResult.metrics.includes('目标溶液总质量 150 g')&&sentContext.deterministicResult.metrics.includes('质量分数 6%')&&sentContext.deterministicResult.resultText.includes('9 g')&&sentContext.deterministicResult.resultText.includes('141 g'),'tutor request carries current 150g/6% configuration and 9g/141g result alongside original 100g/10% question');
  await page.locator('#aiTutorBackButton').click();
  await context.close();await receiver.context.close();
  const menu=await fresh();await menu.page.locator('.subject-tab[data-subject="化学"]').click();

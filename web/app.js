@@ -6664,7 +6664,7 @@ function buildMasterLabAIContext() {
     parameters: templateId ? currentAIParameters(templateId) : {},
     deterministicResult: {
       resultText: (genericModel?.conclusion || displayedSource(elements.sceneTip)).trim().slice(0, 300),
-      metrics: (genericModel ? genericModel.facts.map(item => `${item.label}：${item.value}`).join("｜") : metricText).slice(0, 300),
+      metrics: (genericModel ? [genericModel.contextParameters, ...genericModel.facts.map(item => `${item.label}：${item.value}`)].filter(Boolean).join("｜") : metricText).slice(0, 300),
       ...gradeLevelContext(experimentLevelInfo()?.content)
     },
     formula: displayedSource($(".formula-spotlight strong")).trim().slice(0, 600),

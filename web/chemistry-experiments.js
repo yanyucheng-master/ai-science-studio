@@ -126,6 +126,7 @@
     const calculations=requested.map(key=>key==='co2'?massCalc(labels.co2,GAS,co2Mass):key==='consumedCa'?massCalc(labels.consumedCa,CA,consumedCa):key==='consumedHcl'?massCalc(labels.consumedHcl,ACID,consumedHcl):key==='remainingCa'?`${massCalc(labels.consumedCa,CA,consumedCa)}；${labels.remainingCa}：m余 = ${fmtInput(p1)} g − m消耗(CaCO₃) ${exactPlaces(remainingCa)===null?'≈':'='} ${massNumber(remainingCa)} g`:key==='remainingHcl'?`${massCalc(labels.consumedHcl,ACID,consumedHcl)}；${labels.remainingHcl}：m余 = ${fmtInput(p2)} g − m消耗(HCl) ${exactPlaces(remainingHcl)===null?'≈':'='} ${massNumber(remainingHcl)} g`:limitingText);
     const formulaDetail=(fixed.level==='senior'?`ξ ${exactPlaces(xi)===null?'≈':'='} ${fmt(xi,5)} mol；`:'')+calculations.join('；');
     return {p1,p2,excess,level:fixed.level,xi,consumedCa,consumedHcl,co2Mass,remainingCa,remainingHcl,limiting,limitingText,remainingText,proportion,answers,answerText,calculations,
+      contextParameters:`当前实验参数（结果对应）：CaCO₃ ${excess==='caco3'?'足量':grams(p1)}；HCl 溶质 ${excess==='hcl'?'足量':grams(p2)}。原题保留为重置基准，当前参数可与原题不同。`,
       metrics:[excess==="caco3"?"足量":p1,excess==="hcl"?"足量":p2,co2Mass],metricUnit:"g",
       facts:[fact("所求结果",answerText),fact("计量判断",limitingText),fact("反应后剩余",remainingText)],
       formula:equation,formulaDetail,readout:answerText,badge:"化学计量",
@@ -227,6 +228,7 @@
     if(!Number.isFinite(mass)||!Number.isFinite(w)||mass<20||mass>500||w<0||w>20||fixed.temperature!==20)throw new RangeError("Solution parameters outside 20°C demonstration range");
     const saltMass=mass*w/100,waterMass=mass-saltMass;
     return {mass,w,saltMass,waterMass,temperature:20,level:fixed.level,metrics:[mass,w,saltMass],metricUnit:'g',
+      contextParameters:`当前实验参数（结果对应）：目标溶液总质量 ${fmtInput(mass)} g；质量分数 ${fmtInput(w)}%；20°C。原题保留为重置基准，当前参数可与原题不同。`,
       facts:[fact('所需 NaCl',grams(saltMass)),fact('所需水',grams(waterMass)),fact('总质量核对',exactPlaces(saltMass)!==null&&exactPlaces(waterMass)!==null?`${fmt(saltMass)} + ${fmt(waterMass)} = ${fmt(mass)} g`:`m(NaCl) + m(水) = ${fmtInput(mass)} g（按未舍入值核对）`)],
       formula:'w = m(溶质) / m(溶液) × 100%',formulaDetail:`m(NaCl) = ${fmtInput(mass)} g × ${fmtInput(w)}% ${exactPlaces(saltMass)===null?'≈':'='} ${massNumber(saltMass)} g；m(水) = M − m(NaCl) ${exactPlaces(waterMass)===null?'≈':'='} ${massNumber(waterMass)} g`,
       readout:`盐 ${grams(saltMass)} · 水 ${grams(waterMass)}`,badge:'溶液质量分数',

@@ -174,11 +174,13 @@ test('NaCl: stage transfer conserves weighed materials and pure water has no sal
   if(w===0){near(f.saltAdded,0);near(f.saltOnScale,0);assert.notEqual(f.step,0);}
  }near(solution.frame(m,1).mixtureMass,100);near(solution.frame(m,1).mixed,1);}
 });
-test('AI mapping cannot change chemical quantity roles, asks, or fixed modes',()=>{
+test('AI mapping and tutor context preserve chemical roles, asks, modes and current inputs',()=>{
  const p=solutionParse('配制100g质量分数为10%的氯化钠溶液，求水的质量。');assert.equal(p.ok,true);
  for(const q of ['配制氯化钠溶液，水的质量为100g，质量分数为10%，求水的质量。','配制100g质量分数为10%的氯化钠溶液，求盐的质量。'])assert.equal(solution.checkQuestion(q,p.p1,p.p2,p.fixed).ok,false,q);
  const c=parse('10g碳酸钙与足量稀盐酸反应，求二氧化碳的质量。');assert.equal(c.ok,true);
  assert.equal(ca.checkQuestion('10g碳酸钙与稀盐酸反应，求二氧化碳的质量。',c.p1,c.p2,c.fixed).ok,false);
+ assert.match(ca.model(20,0,ca.fixedWithDefaults({excess:'hcl'})).contextParameters,/CaCO₃ 20 g；HCl 溶质 足量/);
+ assert.match(solutionModel(150,6).contextParameters,/目标溶液总质量 150 g；质量分数 6%；20°C/);
 });
 test('precision and strict boundaries also apply to restored comparison parameters',()=>{
  for(const q of ['0.0999999999g碳酸钙与足量稀盐酸反应，求二氧化碳的质量。','50.0000000001g碳酸钙与足量稀盐酸反应，求二氧化碳的质量。'])assert.equal(parse(q).ok,false,q);
