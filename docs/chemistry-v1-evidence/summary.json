@@ -1,0 +1,1225 @@
+{
+  "schema": 1,
+  "task": "chemistry-v1",
+  "testedCodeSHA": "c4934efc0357aa191117ffe9a7966a149047a205",
+  "baselineSHA": "295d177992be0138a2ce284cbb3ecdf44b27dcc9",
+  "environment": {
+    "node": "v24.19.0",
+    "os": "Windows_NT 10.0.26200 x64",
+    "edge": "155.0.4283.62",
+    "chromeForTesting": "151.0.7922.34"
+  },
+  "codeTree": {
+    "paths": [
+      "web",
+      "server"
+    ],
+    "sha256": "495a0e15b41605ee4543d3ee1e140fd5ffefb5cec85fb9e1ff463f9082785aee",
+    "note": "Evidence/documentation-only follow-up commits must retain identical git ls-tree entries for web and server."
+  },
+  "fullRegression": [
+    {
+      "name": "node",
+      "command": "node --test",
+      "started": "2026-10-22T01:48:54.995Z",
+      "finished": "2026-10-22T01:48:56.299Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false,
+      "counts": {
+        "tests": 612,
+        "pass": 612,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "question-bank",
+      "command": "node scripts/verify-question-bank-browser.js",
+      "started": "2026-10-22T01:48:56.300Z",
+      "finished": "2026-10-22T01:52:45.456Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "week1",
+      "command": "node scripts/verify-week1-browser.js",
+      "started": "2026-10-22T01:52:45.458Z",
+      "finished": "2026-10-22T01:53:59.496Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "week2",
+      "command": "node scripts/verify-week2-browser.js",
+      "started": "2026-10-22T01:53:59.497Z",
+      "finished": "2026-10-22T01:54:37.972Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "tutor",
+      "command": "node scripts/verify-tutor-browser.js",
+      "started": "2026-10-22T01:54:37.973Z",
+      "finished": "2026-10-22T01:54:46.459Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "animation",
+      "command": "node scripts/verify-animation-browser.js",
+      "started": "2026-10-22T01:54:46.460Z",
+      "finished": "2026-10-22T01:56:42.331Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "announcements",
+      "command": "node scripts/verify-announcements-browser.js",
+      "started": "2026-10-22T01:56:42.332Z",
+      "finished": "2026-10-22T01:56:46.650Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "formula",
+      "command": "node scripts/verify-formula-browser.js",
+      "started": "2026-10-22T01:56:46.651Z",
+      "finished": "2026-10-22T02:01:10.780Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "ai-quality",
+      "command": "node scripts/verify-ai-quality-browser.js",
+      "started": "2026-10-22T02:01:10.781Z",
+      "finished": "2026-10-22T02:01:35.035Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "share",
+      "command": "node scripts/verify-share-browser.js",
+      "started": "2026-10-22T02:01:35.036Z",
+      "finished": "2026-10-22T02:02:00.900Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "instant",
+      "command": "node scripts/verify-instant-browser.js",
+      "started": "2026-10-22T02:02:00.902Z",
+      "finished": "2026-10-22T02:02:16.500Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "instant-routing",
+      "command": "node scripts/verify-instant-routing-browser.js",
+      "started": "2026-10-22T02:02:16.502Z",
+      "finished": "2026-10-22T02:02:24.924Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "tutor-diagram",
+      "command": "node scripts/verify-tutor-diagram-browser.js",
+      "started": "2026-10-22T02:02:24.926Z",
+      "finished": "2026-10-22T02:02:37.863Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "tutor-presentation",
+      "command": "node scripts/verify-tutor-presentation-browser.js",
+      "started": "2026-10-22T02:02:37.865Z",
+      "finished": "2026-10-22T02:02:56.031Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "incline-guard",
+      "command": "node scripts/verify-incline-diagram-browser.js --guard-only",
+      "started": "2026-10-22T02:02:56.033Z",
+      "finished": "2026-10-22T02:02:59.890Z",
+      "status": "failed",
+      "exitCode": 1,
+      "timeout": false
+    },
+    {
+      "name": "incline-core",
+      "command": "node scripts/verify-incline-diagram-browser.js",
+      "started": "2026-10-22T02:02:59.892Z",
+      "finished": "2026-10-22T02:03:05.266Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "incline-render",
+      "command": "node scripts/verify-incline-diagram-browser.js --render",
+      "started": "2026-10-22T02:03:05.266Z",
+      "finished": "2026-10-22T02:03:12.692Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "incline-competition",
+      "command": "node scripts/verify-incline-diagram-browser.js --competition",
+      "started": "2026-10-22T02:03:12.694Z",
+      "finished": "2026-10-22T02:03:25.474Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "incline-data",
+      "command": "node scripts/verify-incline-diagram-browser.js --data",
+      "started": "2026-10-22T02:03:25.475Z",
+      "finished": "2026-10-22T02:03:45.961Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "chemistry-model",
+      "command": "node --test test/chemistry-experiments.test.js",
+      "started": "2026-10-22T02:03:45.962Z",
+      "finished": "2026-10-22T02:03:46.120Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "chemistry-browser",
+      "command": "node scripts/verify-chemistry-browser.js",
+      "started": "2026-10-22T02:03:46.121Z",
+      "finished": "2026-10-22T02:05:13.626Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    }
+  ],
+  "baseline": [
+    {
+      "name": "node",
+      "command": "node --test",
+      "started": "2026-10-21T12:34:29.243Z",
+      "finished": "2026-10-21T12:34:30.485Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false,
+      "counts": {
+        "tests": 595,
+        "pass": 595,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "question-bank",
+      "command": "node scripts/verify-question-bank-browser.js",
+      "started": "2026-10-21T12:34:30.486Z",
+      "finished": "2026-10-21T12:38:00.425Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "week1",
+      "command": "node scripts/verify-week1-browser.js",
+      "started": "2026-10-21T12:38:00.426Z",
+      "finished": "2026-10-21T12:39:14.427Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "week2",
+      "command": "node scripts/verify-week2-browser.js",
+      "started": "2026-10-21T12:39:14.428Z",
+      "finished": "2026-10-21T12:39:52.840Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "tutor",
+      "command": "node scripts/verify-tutor-browser.js",
+      "started": "2026-10-21T12:39:52.841Z",
+      "finished": "2026-10-21T12:40:24.307Z",
+      "status": "failed",
+      "exitCode": 1,
+      "timeout": false
+    },
+    {
+      "name": "animation",
+      "command": "node scripts/verify-animation-browser.js",
+      "started": "2026-10-21T12:40:24.308Z",
+      "finished": "2026-10-21T12:40:55.670Z",
+      "status": "failed",
+      "exitCode": 1,
+      "timeout": false
+    },
+    {
+      "name": "announcements",
+      "command": "node scripts/verify-announcements-browser.js",
+      "started": "2026-10-21T12:40:55.670Z",
+      "finished": "2026-10-21T12:40:59.794Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "formula",
+      "command": "node scripts/verify-formula-browser.js",
+      "started": "2026-10-21T12:40:59.795Z",
+      "finished": "2026-10-21T12:45:14.531Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "ai-quality",
+      "command": "node scripts/verify-ai-quality-browser.js",
+      "started": "2026-10-21T12:45:14.532Z",
+      "finished": "2026-10-21T12:45:36.722Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "share",
+      "command": "node scripts/verify-share-browser.js",
+      "started": "2026-10-21T12:45:36.723Z",
+      "finished": "2026-10-21T12:45:54.666Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "instant",
+      "command": "node scripts/verify-instant-browser.js",
+      "started": "2026-10-21T12:45:54.667Z",
+      "finished": "2026-10-21T12:46:08.217Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "instant-routing",
+      "command": "node scripts/verify-instant-routing-browser.js",
+      "started": "2026-10-21T12:46:08.217Z",
+      "finished": "2026-10-21T12:46:15.409Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "tutor-diagram",
+      "command": "node scripts/verify-tutor-diagram-browser.js",
+      "started": "2026-10-21T12:46:15.410Z",
+      "finished": "2026-10-21T12:46:25.514Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "tutor-presentation",
+      "command": "node scripts/verify-tutor-presentation-browser.js",
+      "started": "2026-10-21T12:46:25.515Z",
+      "finished": "2026-10-21T12:46:40.595Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "incline-guard",
+      "command": "node scripts/verify-incline-diagram-browser.js --guard-only",
+      "started": "2026-10-21T12:46:40.596Z",
+      "finished": "2026-10-21T12:46:44.310Z",
+      "status": "failed",
+      "exitCode": 1,
+      "timeout": false
+    },
+    {
+      "name": "incline-core",
+      "command": "node scripts/verify-incline-diagram-browser.js",
+      "started": "2026-10-21T12:46:44.310Z",
+      "finished": "2026-10-21T12:46:49.033Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "incline-render",
+      "command": "node scripts/verify-incline-diagram-browser.js --render",
+      "started": "2026-10-21T12:46:49.034Z",
+      "finished": "2026-10-21T12:46:55.662Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "incline-competition",
+      "command": "node scripts/verify-incline-diagram-browser.js --competition",
+      "started": "2026-10-21T12:46:55.663Z",
+      "finished": "2026-10-21T12:47:06.269Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    },
+    {
+      "name": "incline-data",
+      "command": "node scripts/verify-incline-diagram-browser.js --data",
+      "started": "2026-10-21T12:47:06.270Z",
+      "finished": "2026-10-21T12:47:22.879Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    }
+  ],
+  "compatibility": [
+    {
+      "name": "chemistry-browser",
+      "command": "node scripts/verify-chemistry-browser.js",
+      "started": "2026-10-22T01:49:06.463Z",
+      "finished": "2026-10-22T01:50:30.056Z",
+      "status": "passed",
+      "exitCode": 0,
+      "timeout": false
+    }
+  ],
+  "edgeQA": {
+    "browser": "155.0.4283.62",
+    "started": "2026-10-22T02:03:46.537Z",
+    "finished": "2026-10-22T02:05:13.264Z",
+    "assertions": 158,
+    "pageErrors": 0,
+    "consoleErrors": 0,
+    "realAIRequests": 0,
+    "bfcache": [
+      {
+        "template": "caco3Hcl",
+        "persisted": true,
+        "initial": 20,
+        "edited": 25,
+        "reimported": 20
+      },
+      {
+        "template": "naclSolution",
+        "persisted": true,
+        "initial": 150,
+        "edited": 200,
+        "reimported": 150
+      }
+    ],
+    "layouts": [
+      {
+        "name": "caco3-1366",
+        "viewport": 1366,
+        "pageWidth": 1366,
+        "clippedTexts": 0,
+        "rootOverflow": false,
+        "childrenInside": true,
+        "controls": [
+          {
+            "width": 36,
+            "height": 36,
+            "disabled": false
+          },
+          {
+            "width": 31,
+            "height": 30,
+            "disabled": false
+          },
+          {
+            "width": 327.4375,
+            "height": 3,
+            "disabled": false
+          },
+          {
+            "width": 327.4375,
+            "height": 3,
+            "disabled": false
+          }
+        ]
+      },
+      {
+        "name": "caco3-820",
+        "viewport": 820,
+        "pageWidth": 820,
+        "clippedTexts": 0,
+        "rootOverflow": false,
+        "childrenInside": true,
+        "controls": [
+          {
+            "width": 36,
+            "height": 36,
+            "disabled": false
+          },
+          {
+            "width": 31,
+            "height": 30,
+            "disabled": false
+          },
+          {
+            "width": 647.4375,
+            "height": 3,
+            "disabled": false
+          },
+          {
+            "width": 647.4375,
+            "height": 3,
+            "disabled": false
+          }
+        ]
+      },
+      {
+        "name": "caco3-390",
+        "viewport": 390,
+        "pageWidth": 390,
+        "clippedTexts": 0,
+        "rootOverflow": false,
+        "childrenInside": true,
+        "controls": [
+          {
+            "width": 36,
+            "height": 36,
+            "disabled": false
+          },
+          {
+            "width": 31,
+            "height": 30,
+            "disabled": false
+          },
+          {
+            "width": 217.4375,
+            "height": 3,
+            "disabled": false
+          },
+          {
+            "width": 217.4375,
+            "height": 3,
+            "disabled": false
+          }
+        ]
+      },
+      {
+        "name": "nacl-1366",
+        "viewport": 1366,
+        "pageWidth": 1366,
+        "clippedTexts": 0,
+        "rootOverflow": false,
+        "childrenInside": true,
+        "controls": [
+          {
+            "width": 36,
+            "height": 36,
+            "disabled": false
+          },
+          {
+            "width": 31,
+            "height": 30,
+            "disabled": false
+          },
+          {
+            "width": 328.484375,
+            "height": 3,
+            "disabled": false
+          },
+          {
+            "width": 324.578125,
+            "height": 3,
+            "disabled": false
+          }
+        ]
+      },
+      {
+        "name": "nacl-820",
+        "viewport": 820,
+        "pageWidth": 820,
+        "clippedTexts": 0,
+        "rootOverflow": false,
+        "childrenInside": true,
+        "controls": [
+          {
+            "width": 36,
+            "height": 36,
+            "disabled": false
+          },
+          {
+            "width": 31,
+            "height": 30,
+            "disabled": false
+          },
+          {
+            "width": 648.484375,
+            "height": 3,
+            "disabled": false
+          },
+          {
+            "width": 644.578125,
+            "height": 3,
+            "disabled": false
+          }
+        ]
+      },
+      {
+        "name": "nacl-390",
+        "viewport": 390,
+        "pageWidth": 390,
+        "clippedTexts": 0,
+        "rootOverflow": false,
+        "childrenInside": true,
+        "controls": [
+          {
+            "width": 36,
+            "height": 36,
+            "disabled": false
+          },
+          {
+            "width": 31,
+            "height": 30,
+            "disabled": false
+          },
+          {
+            "width": 218.484375,
+            "height": 3,
+            "disabled": false
+          },
+          {
+            "width": 214.578125,
+            "height": 3,
+            "disabled": false
+          }
+        ]
+      }
+    ],
+    "checks": [
+      "1366: reduced-motion suppresses moving gas bubbles",
+      "1366: generated expected local model",
+      "1366: final gas readout",
+      "1366: remaining solid readout",
+      "caco3-1366: no horizontal page overflow",
+      "caco3-1366: apparatus, labels and notes inside scene",
+      "caco3-1366: no clipped text",
+      "caco3-1366: controls have usable geometry",
+      "caco3-1366: scene regions do not overlap 1",
+      "caco3-1366: scene regions do not overlap 2",
+      "caco3-1366: scene regions do not overlap 3",
+      "1366: share control visible",
+      "1366: share control copies URL",
+      "1366: excess acid parameter locked",
+      "1366: excess remainder never fabricated",
+      "1366: tutor uses local deterministic question context",
+      "820: reduced-motion suppresses moving gas bubbles",
+      "820: generated expected local model",
+      "820: final gas readout",
+      "820: remaining solid readout",
+      "caco3-820: no horizontal page overflow",
+      "caco3-820: apparatus, labels and notes inside scene",
+      "caco3-820: no clipped text",
+      "caco3-820: controls have usable geometry",
+      "caco3-820: scene regions do not overlap 1",
+      "caco3-820: scene regions do not overlap 2",
+      "caco3-820: scene regions do not overlap 3",
+      "820: share control visible",
+      "820: share control copies URL",
+      "820: excess acid parameter locked",
+      "820: excess remainder never fabricated",
+      "820: tutor uses local deterministic question context",
+      "390: reduced-motion suppresses moving gas bubbles",
+      "390: generated expected local model",
+      "390: final gas readout",
+      "390: remaining solid readout",
+      "caco3-390: no horizontal page overflow",
+      "caco3-390: apparatus, labels and notes inside scene",
+      "caco3-390: no clipped text",
+      "caco3-390: controls have usable geometry",
+      "caco3-390: scene regions do not overlap 1",
+      "caco3-390: scene regions do not overlap 2",
+      "caco3-390: scene regions do not overlap 3",
+      "390: share control visible",
+      "390: share control copies URL",
+      "390: excess acid parameter locked",
+      "390: excess remainder never fabricated",
+      "390: tutor uses local deterministic question context",
+      "1366: NaCl independent 100g/10% result",
+      "1366: staged masses at 20%",
+      "1366: staged masses at 45%",
+      "1366: staged masses at 60%",
+      "1366: dry salt before adding water is not drawn as liquid",
+      "1366: staged masses at 80%",
+      "1366: staged masses at 100%",
+      "1366: mixed solution has no remaining solid",
+      "1366: reduced-motion suppresses stirring motion",
+      "nacl-1366: no horizontal page overflow",
+      "nacl-1366: apparatus, labels and notes inside scene",
+      "nacl-1366: no clipped text",
+      "nacl-1366: controls have usable geometry",
+      "nacl-1366: scene regions do not overlap 1",
+      "nacl-1366: scene regions do not overlap 2",
+      "nacl-1366: scene regions do not overlap 3",
+      "nacl-1366: scene regions do not overlap 4",
+      "1366: pure water skips salt and has 100g water",
+      "1366: pure water never shows salt particles",
+      "1366: solution share button works",
+      "820: NaCl independent 100g/10% result",
+      "820: staged masses at 20%",
+      "820: staged masses at 45%",
+      "820: staged masses at 60%",
+      "820: dry salt before adding water is not drawn as liquid",
+      "820: staged masses at 80%",
+      "820: staged masses at 100%",
+      "820: mixed solution has no remaining solid",
+      "820: reduced-motion suppresses stirring motion",
+      "nacl-820: no horizontal page overflow",
+      "nacl-820: apparatus, labels and notes inside scene",
+      "nacl-820: no clipped text",
+      "nacl-820: controls have usable geometry",
+      "nacl-820: scene regions do not overlap 1",
+      "nacl-820: scene regions do not overlap 2",
+      "nacl-820: scene regions do not overlap 3",
+      "nacl-820: scene regions do not overlap 4",
+      "820: pure water skips salt and has 100g water",
+      "820: pure water never shows salt particles",
+      "820: solution share button works",
+      "390: NaCl independent 100g/10% result",
+      "390: staged masses at 20%",
+      "390: staged masses at 45%",
+      "390: staged masses at 60%",
+      "390: dry salt before adding water is not drawn as liquid",
+      "390: staged masses at 80%",
+      "390: staged masses at 100%",
+      "390: mixed solution has no remaining solid",
+      "390: reduced-motion suppresses stirring motion",
+      "nacl-390: no horizontal page overflow",
+      "nacl-390: apparatus, labels and notes inside scene",
+      "nacl-390: no clipped text",
+      "nacl-390: controls have usable geometry",
+      "nacl-390: scene regions do not overlap 1",
+      "nacl-390: scene regions do not overlap 2",
+      "nacl-390: scene regions do not overlap 3",
+      "nacl-390: scene regions do not overlap 4",
+      "390: pure water skips salt and has 100g water",
+      "390: pure water never shows salt particles",
+      "390: solution share button works",
+      "pause stops owned clock",
+      "continue advances the same experiment",
+      "reset restores original question parameters and paused stage",
+      "independent context restores current slider and excess mode",
+      "shared reset uses question baseline, not comparison slider",
+      "unrelated saved favourite retained",
+      "sharing keeps unrelated tutor messages and draft",
+      "solution play and pause use the shared clock",
+      "comparison leaves question/reset baseline intact",
+      "grade UI preserves solution parameters and fixed temperature",
+      "subject snapshot restores adjusted solution",
+      "favourite load followed by Generate restores saved parameters",
+      "favourite saves comparison configuration and establishes its own reset baseline",
+      "reopening same active share preserves explicit reset",
+      "AI route return preserves adjustments in same active share",
+      "equivalent payload property ordering preserves active adjustments",
+      "independent share restores solution comparison and fixed 20C",
+      "A to B to A restores A after leaving context",
+      "legacy waiting route to old share restores A",
+      "reload imports payload configuration once",
+      "forged locked parameter rejects without replacing active experiment",
+      "tutor request carries current solution deterministic context",
+      "menu preset generates caco3Hcl",
+      "menu preset generates naclSolution",
+      "outcome condition rejected in actual page without rebinding or replacing retained experiment",
+      "outcome condition rejected in actual page without rebinding or replacing retained experiment",
+      "outcome condition rejected in actual page without rebinding or replacing retained experiment",
+      "outcome condition rejected in actual page without rebinding or replacing retained experiment",
+      "outcome condition rejected in actual page without rebinding or replacing retained experiment",
+      "outcome condition rejected in actual page without rebinding or replacing retained experiment",
+      "junior: consumed quantities independently match hand calculations",
+      "junior: steps and tutor result name every actual ask",
+      "junior: consumed quantities independently match hand calculations",
+      "junior: steps and tutor result name every actual ask",
+      "junior: consumed quantities independently match hand calculations",
+      "junior: steps and tutor result name every actual ask",
+      "senior: consumed quantities independently match hand calculations",
+      "senior: steps and tutor result name every actual ask",
+      "senior: consumed quantities independently match hand calculations",
+      "senior: steps and tutor result name every actual ask",
+      "senior: consumed quantities independently match hand calculations",
+      "senior: steps and tutor result name every actual ask",
+      "new chemistry generation preserves existing physics snapshot",
+      "real BFCache keeps adjusted chemistry share",
+      "real BFCache reimports chemistry share after context was left",
+      "real BFCache keeps adjusted chemistry share",
+      "real BFCache reimports chemistry share after context was left",
+      "no page exceptions",
+      "no console errors",
+      "no real AI requests"
+    ]
+  },
+  "chromiumQA": {
+    "browser": "151.0.7922.34",
+    "started": "2026-10-22T01:49:07.314Z",
+    "finished": "2026-10-22T01:50:29.790Z",
+    "assertions": 158,
+    "pageErrors": 0,
+    "consoleErrors": 0,
+    "realAIRequests": 0,
+    "bfcache": [
+      {
+        "template": "caco3Hcl",
+        "persisted": true,
+        "initial": 20,
+        "edited": 25,
+        "reimported": 20
+      },
+      {
+        "template": "naclSolution",
+        "persisted": true,
+        "initial": 150,
+        "edited": 200,
+        "reimported": 150
+      }
+    ],
+    "layouts": [
+      {
+        "name": "caco3-1366",
+        "viewport": 1366,
+        "pageWidth": 1366,
+        "clippedTexts": 0,
+        "rootOverflow": false,
+        "childrenInside": true,
+        "controls": [
+          {
+            "width": 36,
+            "height": 36,
+            "disabled": false
+          },
+          {
+            "width": 31,
+            "height": 30,
+            "disabled": false
+          },
+          {
+            "width": 327.4375,
+            "height": 3,
+            "disabled": false
+          },
+          {
+            "width": 327.4375,
+            "height": 3,
+            "disabled": false
+          }
+        ]
+      },
+      {
+        "name": "caco3-820",
+        "viewport": 820,
+        "pageWidth": 820,
+        "clippedTexts": 0,
+        "rootOverflow": false,
+        "childrenInside": true,
+        "controls": [
+          {
+            "width": 36,
+            "height": 36,
+            "disabled": false
+          },
+          {
+            "width": 31,
+            "height": 30,
+            "disabled": false
+          },
+          {
+            "width": 647.4375,
+            "height": 3,
+            "disabled": false
+          },
+          {
+            "width": 647.4375,
+            "height": 3,
+            "disabled": false
+          }
+        ]
+      },
+      {
+        "name": "caco3-390",
+        "viewport": 390,
+        "pageWidth": 390,
+        "clippedTexts": 0,
+        "rootOverflow": false,
+        "childrenInside": true,
+        "controls": [
+          {
+            "width": 36,
+            "height": 36,
+            "disabled": false
+          },
+          {
+            "width": 31,
+            "height": 30,
+            "disabled": false
+          },
+          {
+            "width": 217.4375,
+            "height": 3,
+            "disabled": false
+          },
+          {
+            "width": 217.4375,
+            "height": 3,
+            "disabled": false
+          }
+        ]
+      },
+      {
+        "name": "nacl-1366",
+        "viewport": 1366,
+        "pageWidth": 1366,
+        "clippedTexts": 0,
+        "rootOverflow": false,
+        "childrenInside": true,
+        "controls": [
+          {
+            "width": 36,
+            "height": 36,
+            "disabled": false
+          },
+          {
+            "width": 31,
+            "height": 30,
+            "disabled": false
+          },
+          {
+            "width": 328.484375,
+            "height": 3,
+            "disabled": false
+          },
+          {
+            "width": 324.578125,
+            "height": 3,
+            "disabled": false
+          }
+        ]
+      },
+      {
+        "name": "nacl-820",
+        "viewport": 820,
+        "pageWidth": 820,
+        "clippedTexts": 0,
+        "rootOverflow": false,
+        "childrenInside": true,
+        "controls": [
+          {
+            "width": 36,
+            "height": 36,
+            "disabled": false
+          },
+          {
+            "width": 31,
+            "height": 30,
+            "disabled": false
+          },
+          {
+            "width": 648.484375,
+            "height": 3,
+            "disabled": false
+          },
+          {
+            "width": 644.578125,
+            "height": 3,
+            "disabled": false
+          }
+        ]
+      },
+      {
+        "name": "nacl-390",
+        "viewport": 390,
+        "pageWidth": 390,
+        "clippedTexts": 0,
+        "rootOverflow": false,
+        "childrenInside": true,
+        "controls": [
+          {
+            "width": 36,
+            "height": 36,
+            "disabled": false
+          },
+          {
+            "width": 31,
+            "height": 30,
+            "disabled": false
+          },
+          {
+            "width": 218.484375,
+            "height": 3,
+            "disabled": false
+          },
+          {
+            "width": 214.578125,
+            "height": 3,
+            "disabled": false
+          }
+        ]
+      }
+    ],
+    "checks": [
+      "1366: reduced-motion suppresses moving gas bubbles",
+      "1366: generated expected local model",
+      "1366: final gas readout",
+      "1366: remaining solid readout",
+      "caco3-1366: no horizontal page overflow",
+      "caco3-1366: apparatus, labels and notes inside scene",
+      "caco3-1366: no clipped text",
+      "caco3-1366: controls have usable geometry",
+      "caco3-1366: scene regions do not overlap 1",
+      "caco3-1366: scene regions do not overlap 2",
+      "caco3-1366: scene regions do not overlap 3",
+      "1366: share control visible",
+      "1366: share control copies URL",
+      "1366: excess acid parameter locked",
+      "1366: excess remainder never fabricated",
+      "1366: tutor uses local deterministic question context",
+      "820: reduced-motion suppresses moving gas bubbles",
+      "820: generated expected local model",
+      "820: final gas readout",
+      "820: remaining solid readout",
+      "caco3-820: no horizontal page overflow",
+      "caco3-820: apparatus, labels and notes inside scene",
+      "caco3-820: no clipped text",
+      "caco3-820: controls have usable geometry",
+      "caco3-820: scene regions do not overlap 1",
+      "caco3-820: scene regions do not overlap 2",
+      "caco3-820: scene regions do not overlap 3",
+      "820: share control visible",
+      "820: share control copies URL",
+      "820: excess acid parameter locked",
+      "820: excess remainder never fabricated",
+      "820: tutor uses local deterministic question context",
+      "390: reduced-motion suppresses moving gas bubbles",
+      "390: generated expected local model",
+      "390: final gas readout",
+      "390: remaining solid readout",
+      "caco3-390: no horizontal page overflow",
+      "caco3-390: apparatus, labels and notes inside scene",
+      "caco3-390: no clipped text",
+      "caco3-390: controls have usable geometry",
+      "caco3-390: scene regions do not overlap 1",
+      "caco3-390: scene regions do not overlap 2",
+      "caco3-390: scene regions do not overlap 3",
+      "390: share control visible",
+      "390: share control copies URL",
+      "390: excess acid parameter locked",
+      "390: excess remainder never fabricated",
+      "390: tutor uses local deterministic question context",
+      "1366: NaCl independent 100g/10% result",
+      "1366: staged masses at 20%",
+      "1366: staged masses at 45%",
+      "1366: staged masses at 60%",
+      "1366: dry salt before adding water is not drawn as liquid",
+      "1366: staged masses at 80%",
+      "1366: staged masses at 100%",
+      "1366: mixed solution has no remaining solid",
+      "1366: reduced-motion suppresses stirring motion",
+      "nacl-1366: no horizontal page overflow",
+      "nacl-1366: apparatus, labels and notes inside scene",
+      "nacl-1366: no clipped text",
+      "nacl-1366: controls have usable geometry",
+      "nacl-1366: scene regions do not overlap 1",
+      "nacl-1366: scene regions do not overlap 2",
+      "nacl-1366: scene regions do not overlap 3",
+      "nacl-1366: scene regions do not overlap 4",
+      "1366: pure water skips salt and has 100g water",
+      "1366: pure water never shows salt particles",
+      "1366: solution share button works",
+      "820: NaCl independent 100g/10% result",
+      "820: staged masses at 20%",
+      "820: staged masses at 45%",
+      "820: staged masses at 60%",
+      "820: dry salt before adding water is not drawn as liquid",
+      "820: staged masses at 80%",
+      "820: staged masses at 100%",
+      "820: mixed solution has no remaining solid",
+      "820: reduced-motion suppresses stirring motion",
+      "nacl-820: no horizontal page overflow",
+      "nacl-820: apparatus, labels and notes inside scene",
+      "nacl-820: no clipped text",
+      "nacl-820: controls have usable geometry",
+      "nacl-820: scene regions do not overlap 1",
+      "nacl-820: scene regions do not overlap 2",
+      "nacl-820: scene regions do not overlap 3",
+      "nacl-820: scene regions do not overlap 4",
+      "820: pure water skips salt and has 100g water",
+      "820: pure water never shows salt particles",
+      "820: solution share button works",
+      "390: NaCl independent 100g/10% result",
+      "390: staged masses at 20%",
+      "390: staged masses at 45%",
+      "390: staged masses at 60%",
+      "390: dry salt before adding water is not drawn as liquid",
+      "390: staged masses at 80%",
+      "390: staged masses at 100%",
+      "390: mixed solution has no remaining solid",
+      "390: reduced-motion suppresses stirring motion",
+      "nacl-390: no horizontal page overflow",
+      "nacl-390: apparatus, labels and notes inside scene",
+      "nacl-390: no clipped text",
+      "nacl-390: controls have usable geometry",
+      "nacl-390: scene regions do not overlap 1",
+      "nacl-390: scene regions do not overlap 2",
+      "nacl-390: scene regions do not overlap 3",
+      "nacl-390: scene regions do not overlap 4",
+      "390: pure water skips salt and has 100g water",
+      "390: pure water never shows salt particles",
+      "390: solution share button works",
+      "pause stops owned clock",
+      "continue advances the same experiment",
+      "reset restores original question parameters and paused stage",
+      "independent context restores current slider and excess mode",
+      "shared reset uses question baseline, not comparison slider",
+      "unrelated saved favourite retained",
+      "sharing keeps unrelated tutor messages and draft",
+      "solution play and pause use the shared clock",
+      "comparison leaves question/reset baseline intact",
+      "grade UI preserves solution parameters and fixed temperature",
+      "subject snapshot restores adjusted solution",
+      "favourite load followed by Generate restores saved parameters",
+      "favourite saves comparison configuration and establishes its own reset baseline",
+      "reopening same active share preserves explicit reset",
+      "AI route return preserves adjustments in same active share",
+      "equivalent payload property ordering preserves active adjustments",
+      "independent share restores solution comparison and fixed 20C",
+      "A to B to A restores A after leaving context",
+      "legacy waiting route to old share restores A",
+      "reload imports payload configuration once",
+      "forged locked parameter rejects without replacing active experiment",
+      "tutor request carries current solution deterministic context",
+      "menu preset generates caco3Hcl",
+      "menu preset generates naclSolution",
+      "outcome condition rejected in actual page without rebinding or replacing retained experiment",
+      "outcome condition rejected in actual page without rebinding or replacing retained experiment",
+      "outcome condition rejected in actual page without rebinding or replacing retained experiment",
+      "outcome condition rejected in actual page without rebinding or replacing retained experiment",
+      "outcome condition rejected in actual page without rebinding or replacing retained experiment",
+      "outcome condition rejected in actual page without rebinding or replacing retained experiment",
+      "junior: consumed quantities independently match hand calculations",
+      "junior: steps and tutor result name every actual ask",
+      "junior: consumed quantities independently match hand calculations",
+      "junior: steps and tutor result name every actual ask",
+      "junior: consumed quantities independently match hand calculations",
+      "junior: steps and tutor result name every actual ask",
+      "senior: consumed quantities independently match hand calculations",
+      "senior: steps and tutor result name every actual ask",
+      "senior: consumed quantities independently match hand calculations",
+      "senior: steps and tutor result name every actual ask",
+      "senior: consumed quantities independently match hand calculations",
+      "senior: steps and tutor result name every actual ask",
+      "new chemistry generation preserves existing physics snapshot",
+      "real BFCache keeps adjusted chemistry share",
+      "real BFCache reimports chemistry share after context was left",
+      "real BFCache keeps adjusted chemistry share",
+      "real BFCache reimports chemistry share after context was left",
+      "no page exceptions",
+      "no console errors",
+      "no real AI requests"
+    ]
+  },
+  "animation": {
+    "variantCount": 6,
+    "background": {
+      "hidden": {
+        "visibility": "hidden",
+        "time": 187.79999999999995,
+        "pending": 0
+      },
+      "restored": {
+        "visibility": "visible",
+        "time": 382.29999999999995,
+        "pending": 1
+      },
+      "realTabSwitch": true
+    },
+    "chemistryBackground": [
+      {
+        "template": "caco3Hcl",
+        "hiddenTime": 0.15539999999999968,
+        "hiddenPending": 0,
+        "restoredTime": 0.32750000000000007,
+        "restoredPending": 1,
+        "maxPending": 1,
+        "realTabSwitch": true
+      },
+      {
+        "template": "naclSolution",
+        "hiddenTime": 0.17780000000000018,
+        "hiddenPending": 0,
+        "restoredTime": 0.344500000000001,
+        "restoredPending": 1,
+        "maxPending": 1,
+        "realTabSwitch": true
+      }
+    ]
+  },
+  "screenshots": [
+    {
+      "path": "caco3-1366.png",
+      "viewportWidth": 1366,
+      "sha256": "f85a7603bc481c18f50f9e6a2139c9aa6ec97a5ca18fb9c8ca48023be99f1652",
+      "bytes": 429319
+    },
+    {
+      "path": "caco3-820.png",
+      "viewportWidth": 820,
+      "sha256": "8a822f6e6e231479c1d0bd65556aceb5a164407d97e27d5157289ce76e409706",
+      "bytes": 358867
+    },
+    {
+      "path": "caco3-390.png",
+      "viewportWidth": 390,
+      "sha256": "f618583b83647c04a4f2c849bc2adaa3c9c985282bb725605c7f599fbfbb66dd",
+      "bytes": 216343
+    },
+    {
+      "path": "nacl-1366.png",
+      "viewportWidth": 1366,
+      "sha256": "081a062714f39c0cd145e46bdc3f9a9832412e953af1d8b761ddd12ac7bb8dbb",
+      "bytes": 370754
+    },
+    {
+      "path": "nacl-820.png",
+      "viewportWidth": 820,
+      "sha256": "0e23e44aec5ff0fbd351a500648a072f6ed8f4e6f2f0a58c133b59921aa2ce27",
+      "bytes": 312023
+    },
+    {
+      "path": "nacl-390.png",
+      "viewportWidth": 390,
+      "sha256": "a7ec583cdc50c86903d0b45d788d3ea4525b2cee6cd08638f4b239ff1551ad7e",
+      "bytes": 240699
+    }
+  ],
+  "knownInapplicable": "incline --guard-only retains five historical AI-coordinate assertions; same baseline failure. Current local incline core/render/competition/data and all three drawing entry regressions executed separately.",
+  "unexecuted": [
+    "Real AI/live model evaluation (outside authorization)",
+    "Firefox/WebKit engines (unavailable in this environment)"
+  ],
+  "privacy": "Only six selected screenshots and this sanitized summary are committed with explicit user permission. Raw logs, other screenshots, fixture request bodies and local paths remain outside Git."
+}
