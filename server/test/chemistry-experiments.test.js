@@ -93,6 +93,44 @@ test('CaCO3: outcome masses never become initial givens, including temporal syno
   '10g纯碳酸钙与含HCl溶质3.65g的稀盐酸充分反应后，求剩余碳酸钙的质量。'
  ])assert.equal(parse(q).ok,true,`${q}: ${parse(q).message}`);
 });
+test('CaCO3: asks and givens retain independent roles in either order and across punctuation',()=>{
+ const ask='求：生成二氧化碳的质量';
+ const layouts=(given,asked=ask)=>[
+  `${given}，${asked}。`,`${asked}。${given}。`,`${asked}：${given}。`,`${asked}，${given}。`,
+  `${given}。${asked}。`
+ ];
+ for(const role of ['反应后','剩余质量','消耗质量','反应后质量'])for(const annotation of [`（${role}）`,`,为${role}`]){
+  const given=`10g纯碳酸钙与稀盐酸充分反应，HCl溶质质量为3.65g${annotation}`;
+  for(const q of layouts(given))assert.equal(parse(q).ok,false,q);
+ }
+ for(const given of [
+  '10g纯碳酸钙与稀盐酸充分反应，反应后HCl溶质质量为3.65g',
+  '消耗5g纯碳酸钙，与足量稀盐酸充分反应',
+  '碳酸钙质量为5g（剩余质量），与足量稀盐酸充分反应'
+ ])for(const q of layouts(given))assert.equal(parse(q).ok,false,q);
+ for(const level of ['junior','senior'])for(const [given,asked,key,expected]of [
+  ['反应前，碳酸钙初始质量为10g，HCl溶质初始质量为3.65g','生成二氧化碳的质量','co2',2.2],
+  ['10g纯碳酸钙与含HCl溶质3.65g的稀盐酸充分反应后','剩余碳酸钙的质量','remainingCa',5],
+  ['10g纯碳酸钙与足量稀盐酸充分反应','消耗HCl溶质的质量','consumedHcl',7.3],
+  ['10g纯碳酸钙与稀盐酸反应，HCl溶质质量为3.65g（初始质量）','生成二氧化碳的质量','co2',2.2]
+ ])for(const q of layouts(given,`求：${asked}`)){
+  const p=ca.parseQuestion(q,{gradeLevel:level});assert.equal(p.ok,true,`${q}: ${p.message}`);
+  assert.equal(p.fixed.asks,key);near(ca.model(p.p1,p.p2,p.fixed).answers[0].value,expected);
+ }
+ // Exact stoichiometry is a given even if the question comes first.
+ assert.equal(parse('求生成二氧化碳的质量。10g纯碳酸钙与含HCl溶质3.65g的稀盐酸恰好反应。').ok,false);
+});
+test('CaCO3: every requested entity, quantity type and reaction action must match',()=>{
+ const given='10g纯碳酸钙与含HCl溶质3.65g的稀盐酸充分反应';
+ for(const ask of [
+  '消耗二氧化碳的质量','剩余二氧化碳的质量','生成碳酸钙的质量','生成HCl溶质的质量',
+  '消耗生成二氧化碳的质量','消耗碳酸钙的质量分数','剩余HCl溶质的温度',
+  '生成二氧化碳的质量和消耗二氧化碳的质量','剩余碳酸钙的质量和碳酸钙的温度'
+ ])for(const q of [`${given}，求${ask}。`,`求：${ask}。${given}。`])assert.equal(parse(q).ok,false,q);
+ for(const [ask,key,value]of [['生成二氧化碳的质量','co2',2.2],['消耗碳酸钙的质量','consumedCa',5],['消耗HCl溶质的质量','consumedHcl',3.65],['剩余碳酸钙的质量','remainingCa',5],['剩余HCl溶质的质量','remainingHcl',0]]){
+  const p=parse(`求：${ask}。${given}。`);assert.equal(p.ok,true,p.message);assert.equal(p.fixed.asks,key);near(ca.model(p.p1,p.p2,p.fixed).answers[0].value,value);
+ }
+});
 test('CaCO3: every requested consumed/remainder result has a named answer and grade-specific calculation',()=>{
  for(const level of ['junior','senior'])for(const [given,asks,expected]of [
   ['10g纯碳酸钙与足量稀盐酸','消耗HCl溶质的质量',{consumedHcl:7.3}],
@@ -160,6 +198,22 @@ test('NaCl: refuses water-as-total, missing values, extra conditions and unsuppo
   '配制100g质量分数为10%的氯化钠溶液，求水的质量和颜色。',
   '配制100g质量分数为10%的氯化钠溶液，另有未知条件z=3，求水的质量。'
  ])assert.equal(solutionParse(q).ok,false,q);
+});
+test('NaCl: mass asks cannot stand in for mass fraction, temperature or reaction actions',()=>{
+ const given='20°C时，配制200g质量分数为10%的氯化钠溶液';
+ for(const ask of [
+  '水的质量分数','水的温度','盐的质量分数','盐和水的质量分数','盐的质量和水的温度',
+  '水的质量和盐的质量分数','生成水的质量','消耗盐的质量','剩余水的质量',
+  '配制步骤和水的温度','水的温度和配制步骤'
+ ])for(const q of [`${given}，求${ask}。`,`求：${ask}。${given}。`,`求${ask}：${given}。`])assert.equal(solutionParse(q).ok,false,q);
+ assert.equal(solutionParse(`${given}，求水的质量；水的温度？`).ok,false);
+ for(const level of ['junior','senior'])for(const [ask,keys]of [
+  ['水的质量','water'],['所需氯化钠的质量','salt'],['所需盐和水的质量','salt,water'],
+  ['所需盐和水的质量、配制步骤','salt,steps,water']
+ ])for(const q of [`${given}，求：${ask}。`,`求：${ask}。${given}。`,`求${ask}：${given}。`]){
+  const p=solution.parseQuestion(q,{gradeLevel:level});assert.equal(p.ok,true,`${q}: ${p.message}`);assert.equal(p.fixed.asks,keys);
+  const m=solution.model(p.p1,p.p2,p.fixed);near(m.saltMass,20);near(m.waterMass,180);
+ }
 });
 test('NaCl: question/mode/grade roundtrips and distinct teaching methods',()=>{
  for(const level of ['junior','senior'])for(const [m,w]of [[100,10],[50,6],[200,5],[100,0],[20,.0001],[500,20]]){

@@ -190,6 +190,58 @@ try{
   check(Object.keys(expected).every(key=>actual.m.answers.some(a=>a.key===key&&near(a.value,expected[key]))),`${grade}: consumed quantities independently match hand calculations`);
   check(actual.m.answers.every(a=>actual.step.includes(a.label)&&actual.context.deterministicResult.resultText.includes(a.label)),`${grade}: steps and tutor result name every actual ask`);
  }
+ // Review 5608954415: execute real page rejection with a previously adjusted
+ // experiment on screen. Preserve the entire model, original/reset question,
+ // parameters, fixed mode and readout, rather than only its ID. Tutor context
+ // follows the input question; a rejected new question must not borrow old results.
+ report.semanticReview={review:'https://github.com/yanyucheng-master/ai-science-studio/pull/4#pullrequestreview-5608954415',cases:[]};
+ for(const id of ['caco3Hcl','naclSolution']){
+  const original=id==='caco3Hcl'?acidQ:solutionQ;
+  await generate(semantic.page,original);await change(semantic.page,0,id==='caco3Hcl'?20:150);
+  const snapshot=()=>semantic.page.evaluate(()=>JSON.stringify({id:activeGenericId(),original:state.generatedQuestion,baseline:state.genericQuestionBaseline,p1:state.p1,p2:state.p2,fixed:state.extraFixed[activeGenericId()],model:buildGenericContent().model,readout:document.querySelector('#stopDistanceLabel').textContent}));
+  const before=await snapshot();
+  const tutorBefore=await semantic.page.evaluate(()=>JSON.stringify(buildMasterLabAIContext().deterministicResult));
+  const negatives=id==='caco3Hcl'?[
+   ...['（反应后）','（剩余质量）','，为消耗质量'].flatMap(note=>{
+    const given=`10g纯碳酸钙与稀盐酸充分反应，HCl溶质质量为3.65g${note}`;
+    return [`求生成二氧化碳的质量。${given}。`,`求：生成二氧化碳的质量：${given}。`,`${given}。求生成二氧化碳的质量。`];
+   }),
+   '求生成二氧化碳的质量。消耗5g纯碳酸钙，与足量稀盐酸反应。',
+   '求生成二氧化碳的质量。10g纯碳酸钙与稀盐酸反应，反应后HCl溶质质量为3.65g。',
+   ...['消耗二氧化碳的质量','剩余二氧化碳的质量','生成碳酸钙的质量','生成HCl溶质的质量','生成二氧化碳的质量和消耗二氧化碳的质量'].flatMap(ask=>[`10g纯碳酸钙与足量稀盐酸反应，求${ask}。`,`求：${ask}。10g纯碳酸钙与足量稀盐酸反应。`])
+  ]:[
+   ...['水的质量分数','水的温度','盐和水的质量分数','盐的质量和水的温度','配制步骤和水的温度','生成水的质量','消耗盐的质量','剩余水的质量'].flatMap(ask=>[`20°C时，配制200g质量分数为10%的氯化钠溶液，求${ask}。`,`求：${ask}。20°C时，配制200g质量分数为10%的氯化钠溶液。`])
+  ];
+  for(const question of negatives){
+   await semantic.page.locator('#questionInput').fill(question);await semantic.page.evaluate(()=>generateExperiment({allowAiFallback:false}));
+   const refused=await semantic.page.evaluate(()=>!planLocalExperiment(document.querySelector('#questionInput').value).ok);
+   const after=await snapshot(),retained=after===before;
+   const newContext=await semantic.page.evaluate(()=>buildMasterLabAIContext());
+   const noBorrowedAnswer=newContext.originalQuestion===question&&!newContext.deterministicResult.resultText;
+   const feedback=await semantic.page.locator('#parseFeedback').innerText();
+   const visibleRejection=Boolean(feedback.trim())&&await semantic.page.locator('#parseFeedback.error.show').isVisible();
+   if(question===negatives[0]){const path=resolve(output,`${id}-review-rejection.png`);await semantic.page.screenshot({path,fullPage:true});report.screenshots.push(path);}
+   await semantic.page.locator('#questionInput').fill(original);
+   const tutorRetained=await semantic.page.evaluate(()=>JSON.stringify(buildMasterLabAIContext().deterministicResult))===tutorBefore;
+   const passed=refused&&retained&&noBorrowedAnswer&&tutorRetained&&visibleRejection;
+   report.semanticReview.cases.push({question,expected:'reject-and-retain',actual:passed?'reject-and-retain':'failed',feedback,...passed?{}:{refused,retained,noBorrowedAnswer,tutorRetained,visibleRejection,before:JSON.parse(before),after:JSON.parse(after)}});
+   if(!passed)console.log(JSON.stringify(report.semanticReview.cases.at(-1)));
+   check(passed,`${id}: review counterexample rejected and original adjusted experiment retained: ${question}`);
+  }
+ }
+ for(const [question,key,value]of [
+  ['求：生成二氧化碳的质量。10g纯碳酸钙与含HCl溶质3.65g的稀盐酸反应。','co2',2.2],
+  ['求消耗HCl溶质的质量：10g纯碳酸钙与足量稀盐酸反应。','consumedHcl',7.3],
+  ['求剩余碳酸钙的质量。10g纯碳酸钙与含HCl溶质3.65g的稀盐酸充分反应后。','remainingCa',5]
+ ]){
+  await generate(semantic.page,question);const actual=await semantic.page.evaluate(()=>buildGenericContent().model.answers);
+  check(actual.length===1&&actual[0].key===key&&near(actual[0].value,value),`front-loaded valid ask preserves action and hand-calculated ${key}`);
+  report.semanticReview.cases.push({question,expected:{key,value},actual:actual[0]});
+ }
+ const frontSolution='求：所需盐和水的质量。20°C时，配制200g质量分数为10%的氯化钠溶液。';
+ await generate(semantic.page,frontSolution);
+ check(await semantic.page.evaluate(()=>state.extraFixed.naclSolution.asks==='salt,water'&&buildGenericContent().model.saltMass===20&&buildGenericContent().model.waterMass===180),'front-loaded NaCl mass question gives salt 20g / water 180g without substituting another type');
+ report.semanticReview.cases.push({question:frontSolution,expected:{saltMass:20,waterMass:180},actual:await semantic.page.evaluate(()=>{const m=buildGenericContent().model;return {saltMass:m.saltMass,waterMass:m.waterMass};})});
  await semantic.context.close();
  const preservation=await fresh();
  await generate(preservation.page,'一辆汽车以20m/s的速度行驶，刹车加速度大小为5m/s²，求刹车距离。');await change(preservation.page,0,25);

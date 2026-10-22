@@ -2910,5 +2910,279 @@
   "expect": "ai",
   "target": "caco3Hcl",
   "note": "P1 postfix outcome annotations must not bind as initial mass"
+ },
+ {
+  "q": "求生成二氧化碳的质量。10g纯碳酸钙与稀盐酸充分反应，HCl溶质质量为3.65g（反应后）。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "求：生成二氧化碳的质量：10g纯碳酸钙与稀盐酸充分反应，HCl溶质质量为3.65g（反应后）。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "求生成二氧化碳的质量。10g纯碳酸钙与稀盐酸充分反应，HCl溶质质量为3.65g（剩余质量）。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "求：生成二氧化碳的质量：10g纯碳酸钙与稀盐酸充分反应，HCl溶质质量为3.65g（剩余质量）。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "求生成二氧化碳的质量。10g纯碳酸钙与稀盐酸充分反应，HCl溶质质量为3.65g，为消耗质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "求：生成二氧化碳的质量：10g纯碳酸钙与稀盐酸充分反应，HCl溶质质量为3.65g，为消耗质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "求生成二氧化碳的质量。10g纯碳酸钙与稀盐酸反应，反应后HCl溶质质量为3.65g。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "求生成二氧化碳的质量。消耗5g纯碳酸钙，与足量稀盐酸充分反应。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "10g纯碳酸钙与足量稀盐酸反应，求消耗二氧化碳的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "10g纯碳酸钙与足量稀盐酸反应，求剩余二氧化碳的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "10g纯碳酸钙与足量稀盐酸反应，求生成碳酸钙的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "10g纯碳酸钙与足量稀盐酸反应，求生成二氧化碳的质量和消耗二氧化碳的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "20°C时，配制200g质量分数为10%的氯化钠溶液，求水的质量分数。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "求：水的质量分数。20°C时，配制200g质量分数为10%的氯化钠溶液。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "20°C时，配制200g质量分数为10%的氯化钠溶液，求水的温度。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "求：水的温度。20°C时，配制200g质量分数为10%的氯化钠溶液。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "20°C时，配制200g质量分数为10%的氯化钠溶液，求盐和水的质量分数。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "求：盐和水的质量分数。20°C时，配制200g质量分数为10%的氯化钠溶液。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "20°C时，配制200g质量分数为10%的氯化钠溶液，求盐的质量和水的温度。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "求：盐的质量和水的温度。20°C时，配制200g质量分数为10%的氯化钠溶液。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "20°C时，配制200g质量分数为10%的氯化钠溶液，求配制步骤和水的温度。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "求：配制步骤和水的温度。20°C时，配制200g质量分数为10%的氯化钠溶液。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "20°C时，配制200g质量分数为10%的氯化钠溶液，求生成水的质量。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "求：生成水的质量。20°C时，配制200g质量分数为10%的氯化钠溶液。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "20°C时，配制200g质量分数为10%的氯化钠溶液，求消耗盐的质量。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "求：消耗盐的质量。20°C时，配制200g质量分数为10%的氯化钠溶液。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "20°C时，配制200g质量分数为10%的氯化钠溶液，求剩余水的质量。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "求：剩余水的质量。20°C时，配制200g质量分数为10%的氯化钠溶液。",
+  "expect": "ai",
+  "target": "naclSolution",
+  "note": "Review 5608954415: retain condition roles, requested quantity type and reaction action"
+ },
+ {
+  "q": "初中：求：生成二氧化碳的质量。反应前，碳酸钙初始质量为10g，HCl溶质初始质量为3.65g。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "caco3Hcl",
+  "level": "junior",
+  "answer": {
+   "p1": 10,
+   "p2": 3.65,
+   "co2Mass": 2.2
+  },
+  "note": "Review 5608954415: supported front-loaded ask keeps hand-calculated mass answer"
+ },
+ {
+  "q": "初中：求消耗HCl溶质的质量：10g纯碳酸钙与足量稀盐酸反应。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "caco3Hcl",
+  "level": "junior",
+  "answer": {
+   "p1": 10,
+   "p2": 0,
+   "consumedHcl": 7.3
+  },
+  "note": "Review 5608954415: supported front-loaded ask keeps hand-calculated mass answer"
+ },
+ {
+  "q": "初中：求：剩余碳酸钙的质量。10g纯碳酸钙与含HCl溶质3.65g的稀盐酸充分反应后。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "caco3Hcl",
+  "level": "junior",
+  "answer": {
+   "p1": 10,
+   "p2": 3.65,
+   "remainingCa": 5
+  },
+  "note": "Review 5608954415: supported front-loaded ask keeps hand-calculated mass answer"
+ },
+ {
+  "q": "初中：求：所需盐和水的质量。20°C时，配制200g质量分数为10%的氯化钠溶液。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "naclSolution",
+  "level": "junior",
+  "answer": {
+   "p1": 200,
+   "p2": 10,
+   "saltMass": 20,
+   "waterMass": 180
+  },
+  "note": "Review 5608954415: supported front-loaded ask keeps hand-calculated mass answer"
+ },
+ {
+  "q": "高中：求：生成二氧化碳的质量。反应前，碳酸钙初始质量为10g，HCl溶质初始质量为3.65g。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "caco3Hcl",
+  "level": "senior",
+  "answer": {
+   "p1": 10,
+   "p2": 3.65,
+   "co2Mass": 2.2
+  },
+  "note": "Review 5608954415: supported front-loaded ask keeps hand-calculated mass answer"
+ },
+ {
+  "q": "高中：求消耗HCl溶质的质量：10g纯碳酸钙与足量稀盐酸反应。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "caco3Hcl",
+  "level": "senior",
+  "answer": {
+   "p1": 10,
+   "p2": 0,
+   "consumedHcl": 7.3
+  },
+  "note": "Review 5608954415: supported front-loaded ask keeps hand-calculated mass answer"
+ },
+ {
+  "q": "高中：求：剩余碳酸钙的质量。10g纯碳酸钙与含HCl溶质3.65g的稀盐酸充分反应后。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "caco3Hcl",
+  "level": "senior",
+  "answer": {
+   "p1": 10,
+   "p2": 3.65,
+   "remainingCa": 5
+  },
+  "note": "Review 5608954415: supported front-loaded ask keeps hand-calculated mass answer"
+ },
+ {
+  "q": "高中：求：所需盐和水的质量。20°C时，配制200g质量分数为10%的氯化钠溶液。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "naclSolution",
+  "level": "senior",
+  "answer": {
+   "p1": 200,
+   "p2": 10,
+   "saltMass": 20,
+   "waterMass": 180
+  },
+  "note": "Review 5608954415: supported front-loaded ask keeps hand-calculated mass answer"
  }
 ]

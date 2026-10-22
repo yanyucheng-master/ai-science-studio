@@ -4,7 +4,6 @@
   const kit = window.MasterLabTemplateKit, chemistry = window.MasterLabChemistry;
   if (!kit || !chemistry) return;
   const { fact, miss, fmt, fmtInput, exactPlaces } = kit.helpers;
-  const guard = () => window.MasterLabQuestionGuard;
   const CA = chemistry.relativeMass("CaCO3"), ACID = 2 * chemistry.relativeMass("HCl"), GAS = chemistry.relativeMass("CO2");
   const equation = "CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂↑";
   const quantity = "(?<![\\w.])[+-]?\\d+(?:\\.\\d+)?\\s*(?:kg|mg|g|千克|毫克|克)";
@@ -20,10 +19,35 @@
     const stated = /初中/.test(source) ? "junior" : /高中/.test(source) ? "senior" : "";
     return { level: stated || context.gradeLevel || "senior", levelLocked: Boolean(stated) };
   };
+  function questionParts(source, tokens) {
+    // Keep original offsets while masking each ask, wherever it occurs. A new
+    // numeric condition after a comma ends the ask; sentence/colon boundaries
+    // also end it, except the colon immediately introducing “求：…”.
+    const marker=/(?:试求|求出|求得|(?<![要需请追恳])求(?!助)|计算出|计算(?!题)|判断|确定)/;
+    const asks=[],ranges=[];let asking=false,emptyAsk=false;
+    for(const chunk of source.matchAll(/[^，,。；;？?！!：:]+|[，,。；;？?！!：:]/g)){
+      const text=chunk[0],start=chunk.index;
+      if(/^[，,。；;？?！!：:]$/.test(text)){
+        if(!/^[，,]$/.test(text)&&!(/^[：:]$/.test(text)&&asking&&emptyAsk))asking=false;
+        continue;
+      }
+      const found=marker.exec(text);
+      const condition=tokens.some(t=>t.index>=start&&t.index<start+text.length)||/^(?:反应前|反应后|反应结束|结束时|初始|起始|最初|开始时)$/.test(text.trim());
+      if(found){
+        const ask=text.slice(found.index+found[0].length).trim();
+        asks.push(...(ask?[ask]:[]));ranges.push([start+found.index,start+text.length]);
+        asking=true;emptyAsk=!ask;
+      }else if((asking&&!condition)||/多少|多重|是否|哪种|如何|怎样/.test(text)||/[？?]/.test(source[start+text.length]||'')){
+        asks.push(text.trim());ranges.push([start,start+text.length]);asking=true;emptyAsk=false;
+      }else asking=false;
+    }
+    let givens=source;
+    for(const [start,end]of ranges.reverse())givens=givens.slice(0,start)+' '.repeat(end-start)+givens.slice(end);
+    return {givens,asks};
+  }
   function quantityRole(source,index) {
-    // Temporal/semantic roles are attached before vocabulary validation. A mass
-    // after “反应后，…” remains an outcome even across a comma; asking about a
-    // consumed/remainder mass later does not relabel earlier initial givens.
+    // Only condition text is inspected: a front-loaded consumption/remainder
+    // ask must not relabel the later initial givens.
     const markers=/未(?:参加|参与)?反应|反应后|反应完|反应结束|结束时|剩余|剩下|余下|余量|残余|残留|消耗|耗去|耗用|用去|用掉|减少|参与反应|参加反应|反应掉|反应了|反应前|初始|起始|最初|开始时|原有|投入|投料|加入前/g;
     let role='initial';
     for(const match of source.slice(0,index).matchAll(markers))role=/^(?:反应前|初始|起始|最初|开始时|原有|投入|投料|加入前)$/.test(match[0])?'initial':/消耗|耗去|耗用|用去|用掉|减少|参与反应|参加反应|反应掉|反应了/.test(match[0])?'consumed':'remaining';
@@ -39,7 +63,7 @@
           if (!token) continue;
           const previous = map.get(index);
           if (previous && previous.role !== role) return null;
-          map.set(index, { role, token: { ...token, conditionRole: quantityRole(source,index) } });
+          map.set(index, { role, token });
         }
       }
     });
@@ -59,30 +83,34 @@
   const caBlocked = /纯度|杂质|石灰石|大理石|浓度|质量分数|体积|容积|密度|速率|速度|时间|压强|压力|温度|加热|催化|分步|多步|滴定|平衡|密闭|不完全|溶解度|mol\b|摩尔|氯化钙|CaCl2|蒸发|损失/i;
   // Outcome annotations can follow a mass (including in parentheses), so a
   // prefix-only binding is insufficient. No outcome given is an initial input.
-  const outcomeGiven = /剩余|剩下|余下|余量|残余|残留|未(?:参加|参与)?反应|消耗|耗去|耗用|用去|用掉|减少|参与反应|参加反应|反应掉|反应了|(?:反应后|反应完|反应结束|结束时)(?:的)?(?:质量|用量|数值)|[（(]\s*(?:反应后|反应完|反应结束|结束时)\s*[）)]/;
-  function caAsks(source, excess) {
-    const items = guard().askItems(source), keys = new Set();
+  const outcomeGiven = /剩余|剩下|余下|余量|残余|残留|未(?:参加|参与)?反应|消耗|耗去|耗用|用去|用掉|减少|参与反应|参加反应|反应掉|反应了|(?:反应后|反应完|反应结束|结束时)(?:的)?(?:质量|用量|数值)|(?:为|是)(?:反应后|反应完|反应结束|结束时)|[（(]\s*(?:反应后|反应完|反应结束|结束时)\s*[）)]/;
+  const askList=asks=>asks.flatMap(text=>text.replace(/\s/g,'').split(/以及|及其|和|与|及|并且|并|、/)).filter(Boolean);
+  const massAsk='(?:的)?(?:质量(?:(?:为|是)?多少)?|多少|多重)';
+  function caAsks(asks, excess) {
+    const items = askList(asks), keys = new Set();
     if (!items.length) return miss("请明确所求：CO₂ 质量、限量反应物或可确定的消耗/剩余质量。");
     for (const item of items) {
-      if (/(?:CO2|二氧化碳)/i.test(item) && /质量|多少|多重/.test(item)) keys.add("co2");
-      else if (/限量|限制|哪种.*(?:剩余|过量)|是否.*恰好|恰好反应/.test(item)) keys.add("limiting");
-      else if (/碳酸钙|CaCO3/i.test(item) && /剩余|余量|消耗/.test(item) && /质量|多少/.test(item)) {
-        if (/剩余|余量/.test(item) && excess === "caco3") return miss("足量 CaCO₃ 的初始质量未知，不能计算它的剩余质量。");
-        keys.add(/剩余|余量/.test(item) ? "remainingCa" : "consumedCa");
-      } else if (/HCl|氯化氢/i.test(item) && /剩余|余量|消耗/.test(item) && /质量|多少/.test(item)) {
-        if (/剩余|余量/.test(item) && excess === "hcl") return miss("足量盐酸的 HCl 初始质量未知，不能计算其剩余质量。");
-        keys.add(/剩余|余量/.test(item) ? "remainingHcl" : "consumedHcl");
-      } else return miss("题目有未支持的子问，不能省略后生成实验。");
+      // Full-item matches bind entity, quantity type and action together.
+      if (new RegExp(`^(?:理论|最多|最终|反应后)*(?:生成|产生)?(?:CO2|二氧化碳)${massAsk}$`,'i').test(item)) keys.add("co2");
+      else if (/^(?:限量反应物|限制反应物|哪种反应物(?:剩余|过量)|是否恰好反应|恰好反应)$/.test(item)) keys.add("limiting");
+      else {
+        const match=new RegExp(`^(?:反应后)?(剩余|余量|消耗)(?:的)?(碳酸钙|CaCO3|HCl(?:溶质)?|氯化氢(?:溶质)?)${massAsk}$`,'i').exec(item);
+        if(!match)return miss("题目有未支持的物质、量的类型或反应动作，不能改写所问后生成实验。");
+        const ca=/碳酸钙|CaCO3/i.test(match[2]),remaining=match[1]!=='消耗';
+        if(remaining&&excess===(ca?'caco3':'hcl'))return miss("足量反应物的初始质量未知，不能计算它的剩余质量。");
+        keys.add(`${remaining?'remaining':'consumed'}${ca?'Ca':'Hcl'}`);
+      }
     }
     return { ok: true, asks: [...keys].sort().join(",") };
   }
   function parseCa(source, tokens, context) {
     if (caBlocked.test(source)) return miss("当前只支持纯 CaCO₃ 与稀盐酸的单步质量关系；请使用明确 HCl 溶质质量或足量条件。");
     if (/(?:足量|过量|足够)(?:的)?\s*[+-]?\d|\d\s*(?:kg|mg|g|千克|毫克|克)\s*(?:为|是)?\s*(?:足量|过量|足够)/i.test(source)) return miss("足量与数值质量不能同时指定给同一反应物。");
-    const roles = massRoles(source, tokens, [caName, acidName]);
+    const parts=questionParts(source,tokens);
+    const roles = massRoles(parts.givens, tokens, [caName, acidName]);
     if (!roles || roles.some(list => list.length > 1)) return miss("每种反应物只接受一份明确质量；盐酸溶液质量不能当作 HCl 溶质质量。");
-    const givens = source.split(/试求|求|计算|判断|确定/)[0];
-    if(roles.flat().some(token=>token.conditionRole!=='initial')||outcomeGiven.test(givens))return miss("本实验只接收反应前的初始投入质量；消耗、反应后或剩余质量不能重绑定为初始质量，逆向条件不在首版范围内。");
+    const {givens}=parts;
+    if(roles.flat().some(token=>quantityRole(givens,token.index)!=='initial')||outcomeGiven.test(givens))return miss("本实验只接收反应前的初始投入质量；消耗、反应后或剩余质量不能重绑定为初始质量，逆向条件不在首版范围内。");
     const excessCa = /(?:足量|过量|足够)(?:的)?\s*(?:纯)?\s*(?:CaCO3|碳酸钙)|(?:CaCO3|碳酸钙)(?:固体)?\s*(?:为|是)?\s*(?:足量|过量|足够)/i.test(source);
     const excessHcl = /(?:足量|过量|足够)(?:的)?\s*(?:稀)?\s*(?:盐酸|HCl)|(?:稀盐酸|盐酸|HCl(?:溶液)?)\s*(?:为|是)?\s*(?:足量|过量|足够)/i.test(source);
     if ((excessCa && excessHcl) || (excessCa && roles[0].length) || (excessHcl && roles[1].length)) return miss("足量条件与定量条件冲突，请明确给定模式。");
@@ -92,7 +120,7 @@
     if ([p1,p2].some(n => !preciseParam(n))) return miss("质量换算为 g 后最多支持四位小数，请保留原题并核对输入精度。");
     const level = levelOf(source, context);
     if (!level) return miss("题目学段条件冲突。");
-    const asks = caAsks(source, excess);
+    const asks = caAsks(parts.asks, excess);
     if (!asks.ok) return asks;
     if (!knownNarrative(source,tokens,caWords,/反应前|初始|起始|最初|开始时|原有|投入|投料|加入前/g)) return miss("题目含未支持的条件或所问，不能省略后生成实验。");
     if (/恰好/.test(givens) && (excess || Math.abs(p1/CA-p2/ACID)>1e-10)) return miss("“恰好反应”条件与给定质量不一致。");
@@ -187,16 +215,19 @@
   const spelledPercent=/百分之\s*(\d+(?:\.\d+)?|二十|十[一二三四五六七八九]?|[零一二三四五六七八九])/g;
   const cnDigits={零:0,一:1,二:2,三:3,四:4,五:5,六:6,七:7,八:8,九:9};
   const readPercent=text=>/^\d/.test(text)?Number(text):text==='二十'?20:text.startsWith('十')?10+(cnDigits[text.slice(1)]||0):cnDigits[text];
-  function solutionAsks(source){
-    const items=guard().askItems(source),keys=new Set();
+  function solutionAsks(asks){
+    // Expand only the explicit shared mass type in “盐和水的质量”. A different
+    // type (质量分数/温度) never inherits the available mass answer.
+    const salt='(?:氯化钠|NaCl|食盐|盐|溶质)',water='(?:水|溶剂)';
+    const expanded=asks.map(text=>text.replace(/\s/g,'').replace(new RegExp(`((?:配制)?(?:所需|需要)?${salt})(和|与|、)(${water})((?:的)?质量)(?=$|和|与|、|以及)`,'gi'),'$1的质量$2$3$4'));
+    const items=askList(expanded),keys=new Set();
     if(!items.length)return miss("请明确所需盐、水的质量或配制步骤。");
     for(const item of items){
-      if(/步骤|方法|过程|如何配|怎样配/.test(item))keys.add('steps');
-      else if(/氯化钠|NaCl|食盐|盐/.test(item)&&!/盐水|溶液/.test(item))keys.add('salt');
-      else if(/水|溶剂/.test(item)&&!/盐水|溶液/.test(item))keys.add('water');
+      if(/^(?:配制)?(?:步骤|方法|过程)$|^(?:如何|怎样)配制$/.test(item))keys.add('steps');
+      else if(new RegExp(`^(?:配制)?(?:所需|需要)?${salt}${massAsk}$`,'i').test(item))keys.add('salt');
+      else if(new RegExp(`^(?:配制)?(?:所需|需要)?${water}${massAsk}$`,'i').test(item))keys.add('water');
       else return miss("配制实验只回答所需盐、水的质量及配制步骤，不能省略其他子问。");
     }
-    if(/(?:求|计算)[^。；;？?]*(?:盐|氯化钠|NaCl|食盐)(?:和|与|、)(?:水|溶剂)/i.test(source)){keys.add('salt');keys.add('water');}
     return {ok:true,asks:[...keys].sort().join(',')};
   }
   function parseSolution(source,tokens,context){
@@ -215,7 +246,7 @@
     const percentLead=percent.length?source.slice(Math.max(0,percent[0].index-18),percent[0].index):source.slice(Math.max(0,spelled[0].index-18),spelled[0].index);
     const compact=percent.length&&percent[0].index>=mass.index+mass.text.length&&source.slice(mass.index+mass.text.length,percent[0].index).trim()==='';
     if(!/质量分数|质量百分数/.test(percentLead)&&!compact)return miss("浓度需明确为溶质质量分数，不猜测其他百分浓度。");
-    const level=levelOf(source,context),asks=solutionAsks(source);
+    const level=levelOf(source,context),asks=solutionAsks(questionParts(source,tokens).asks);
     if(!level||!asks.ok)return level?asks:miss("题目学段条件冲突。");
     const p1=mass.value*1000;
     if(!preciseParam(p1)||!preciseParam(w))return miss("参数最多支持四位小数，请核对输入精度。");
