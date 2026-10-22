@@ -2886,5 +2886,29 @@
    "5"
   ],
   "note": "P2: answer the consumed solid mass"
+ },
+ {
+  "q": "10g纯碳酸钙与稀盐酸反应，HCl溶质质量为3.65g（剩余质量），求二氧化碳的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "P1 postfix outcome annotations must not bind as initial mass"
+ },
+ {
+  "q": "碳酸钙质量为5g，为消耗质量，与足量稀盐酸反应，求二氧化碳的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "P1 postfix outcome annotations must not bind as initial mass"
+ },
+ {
+  "q": "10g纯碳酸钙与稀盐酸反应，HCl溶质质量为3.65g，为反应后质量，求二氧化碳的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "P1 postfix outcome annotations must not bind as initial mass"
+ },
+ {
+  "q": "10g纯碳酸钙与稀盐酸反应，HCl溶质质量为3.65g（反应后），求二氧化碳的质量。",
+  "expect": "ai",
+  "target": "caco3Hcl",
+  "note": "P1 postfix outcome annotations must not bind as initial mass"
  }
 ]

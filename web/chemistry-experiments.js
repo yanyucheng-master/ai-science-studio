@@ -57,6 +57,9 @@
   }
   const caWords = /二氧化碳|碳酸钙|氯化氢|反应物|盐酸|溶质|溶液|纯|稀|足量|过量|足够|的|质量|用量|剩余|余量|消耗|生成|产生|理论|最多|最终|反应后|反应中|充分|完全|恰好|反应|限量|限制|哪种|是否|多少|各自|分别|求出|试求|求|计算|判断|确定|以及|及其|以及|和|与|并|及|有|取|将|把|加入|含有|含|为|是|后|中|了|请|初中|高中|方法|按|计算/g;
   const caBlocked = /纯度|杂质|石灰石|大理石|浓度|质量分数|体积|容积|密度|速率|速度|时间|压强|压力|温度|加热|催化|分步|多步|滴定|平衡|密闭|不完全|溶解度|mol\b|摩尔|氯化钙|CaCl2|蒸发|损失/i;
+  // Outcome annotations can follow a mass (including in parentheses), so a
+  // prefix-only binding is insufficient. No outcome given is an initial input.
+  const outcomeGiven = /剩余|剩下|余下|余量|残余|残留|未(?:参加|参与)?反应|消耗|耗去|耗用|用去|用掉|减少|参与反应|参加反应|反应掉|反应了|(?:反应后|反应完|反应结束|结束时)(?:的)?(?:质量|用量|数值)|[（(]\s*(?:反应后|反应完|反应结束|结束时)\s*[）)]/;
   function caAsks(source, excess) {
     const items = guard().askItems(source), keys = new Set();
     if (!items.length) return miss("请明确所求：CO₂ 质量、限量反应物或可确定的消耗/剩余质量。");
@@ -78,7 +81,8 @@
     if (/(?:足量|过量|足够)(?:的)?\s*[+-]?\d|\d\s*(?:kg|mg|g|千克|毫克|克)\s*(?:为|是)?\s*(?:足量|过量|足够)/i.test(source)) return miss("足量与数值质量不能同时指定给同一反应物。");
     const roles = massRoles(source, tokens, [caName, acidName]);
     if (!roles || roles.some(list => list.length > 1)) return miss("每种反应物只接受一份明确质量；盐酸溶液质量不能当作 HCl 溶质质量。");
-    if(roles.flat().some(token=>token.conditionRole!=='initial'))return miss("本实验只接收反应前的初始投入质量；消耗、反应后或剩余质量不能重绑定为初始质量，逆向条件不在首版范围内。");
+    const givens = source.split(/试求|求|计算|判断|确定/)[0];
+    if(roles.flat().some(token=>token.conditionRole!=='initial')||outcomeGiven.test(givens))return miss("本实验只接收反应前的初始投入质量；消耗、反应后或剩余质量不能重绑定为初始质量，逆向条件不在首版范围内。");
     const excessCa = /(?:足量|过量|足够)(?:的)?\s*(?:纯)?\s*(?:CaCO3|碳酸钙)|(?:CaCO3|碳酸钙)(?:固体)?\s*(?:为|是)?\s*(?:足量|过量|足够)/i.test(source);
     const excessHcl = /(?:足量|过量|足够)(?:的)?\s*(?:稀)?\s*(?:盐酸|HCl)|(?:稀盐酸|盐酸|HCl(?:溶液)?)\s*(?:为|是)?\s*(?:足量|过量|足够)/i.test(source);
     if ((excessCa && excessHcl) || (excessCa && roles[0].length) || (excessHcl && roles[1].length)) return miss("足量条件与定量条件冲突，请明确给定模式。");
@@ -91,7 +95,6 @@
     const asks = caAsks(source, excess);
     if (!asks.ok) return asks;
     if (!knownNarrative(source,tokens,caWords,/反应前|初始|起始|最初|开始时|原有|投入|投料|加入前/g)) return miss("题目含未支持的条件或所问，不能省略后生成实验。");
-    const givens = source.split(/试求|求|计算|判断|确定/)[0];
     if (/恰好/.test(givens) && (excess || Math.abs(p1/CA-p2/ACID)>1e-10)) return miss("“恰好反应”条件与给定质量不一致。");
     return { ok:true, p1, p2, fixed:{...level, excess, asks:asks.asks} };
   }

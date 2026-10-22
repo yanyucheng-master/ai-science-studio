@@ -169,7 +169,10 @@ try{
  for(const q of [
   '10g纯碳酸钙与稀盐酸充分反应后，剩余HCl溶质质量为3.65g，求生成二氧化碳的质量。',
   '纯碳酸钙与足量稀盐酸充分反应后，剩余碳酸钙的质量为10g，求生成二氧化碳的质量。',
-  '消耗5g纯碳酸钙与足量稀盐酸反应，求二氧化碳的质量。'
+  '消耗5g纯碳酸钙与足量稀盐酸反应，求二氧化碳的质量。',
+  '10g纯碳酸钙与稀盐酸反应，HCl溶质质量为3.65g（剩余质量），求二氧化碳的质量。',
+  '碳酸钙质量为5g，为消耗质量，与足量稀盐酸反应，求二氧化碳的质量。',
+  '10g纯碳酸钙与稀盐酸反应，HCl溶质质量为3.65g（反应后），求二氧化碳的质量。'
  ]){
   await semantic.page.locator('#questionInput').fill(q);await semantic.page.evaluate(()=>generateExperiment({allowAiFallback:false}));
   check(await semantic.page.evaluate(original=>!planLocalExperiment(document.querySelector('#questionInput').value).ok&&state.generatedQuestion===original&&state.p1===10&&state.p2===3.65,acidQ),'outcome condition rejected in actual page without rebinding or replacing retained experiment');
