@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" href="assets/brand/orbit-flask-2026-10-04/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="vendor/katex/katex.min.css?v=0.19.0">
-  <link rel="stylesheet" href="styles.css?v=20261021-chemistry-2">
+  <link rel="stylesheet" href="styles.css?v=20261022-experiment-header-1">
   <link rel="stylesheet" href="instant-experiment.css?v=20261018-instant-1">
   <link rel="stylesheet" href="tutor-focus.css?v=20261019-tutor-followups-1">
 </head>
@@ -243,9 +243,8 @@
       <div class="content-grid">
         <section class="experiment-card card">
           <div class="card-header">
-            <div>
+            <div class="experiment-heading">
               <div class="title-row">
-                <span class="live-dot"></span>
                 <h2 id="experimentTitle">等待生成实验</h2>
                 <span class="grade-tag" id="experimentGradeTag" hidden></span>
               </div>
@@ -259,6 +258,23 @@
                 <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 10.5 6.8-4m-6.8 7 6.8 4"/></svg>
               </button>
             </div>
+          </div>
+
+          <div class="transport">
+            <button class="play-button" id="playButton" aria-label="播放实验">
+              <svg class="play-icon" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></svg>
+              <svg class="pause-icon" viewBox="0 0 24 24"><path d="M8 5v14m8-14v14"/></svg>
+            </button>
+            <button class="mini-control" id="resetButton" aria-label="重置实验">
+              <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8m0-5v5h5"/></svg>
+            </button>
+            <span class="timecode" id="currentTime">00:00</span>
+            <input class="timeline" id="timeline" type="range" min="0" max="100" value="0" aria-label="实验进度">
+            <span class="timecode" id="totalTime">00:04</span>
+            <button class="mini-control" id="playbackButton">1×</button>
+            <button class="mini-control" id="fullscreenButton" aria-label="全屏">
+              <svg viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M8 21H3v-5m13 5h5v-5"/></svg>
+            </button>
           </div>
 
           <div class="scene" id="scene">
@@ -637,23 +653,6 @@
               <span>等待生成</span>
               输入题目后，AI 会识别条件并生成实验场景。
             </div>
-          </div>
-
-          <div class="transport">
-            <button class="play-button" id="playButton" aria-label="播放实验">
-              <svg class="play-icon" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></svg>
-              <svg class="pause-icon" viewBox="0 0 24 24"><path d="M8 5v14m8-14v14"/></svg>
-            </button>
-            <button class="mini-control" id="resetButton" aria-label="重置实验">
-              <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8m0-5v5h5"/></svg>
-            </button>
-            <span class="timecode" id="currentTime">00:00</span>
-            <input class="timeline" id="timeline" type="range" min="0" max="100" value="0" aria-label="实验进度">
-            <span class="timecode" id="totalTime">00:04</span>
-            <button class="mini-control" id="playbackButton">1×</button>
-            <button class="mini-control" id="fullscreenButton" aria-label="全屏">
-              <svg viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M8 21H3v-5m13 5h5v-5"/></svg>
-            </button>
           </div>
 
           <div class="parameters">
