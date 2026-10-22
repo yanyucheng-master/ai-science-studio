@@ -13,7 +13,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root=fileURLToPath(new URL('../../',import.meta.url));
 const output=process.env.ANIMATION_QA_OUTPUT || resolve(root,'outputs/animation-upgrade/verification');
 await mkdir(output,{recursive:true});
-const files=new Set(['index.html','app.js','styles.css','science-motion.js','science-formulas.js','physics-extra.js','ai-tutor.js']);
+const files=new Set(['index.html','app.js','styles.css','science-motion.js','science-formulas.js','physics-extra.js','question-conditions.js','math-extra.js','chemistry-extra.js','chemistry-experiments.js','ai-tutor.js']);
 const server=createServer(async(req,res)=>{
   const name=new URL(req.url,'http://localhost').pathname.slice(1)||'index.html';
   if(!files.has(name)){res.writeHead(204);res.end();return;}
@@ -27,7 +27,7 @@ const launch={channel:process.env.BROWSER_CHANNEL||'msedge',headless:true};
 const browser=await chromium.launch(launch);
 const report={browser:browser.version(),variants:[],background:null};
 const near=(a,b,tolerance=1e-6)=>assert.ok(Math.abs(a-b)<tolerance,`${a} ≈ ${b}`);
-const projectileQuestion='小球以 12m/s 的水平速度从 20m 高的平台水平抛出，不计空气阻力。求落地时间和水平位移。';
+const projectileQuestion='小球以 12m/s 的水平速度从 20m 高的平台水平抛出，不计空气阻力，g取9.8N/kg。求落地时间和水平位移。';
 
 async function prepare(context){
   // Restrict requests to loopback. No profiles/storage from the user's browser are loaded.
@@ -37,12 +37,12 @@ async function prepare(context){
   });
   await context.addInitScript(()=>{
     const pending=new Set(), selectionPending=new Set(), timers=new Set(), intervals=new Set();
-    window.motionAudit={pending,selectionPending,maxPending:0,frames:0,costs:[],times:[],timers,intervals,longTasks:[]};
+    window.motionAudit={pending,selectionPending,maxPending:0,overlap:[],frames:0,costs:[],times:[],timers,intervals,longTasks:[]};
     const raf=requestAnimationFrame,cancel=cancelAnimationFrame,st=setTimeout,ct=clearTimeout,si=setInterval,ci=clearInterval;
     // Tutor selection capture is an existing one-shot UI frame after pointerup,
     // not a scene animation. Track it separately instead of counting it as a
     // second ongoing clock. All other frame callbacks remain in the audit.
-    window.requestAnimationFrame=cb=>{const set=cb.name==='captureSelection'?selectionPending:pending;let id=raf(t=>{set.delete(id);const start=performance.now();cb(t);if(set===pending){motionAudit.costs.push(performance.now()-start);motionAudit.times.push(t);motionAudit.frames++;}});set.add(id);motionAudit.maxPending=Math.max(motionAudit.maxPending,pending.size);return id;};
+    window.requestAnimationFrame=cb=>{const set=cb.name==='captureSelection'?selectionPending:pending;let id=raf(t=>{set.delete(id);const start=performance.now();cb(t);if(set===pending){motionAudit.costs.push(performance.now()-start);motionAudit.times.push(t);motionAudit.frames++;}});set.add(id);if(pending.size>1&&motionAudit.overlap.length<10)motionAudit.overlap.push({callback:cb.name,stack:new Error().stack});motionAudit.maxPending=Math.max(motionAudit.maxPending,pending.size);return id;};
     window.cancelAnimationFrame=id=>{pending.delete(id);selectionPending.delete(id);cancel(id);};
     window.setTimeout=(cb,ms,...args)=>{let id=st(()=>{timers.delete(id);cb(...args);},ms);timers.add(id);return id;};
     window.clearTimeout=id=>{timers.delete(id);ct(id);};
@@ -54,9 +54,9 @@ async function prepare(context){
 async function generate(page,question){
   await page.locator('#questionInput').fill(question);
   await page.locator('#generateButton').click();
-  await page.waitForFunction(q=>state.hasGenerated && state.generatedQuestion===q && !document.querySelector('#generateButton').classList.contains('loading'),question);
+  await page.waitForFunction(q=>state.hasGenerated && state.generatedQuestion===q && !document.querySelector('#generateButton').classList.contains('loading'),question,{polling:20});
   assert.equal(await page.locator('.generation-overlay.show').count(),0);
-  await page.waitForFunction(()=>getComputedStyle(document.querySelector('#generationOverlay')).opacity==='0');
+  await page.waitForFunction(()=>getComputedStyle(document.querySelector('#generationOverlay')).opacity==='0',null,{polling:20});
   await page.evaluate(()=>{clearReasoningTimers();clearDemoTimers();});
 }
 async function subjectTab(page,subject){
@@ -284,15 +284,28 @@ try{
   assert.ok(port,'isolated browser debugging port is ready');
   headed=await chromium.connectOverCDP(`http://127.0.0.1:${port}`,{noDefaults:true,timeout:10000});
   const context=headed.contexts()[0];await prepare(context);
-  const page=await context.newPage();await page.goto(base);await choose(page,'solenoid');await page.bringToFront();await page.waitForFunction(()=>solenoidMotionTime>=150);
+  // Time polling does not inject Playwright's own RAF loop into the scene audit.
+  const page=await context.newPage();await page.goto(base);await choose(page,'solenoid');await page.bringToFront();await page.waitForFunction(()=>solenoidMotionTime>=150,null,{polling:20});
   const background=await context.newPage();await background.goto('about:blank');await background.bringToFront();
-  await page.waitForFunction(()=>document.hidden);
+  await page.waitForFunction(()=>document.hidden,null,{polling:20});
   const hidden=await page.evaluate(()=>({visibility:document.visibilityState,time:solenoidMotionTime,pending:motionAudit.pending.size}));
   await page.waitForTimeout(350);near(await page.evaluate(()=>solenoidMotionTime),hidden.time);assert.equal(hidden.pending,0);
-  await page.bringToFront();await page.waitForFunction(()=>!document.hidden);await page.waitForTimeout(150);
+  await page.bringToFront();await page.waitForFunction(()=>!document.hidden,null,{polling:20});await page.waitForTimeout(150);
   const restored=await page.evaluate(()=>({visibility:document.visibilityState,time:solenoidMotionTime,pending:motionAudit.pending.size}));
   assert.ok(restored.time>hidden.time);assert.ok(restored.time-hidden.time<300);assert.equal(restored.pending,1);
   report.background={hidden,restored,realTabSwitch:true};console.log('real background/restore: passed');
+  report.chemistryBackground=[];
+  for(const question of ['10g纯碳酸钙与足量稀盐酸反应，求二氧化碳的质量。','20°C时，配制100g质量分数为10%的氯化钠溶液，求所需盐和水的质量。']){
+    await generate(page,question);await page.locator('#playButton').click();await page.waitForFunction(()=>state.playing&&state.time>.15,null,{polling:20});
+    await background.bringToFront();await page.waitForFunction(()=>document.hidden,null,{polling:20});
+    const before=await page.evaluate(()=>({id:activeGenericId(),time:state.time,pending:motionAudit.pending.size}));
+    await page.waitForTimeout(350);near(await page.evaluate(()=>state.time),before.time);assert.equal(before.pending,0);
+    await page.bringToFront();await page.waitForFunction(()=>!document.hidden,null,{polling:20});await page.waitForTimeout(150);
+    const after=await page.evaluate(()=>({time:state.time,pending:motionAudit.pending.size,maxPending:motionAudit.maxPending,overlap:motionAudit.overlap}));
+    report.chemistryBackground.push({template:before.id,before,after,realTabSwitch:true});
+    assert.ok(after.time>before.time);assert.ok(after.time-before.time<.3);assert.equal(after.pending,1);assert.equal(after.maxPending,1);
+    await page.locator('#playButton').click();assert.equal(await page.evaluate(()=>motionAudit.pending.size),0);
+  }
  }finally{
   if(headed){await (await headed.newBrowserCDPSession()).send('Browser.close').catch(()=>{});await headed.close();}
   child.kill();
