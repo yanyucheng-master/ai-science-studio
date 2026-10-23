@@ -6903,7 +6903,7 @@ function playExperiment() {
     showToast("欧姆定律为稳态变量探究：拖动电压或电阻即可同步电流");
     return;
   }
-  if (state.subject === "数学") {
+  if (state.subject === "数学" && !activeGenericTemplate()?.motion) {
     showToast("数学题型为静态参数观察：拖动 x 滑块即可同步斜率");
     return;
   }
@@ -7291,7 +7291,7 @@ function getGenerationSubject(question) {
 }
 
 elements.playButton.addEventListener("click", () => {
-  if (state.subject === "数学" || state.subject === "生物") {
+  if ((state.subject === "数学" && !activeGenericTemplate()?.motion) || state.subject === "生物") {
     clearReasoningTimers();
     playExperiment();
     return;
@@ -7359,7 +7359,7 @@ function currentPhysicsPresetKey() {
 /* ===== 预设菜单（各学科，按学段与板块分组，2026-10-16）=====
    菜单项写在 index.html（data-subject / data-level / data-block）。打开时按当前学科和学段重新分组：
    本学段按板块分组排在前面，另一学段折叠在底部；当前已预选的那一项隐藏。 */
-const PRESET_BLOCK_ORDER = Object.freeze(["力学", "电学", "电磁学", "光学", "热学", "声学", "化学计算", "函数", "方程（组）", "导数", "细胞"]);
+const PRESET_BLOCK_ORDER = Object.freeze(["力学", "电学", "电磁学", "光学", "热学", "声学", "化学计算", "几何", "函数", "方程（组）", "数列", "导数", "细胞"]);
 const DEDICATED_PRESET_KEYS = new Set(["brake", "solenoid", "boardSlider", "projectile", "circuit", "feCuSO4", "tangent", "cellPlant", "cellAnimal"]);
 const PRESET_OPTIONS = $$("#physicsPresetDropdown .preset-option");
 PRESET_OPTIONS.forEach(option => {
@@ -8674,7 +8674,7 @@ document.addEventListener("keydown", event => {
   if (event.defaultPrevented || $("#announcementsDialog")?.open || event.target.closest?.("input, textarea, select, button, [contenteditable], summary")) return;
   if (event.code === "Space" && event.target.tagName !== "INPUT") {
     event.preventDefault();
-    if (state.subject === "数学" || state.subject === "生物") {
+    if ((state.subject === "数学" && !activeGenericTemplate()?.motion) || state.subject === "生物") {
       playExperiment();
       return;
     }

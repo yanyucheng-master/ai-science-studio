@@ -28,6 +28,8 @@
     "check": "node --check src/server.js && node --check src/config.js && node --check src/deepseek-client.js && node --check src/local-fallback.js && node --check src/protocol.js && node --check scripts/run-eval.js && node --check scripts/run-hard-eval.js",
     "eval": "node scripts/run-eval.js",
     "eval:hard": "node scripts/run-hard-eval.js",
-    "test:share": "node scripts/verify-share-browser.js"
+    "test:share": "node scripts/verify-share-browser.js",
+    "test:math-experiments": "node --test test/math-experiments.test.js",
+    "test:math-experiments:browser": "node scripts/verify-math-experiments-browser.js"
   }
 }

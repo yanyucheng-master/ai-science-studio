@@ -11124,3 +11124,46 @@ body.subject-math-active.subject-generic-template-active:not(.awaiting-generatio
 @media (prefers-reduced-motion: reduce) {
   .chemistry-lab-scene * { animation: none !important; transition: none !important; }
 }
+
+/* New math scenes follow the public experiment header and single scene boundary. */
+body.subject-math-active:not(.awaiting-generation) .experiment-card:has(.math-lab-scene) .transport { display: flex; }
+body.subject-math-active:not(.awaiting-generation) .experiment-card:has(.math-lab-scene) .parameters .parameter:nth-child(2) { display: grid; }
+.scene.subject-generic-physics:has(.math-lab-scene) { height: auto; min-height: 0; background: var(--surface); box-shadow: none; }
+.scene:has(.math-lab-scene)::before { content: none; }
+.experiment-card:is(:fullscreen, .immersive-mode) .scene:has(.math-lab-scene) { flex: 0 0 auto; }
+.generic-physics-stage:has(.math-lab-scene) { position: relative; inset: auto; }
+.generic-physics-lab:has(.math-lab-scene) {
+  position: relative; inset: auto; margin: 18px; padding: 0;
+  grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; gap: 18px;
+  border: 0; border-radius: 0; background: none; box-shadow: none;
+}
+.generic-physics-visual:has(.math-lab-scene) { overflow: visible; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.generic-physics-lab:has(.math-lab-scene) .generic-physics-readout { min-width: 0; padding: 16px 0 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: none; box-shadow: none; overflow-wrap: anywhere; }
+.generic-physics-lab:has(.math-lab-scene) .stage-facts { grid-template-columns: minmax(0, 1fr); gap: 0; }
+.generic-physics-lab:has(.math-lab-scene) .stage-facts > div { grid-template-columns: 90px minmax(0, 1fr); padding: 7px 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.math-lab-scene { min-width: 0; color: var(--ink); }
+.experiment-card:has(.math-lab-scene) .header-tools .square-button { display: grid; place-items: center; flex-shrink: 0; }
+.math-scene-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; padding-right: 40px; }
+.math-scene-heading strong { font-size: 16px; }
+.math-scene-heading > span, .math-progress { color: var(--muted); font-size: 12px; }
+.math-area-diagram { display: block; width: 100%; max-height: 350px; margin: 12px auto; }
+.math-area-diagram text { fill: var(--ink); stroke: none; font-size: 17px; font-weight: 500; font-family: inherit; }
+.math-outline { stroke: var(--muted); stroke-width: 2; fill: none; }
+.math-proof-triangle { fill: #e7f0ff; stroke: var(--blue); stroke-width: 1.5; }
+.math-hypotenuse-square { fill: #e5f4ed; stroke: #27704e; stroke-width: 2; }
+.math-lab-scene[data-step="1"] .math-proof-triangle { fill: #cbdfff; }
+.math-lab-scene[data-step="2"] .math-hypotenuse-square { fill: #c9e8d8; }
+.math-live-equation { padding: 12px 0; border-top: 1px solid var(--line); font-size: 15px; line-height: 1.7; overflow-wrap: anywhere; }
+.math-model-note { margin: 10px 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.math-sequence-rule { font-size: 13px; line-height: 1.7; }
+.math-pair-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(88px,1fr)); gap: 8px; margin: 12px 0; }
+.math-pair { display: grid; justify-items: center; gap: 4px; padding: 9px 4px; border-bottom: 2px solid var(--line); font-size: 13px; background: transparent; }
+.math-pair > span:first-child { color: var(--muted); }
+.math-pair.is-current { color: var(--blue); border-color: var(--blue); background: #edf4ff; }
+@media (max-width: 600px) {
+  .generic-physics-lab:has(.math-lab-scene) { margin: 12px; gap: 14px; }
+  .experiment-card:has(.math-lab-scene) .parameter { min-width: 0; grid-template-columns: minmax(0,1fr); gap: 8px; }
+  .experiment-card:has(.math-lab-scene) .number-control { justify-self: end; }
+  .experiment-card:has(.math-lab-scene) .header-tools { flex-shrink: 0; }
+  .experiment-card:has(.math-lab-scene) .square-button { display: grid; place-items: center; width: 36px; height: 36px; }
+}

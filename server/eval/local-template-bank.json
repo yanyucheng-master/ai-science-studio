@@ -1,5 +1,39 @@
 [
  {
+  "q": "直角三角形的两条直角边分别为3cm和4cm，求斜边长度、三角形面积和周长，验证勾股关系。",
+  "expect": "local", "kind": "extra", "templateId": "pythagoras", "level": "junior",
+  "answer": {"p1":3,"p2":4,"readout":"5 cm"}, "show":["四个全等直角三角形","25"], "note":"3-4-5独立手算"
+ },
+ {
+  "q": "求斜边长度：直角三角形的直角边a=5cm，直角边b=12cm。",
+  "expect": "local", "kind": "extra", "templateId": "pythagoras", "level": "junior",
+  "answer": {"p1":5,"p2":12,"readout":"13 cm"}, "note":"问句前置与冒号"
+ },
+ {
+  "q": "直角三角形两条直角边分别为1cm和1cm，求斜边长度。",
+  "expect": "local", "kind": "extra", "templateId": "pythagoras", "level": "junior",
+  "answer": {"p1":1,"p2":1,"readout":"√2"}, "note":"保留根式"
+ },
+ {
+  "q": "等差数列首项a₁=1，公差d=2，项数n=10，求第n项和前n项和，说明首尾配对。",
+  "expect": "local", "kind": "extra", "templateId": "arithmeticSum", "level": "senior",
+  "answer": {"p1":2,"p2":10,"readout":"100"}, "show":["倒序相加","100"], "note":"前十个奇数和100"
+ },
+ {
+  "q": "求前5项和。等差数列首项为2，公差为3。",
+  "expect": "local", "kind": "extra", "templateId": "arithmeticSum", "level": "senior",
+  "answer": {"p1":3,"p2":5,"readout":"40"}, "note":"奇数项、问句前置"
+ },
+ {
+  "q": "等差数列首项为5，公差为-2，项数为6，求前n项和。",
+  "expect": "local", "kind": "extra", "templateId": "arithmeticSum", "level": "senior",
+  "answer": {"p1":-2,"p2":6,"readout":"0"}, "note":"负公差和为零"
+ },
+ {"q":"求斜边长度。直角三角形两条直角边分别为3cm和4cm（周长）。","expect":"ai","target":"pythagoras","note":"数值角色不符"},
+ {"q":"直角三角形两条直角边分别为3cm和4cm，求斜边面积。","expect":"ai","target":"pythagoras","note":"数量类型不符"},
+ {"q":"求前n项和。等差数列首项为1，公差为2（末项），项数为10。","expect":"ai","target":"arithmeticSum","note":"后置角色不符"},
+ {"q":"等差数列首项为1，公差为2，项数为10，求前n项和及概率。","expect":"ai","target":"arithmeticSum","note":"不丢弃范围外子问"},
+ {
   "q": "一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。",
   "expect": "local",
   "kind": "brake",
