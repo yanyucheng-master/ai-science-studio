@@ -1,8 +1,8 @@
 [
  {
-  "q": "直角三角形的两条直角边分别为3cm和4cm，求斜边长度、三角形面积和周长，验证勾股关系。",
+  "q": "直角三角形的两条直角边分别为3cm和4cm，求斜边长度和三个边上正方形的面积，说明面积关系。",
   "expect": "local", "kind": "extra", "templateId": "pythagoras", "level": "junior",
-  "answer": {"p1":3,"p2":4,"readout":"5 cm"}, "show":["四个全等直角三角形","25"], "note":"3-4-5独立手算"
+  "answer": {"p1":3,"p2":4,"readout":"5 cm"}, "show":["两种无重叠终态","25"], "note":"新范围：3-4-5与9/16/25，原面积/周长题另保留拒绝反例"
  },
  {
   "q": "求斜边长度：直角三角形的直角边a=5cm，直角边b=12cm。",
@@ -31,6 +31,10 @@
  },
  {"q":"求斜边长度。直角三角形两条直角边分别为3cm和4cm（周长）。","expect":"ai","target":"pythagoras","note":"数值角色不符"},
  {"q":"直角三角形两条直角边分别为3cm和4cm，求斜边面积。","expect":"ai","target":"pythagoras","note":"数量类型不符"},
+ {"q":"直角三角形两条直角边分别为3cm和4cm，求三角形面积和周长。","expect":"ai","target":"pythagoras","note":"本轮明确收窄为边上正方形面积；保留旧所问拒绝反例"},
+ {"q":"三角形两条边分别为3cm和4cm，求斜边长度。","expect":"ai","target":"pythagoras","note":"不能默认直角"},
+ {"q":"直角三角形两条直角边分别为3.25cm和0.0475m，求三个边上正方形的面积。","expect":"local","kind":"extra","templateId":"pythagoras","level":"junior","answer":{"p1":3.25,"p2":4.75,"a2":10.5625,"b2":22.5625,"c2":33.125},"note":"小数与精确单位换算"},
+ {"q":"直角三角形两条直角边分别为3.001cm和4cm，求斜边长度。","expect":"ai","target":"pythagoras","note":"精度超界不舍入"},
  {"q":"求前n项和。等差数列首项为1，公差为2（末项），项数为10。","expect":"ai","target":"arithmeticSum","note":"后置角色不符"},
  {"q":"等差数列首项为1，公差为2，项数为10，求前n项和及概率。","expect":"ai","target":"arithmeticSum","note":"不丢弃范围外子问"},
  {

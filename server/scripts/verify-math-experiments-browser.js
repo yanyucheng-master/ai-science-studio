@@ -21,7 +21,7 @@ server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://1
 const browser=await chromium.launch({channel:process.env.BROWSER_CHANNEL||'msedge',headless:true,ignoreDefaultArgs:['--disable-back-forward-cache']});
 const report={started:new Date().toISOString(),browser:browser.version(),checks:[],layouts:[],screenshots:[],errors:[],apiRequests:[]},contexts=[];
 const check=(v,m)=>{assert.ok(v,m);report.checks.push(m);console.log('PASS',m);};
-const questions={pythagoras:'直角三角形的两条直角边分别为3cm和4cm，求斜边长度、三角形面积和周长，验证勾股关系。',arithmeticSum:'等差数列首项a₁=1，公差d=2，项数n=10，求第n项和前n项和，说明首尾配对。'};
+const questions={pythagoras:'直角三角形ABC中，∠C=90°，直角边a=BC=3cm，直角边b=AC=4cm，求三个边上正方形的面积；求斜边c的长度；说明面积关系。',arithmeticSum:'等差数列首项a₁=1，公差d=2，项数n=10，求第n项和前n项和，说明首尾配对。'};
 async function fresh(width=1366,{routing=true,reduced='reduce'}={}){
  const c=await browser.newContext({viewport:{width,height:1000},reducedMotion:reduced});contexts.push(c);
  if(routing)await c.route('**/*',async r=>{const url=new URL(r.request().url());if(/\/api\//.test(url.pathname)){report.apiRequests.push(url.pathname);await r.fulfill({status:503,body:'blocked'});}else if(url.origin!==base)await r.fulfill({status:204,body:''});else await r.continue();});
@@ -35,20 +35,67 @@ async function layout(page,name){
  const value=await page.evaluate(()=>{
   const root=document.querySelector('.math-lab-scene'),r=root.getBoundingClientRect(),rect=e=>{const b=e.getBoundingClientRect();return {x:b.x,y:b.y,right:b.right,bottom:b.bottom,width:b.width,height:b.height};};
   const parts=[...root.children].filter(e=>e.getBoundingClientRect().height>0),transport=document.querySelector('.transport').getBoundingClientRect(),scene=document.querySelector('.scene').getBoundingClientRect(),parameters=document.querySelector('.parameters').getBoundingClientRect();
-  return {viewport:innerWidth,pageWidth:document.documentElement.scrollWidth,root:rect(root),parts:parts.map(rect),inside:parts.every(e=>{const b=e.getBoundingClientRect();return b.left>=r.left-1&&b.right<=r.right+1&&b.bottom<=r.bottom+1;}),textOverflow:[...root.querySelectorAll('p,strong,b,span')].filter(e=>e.clientWidth>0&&e.scrollWidth>e.clientWidth+1).map(e=>e.textContent),controls:[...document.querySelectorAll('.parameters input[type=range],#playButton,#resetButton,#shareButton')].every(e=>{const b=e.getBoundingClientRect();return b.width>0&&b.height>0;}),order:transport.bottom<=scene.top+1&&scene.bottom<=parameters.top+1};
+  // sqrt-sign contains deliberately indented accessibility text; its painted
+  // glyph is a CSS shape. Check complete formula boxes, not that hidden text.
+  return {viewport:innerWidth,pageWidth:document.documentElement.scrollWidth,root:rect(root),parts:parts.map(rect),inside:parts.every(e=>{const b=e.getBoundingClientRect();return b.left>=r.left-1&&b.right<=r.right+1&&b.bottom<=r.bottom+1;}),textOverflow:[...root.querySelectorAll('p,strong,b,span:not(.sqrt-sign)')].filter(e=>e.clientWidth>0&&e.scrollWidth>e.clientWidth+1).map(e=>e.textContent),formulaFit:[...root.querySelectorAll('.science-math')].every(e=>{const b=e.getBoundingClientRect();return b.width>0&&b.height>0&&b.left>=r.left-1&&b.right<=r.right+1&&b.top>=r.top-1&&b.bottom<=r.bottom+1;}),controls:[...document.querySelectorAll('.parameters input[type=range],#playButton,#resetButton,#shareButton')].every(e=>{const b=e.getBoundingClientRect();return b.width>0&&b.height>0;}),order:transport.bottom<=scene.top+1&&scene.bottom<=parameters.top+1};
  });
  report.layouts.push({name,...value});check(value.pageWidth<=value.viewport+1&&value.inside&&!value.textOverflow.length,`${name}: labels and scene fit without horizontal overflow`);check(value.parts.every((p,i)=>!i||p.y>=value.parts[i-1].bottom-1),`${name}: regions do not overlap`);check(value.controls&&value.order,`${name}: controls usable; public UI playback/scene/parameters order`);
+ check(value.formulaFit,`${name}: complete root and fraction boxes fit scene`);
  await page.waitForFunction(()=>!document.querySelector('.toast.show'),null,{timeout:6000});const path=resolve(output,`${name}.png`);await page.locator('.experiment-card').screenshot({path,animations:'disabled'});report.screenshots.push(path);
+}
+const area=pts=>Math.abs(pts.reduce((sum,[x,y],i)=>{const [u,v]=pts[(i+1)%pts.length];return sum+x*v-y*u;},0))/2;
+const cross=(a,b,c)=>(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);
+function clip(subject,boundary){
+ let output=subject;
+ for(let i=0;i<boundary.length;i++){
+  const a=boundary[i],b=boundary[(i+1)%boundary.length],input=output;output=[];
+  for(let j=0;j<input.length;j++){
+   const p=input[j],q=input[(j+input.length-1)%input.length],d=cross(a,b,p),e=cross(a,b,q),inside=d>=-1e-9,previous=e>=-1e-9;
+   if(inside!==previous){const t=e/(e-d);output.push([q[0]+t*(p[0]-q[0]),q[1]+t*(p[1]-q[1])]);}if(inside)output.push(p);
+  }
+ }
+ return output;
+}
+async function puzzle(page,name,{terminal=true}={}){
+ const data=await page.evaluate(()=>[...document.querySelectorAll('[data-puzzle-board]')].map(svg=>{
+  const rect=svg.querySelector('rect').getBoundingClientRect(),inverse=svg.getScreenCTM().inverse();
+  const points=polygon=>[...polygon.points].map(p=>{const v=new DOMPoint(p.x,p.y).matrixTransform(polygon.getScreenCTM()).matrixTransform(inverse);return [(v.x-50)/260,(v.y-50)/260];});
+  const labels=[...svg.querySelectorAll('text')].map(e=>{const box=e.getBBox(),m=e.getScreenCTM(),p=new DOMPoint(box.x,box.y).matrixTransform(m),q=new DOMPoint(box.x+box.width,box.y+box.height).matrixTransform(m),r=svg.getBoundingClientRect();return {text:e.textContent,inside:p.x>=r.left-1&&q.x<=r.right+1&&p.y>=r.top-1&&q.y<=r.bottom+1,bounds:[p.x,p.y,q.x,q.y],svg:[r.left,r.top,r.right,r.bottom]};});
+  return {kind:svg.dataset.puzzleBoard,terminal:svg.dataset.puzzleBoard==='reference'||svg.dataset.terminal==='true',rect:{w:rect.width,h:rect.height},pieces:[...svg.querySelectorAll('[data-puzzle-piece] polygon')].map(points),rest:[...svg.querySelectorAll('[data-puzzle-center],[data-puzzle-remainder]')].filter(e=>e.getAttribute('visibility')!=='hidden').map(points),labels};
+ }));
+ const [a,b]=await page.evaluate(()=>[state.p1,state.p2]),expected=a*b/(2*(a+b)**2);
+ report.geometry??=[];report.geometry.push({name,a,b,boards:data});
+ for(const board of data){
+  check(Math.abs(board.rect.w-board.rect.h)<.05&&board.labels.every(v=>v.inside),`${name} ${board.kind}: square aspect and SVG labels fit`);
+  // SVGPointList stores float32 coordinates: 1e-6 normalised is <0.001 CSS px.
+  check(board.pieces.every(t=>Math.abs(area(t)-expected)<1e-6),`${name} ${board.kind}: actual transformed polygons retain each triangle area`);
+  if(board.terminal){
+   const all=[...board.pieces,...board.rest];check(all.every(poly=>poly.every(([x,y])=>x>=-1e-6&&y>=-1e-6&&x<=1+1e-6&&y<=1+1e-6)),`${name} ${board.kind}: partition stays inside common square`);
+   let overlap=0;for(let i=0;i<all.length;i++)for(let j=i+1;j<all.length;j++)overlap+=area(clip(all[i],all[j]));
+   check(overlap<1e-6&&Math.abs(all.reduce((sum,poly)=>sum+area(poly),0)-1)<1e-6,`${name} ${board.kind}: no overlaps and no gaps in actual terminal SVG`);
+  }else check(board.rest.length===0,`${name}: moving overlap does not display a proof remainder`);
+ }
+ if(terminal)check(data.every(b=>b.terminal),`${name}: both diagrams at valid terminal states`);
 }
 try{
  for(const width of [1366,820,390]){
   const {c,page}=await fresh(width);
   for(const [id,q]of Object.entries(questions)){
    await generate(page,q);check(await page.evaluate(id=>activeGenericId()===id,id),`${width}: ${id} enters local template`);
-   check(await page.evaluate(id=>{const m=buildGenericContent().model;return id==='pythagoras'?m.c===5&&m.area===6&&m.perimeter===12:m.an===19&&m.sum===100;},id),`${width}: ${id} hand-calculated result`);
+   check(await page.evaluate(id=>{const m=buildGenericContent().model;return id==='pythagoras'?m.c===5&&m.a2===9&&m.b2===16&&m.c2===25:m.an===19&&m.sum===100;},id),`${width}: ${id} hand-calculated result`);
    await page.locator('#timeline').fill('100');check((await page.locator('[data-math-progress]').innerText()).includes('100%'),`${width}: ${id} shared timeline renders final state`);await layout(page,`${id}-${width}`);
+   if(id==='pythagoras'){
+    await puzzle(page,`${width} 3/4 terminal-II`);
+    await page.locator('#timeline').fill('50');await puzzle(page,`${width} rigid mid-move`,{terminal:false});
+    check((await page.locator('[data-puzzle-status]').innerText()).includes('覆盖'),'mid-move explicitly disclaims area partition');
+    await page.locator('#timeline').fill('0');await puzzle(page,`${width} restored terminal-I`);
+    await change(page,0,1);await change(page,1,12);await page.locator('#timeline').fill('100');await puzzle(page,`${width} slender 1:12`);await layout(page,`pythagoras-slender-${width}`);
+    await page.locator('#sceneFullscreenButton').click();check(await page.evaluate(()=>Boolean(document.fullscreenElement)||document.querySelector('.experiment-card').classList.contains('immersive-mode')),`${width}: actual fullscreen/immersive entered`);await puzzle(page,`${width} fullscreen 1:12`);await layout(page,`pythagoras-fullscreen-${width}`);
+    await page.locator('.parameters').scrollIntoViewIfNeeded();check(await page.locator('.parameters').evaluate(e=>{const r=e.getBoundingClientRect();return r.top>=-1&&r.bottom<=innerHeight+1;}),`${width}: fullscreen scroll reaches all parameters without clipping`);const bottom=resolve(output,`pythagoras-fullscreen-controls-${width}.png`);await page.screenshot({path:bottom});report.screenshots.push(bottom);await page.locator('#sceneFullscreenButton').click();
+    await change(page,0,3.25);await change(page,1,4.75);check(await page.evaluate(()=>state.p1===3.25&&state.p2===4.75&&buildGenericContent().model.c2===33.125),`${width}: decimal inputs are preserved without snapping`);
+   }
    await change(page,0,id==='pythagoras'?6:-2);await change(page,1,id==='pythagoras'?8:5);
-   check(await page.evaluate(id=>{const m=buildGenericContent().model;return id==='pythagoras'?m.c===10&&m.area===24:m.an===-7&&m.sum===-15;},id),`${width}: ${id} parameter comparison`);
+   check(await page.evaluate(id=>{const m=buildGenericContent().model;return id==='pythagoras'?m.c===10&&m.a2===36&&m.b2===64&&m.c2===100:m.an===-7&&m.sum===-15;},id),`${width}: ${id} parameter comparison`);
    const ai=await page.evaluate(()=>buildMasterLabAIContext());check(ai.originalQuestion===q&&ai.deterministicResult.resultText.replace(/−/g,'-').includes(id==='pythagoras'?'10':'-15'),`${width}: ${id} tutor keeps original and current result`);
    await page.locator('#resetButton').click();check(await page.evaluate(id=>state.time===0&&!state.playing&&state.p1===(id==='pythagoras'?3:2)&&state.p2===(id==='pythagoras'?4:10),id),`${width}: ${id} reset uses original baseline`);
   }
@@ -83,7 +130,7 @@ try{
  await page.locator('#playButton').click();await page.waitForFunction(t=>state.time>t+.1,t);await page.locator('#playButton').click();check(true,'continue advances same clock');
  await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.press('Space');await page.waitForFunction(()=>state.playing);await page.keyboard.press('Space');check(await page.evaluate(()=>!state.playing),'Space toggles shared playback for animated math');
  for(const [id,q,bad]of [
-  ['pythagoras',questions.pythagoras,['求斜边长度。直角三角形两条直角边分别为3cm和4cm（周长）。','直角三角形两条直角边分别为3cm和4cm，求斜边面积。','直角三角形两条直角边分别为3cm和4cm，求斜边长度和温度。']],
+  ['pythagoras',questions.pythagoras,['求斜边长度。直角三角形两条直角边分别为3cm和4cm（周长）。','直角三角形两条直角边分别为3cm和4cm，求斜边面积。','直角三角形两条直角边分别为3cm和4cm，求斜边长度和温度。','三角形两边分别为3cm和4cm，求斜边长度。','直角三角形两条直角边分别为3cm和4cm，求三角形面积和周长。','直角三角形两条直角边分别为3.001cm和4cm，求斜边长度。','三角形ABC中，∠A=90°，BC=3cm，AC=4cm，求斜边长度。']],
   ['arithmeticSum',questions.arithmeticSum,['求前n项和。等差数列首项为1，公差为2（末项），项数为10。','等差数列首项为1，公差为2，项数为10，求前n项和及概率。','等差数列首项为1，公差为2，项数为10.1，求前n项和。']]
  ]){
   await generate(page,q);await change(page,0,id==='pythagoras'?5:-2);const before=await page.evaluate(()=>JSON.stringify({id:activeGenericId(),p1:state.p1,p2:state.p2,f:state.extraFixed,question:state.generatedQuestion}));
