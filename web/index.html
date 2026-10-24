@@ -2,16 +2,21 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#f2f6ff">
   <title>大师实验室 - AI 理科实验工作台</title>
   <link rel="icon" href="favicon.ico?v=20261004-orbit-flask" sizes="16x16 32x32 48x48">
   <link rel="apple-touch-icon" href="assets/brand/orbit-flask-2026-10-04/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;600;700;800&amp;display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;600;700;800&amp;display=swap"></noscript>
   <link rel="stylesheet" href="vendor/katex/katex.min.css?v=0.19.0">
-  <link rel="stylesheet" href="styles.css?v=20261022-experiment-header-1">
+  <link rel="stylesheet" href="styles.css?v=20261025-mobile-1">
   <link rel="stylesheet" href="instant-experiment.css?v=20261018-instant-1">
   <link rel="stylesheet" href="tutor-focus.css?v=20261019-tutor-followups-1">
+  <link rel="stylesheet" href="mobile.css?v=20261025-mobile-1">
 </head>
 <body class="awaiting-generation">
   <script src="brand-motion.js?v=20261020-splash-1"></script>
@@ -87,7 +92,7 @@
             <span>AI 习题即时建模</span>
           </div>
           <div class="prompt-input-wrap">
-            <input id="questionInput" value="一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。" placeholder="请输入或粘贴一道理科题目" autocomplete="off" aria-label="输入理科题目">
+            <textarea id="questionInput" rows="1" placeholder="请输入或粘贴一道理科题目" autocomplete="off" enterkeyhint="go" spellcheck="false" aria-label="输入理科题目">一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。</textarea>
             <button class="input-tool" data-toast="拍照识题入口已打开" aria-label="拍照识题">
               <svg viewBox="0 0 24 24"><path d="M4 7h4l2-3h4l2 3h4v13H4z"/><circle cx="12" cy="13" r="4"/></svg>
             </button>
@@ -95,6 +100,7 @@
               <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0m-7 7v3m-4 0h8"/></svg>
             </button>
             <button class="preset-picker" id="physicsPresetToggle" type="button" aria-label="展开物理预设实验" aria-expanded="false" aria-controls="physicsPresetDropdown">
+              <span class="preset-picker-label" aria-hidden="true">实验库</span>
               <i></i>
             </button>
             <button class="generate-button" id="generateButton">
@@ -996,5 +1002,6 @@
   <script src="instant-scene-renderer.js?v=20261020-incline-data-1"></script>
   <script src="instant-experiment.js?v=20261020-incline-competition-1"></script>
   <script src="announcements.js?v=20261008-announcements-2"></script>
+  <script src="mobile-shell.js?v=20261025-mobile-1"></script>
 </body>
 </html>
