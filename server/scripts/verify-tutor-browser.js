@@ -30,7 +30,7 @@ let scenario;
 let upstreamCalls = [];
 let gatewayBase;
 const mime = { html: 'text/html', css: 'text/css', js: 'text/javascript' };
-const webFiles = new Set(['index.html', 'styles.css', 'tutor-focus.css', 'app.js', 'physics-extra.js', 'question-conditions.js', 'math-extra.js', 'math-experiments.js', 'chemistry-extra.js', 'chemistry-experiments.js', 'science-motion.js', 'science-formulas.js', 'tutor-checks.js', 'ai-tutor.js']);
+const webFiles = new Set(['index.html', 'styles.css', 'tutor-focus.css', 'app.js', 'physics-extra.js', 'question-conditions.js', 'math-extra.js', 'math-experiments.js','unit-circle.js', 'chemistry-extra.js', 'chemistry-experiments.js', 'science-motion.js', 'science-formulas.js', 'tutor-checks.js', 'ai-tutor.js']);
 const server = createServer(async (req, res) => {
   const path = new URL(req.url, 'http://localhost').pathname;
   if (path === '/fixture/chat/completions') {

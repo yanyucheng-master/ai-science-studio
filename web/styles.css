@@ -11174,6 +11174,40 @@ body.subject-math-active:not(.awaiting-generation) .experiment-card:has(.math-la
 .math-leg-square { stroke: #27704e; stroke-width: 1.5; fill: #d2ebd8; }
 .math-leg-square-1 { fill: #f9e7c7; stroke: #926c27; }
 .math-puzzle-status { font-size: 13px; line-height: 1.8; color: var(--blue); }
+.unit-circle-target, .unit-circle-process, .unit-circle-axis-note { margin: 12px 0; font-size: 13px; line-height: 1.8; overflow-wrap: anywhere; }
+.unit-circle-panels { display: grid; grid-template-columns: minmax(0,.85fr) minmax(0,1.15fr); align-items: center; gap: 20px; }
+.unit-circle-panels figure { min-width: 0; margin: 0; }
+.unit-circle-panels figcaption { font-size: 14px; font-weight: 650; line-height: 1.6; }
+.unit-circle-diagram, .unit-circle-curves { display: block; width: 100%; height: auto; overflow: visible; }
+.unit-circle-diagram { max-height: 370px; }
+.unit-circle-curves { min-height: 200px; }
+.unit-circle-panels svg text { fill: var(--ink); stroke: none; font-size: 17px; font-family: inherit; }
+.unit-circle-curves text { font-size: 20px; }
+.uc-axis { stroke: var(--muted); stroke-width: 1.4; }
+.uc-grid { stroke: var(--line); stroke-width: 1; stroke-dasharray: 4 4; }
+.uc-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+.uc-radius { stroke: var(--ink); stroke-width: 2; }
+.uc-cos-projection, .uc-sin-projection { stroke-width: 1.7; stroke-dasharray: 5 4; }
+.uc-cos-projection, .uc-cos-curve { stroke: var(--blue); }
+.uc-sin-projection, .uc-sin-curve { stroke: #218364; }
+.uc-cos-curve, .uc-sin-curve { fill: none; stroke-width: 2.2; }
+.uc-cursor { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 4; }
+.uc-point { fill: var(--ink); }
+.uc-sin-marker { fill: #218364; stroke: white; stroke-width: 1.5; }
+.uc-cos-marker { fill: var(--blue); stroke: white; stroke-width: 1.5; }
+.uc-rotation { fill: none; stroke: var(--blue); stroke-width: 1.7; }
+#uc-rotation-arrow path { fill: var(--blue); }
+.unit-circle-legend { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 8px 0; font-size: 12px; line-height: 1.8; }
+.unit-circle-legend span:first-child { color: #218364; }
+.unit-circle-panels figure:first-child .unit-circle-legend span:first-child { color: var(--blue); }
+.unit-circle-panels figure:first-child .unit-circle-legend span:last-child { color: #218364; }
+.unit-circle-panels figure:last-child .unit-circle-legend span:last-child { color: var(--blue); }
+.unit-circle-current { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 12px; font-size: 15px; line-height: 1.9; overflow-wrap: anywhere; }
+@media (max-width: 850px) {
+  .unit-circle-panels { grid-template-columns: minmax(0,1fr); gap: 24px; }
+  .unit-circle-diagram { max-width: 390px; margin: 0 auto; }
+  .unit-circle-curves { max-width: 560px; margin: 0 auto; }
+}
 @media (max-width: 600px) {
   .math-puzzle-panels { grid-template-columns: minmax(0,1fr); gap: 24px; }
   .math-puzzle-panels figcaption { min-height: 0; }

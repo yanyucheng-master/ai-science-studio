@@ -13,7 +13,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root=fileURLToPath(new URL('../../',import.meta.url));
 const output=process.env.ANIMATION_QA_OUTPUT || resolve(root,'outputs/animation-upgrade/verification');
 await mkdir(output,{recursive:true});
-const files=new Set(['index.html','app.js','styles.css','science-motion.js','science-formulas.js','physics-extra.js','question-conditions.js','math-extra.js','math-experiments.js','chemistry-extra.js','chemistry-experiments.js','ai-tutor.js']);
+const files=new Set(['index.html','app.js','styles.css','science-motion.js','science-formulas.js','physics-extra.js','question-conditions.js','math-extra.js','math-experiments.js','unit-circle.js','chemistry-extra.js','chemistry-experiments.js','ai-tutor.js']);
 const server=createServer(async(req,res)=>{
   const name=new URL(req.url,'http://localhost').pathname.slice(1)||'index.html';
   if(!files.has(name)){res.writeHead(204);res.end();return;}
@@ -295,14 +295,14 @@ try{
   assert.ok(restored.time>hidden.time);assert.ok(restored.time-hidden.time<300);assert.equal(restored.pending,1);
   report.background={hidden,restored,realTabSwitch:true};console.log('real background/restore: passed');
   report.chemistryBackground=[];report.mathBackground=[];
-  for(const question of ['10g纯碳酸钙与足量稀盐酸反应，求二氧化碳的质量。','20°C时，配制100g质量分数为10%的氯化钠溶液，求所需盐和水的质量。','直角三角形两条直角边分别为3cm和4cm，求斜边长度。','等差数列首项为1，公差为2，项数为10，求前n项和。']){
+  for(const question of ['10g纯碳酸钙与足量稀盐酸反应，求二氧化碳的质量。','20°C时，配制100g质量分数为10%的氯化钠溶液，求所需盐和水的质量。','直角三角形两条直角边分别为3cm和4cm，求斜边长度。','等差数列首项为1，公差为2，项数为10，求前n项和。','在单位圆中，角θ=-30°，求sinθ和cosθ。']){
     await generate(page,question);await page.locator('#playButton').click();await page.waitForFunction(()=>state.playing&&state.time>.15,null,{polling:20});
     await background.bringToFront();await page.waitForFunction(()=>document.hidden,null,{polling:20});
     const before=await page.evaluate(()=>({id:activeGenericId(),time:state.time,pending:motionAudit.pending.size}));
     await page.waitForTimeout(350);near(await page.evaluate(()=>state.time),before.time);assert.equal(before.pending,0);
     await page.bringToFront();await page.waitForFunction(()=>!document.hidden,null,{polling:20});await page.waitForTimeout(150);
     const after=await page.evaluate(()=>({time:state.time,pending:motionAudit.pending.size,maxPending:motionAudit.maxPending,overlap:motionAudit.overlap}));
-    (['pythagoras','arithmeticSum'].includes(before.id)?report.mathBackground:report.chemistryBackground).push({template:before.id,before,after,realTabSwitch:true});
+    (['pythagoras','arithmeticSum','unitCircle'].includes(before.id)?report.mathBackground:report.chemistryBackground).push({template:before.id,before,after,realTabSwitch:true});
     assert.ok(after.time>before.time);assert.ok(after.time-before.time<.3);assert.equal(after.pending,1);assert.equal(after.maxPending,1);
     await page.locator('#playButton').click();assert.equal(await page.evaluate(()=>motionAudit.pending.size),0);
   }

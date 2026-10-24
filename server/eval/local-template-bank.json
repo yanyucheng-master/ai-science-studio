@@ -1,4 +1,16 @@
 [
+ {"q":"在单位圆中，角θ=30°，求sinθ和cosθ。","expect":"local","kind":"extra","templateId":"unitCircle","level":"senior","answer":{"p1":30,"p2":1,"sin":0.5},"show":["单位圆","1/2"],"note":"独立特殊角30°"},
+ {"q":"求点P的坐标：单位圆中，角θ=-π/2。","expect":"local","kind":"extra","templateId":"unitCircle","level":"senior","answer":{"p1":-90,"p2":1,"cos":0,"sin":-1},"note":"负弧度与轴上位置"},
+ {"q":"单位圆中，θ=π/4rad，求sinθ、cosθ。","expect":"local","kind":"extra","templateId":"unitCircle","level":"senior","answer":{"p1":45,"p2":1},"show":["√2"],"note":"精确根式"},
+ {"q":"单位圆中，角θ=-360°，判断象限或坐标轴位置；说明周期关系。","expect":"local","kind":"extra","templateId":"unitCircle","level":"senior","answer":{"p1":-360,"p2":1,"cos":1,"sin":0},"note":"保留负整周但轴上不归象限"},
+ {"q":"单位圆中，角θ=89.99°，求点P的坐标和终边位置。","expect":"local","kind":"extra","templateId":"unitCircle","level":"senior","answer":{"p1":89.99,"p2":1},"show":["≈","Ⅰ"],"note":"近轴不吸附为特殊角"},
+ {"q":"单位圆中，角θ=π/18000弧度，求sinθ。","expect":"local","kind":"extra","templateId":"unitCircle","level":"senior","answer":{"p1":0.01,"p2":1},"note":"精确换算精度端点"},
+ {"q":"单位圆中，角θ=π/7，求sinθ。","expect":"ai","target":"unitCircle","note":"不能静默舍入角度"},
+ {"q":"单位圆中，角θ=30，求sinθ。","expect":"ai","target":"unitCircle","note":"度数单位缺失"},
+ {"q":"单位圆中，角θ=30°，求sinθ和tanθ。","expect":"ai","target":"unitCircle","note":"任一范围外子问拒绝"},
+ {"q":"求cosθ。单位圆中，θ=30°（温度）。","expect":"ai","target":"unitCircle","note":"问句前置不能绕过数值角色"},
+ {"q":"单位圆中，θ=π/6°，求cosθ。","expect":"ai","target":"unitCircle","note":"度弧单位冲突"},
+ {"q":"单位圆中，半径为2，θ=30°，求点P的坐标。","expect":"ai","target":"unitCircle","note":"半径不可开放或改写"},
  {
   "q": "直角三角形的两条直角边分别为3cm和4cm，求斜边长度和三个边上正方形的面积，说明面积关系。",
   "expect": "local", "kind": "extra", "templateId": "pythagoras", "level": "junior",

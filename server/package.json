@@ -30,6 +30,8 @@
     "eval:hard": "node scripts/run-hard-eval.js",
     "test:share": "node scripts/verify-share-browser.js",
     "test:math-experiments": "node --test test/math-experiments.test.js",
-    "test:math-experiments:browser": "node scripts/verify-math-experiments-browser.js"
+    "test:math-experiments:browser": "node scripts/verify-math-experiments-browser.js",
+    "test:unit-circle": "node --test test/unit-circle.test.js",
+    "test:unit-circle:browser": "node scripts/verify-unit-circle-browser.js"
   }
 }
