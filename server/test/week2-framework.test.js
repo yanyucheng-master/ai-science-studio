@@ -8,6 +8,8 @@ import { readFile } from 'node:fs/promises';
 const web = path => readFile(new URL(`../../web/${path}`, import.meta.url), 'utf8');
 const physicsSource = await web('physics-extra.js');
 const mathSource = await web('math-extra.js');
+const mathExperimentsSource = await web('math-experiments.js');
+const unitCircleSource = await web('unit-circle.js');
 const chemistrySource = await web('chemistry-extra.js');
 const chemistryExperimentsSource = await web('chemistry-experiments.js');
 const html = await web('index.html');
@@ -20,6 +22,8 @@ function load() {
   sandbox.window = sandbox;
   vm.runInNewContext(physicsSource, sandbox);
   vm.runInNewContext(mathSource, sandbox);
+  vm.runInNewContext(mathExperimentsSource, sandbox);
+  vm.runInNewContext(unitCircleSource, sandbox);
   vm.runInNewContext(chemistrySource, sandbox);
   vm.runInNewContext(chemistryExperimentsSource, sandbox);
   return { sandbox, errors };
