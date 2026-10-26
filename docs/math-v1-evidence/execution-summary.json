@@ -1,0 +1,42 @@
+{
+  "status": "full regression and baseline comparison still running",
+  "sourceSha": "00f00d8f64e9aac94bf223022ec96e3f2f63d920",
+  "node": {
+    "tests": 702,
+    "pass": 702,
+    "fail": 0
+  },
+  "questionBank": {
+    "total": 392,
+    "local": 192,
+    "mockTutorRoute": 200
+  },
+  "chromium": {
+    "math-browser": {
+      "browser": "151.0.7922.34",
+      "checks": 272,
+      "exit": 0,
+      "errors": []
+    },
+    "unit-circle-browser": {
+      "browser": "151.0.7922.34",
+      "checks": 219,
+      "exit": 0,
+      "errors": []
+    },
+    "experiment-layout": {
+      "browser": "151.0.7922.34",
+      "checks": 58,
+      "exit": 0,
+      "errors": []
+    }
+  },
+  "unresolved": [
+    "week1 has 44 legacy font/parameter-layout failures; awaiting same current-master comparison"
+  ],
+  "ci": {
+    "actions": 0,
+    "checkRuns": 0,
+    "signature": "unsigned"
+  }
+}
