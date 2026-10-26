@@ -14,7 +14,10 @@ const playable = [
   { id: 'boardSlider', subject: '物理', level: 'senior' },
   { id: 'feCuSO4', subject: '化学', level: 'junior' },
   { id: 'caco3Hcl', subject: '化学', level: 'junior' },
-  { id: 'naclSolution', subject: '化学', level: 'junior' }
+  { id: 'naclSolution', subject: '化学', level: 'junior' },
+  { id: 'pythagoras', subject: '数学', level: 'junior' },
+  { id: 'arithmeticSum', subject: '数学', level: 'senior' },
+  { id: 'unitCircle', subject: '数学', level: 'senior' }
 ];
 const statics = [
   ...['solenoid', 'circuit', 'lever', 'lens', 'buoyancy', 'friction', 'lampPower', 'parallelCircuit', 'planeMirror', 'seriesCircuit', 'heatBalance', 'liquidPressure', 'efficiency', 'sound'].map(id => ({ id, subject: '物理', level: 'junior' })),
@@ -103,6 +106,30 @@ try {
       assert.equal(await page.locator('.transport').isVisible(), false, 'waiting state hides playback');
       await choose(page, item);
       row.layout = await geometry(page, name);
+      if (item.subject === '数学' && viewport.width <= 820) {
+        await page.evaluate(() => {
+          window.__layoutTouch = [];
+          document.addEventListener('pointerdown', event => window.__layoutTouch.push({ type: event.pointerType, id: event.target.id }));
+        });
+        await page.locator('#playButton').tap();
+        await page.waitForFunction(() => state.playing && state.time > .1, null, { polling: 20 });
+        await page.locator('#playButton').tap();
+        assert.equal(await page.evaluate(() => state.playing), false, 'real touch pauses the shared player');
+        const range = page.locator('.parameters input[type=range]:not(:disabled)').first();
+        await range.scrollIntoViewIfNeeded();
+        const before = await range.inputValue();
+        const bounds = await range.boundingBox();
+        await page.touchscreen.tap(bounds.x + bounds.width * .72, bounds.y + bounds.height / 2);
+        assert.notEqual(await range.inputValue(), before, 'touch on the actual range changes a comparison parameter');
+        await page.locator('#resetButton').tap();
+        assert.equal(await range.inputValue(), before, 'touch reset restores the original parameter');
+        const touches = await page.evaluate(() => window.__layoutTouch);
+        assert.ok(touches.length >= 4 && touches.every(event => event.type === 'touch'), 'events originate from a touch device');
+        row.touch = { sharedPlayPause: true, nativeRange: true, originalReset: true, pointerTypes: [...new Set(touches.map(event => event.type))] };
+        await page.locator('.experiment-card').scrollIntoViewIfNeeded();
+        await page.evaluate(() => focusExperimentCard());
+        await page.waitForFunction(() => document.querySelector('.experiment-card').getBoundingClientRect().top <= 32, null, { polling: 20 });
+      }
       if (['caco3Hcl', 'naclSolution', 'brake'].includes(item.id)) await page.screenshot({ path: resolve(harness.output, `${name}-viewport.png`) });
       await playControls(page, row);
       await page.locator('#fullscreenButton').click();
@@ -112,7 +139,7 @@ try {
       assert.equal(await page.locator('.experiment-card').evaluate(node => node.classList.contains('immersive-mode')), false);
       row.fullscreen = { entered: true, escaped: true };
       assert.equal(row.mapping + row.tutor + row.scenes, 0, 'layout and local playback do not need an AI request');
-    }, { width: viewport.width });
+    }, { width: viewport.width, touch: item.subject === '数学' && viewport.width <= 820 });
   }
   for (const item of statics) {
     if (!selected('static-' + item.id)) continue;
@@ -120,6 +147,24 @@ try {
       await page.setViewportSize({ width: 390, height: 844 });
       await choose(page, item);
       row.layout = await geometry(page, 'static-' + item.id, { transport: false });
+      if (item.subject === '数学') {
+        row.graphLabels = await page.evaluate(() => {
+          const svg = document.querySelector('#mathGraph'), bounds = svg.getBoundingClientRect();
+          const labels = [...svg.querySelectorAll('[data-label],.math-point-label,.math-function-label,.math-line-label')].map(node => {
+            const box = node.getBoundingClientRect();
+            return { text: node.textContent, x: box.x, y: box.y, right: box.right, bottom: box.bottom };
+          });
+          return { labels, inside: labels.every(box => box.x >= bounds.x - 1 && box.y >= bounds.y - 1 && box.right <= bounds.right + 1 && box.bottom <= bounds.bottom + 1) };
+        });
+        assert.ok(row.graphLabels.labels.length > 0 && row.graphLabels.inside, 'existing function-graph labels remain present and inside the mobile plot');
+        if (item.id !== 'tangent') {
+          const labels = row.graphLabels.labels;
+          for (let i = 0; i < labels.length; i++) for (let j = i + 1; j < labels.length; j++) {
+            const a = labels[i], b = labels[j];
+            assert.ok(a.right <= b.x + 1 || b.right <= a.x + 1 || a.bottom <= b.y + 1 || b.bottom <= a.y + 1, 'placed formula and point labels do not overlap');
+          }
+        }
+      }
       assert.equal(row.layout.paramsVisible, item.subject !== '生物', 'preserve each template parameter-panel visibility');
       const range = page.locator('.parameters input[type=range]:visible:not(:disabled)').first();
       if (await range.count()) {

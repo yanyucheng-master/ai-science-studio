@@ -35,8 +35,8 @@ export async function createDrawingHarness(output) {
   catch (error) { await new Promise(r => server.close(r)); throw error; }
   const report = { browser: browser.version(), mockOnly: true, cases: [] };
 
-  async function run(name, action, { personal = false, width = 1366, search = '', mapping = 'none' } = {}) {
-    const context = await browser.newContext({ viewport: { width, height: 960 }, reducedMotion: 'reduce', serviceWorkers: 'block' });
+  async function run(name, action, { personal = false, width = 1366, search = '', mapping = 'none', touch = false } = {}) {
+    const context = await browser.newContext({ viewport: { width, height: 960 }, hasTouch: touch, isMobile: touch, reducedMotion: 'reduce', serviceWorkers: 'block' });
     const row = { name, mapping: 0, scenes: 0, tutor: 0, order: [], errors: [], unexpected: [] };
     // Only synthetic credentials in a new context; never use the user's profile.
     await context.addInitScript(({ base, personal }) => {
