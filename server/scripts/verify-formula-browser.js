@@ -9,7 +9,7 @@ import {fileURLToPath} from 'node:url';
 import {resolve,extname,sep} from 'node:path';
 const {chromium}=createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE||'playwright');
 const root=fileURLToPath(new URL('../../',import.meta.url)),web=resolve(root,'web');
-const output=resolve(root,'artifacts/formula-closeout-2026-10-14');await mkdir(output,{recursive:true});
+const output=process.env.FORMULA_QA_OUTPUT||resolve(root,'artifacts/formula-closeout-2026-10-14');await mkdir(output,{recursive:true});
 const quick=process.argv.includes('--quick');
 const aiOnly=process.argv.includes('--ai-only');
 const variantsOnly=process.argv.includes('--variants');
@@ -175,7 +175,7 @@ try{
    await generate(page,'观察植物细胞的结构，指出细胞壁、细胞膜、细胞质、细胞核、叶绿体、线粒体和液泡。');await geometry(page,`${width}-biology`);
   }
   if(aiOnly&&width===1366){await preset(page,'brake');check(await page.evaluate(()=>buildMasterLabAIContext().formula==='v² − v₀² = 2ax'),'AI context: simultaneous scripts must retain source order');}
-  await preset(page,'efficiency');await page.locator('#mentorExpandButton').click();await page.locator('#aiTutorInput').fill('请完整解答机械效率，写出分式和必要步骤。');await page.locator('#aiTutorSendButton').click();
+  await preset(page,'efficiency');await page.locator('#mentorExpandButton:visible,#mentorOpenPageButton:visible').first().click();await page.locator('#aiTutorInput').fill('请完整解答机械效率，写出分式和必要步骤。');await page.locator('#aiTutorSendButton').click();
   await page.waitForFunction(()=>document.querySelector('.ai-message.assistant:not(.pending):not(.error) .solution-section'));
   await page.waitForFunction(()=>document.querySelector('#aiTutorWorkspace').getAttribute('aria-busy')!=='true');
   const ai=await page.evaluate(()=>({fractions:document.querySelectorAll('.ai-message.assistant .vfrac,.ai-message.assistant .mfrac').length,subscripts:document.querySelectorAll('.ai-message.assistant sub,.ai-message.assistant msub').length,katexErrors:document.querySelectorAll('.katex-error').length,follow:document.querySelector('.ai-follow-up')?.textContent,pageOverflow:document.documentElement.scrollWidth-innerWidth,errors:document.querySelectorAll('.ai-message.error').length,
