@@ -106,6 +106,9 @@ try {
       assert.equal(await page.locator('.transport').isVisible(), false, 'waiting state hides playback');
       await choose(page, item);
       row.layout = await geometry(page, name);
+      if (item.subject === '数学') {
+        assert.equal(await page.locator('#fullscreenButton:visible,#sceneFullscreenButton:visible').count(), 1, 'playable math has exactly one fullscreen entry, including after mobile relocation');
+      }
       if (item.subject === '数学' && viewport.width <= 820) {
         await page.evaluate(() => {
           window.__layoutTouch = [];

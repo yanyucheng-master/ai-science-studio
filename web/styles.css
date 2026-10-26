@@ -11141,6 +11141,9 @@ body.subject-math-active:not(.awaiting-generation) .experiment-card:has(.math-la
 .generic-physics-lab:has(.math-lab-scene) .stage-facts > div { grid-template-columns: 90px minmax(0, 1fr); padding: 7px 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
 .math-lab-scene { min-width: 0; color: var(--ink); }
 .experiment-card:has(.math-lab-scene) .header-tools .square-button { display: grid; place-items: center; flex-shrink: 0; }
+/* These playable math templates use the shared transport fullscreen control.
+   The static-scene control must stay hidden after the mobile shell moves it. */
+.experiment-card:has(.math-lab-scene) #sceneFullscreenButton { display: none; }
 .math-scene-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; padding-right: 40px; }
 .math-scene-heading strong { font-size: 16px; }
 .math-scene-heading > span, .math-progress { color: var(--muted); font-size: 12px; }
