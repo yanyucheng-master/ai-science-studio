@@ -5910,7 +5910,7 @@ function updateSubjectVisuals(values) {
   const generic = activeGenericTemplate();
   if (generic) {
     renderGenericVisual(values.generic || buildGenericContent());
-    generic.renderFrame?.(elements.genericPhysicsVisual, values.generic.model, values.progress, { reducedMotion: motionPreference.matches });
+    generic.renderFrame?.(elements.genericPhysicsVisual, values.generic.model, values.progress, { reducedMotion: motionPreference.matches, playing: state.playing });
   }
 
   if (state.subject === "化学" && !generic) {
@@ -6987,7 +6987,7 @@ function playExperiment() {
     showToast("欧姆定律为稳态变量探究：拖动电压或电阻即可同步电流");
     return;
   }
-  if (state.subject === "数学") {
+  if (state.subject === "数学" && !activeGenericTemplate()?.motion) {
     showToast("数学题型为静态参数观察：拖动 x 滑块即可同步斜率");
     return;
   }
@@ -7357,7 +7357,7 @@ function detectSubjectStrict(question) {
   if (/(?:f|F)(?:阻)?\s*(?:=|＝)\s*-?\s*k\s*v|阻力.{0,12}(?:速度|速率).{0,8}成正比|(?:质量|m\s*(?:=|＝)).{0,12}(?:kg|千克|吨).{0,24}(?:初速度|速度)|(?:动摩擦因数|摩擦系数|车轮抱死)/i.test(question)) return "物理";
   if (/遗传|基因|表现型|杂合|纯合|孟德尔|配子|有丝分裂|减数分裂|DNA/i.test(question)) return "生物";
   if (/重力|斜面|弹簧|简谐|动量|碰撞|磁场|电场|电容|电荷|受力|牛顿|机械能|千克|\bkg\b|m\s*\/\s*s/i.test(question)) return "物理";
-  if (/概率|随机|排列|组合|数列|方程|不等式|几何|三角形|圆锥|函数|抛物线|斜率|切线|导数|数学|y\s*(?:=|＝)|ln\s*x|sin\s*x|cos\s*x|e\^x|exp\s*\(|sqrt|√/i.test(question)) return "数学";
+  if (/概率|随机|排列|组合|数列|方程|不等式|几何|三角形|圆锥|单位圆|函数|抛物线|斜率|切线|导数|数学|y\s*(?:=|＝)|ln\s*x|sin\s*x|cos\s*x|e\^x|exp\s*\(|sqrt|√/i.test(question)) return "数学";
   if (identifyExtraPhysicsTemplate(question)) return "物理";
   if (/汽车|车辆|速度|加速度|减速度|刹车|制动|停止|运动|受力|落下|物理|螺线管|电磁铁|磁极|安培定则|线圈|匝|铁芯|磁感线|平抛|水平抛|水平速度|落地|水平位移|欧姆|电压|电阻|电流|纯电阻|电路|Ω/.test(question)) return "物理";
   if (/细胞|生物|植物|动物|亚显微|细胞壁|细胞膜|细胞核|液泡|叶绿体|线粒体|细胞质|内质网|高尔基体|核糖体|DNA/.test(question)) return "生物";
@@ -7375,7 +7375,7 @@ function getGenerationSubject(question) {
 }
 
 elements.playButton.addEventListener("click", () => {
-  if (state.subject === "数学" || state.subject === "生物") {
+  if ((state.subject === "数学" && !activeGenericTemplate()?.motion) || state.subject === "生物") {
     clearReasoningTimers();
     playExperiment();
     return;
@@ -7443,7 +7443,7 @@ function currentPhysicsPresetKey() {
 /* ===== 预设菜单（各学科，按学段与板块分组，2026-10-16）=====
    菜单项写在 index.html（data-subject / data-level / data-block）。打开时按当前学科和学段重新分组：
    本学段按板块分组排在前面，另一学段折叠在底部；当前已预选的那一项隐藏。 */
-const PRESET_BLOCK_ORDER = Object.freeze(["力学", "电学", "电磁学", "光学", "热学", "声学", "化学计算", "函数", "方程（组）", "导数", "细胞"]);
+const PRESET_BLOCK_ORDER = Object.freeze(["力学", "电学", "电磁学", "光学", "热学", "声学", "化学计算", "几何", "函数", "方程（组）", "数列", "三角函数", "导数", "细胞"]);
 const DEDICATED_PRESET_KEYS = new Set(["brake", "solenoid", "boardSlider", "projectile", "circuit", "feCuSO4", "tangent", "cellPlant", "cellAnimal"]);
 const PRESET_OPTIONS = $$("#physicsPresetDropdown .preset-option");
 PRESET_OPTIONS.forEach(option => {
@@ -8758,7 +8758,7 @@ document.addEventListener("keydown", event => {
   if (event.defaultPrevented || $("#announcementsDialog")?.open || event.target.closest?.("input, textarea, select, button, [contenteditable], summary")) return;
   if (event.code === "Space" && event.target.tagName !== "INPUT") {
     event.preventDefault();
-    if (state.subject === "数学" || state.subject === "生物") {
+    if ((state.subject === "数学" && !activeGenericTemplate()?.motion) || state.subject === "生物") {
       playExperiment();
       return;
     }

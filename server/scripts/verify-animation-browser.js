@@ -13,7 +13,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root=fileURLToPath(new URL('../../',import.meta.url));
 const output=process.env.ANIMATION_QA_OUTPUT || resolve(root,'outputs/animation-upgrade/verification');
 await mkdir(output,{recursive:true});
-const files=new Set(['index.html','app.js','styles.css','science-motion.js','science-formulas.js','physics-extra.js','question-conditions.js','math-extra.js','chemistry-extra.js','chemistry-experiments.js','ai-tutor.js']);
+const files=new Set(['mobile.css','mobile-shell.js','index.html','app.js','styles.css','science-motion.js','science-formulas.js','physics-extra.js','question-conditions.js','math-extra.js','math-experiments.js','unit-circle.js','chemistry-extra.js','chemistry-experiments.js','ai-tutor.js']);
 const server=createServer(async(req,res)=>{
   const name=new URL(req.url,'http://localhost').pathname.slice(1)||'index.html';
   if(!files.has(name)){res.writeHead(204);res.end();return;}
@@ -36,14 +36,32 @@ async function prepare(context){
     return route.fulfill({status:204,body:''});
   });
   await context.addInitScript(()=>{
-    const pending=new Set(), selectionPending=new Set(), timers=new Set(), intervals=new Set();
-    window.motionAudit={pending,selectionPending,maxPending:0,overlap:[],frames:0,costs:[],times:[],timers,intervals,longTasks:[]};
+    const pending=new Set(), selectionPending=new Set(), layoutPending=new Set(), timers=new Set(), intervals=new Set();
+    const layoutNames=new Set(['fitQuestion','syncProblemToggle','syncTransportFlag','fitProjectile']);
+    let executingLayout=null;
+    window.motionAudit={pending,selectionPending,layoutPending,layoutFrames:0,layoutCalls:{},layoutRecursive:[],maxAllPending:0,maxPending:0,overlap:[],frames:0,costs:[],times:[],timers,intervals,longTasks:[]};
     const raf=requestAnimationFrame,cancel=cancelAnimationFrame,st=setTimeout,ct=clearTimeout,si=setInterval,ci=clearInterval;
     // Tutor selection capture is an existing one-shot UI frame after pointerup,
     // not a scene animation. Track it separately instead of counting it as a
-    // second ongoing clock. All other frame callbacks remain in the audit.
-    window.requestAnimationFrame=cb=>{const set=cb.name==='captureSelection'?selectionPending:pending;let id=raf(t=>{set.delete(id);const start=performance.now();cb(t);if(set===pending){motionAudit.costs.push(performance.now()-start);motionAudit.times.push(t);motionAudit.frames++;}});set.add(id);if(pending.size>1&&motionAudit.overlap.length<10)motionAudit.overlap.push({callback:cb.name,stack:new Error().stack});motionAudit.maxPending=Math.max(motionAudit.maxPending,pending.size);return id;};
-    window.cancelAnimationFrame=id=>{pending.delete(id);selectionPending.delete(id);cancel(id);};
+    // second ongoing clock. The new mobile shell also queues four named,
+    // single-frame DOM layout jobs; audit them separately, including recursion
+    // and quiescence checks below. Unknown callbacks still count as clocks.
+    window.requestAnimationFrame=cb=>{
+      const set=cb.name==='captureSelection'?selectionPending:layoutNames.has(cb.name)?layoutPending:pending;
+      if(set===layoutPending&&executingLayout===cb.name)motionAudit.layoutRecursive.push(cb.name);
+      let id=raf(t=>{
+        set.delete(id);const start=performance.now();
+        if(set===layoutPending){executingLayout=cb.name;motionAudit.layoutFrames++;motionAudit.layoutCalls[cb.name]=(motionAudit.layoutCalls[cb.name]||0)+1;}
+        try{cb(t);}finally{if(set===layoutPending)executingLayout=null;}
+        if(set===pending){motionAudit.costs.push(performance.now()-start);motionAudit.times.push(t);motionAudit.frames++;}
+      });
+      set.add(id);
+      if(pending.size>1&&motionAudit.overlap.length<10)motionAudit.overlap.push({callback:cb.name,stack:new Error().stack});
+      motionAudit.maxPending=Math.max(motionAudit.maxPending,pending.size);
+      motionAudit.maxAllPending=Math.max(motionAudit.maxAllPending,pending.size+selectionPending.size+layoutPending.size);
+      return id;
+    };
+    window.cancelAnimationFrame=id=>{pending.delete(id);selectionPending.delete(id);layoutPending.delete(id);cancel(id);};
     window.setTimeout=(cb,ms,...args)=>{let id=st(()=>{timers.delete(id);cb(...args);},ms);timers.add(id);return id;};
     window.clearTimeout=id=>{timers.delete(id);ct(id);};
     window.setInterval=(...args)=>{const id=si(...args);intervals.add(id);return id;};
@@ -221,8 +239,11 @@ try{
   assert.equal(lockedWheel,'0rad');
   await page.evaluate(()=>{applyWaitingState('物理');clearDemoTimers();clearReasoningTimers();});
   await page.waitForTimeout(2300);
-  const lifecycle=await page.evaluate(()=>({pending:motionAudit.pending.size,max:motionAudit.maxPending,timers:motionAudit.timers.size,intervals:motionAudit.intervals.size}));
+  const lifecycle=await page.evaluate(()=>({pending:motionAudit.pending.size,max:motionAudit.maxPending,timers:motionAudit.timers.size,intervals:motionAudit.intervals.size,layoutPending:motionAudit.layoutPending.size,layoutFrames:motionAudit.layoutFrames,layoutCalls:motionAudit.layoutCalls,layoutRecursive:motionAudit.layoutRecursive,maxAllPending:motionAudit.maxAllPending}));
   assert.equal(lifecycle.pending,0);assert.equal(lifecycle.max,1);assert.equal(lifecycle.intervals,0);assert.equal(lifecycle.timers,0);
+  assert.equal(lifecycle.layoutPending,0);assert.deepEqual(lifecycle.layoutRecursive,[]);
+  await page.waitForTimeout(250);
+  assert.equal(await page.evaluate(()=>motionAudit.layoutFrames),lifecycle.layoutFrames,'mobile layout jobs become quiescent after leaving the experiment');
   assert.deepEqual(errors,[]);
   report.variants.push({tag,viewport,demo,errors,chemistry,circuits,performance,lifecycle,board:board.map(x=>({outcome:x.model.outcome,relativePosition:x.end.relativePosition})),brake,dipole});
   console.log(`${tag}: passed`);await context.close();
@@ -294,15 +315,15 @@ try{
   const restored=await page.evaluate(()=>({visibility:document.visibilityState,time:solenoidMotionTime,pending:motionAudit.pending.size}));
   assert.ok(restored.time>hidden.time);assert.ok(restored.time-hidden.time<300);assert.equal(restored.pending,1);
   report.background={hidden,restored,realTabSwitch:true};console.log('real background/restore: passed');
-  report.chemistryBackground=[];
-  for(const question of ['10g纯碳酸钙与足量稀盐酸反应，求二氧化碳的质量。','20°C时，配制100g质量分数为10%的氯化钠溶液，求所需盐和水的质量。']){
+  report.chemistryBackground=[];report.mathBackground=[];
+  for(const question of ['10g纯碳酸钙与足量稀盐酸反应，求二氧化碳的质量。','20°C时，配制100g质量分数为10%的氯化钠溶液，求所需盐和水的质量。','直角三角形两条直角边分别为3cm和4cm，求斜边长度。','等差数列首项为1，公差为2，项数为10，求前n项和。','在单位圆中，角θ=-30°，求sinθ和cosθ。']){
     await generate(page,question);await page.locator('#playButton').click();await page.waitForFunction(()=>state.playing&&state.time>.15,null,{polling:20});
     await background.bringToFront();await page.waitForFunction(()=>document.hidden,null,{polling:20});
     const before=await page.evaluate(()=>({id:activeGenericId(),time:state.time,pending:motionAudit.pending.size}));
     await page.waitForTimeout(350);near(await page.evaluate(()=>state.time),before.time);assert.equal(before.pending,0);
     await page.bringToFront();await page.waitForFunction(()=>!document.hidden,null,{polling:20});await page.waitForTimeout(150);
     const after=await page.evaluate(()=>({time:state.time,pending:motionAudit.pending.size,maxPending:motionAudit.maxPending,overlap:motionAudit.overlap}));
-    report.chemistryBackground.push({template:before.id,before,after,realTabSwitch:true});
+    (['pythagoras','arithmeticSum','unitCircle'].includes(before.id)?report.mathBackground:report.chemistryBackground).push({template:before.id,before,after,realTabSwitch:true});
     assert.ok(after.time>before.time);assert.ok(after.time-before.time<.3);assert.equal(after.pending,1);assert.equal(after.maxPending,1);
     await page.locator('#playButton').click();assert.equal(await page.evaluate(()=>motionAudit.pending.size),0);
   }

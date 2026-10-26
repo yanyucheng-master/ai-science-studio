@@ -84,7 +84,7 @@ try{
         await page.locator('#questionInput').fill(question);await page.locator('#generateButton').click();
         await page.waitForURL('**/#/ai-tutor');await complete();
       }else{
-        await generate(q1);await page.locator('#mentorExpandButton').click();
+        await generate(q1);await page.locator('#mentorExpandButton:visible,#mentorOpenPageButton:visible').first().click();
         if(name==='composer_full'){
           await page.locator('#aiTutorInput').fill('请给完整步骤和最终答案，不要只给提示');await page.locator('#aiTutorSendButton').click();
         }else {

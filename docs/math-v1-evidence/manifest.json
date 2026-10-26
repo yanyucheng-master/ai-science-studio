@@ -1,0 +1,116 @@
+{
+  "sourceSha": "00f00d8f64e9aac94bf223022ec96e3f2f63d920",
+  "sourceTree": "e4dae9042d9471b39c5606f7d7976301e860ac26",
+  "screenshots": [
+    {
+      "template": "pythagoras",
+      "viewportWidth": 1366,
+      "file": "pythagoras-1366.png",
+      "pixelSize": [
+        930,
+        1223
+      ],
+      "sha256": "42c401617e76af34655268edecc1fc50f36c21c4bef04ec51a84db3e19c45fdb",
+      "sourceSha": "00f00d8f64e9aac94bf223022ec96e3f2f63d920",
+      "browser": "151.0.7922.34"
+    },
+    {
+      "template": "pythagoras",
+      "viewportWidth": 820,
+      "file": "pythagoras-820.png",
+      "pixelSize": [
+        796,
+        1264
+      ],
+      "sha256": "678d01d860923891b50818934ed258c7c7d33a0fea9c2b1b9948911a4cc5a8d0",
+      "sourceSha": "00f00d8f64e9aac94bf223022ec96e3f2f63d920",
+      "browser": "151.0.7922.34"
+    },
+    {
+      "template": "pythagoras",
+      "viewportWidth": 390,
+      "file": "pythagoras-390.png",
+      "pixelSize": [
+        366,
+        1928
+      ],
+      "sha256": "cbae0dc335f950451ad5d978ed6047b9514dbcdfdc9802b1724a08c6961a24c4",
+      "sourceSha": "00f00d8f64e9aac94bf223022ec96e3f2f63d920",
+      "browser": "151.0.7922.34"
+    },
+    {
+      "template": "arithmeticSum",
+      "viewportWidth": 1366,
+      "file": "arithmeticSum-1366.png",
+      "pixelSize": [
+        930,
+        987
+      ],
+      "sha256": "46fed181757f012ccda75b369cb818acc7fc0816c2430e76e3c7837fcc673c1c",
+      "sourceSha": "00f00d8f64e9aac94bf223022ec96e3f2f63d920",
+      "browser": "151.0.7922.34"
+    },
+    {
+      "template": "arithmeticSum",
+      "viewportWidth": 820,
+      "file": "arithmeticSum-820.png",
+      "pixelSize": [
+        796,
+        1040
+      ],
+      "sha256": "417d7640ce23864a5a840c1fd2c9993d9d5eb8c6c5b639096848a9edb4ba3ab5",
+      "sourceSha": "00f00d8f64e9aac94bf223022ec96e3f2f63d920",
+      "browser": "151.0.7922.34"
+    },
+    {
+      "template": "arithmeticSum",
+      "viewportWidth": 390,
+      "file": "arithmeticSum-390.png",
+      "pixelSize": [
+        366,
+        1546
+      ],
+      "sha256": "9a2fe5e113e54898ab9a2964caf87e97e3bdc4419e6f155ff9bd9e6f12b9caab",
+      "sourceSha": "00f00d8f64e9aac94bf223022ec96e3f2f63d920",
+      "browser": "151.0.7922.34"
+    },
+    {
+      "template": "unitCircle",
+      "viewportWidth": 1366,
+      "file": "unitCircle-1366.png",
+      "pixelSize": [
+        930,
+        1307
+      ],
+      "sha256": "cf8f607b5a547855388eb2b896327e68539a1085fd096aeaa1b042f45a31d734",
+      "sourceSha": "00f00d8f64e9aac94bf223022ec96e3f2f63d920",
+      "browser": "151.0.7922.34"
+    },
+    {
+      "template": "unitCircle",
+      "viewportWidth": 820,
+      "file": "unitCircle-820.png",
+      "pixelSize": [
+        796,
+        1854
+      ],
+      "sha256": "2324a1092f39c54caf347763a0b4ba56dd18737479b2a76bb00e66d829b0cf7d",
+      "sourceSha": "00f00d8f64e9aac94bf223022ec96e3f2f63d920",
+      "browser": "151.0.7922.34"
+    },
+    {
+      "template": "unitCircle",
+      "viewportWidth": 390,
+      "file": "unitCircle-390.png",
+      "pixelSize": [
+        366,
+        1993
+      ],
+      "sha256": "5dd67f86eb3f2bf9b01440e2d64580a7e0e23ab51901f50558696b87e4fc8cfc",
+      "sourceSha": "00f00d8f64e9aac94bf223022ec96e3f2f63d920",
+      "browser": "151.0.7922.34"
+    }
+  ],
+  "webTree": "7b2d07d0d640e267fc163e66ccb5ab14ea9f683f",
+  "serverTree": "cfa685bbe6a883d2aef9d15dd5decace2edce95d"
+}
