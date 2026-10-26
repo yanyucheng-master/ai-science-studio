@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap");
+/* 网页字体改由 index.html 以不阻塞渲染的方式加载（2026-10-25）。 */
 
 :root {
   --ink: #152445;
@@ -656,7 +656,7 @@ body.announcements-open {
   box-shadow: inset 0 1px 2px rgba(45, 73, 126, 0.03);
 }
 
-.prompt-input-wrap input {
+.prompt-input-wrap :is(input, textarea) {
   min-width: 0;
   padding: 0 12px;
   flex: 1;
@@ -1198,7 +1198,7 @@ body.subject-extra-physics-active:not(.awaiting-generation) .scene-fullscreen-bu
   backdrop-filter: blur(10px);
 }
 
-.brake-model-indicator span {
+.brake-model-indicator > span {
   color: #7487a0;
   font-size: 8px;
   font-weight: 800;
@@ -6877,7 +6877,7 @@ body.fullscreen-lock {
     flex-wrap: wrap;
   }
 
-  .prompt-input-wrap input {
+  .prompt-input-wrap :is(input, textarea) {
     min-width: 180px;
   }
 
@@ -7014,7 +7014,7 @@ body.fullscreen-lock {
   box-shadow: inset 0 1px 2px rgba(45, 73, 126, 0.03), 0 10px 26px rgba(49, 101, 210, 0.08);
 }
 
-.demo-mode .prompt-input-wrap input {
+.demo-mode .prompt-input-wrap :is(input, textarea) {
   font-size: 14px;
 }
 
@@ -9272,7 +9272,7 @@ body.subject-physics-active:not(.awaiting-generation) .number-control small {
   font-size: 9.5px;
 }
 
-body.subject-physics-active:not(.awaiting-generation) .brake-model-indicator span,
+body.subject-physics-active:not(.awaiting-generation) .brake-model-indicator > span,
 body.subject-physics-active:not(.awaiting-generation) .distance-flag span,
 body.subject-physics-active:not(.awaiting-generation) .ruler,
 body.subject-physics-active:not(.awaiting-generation) .solenoid-inspector dt,
@@ -11050,8 +11050,8 @@ body.subject-math-active.subject-generic-template-active:not(.awaiting-generatio
 
 /* Chemistry templates share the existing experiment shell; content determines height. */
 .scene.subject-generic-physics:has(.chemistry-lab-scene) { height: auto; min-height: 0; background: linear-gradient(145deg, #f7fbff, #edf5ff); box-shadow: none; }
-.scene:has(.chemistry-lab-scene)::before { content: none; }
-.experiment-card:is(:fullscreen, .immersive-mode) .scene:has(.chemistry-lab-scene) { flex: 0 0 auto; }
+.scene.subject-generic-physics:has(.chemistry-lab-scene)::before { content: none; }
+.experiment-card:is(:fullscreen, .immersive-mode) .scene.subject-generic-physics:has(.chemistry-lab-scene) { flex: 0 0 auto; }
 .generic-physics-stage:has(.chemistry-lab-scene) { position: relative; inset: auto; }
 /* One scene boundary; the diagram and results use spacing and separators. */
 .generic-physics-lab:has(.chemistry-lab-scene) {
@@ -11090,7 +11090,6 @@ body.subject-math-active.subject-generic-template-active:not(.awaiting-generatio
 .chemistry-live-readouts > div > span { display: block; color: var(--muted); font-size: 11px; line-height: 1.5; }
 .chemistry-live-readouts > div > strong { display: block; margin-top: 4px; font-size: 14px; overflow-wrap: anywhere; }
 .chemistry-model-note { margin: 12px 0 0; font-size: 11px; line-height: 1.65; color: var(--muted); }
-.experiment-card:has(.chemistry-lab-scene) .header-tools .square-button { display: grid; place-items: center; flex-shrink: 0; }
 .solution-step-list { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 6px; list-style: none; margin: 14px 0; padding: 0; }
 .solution-step-list li { min-width: 0; border-radius: 9px; padding: 7px 4px; text-align: center; font-size: 11px; color: var(--muted); }
 .solution-step-list li.is-current { color: var(--blue); background: rgba(55,121,243,.12); font-weight: 700; }
@@ -11114,12 +11113,11 @@ body.subject-math-active.subject-generic-template-active:not(.awaiting-generatio
   .solution-station > span { align-self: end; }
   .solution-station > strong { align-self: start; }
   .solution-apparatus { grid-column: 2; grid-row: 1 / 3; height: 100px; margin: 0; }
-  .experiment-card:has(.chemistry-lab-scene) .header-tools .square-button { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; }
-  .experiment-card:has(.chemistry-lab-scene) .header-tools { flex-shrink: 0; }
-  .experiment-card:has(.chemistry-lab-scene) .card-header > div:first-child { min-width: 0; }
-  .experiment-card:has(.chemistry-lab-scene) .parameter { min-width: 0; grid-template-columns: minmax(0,1fr); gap: 8px; }
-  .experiment-card:has(.chemistry-lab-scene) .parameter-label { min-width: 0; }
-  .experiment-card:has(.chemistry-lab-scene) .number-control { justify-self: end; }
+  .experiment-card:has(.scene.subject-generic-physics .chemistry-lab-scene) .header-tools { flex-shrink: 0; }
+  .experiment-card:has(.scene.subject-generic-physics .chemistry-lab-scene) .card-header > div:first-child { min-width: 0; }
+  .experiment-card:has(.scene.subject-generic-physics .chemistry-lab-scene) .parameter { min-width: 0; grid-template-columns: minmax(0,1fr); gap: 8px; }
+  .experiment-card:has(.scene.subject-generic-physics .chemistry-lab-scene) .parameter-label { min-width: 0; }
+  .experiment-card:has(.scene.subject-generic-physics .chemistry-lab-scene) .number-control { justify-self: end; }
 }
 @media (prefers-reduced-motion: reduce) {
   .chemistry-lab-scene * { animation: none !important; transition: none !important; }
@@ -11219,3 +11217,12 @@ body.subject-math-active:not(.awaiting-generation) .experiment-card:has(.math-la
   .experiment-card:has(.math-lab-scene) .header-tools { flex-shrink: 0; }
   .experiment-card:has(.math-lab-scene) .square-button { display: grid; place-items: center; width: 36px; height: 36px; }
 }
+
+/* 2026-10-23 实验卡片按钮统一 */
+/* 收藏与分享：所有实验、所有屏宽一致显示，尺寸相同 */
+.experiment-card .header-tools :is(#favoriteButton, #shareButton):not([hidden]) { display: grid; place-items: center; flex-shrink: 0; }
+@media (max-width: 700px) {
+  .experiment-card .header-tools :is(#favoriteButton, #shareButton) { width: 40px; height: 40px; }
+}
+/* 全屏：播放栏已在场景上方，有播放栏的实验只保留播放栏里的全屏按钮；无播放栏的实验仍用场景右上角按钮 */
+body:not(.awaiting-generation):not(.subject-math-active):not(.subject-biology-active):not(.subject-solenoid-active):not(.subject-circuit-active):not(.subject-extra-physics-active) .experiment-card:is(:fullscreen, .immersive-mode) .scene-fullscreen-button { display: none; }

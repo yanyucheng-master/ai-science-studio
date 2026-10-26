@@ -5070,24 +5070,91 @@ function templateGraphView(svg, spec) {
   return needed;
 }
 
-// 标注依次尝试候选位置：不出图、不压住已放好的标注和关键点；都放不下就不画（数值仍在步骤和读数里）
+// 图中直线与曲线的线段（坐标与 viewBox 一致），用于让标注避开线条
+function mathPlotSegments(svg) {
+  const segments = [];
+  svg.querySelectorAll("line.math-line").forEach(node => {
+    const [x1, y1, x2, y2] = ["x1", "y1", "x2", "y2"].map(name => Number(node.getAttribute(name)));
+    if ([x1, y1, x2, y2].every(Number.isFinite)) segments.push([x1, y1, x2, y2]);
+  });
+  svg.querySelectorAll("path.math-curve").forEach(node => {
+    let last = null;
+    for (const [, command, x, y] of String(node.getAttribute("d") || "").matchAll(/([ML])\s*(-?[\d.]+)[\s,]+(-?[\d.]+)/g)) {
+      const point = [Number(x), Number(y)];
+      if (command === "L" && last) segments.push([...last, ...point]);
+      last = point;
+    }
+  });
+  return segments;
+}
+
+// 坐标轴（M x y H x2 / M x y V y2）
+function mathAxisSegments(svg) {
+  return [...svg.querySelectorAll("path.math-axis-line")].map(node => {
+    const match = String(node.getAttribute("d") || "").match(/M\s*(-?[\d.]+)[\s,]+(-?[\d.]+)\s*([HV])\s*(-?[\d.]+)/);
+    if (!match) return null;
+    const [x, y, end] = [Number(match[1]), Number(match[2]), Number(match[4])];
+    return match[3] === "H" ? [x, y, end, y] : [x, y, x, end];
+  }).filter(Boolean);
+}
+
+// 线段是否穿过矩形（Liang–Barsky 裁剪）
+function segmentHitsBox([x1, y1, x2, y2], box) {
+  const dx = x2 - x1, dy = y2 - y1;
+  let t0 = 0, t1 = 1;
+  for (const [p, q] of [[-dx, x1 - box.x], [dx, box.x + box.width - x1], [-dy, y1 - box.y], [dy, box.y + box.height - y1]]) {
+    if (Math.abs(p) < 1e-9) {
+      if (q < 0) return false;
+      continue;
+    }
+    const r = q / p;
+    if (p < 0) { if (r > t1) return false; if (r > t0) t0 = r; }
+    else { if (r < t0) return false; if (r < t1) t1 = r; }
+  }
+  return true;
+}
+
+// 标注依次尝试候选位置：不出图、不压住已放好的标注和关键点；优先选不压线的位置，
+// 都会压线时退回只要求不压标注；仍放不下就不画（数值仍在步骤和读数里）
 function placeMathLabels(svg, labels, frame) {
   try {
     const placed = [...svg.querySelectorAll(".math-point, .math-axis-name, .math-origin")].map(node => node.getBBox());
+    // 叠在图上的说明条（如“两直线交于 …”）也算已占用的位置；viewBox 与图的像素尺寸一致，可直接换算
+    const svgRect = svg.getBoundingClientRect();
+    const note = document.querySelector("#mathSlopeNote");
+    if (note && note.textContent.trim() && getComputedStyle(note).display !== "none" && svgRect.width) {
+      const rect = note.getBoundingClientRect();
+      const scaleX = frame.width / svgRect.width, scaleY = frame.height / svgRect.height;
+      if (rect.width && rect.height) placed.push({ x: (rect.left - svgRect.left) * scaleX, y: (rect.top - svgRect.top) * scaleY, width: rect.width * scaleX, height: rect.height * scaleY });
+    }
+    const segments = mathPlotSegments(svg);
+    const axes = mathAxisSegments(svg);
     const overlaps = (box, other) => box.x < other.x + other.width + 2 && other.x < box.x + box.width + 2
       && box.y < other.y + other.height + 1 && other.y < box.y + box.height + 1;
     const inside = box => box.x >= 2 && box.y >= 2 && box.x + box.width <= frame.width - 2 && box.y + box.height <= frame.height - 2;
+    const crosses = (box, list) => {
+      const padded = { x: box.x - 2, y: box.y - 1, width: box.width + 4, height: box.height + 2 };
+      return list.some(segment => segmentHitsBox(segment, padded));
+    };
     labels.forEach((label, index) => {
       const node = svg.querySelector(`[data-label="${index}"]`);
       if (!node) return;
-      for (const [x, y, anchor] of label.candidates) {
+      const tryAt = ([x, y, anchor]) => {
         node.setAttribute("x", frame.fx(x));
         node.setAttribute("y", frame.fx(y));
         node.setAttribute("text-anchor", anchor);
-        const box = node.getBBox();
-        if (inside(box) && !placed.some(other => overlaps(box, other))) {
-          placed.push(box);
-          return;
+        // 含分数的标注会排成上下两层，先按排版后的实际大小测量
+        window.ScienceFormula?.enhance?.(node);
+        return node.getBBox();
+      };
+      // 依次放宽：先避开图线和坐标轴，再只避开图线，最后只要求不压其他标注
+      for (const avoid of [[...segments, ...axes], segments, []]) {
+        for (const candidate of label.candidates) {
+          const box = tryAt(candidate);
+          if (inside(box) && !placed.some(other => overlaps(box, other)) && !crosses(box, avoid)) {
+            placed.push(box);
+            return;
+          }
         }
       }
       node.remove();
@@ -5125,13 +5192,15 @@ function renderTemplateGraph(content = buildGenericContent()) {
     plot.push(`<line class="${line.cls || "math-line"}" x1="${fx(sx(ends[0][0]))}" y1="${fx(sy(ends[0][1]))}" x2="${fx(sx(ends[1][0]))}" y2="${fx(sy(ends[1][1]))}"/>`);
     if (line.label) {
       // 标注放在直线上靠近图框两端、仍在图内的位置（第二条直线默认从另一端开始，两条标注分开）
-      const spots = (line.spots || [0.86, 0.14, 0.7, 0.3]).map(t => vertical
+      const preferred = line.spots || [0.86, 0.14, 0.7, 0.3];
+      // 首选位置都压线时，再沿直线多试几处
+      const spots = [...preferred, ...[0.94, 0.06, 0.78, 0.22, 0.6, 0.4, 0.5].filter(t => !preferred.includes(t))].map(t => vertical
         ? [line.c / line.a, bounds.minY + (bounds.maxY - bounds.minY) * t]
         : [bounds.minX + (bounds.maxX - bounds.minX) * t, (line.c - line.a * (bounds.minX + (bounds.maxX - bounds.minX) * t)) / line.b])
         .filter(([x, y]) => within(y, bounds.minY, bounds.maxY));
       // 很陡的直线可能没有落在图内的候选标签位置；保留直线，数值仍可在步骤中阅读。
       if (spots.length) labels.push({ text: line.label, cls: `math-line-label ${(line.cls || "").replace(/\bmath-line\b|\bcoincide\b/g, "")}`.replace(/\s+/g, " ").trim(), priority: 2,
-        candidates: spots.flatMap(([x, y]) => [[sx(x) + 8, sy(y) - 8, "start"], [sx(x) - 8, sy(y) - 8, "end"], [sx(x) + 8, sy(y) + 18, "start"]]) });
+        candidates: spots.flatMap(([x, y]) => [[sx(x) + 8, sy(y) - 8, "start"], [sx(x) - 8, sy(y) - 8, "end"], [sx(x) + 8, sy(y) + 18, "start"], [sx(x) - 8, sy(y) + 18, "end"]]) });
     }
   }
   for (const curve of spec.curves || []) {
@@ -5140,8 +5209,11 @@ function renderTemplateGraph(content = buildGenericContent()) {
     if (curve.label && path.firstPoint && path.lastPoint) {
       // 函数名放在曲线一端的内侧，离开曲线一点，不压线
       const at = end => fx(Math.max(Math.min(end[1] + (end[1] < height / 2 ? 22 : -12), height - 26), 14));
+      // 两端都会压住曲线时（开口很窄等），退到图框四角
       labels.push({ text: curve.label, cls: "math-function-label", priority: 2,
-        candidates: [[Math.min(path.lastPoint[0] - 16, width - 8), at(path.lastPoint), "end"], [Math.max(path.firstPoint[0] + 16, 8), at(path.firstPoint), "start"]] });
+        candidates: [[Math.min(path.lastPoint[0] - 16, width - 8), at(path.lastPoint), "end"], [Math.max(path.firstPoint[0] + 16, 8), at(path.firstPoint), "start"],
+          [width - pad.right - 6, pad.top + 16, "end"], [pad.left + 6, pad.top + 16, "start"],
+          [width - pad.right - 6, pad.top + plotH - 8, "end"], [pad.left + 6, pad.top + plotH - 8, "start"]] });
     }
   }
   const dots = [];
@@ -5160,17 +5232,29 @@ function renderTemplateGraph(content = buildGenericContent()) {
     };
     const prefer = { above: ["above-right", "above-left"], below: ["below-right", "below-left"], right: ["right", "left"] }[point.place] || [point.place];
     const candidates = [...new Set([...prefer, "above-right", "above-left", "below-right", "below-left", "right", "left"])].filter(key => spots[key]).map(key => spots[key]);
+    // 紧贴点的位置都压线时（如两直线交点），再在稍远的一圈里找空档
+    for (const radius of [18, 28, 40]) {
+      for (const angle of [-45, -135, 45, 135, -90, 90, 0, 180, -22, -158, 22, 158]) {
+        const ux = Math.cos(angle * Math.PI / 180), uy = Math.sin(angle * Math.PI / 180);
+        const anchor = ux > 0.2 ? "start" : ux < -0.2 ? "end" : "middle";
+        candidates.push([px + ux * radius, py + uy * radius + (uy > 0.2 ? 12 : uy < -0.2 ? 0 : 5), anchor]);
+      }
+    }
     labels.push({ text: point.label, cls: `math-point-label ${point.cls || ""}`.trim(), priority: point.cls === "vertex" || point.cls === "solution" ? 0 : 1, candidates });
   }
   labels.sort((a, b) => a.priority - b.priority);
   parts.push(`<g clip-path="url(#mathPlotClip)">${plot.join("")}</g>${dots.join("")}`);
   parts.push(labels.map((label, index) => `<text class="${label.cls}" data-label="${index}" x="${fx(label.candidates[0][0])}" y="${fx(label.candidates[0][1])}" text-anchor="${label.candidates[0][2]}">${mathLabelText(label.text)}</text>`).join(""));
   svg.innerHTML = parts.join("");
+  // 先写好图上的说明条，标注排布时才能按它的实际大小避开
+  const note = $("#mathSlopeNote");
+  if (note) {
+    note.textContent = spec.note || "";
+    window.ScienceFormula?.enhance?.(note);
+  }
   placeMathLabels(svg, labels, frame);
   pruneMathTickLabels(svg, ".math-point, .math-point-label, .math-function-label, .math-guide-label, .math-line-label");
   svg.setAttribute("aria-label", spec.ariaLabel || "函数图像");
-  const note = $("#mathSlopeNote");
-  if (note) note.textContent = spec.note || "";
   setMathStageLabel(spec.badge?.title || "", spec.badge?.value || "");
 }
 

@@ -1,0 +1,585 @@
+/* ==========================================================================
+   手机端与触屏（2026-10-25）
+   1. 所有屏宽：题目输入框换成 textarea 后保持原来的单行外观
+   2. 触屏设备：去掉点击高亮、补按下反馈、避免悬停效果粘住
+   3. ≤640px：手机竖屏布局（输入区、快速开始、实验卡、侧栏卡片、底部快捷条）
+   4. 横屏矮屏：全屏实验改为左画面、右控制
+   ========================================================================== */
+
+/* ---------- 1. 输入框：宽屏仍是单行 ---------- */
+.prompt-input-wrap textarea#questionInput {
+  display: block;
+  height: 38px;
+  min-height: 0;
+  margin: 0;
+  line-height: 38px;
+  font-family: inherit;
+  white-space: pre;
+  overflow: hidden;
+  resize: none;
+  box-shadow: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+@media (max-width: 900px) {
+  .prompt-input-wrap textarea#questionInput { height: 20px; line-height: 20px; }
+}
+.preset-picker-label { display: none; }
+.mobile-quickstart, .mobile-dock, .problem-toggle { display: none; }
+
+/* ---------- 2. 触屏手感 ---------- */
+html { -webkit-tap-highlight-color: transparent; }
+button, summary, label, select, a[href], [role="button"], [role="tab"], input[type="range"] { touch-action: manipulation; }
+
+@media (hover: none) {
+  /* 按下时给出反馈（替代被关掉的蓝色高亮） */
+  button:not(:disabled):active, summary:active, a[href]:active { filter: brightness(.93); }
+  :is(.play-button, .generate-button, .square-button, .icon-button, .mini-control, .ai-entry-button,
+      .number-control button, .subject-tab, .grade-seg button, .mq-item, .mobile-dock button,
+      .mentor-actions button, .preset-picker, .reason-step:not(:disabled), .cell-structure-tag):not(:disabled):active {
+    transform: scale(.96);
+    transition: transform 80ms ease, filter 80ms ease;
+  }
+
+  /* 触屏点按后浏览器会保留 :hover，关掉会“粘住”的位移与循环动画 */
+  .topbar-logo:hover { transform: none; box-shadow: 0 10px 22px rgba(31, 91, 236, 0.12); border-color: #dce6f7; }
+  .topbar-logo:hover .mentor-orbit-flask,
+  .mentor-mark-orbit:hover .mentor-orbit-flask { transform: none; }
+  .topbar-logo:hover :is(.mentor-orbit-liquid, .mentor-orbit-bubble, .mentor-orbit-spark),
+  .mentor-mark-orbit:hover :is(.mentor-orbit-liquid, .mentor-orbit-bubble, .mentor-orbit-spark),
+  .mentor-mark:hover :is(.mentor-mark-liquid, .mentor-mark-route, .mentor-mark-step, .mentor-mark-drop) { animation: none; }
+  .topbar-logo:hover .mentor-orbit-spark,
+  .mentor-mark-orbit:hover .mentor-orbit-spark { opacity: 0; }
+  .mentor-mark:hover, .mentor-mark:hover .mentor-mark-glyph, .mentor-mark-orbit:hover .mentor-mark-glyph { transform: none; filter: none; }
+  .mentor-mark:hover .mentor-mark-aura { opacity: 0; }
+  .prompt-favorite-button:hover, .history-item:hover, .reason-step:hover { transform: none; }
+  .ai-entry-button:hover { transform: none; }
+
+  /* 动画流畅度：毛玻璃（backdrop-filter）盖在动画上时，每一帧都要重新模糊背后的内容，
+     手机 GPU 吃不消。触屏设备上统一不做模糊，背景本身已是半透明白色，外观几乎不变。 */
+  .card, .metric-panel, .brake-model-indicator, .scene-tip, .scene-actions button, .scene-fullscreen-button,
+  .projectile-readout, .circuit-readout, .circuit-standard-badge, .generic-physics-readout,
+  .solenoid-rule-card, .solenoid-inspector, .chem-label, .math-label, .bio-label,
+  .board-slider-constants, .board-slider-live-card, .scene-empty-state, .ai-thinking-badge, .generation-overlay {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .card { background: rgba(255, 255, 255, .93); }
+
+  /* 生成实验动画：去掉全屏模糊、旋转的渐变描边（遮罩每帧重绘）、标题与骨架条的背景位移、
+     圆球的圆角变形和文字模糊过渡，只保留位移、缩放、透明度这类可由 GPU 合成的动画 */
+  .generation-overlay { background: radial-gradient(120% 90% at 50% 42%, rgba(248, 251, 255, .97), rgba(231, 239, 253, .985)); }
+  .generation-stage,
+  .generation-overlay.show .generation-stage,
+  .generation-overlay.is-leaving .generation-stage { filter: none; }
+  .gen-edge { display: none; }
+  .generation-card { border-color: rgba(120, 160, 232, .5); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .95), 0 18px 40px rgba(34, 64, 128, .14); }
+  .generation-overlay.show:not([data-stage="complete"]) .gen-title { animation: none; background-position: 40% 0; }
+  .generation-overlay.show .gen-step-skeleton i { animation: gen-skeleton-pulse 1.1s ease-in-out infinite alternate; background-position: 50% 0; }
+  .generation-overlay.show .gen-core-orb { animation: none; }
+  .gen-step-text, .gen-step[data-state="active"] .gen-step-text, .gen-step[data-state="done"] .gen-step-text { filter: none; }
+  .gen-aurora-blob.blob-c { display: none; }
+  @keyframes gen-skeleton-pulse { from { opacity: .45; } to { opacity: 1; } }
+}
+
+/* ---------- 3. 手机竖屏 ---------- */
+@media (max-width: 640px) {
+  /* 3.1 顶栏 */
+  :root body .main { padding: 14px 12px calc(96px + env(safe-area-inset-bottom)); }
+  :root body .topbar { margin-bottom: 14px; align-items: flex-start; }
+  :root body .topbar .eyebrow { margin-bottom: 6px; font-size: 11px; }
+  :root body .greeting-row { gap: 10px; }
+  :root body .topbar-logo { width: 40px; height: 40px; border-radius: 13px; }
+  :root body .topbar-logo svg { width: 30px; height: 30px; }
+  :root body .topbar h1 { font-size: 20px; line-height: 1.3; }
+  :root body .topbar .subheading { margin-top: 6px; font-size: 13px; }
+  :root body .top-actions { gap: 8px; padding-top: 18px; }
+  :root body .top-actions .icon-button, :root body .ai-entry-button { width: 44px; height: 44px; border-radius: 14px; }
+
+  /* 3.2 输入区：标题+学段 / 学科 / 输入框（含实验库与生成按钮） */
+  :root body .prompt-panel { margin-bottom: 14px; padding: 14px; border-radius: 22px; }
+  :root body .prompt-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 10px;
+  }
+  :root body .prompt-label { grid-column: 1; grid-row: 1; margin: 0; }
+  :root body .prompt-label span { font-size: 15px; }
+  :root body .prompt-foot { display: contents; }
+  :root body .grade-switch-header { display: none; }
+  :root body .prompt-foot .grade-switch-inline { display: inline-flex; grid-column: 2; grid-row: 1; justify-self: end; }
+  :root body .grade-switch-inline .grade-seg button { min-width: 48px; height: 36px; font-size: 13px; }
+  :root body .prompt-foot .subject-tabs {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    margin-top: 12px;
+    padding: 4px;
+    overflow: visible;
+    border: 1px solid #e3ecf8;
+    border-radius: 14px;
+    background: #f6f9ff;
+  }
+  :root body .prompt-foot .subject-tab {
+    justify-content: center;
+    min-width: 0;
+    height: 38px;
+    padding: 0 4px;
+    gap: 6px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+  :root body .prompt-foot .subject-tab.active { box-shadow: 0 2px 8px rgba(45, 115, 246, .1); }
+
+  :root body .prompt-input-wrap {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-row: 3;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "text text text" "library . generate";
+    height: auto;
+    min-height: 0;
+    margin-top: 10px;
+    padding: 10px 10px 10px 12px;
+    gap: 8px;
+    border-radius: 16px;
+    overflow: visible;
+  }
+  :root body .prompt-input-wrap textarea#questionInput {
+    grid-area: text;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: calc(1.55em * 2);
+    max-height: calc(1.55em * 5 + 4px);
+    padding: 2px 2px 0;
+    color: #1f3357;
+    font-size: 16px; /* 小于 16px 时 iOS 聚焦会放大页面 */
+    line-height: 1.55;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    overflow-y: hidden;
+  }
+  :root body .prompt-input-wrap .input-tool { display: none; }
+  :root body .prompt-input-wrap .preset-picker {
+    display: inline-flex;
+    grid-area: library;
+    width: auto;
+    height: 40px;
+    padding: 0 12px 0 14px;
+    gap: 8px;
+    align-items: center;
+    color: #2f5ea8;
+    font-size: 14px;
+    font-weight: 700;
+    border: 1px solid #d6e4f7;
+    border-radius: 12px;
+    background: #f5f9ff;
+  }
+  :root body .preset-picker .preset-picker-label { display: inline; }
+  :root body .prompt-input-wrap .preset-picker i { width: 7px; height: 7px; opacity: .8; }
+  :root body .prompt-input-wrap .generate-button {
+    grid-area: generate;
+    flex: none;
+    width: auto;
+    min-width: 0;
+    height: 40px;
+    margin: 0;
+    padding: 0 16px 0 18px;
+    gap: 6px;
+    font-size: 15px;
+    border: 0;
+    border-radius: 12px;
+    background: linear-gradient(110deg, #e6f0ff, #d3e5ff);
+    box-shadow: inset 0 0 0 1px #c6dbfb;
+  }
+  :root body .prompt-input-wrap .generate-button svg { width: 16px; }
+  :root body .prompt-main .preset-dropdown { grid-column: 1 / -1; grid-row: 4; margin-top: 8px; max-height: min(460px, calc(100vh - 96px)); max-height: min(460px, calc(100dvh - 96px)); }
+  :root body .prompt-main .parse-feedback { grid-column: 1 / -1; grid-row: 5; font-size: 13px; }
+  :root body .preset-option > span { font-size: 15px; }
+  :root body .preset-option > small { font-size: 13px; }
+
+  /* 3.3 生成前：快速开始替代空白占位 */
+  :root body.awaiting-generation:not(.demo-mode):not(.ai-tutor-route) .mobile-quickstart:not([hidden]) { display: block; }
+  :root body .mobile-quickstart { margin-bottom: 14px; padding: 16px 14px 14px; }
+  :root body:has(#instantExperiment:not([hidden])) .mobile-quickstart { display: none; }
+  :root body .mq-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  :root body .mq-kicker { display: block; color: #2d73f6; font-size: 12px; font-weight: 700; }
+  :root body .mq-title { margin: 2px 0 0; color: var(--ink); font-size: 17px; }
+  :root body .mq-library[hidden] { display: none; }
+  :root body .mq-library {
+    flex: none;
+    height: 36px;
+    padding: 0 12px;
+    color: #1a56d6;
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid #c6dbfb;
+    border-radius: 11px;
+    background: #f2f7ff;
+  }
+  :root body .mq-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  /* 用块级布局而不是 button 上的 flex：部分国产浏览器内核里按钮内的 flex 不生效，小字会溢出卡片 */
+  :root body .mq-item {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 74px;
+    padding: 11px 12px;
+    overflow: hidden;
+    text-align: left;
+    vertical-align: top;
+    color: var(--ink);
+    border: 1px solid #dfe9f7;
+    border-radius: 14px;
+    background: linear-gradient(160deg, #ffffff, #f4f8ff);
+  }
+  :root body .mq-item strong {
+    display: -webkit-box;
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.4;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  :root body .mq-item small {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 5px;
+    overflow: hidden;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  :root body .mq-item small :is(.science-quantity, .science-scripted) { display: inline; white-space: nowrap; }
+  :root body .mq-note { margin: 12px 2px 0; color: #64748b; font-size: 12px; line-height: 1.6; }
+
+  /* 生成前不再显示整屏占位：实验卡收起（保留宽度以免场景测量出错），思维链与导师卡隐藏 */
+  :root body.awaiting-generation:not(.demo-mode):not(.ai-tutor-route) .content-grid > .experiment-card {
+    max-height: 0;
+    margin: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    box-shadow: none;
+    visibility: hidden;
+  }
+  :root body.awaiting-generation:not(.demo-mode):not(.ai-tutor-route) .insight-column > :is(.reasoning-card, .mentor-card) { display: none; }
+  :root body.awaiting-generation:not(.demo-mode) .content-grid { gap: 0; }
+  :root body .favorites-card:has(#favoriteEmpty:not([hidden])) { display: none; }
+
+  /* 3.4 实验卡头部：标题独占一行，学段标签与收藏/分享同一行，题干默认三行 */
+  :root body .content-grid { gap: 14px; }
+  :root body .experiment-card { padding: 16px 14px 14px; border-radius: 22px; }
+  :root body .experiment-card .card-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "title title" "tag tools" "text text" "more more";
+    align-items: center;
+    min-height: 0;
+    margin-bottom: 10px;
+    gap: 0 10px;
+  }
+  :root body .experiment-card .experiment-heading, :root body .experiment-card .title-row { display: contents; }
+  :root body .experiment-card .title-row h2 { grid-area: title; font-size: 18px; line-height: 1.4; text-wrap: pretty; }
+  :root body .experiment-card .grade-tag { grid-area: tag; justify-self: start; height: 24px; margin-top: 8px; font-size: 12px; }
+  :root body .experiment-card .card-header > .header-tools { grid-area: tools; align-self: center; gap: 8px; margin-top: 8px; }
+  :root body .experiment-card .card-header:not(:has(.grade-tag:not([hidden]))) > .header-tools { grid-row: 1; align-self: start; margin-top: 0; }
+  :root body .experiment-card .header-tools :is(#favoriteButton, #shareButton) { width: 40px; height: 40px; border-radius: 12px; }
+  :root body .experiment-card #problemText {
+    grid-area: text;
+    display: -webkit-box;
+    margin: 10px 0 0;
+    overflow: hidden;
+    color: #51627e;
+    font-size: 14px;
+    line-height: 1.65;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+  :root body .experiment-card #problemText.is-expanded { display: block; overflow: visible; }
+  :root body .experiment-card .problem-toggle:not([hidden]) {
+    display: inline-flex;
+    grid-area: more;
+    justify-self: start;
+    min-height: 36px;
+    margin-top: 0;
+    padding: 0;
+    align-items: center;
+    color: #1a56d6;
+    font-size: 13px;
+    font-weight: 700;
+    border: 0;
+    background: none;
+  }
+
+  /* 3.5 播放条：一行；不改 display（各学科用 display:none 隐藏播放条），时间用绝对定位放在进度条下方 */
+  :root body .experiment-card .transport {
+    position: relative;
+    height: 64px;
+    margin-bottom: 12px;
+    padding: 0 0 18px;
+    gap: 8px;
+    align-items: center;
+  }
+  :root body .experiment-card .transport .play-button { order: 0; flex: 0 0 44px; width: 44px; height: 44px; border-radius: 13px; }
+  :root body .experiment-card .transport .play-button svg { width: 18px; }
+  :root body .experiment-card .transport .timeline { order: 1; flex: 1 1 auto; width: auto; min-width: 0; height: 28px; margin: 0; }
+  :root body .experiment-card .transport #resetButton { order: 2; }
+  :root body .experiment-card .transport #playbackButton { order: 3; }
+  :root body .experiment-card .transport #fullscreenButton { order: 4; }
+  :root body .experiment-card .transport .timecode { position: absolute; bottom: 2px; min-width: 0; color: #6b7c96; font-size: 12px; line-height: 16px; white-space: nowrap; }
+  :root body .experiment-card .transport #currentTime { left: 52px; }
+  :root body .experiment-card .transport #totalTime { right: 144px; }
+  /* 全屏按钮移到标题区后，播放栏右侧只剩重置和倍速两个按钮 */
+  :root body.fullscreen-in-header .experiment-card .transport #totalTime { right: 96px; }
+
+  /* 3.5b 全屏按钮放在收藏、分享那一排（由 mobile-shell.js 移动节点） */
+  :root body .experiment-card .header-tools #fullscreenButton { display: none; }
+  :root body.transport-visible .experiment-card .header-tools #fullscreenButton { display: grid; }
+  :root body .experiment-card .header-tools :is(#fullscreenButton, #sceneFullscreenButton) {
+    flex: 0 0 40px;
+    width: 40px;
+    min-width: 0;
+    height: 40px;
+    padding: 0;
+    place-items: center;
+    color: #5f7090;
+    border: 1px solid #e0e8f4;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  :root body .experiment-card .header-tools :is(#fullscreenButton, #sceneFullscreenButton) svg { width: 16px; }
+  :root body .experiment-card .header-tools :is(#fullscreenButton, #sceneFullscreenButton).fullscreen-active { color: #fff; border-color: var(--blue); background: var(--blue); }
+  :root body .experiment-card .transport .mini-control { flex: 0 0 40px; width: 40px; min-width: 0; height: 40px; padding: 0; font-size: 13px; border-radius: 12px; }
+  :root body .experiment-card .transport .mini-control svg { width: 16px; }
+
+  /* 3.6 参数：标签放大，步进按钮 36px，滑块加大可点范围 */
+  :root body .experiment-card .parameters { gap: 16px; padding-top: 14px; }
+  :root body .experiment-card .parameter { gap: 6px 10px; }
+  :root body .experiment-card .parameter-icon { width: 34px; height: 34px; border-radius: 10px; }
+  :root body .experiment-card .parameter-label strong { font-size: 14px; }
+  :root body .experiment-card .parameter-label small { font-size: 12px; line-height: 1.4; }
+  :root body .experiment-card .parameter > input[type="range"] { height: 28px; margin: 0; }
+  :root body .experiment-card .number-control { padding: 3px; gap: 4px; border-radius: 12px; }
+  :root body .experiment-card .number-control button { width: 36px; height: 36px; font-size: 18px; border-radius: 9px; }
+  :root body .experiment-card .number-control strong { min-width: 30px; font-size: 15px; }
+  :root body .experiment-card .number-control small { font-size: 12px; }
+
+  /* 3.7 场景：读数与提示放大、去掉多余的嵌套边框 */
+  :root body .scene .metric-panel span { font-size: 12px; }
+  :root body .scene .metric-panel strong { font-size: 20px; }
+  :root body .scene .metric-panel small { font-size: 12px; }
+  :root body .scene .scene-tip { font-size: 13px; line-height: 1.55; }
+  :root body .scene .ruler span, :root body .scene .distance-flag span { font-size: 11px; }
+  :root body .brake-model-indicator span { font-size: 12px; }
+  :root body .generic-physics-lab {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+  :root body :is(.projectile-lab, .circuit-lab) { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+  :root body .generic-physics-visual { border-radius: 16px; box-shadow: none; }
+  /* 平抛：文字放大后不再固定场景高度，按内容展开，避免结论被裁掉 */
+  :root body .scene.subject-projectile { height: auto; min-height: 0; }
+  :root body .subject-projectile .projectile-stage { position: relative; inset: auto; }
+  :root body .subject-projectile .projectile-lab { position: relative; inset: auto; margin: 12px; grid-template-rows: auto auto; gap: 10px; overflow: visible; }
+  :root body .subject-projectile .projectile-world { height: auto; min-height: 0; aspect-ratio: var(--projectile-aspect, 1.3); }
+  :root body .subject-projectile .projectile-diagram text { font-size: 16px; }
+  :root body .subject-projectile .projectile-diagram #projectileHeightText { font-size: 14px; }
+  :root body .generic-physics-readout { border-radius: 16px; box-shadow: none; backdrop-filter: none; }
+  :root body .generic-physics-readout > span { font-size: 12px; }
+  :root body .generic-physics-readout > p { font-size: 13px; line-height: 1.55; }
+  :root body .generic-physics-readout .stage-facts dt { font-size: 11px; }
+  :root body .generic-physics-readout .stage-facts dd { font-size: 14px; }
+
+  /* 3.7b 实验画面内的通用文字与按钮：生成后各学科有更具体的字号规则，这里统一抬到 12px 起 */
+  :root body:not(.awaiting-generation) .experiment-card .transport .timecode { font-size: 12px; }
+  :root body:not(.awaiting-generation) .scene .metric-panel span { font-size: 12px; }
+  :root body:not(.awaiting-generation) .scene .metric-panel small { font-size: 12px; }
+  :root body:not(.awaiting-generation) .scene .scene-tip { font-size: 13px; line-height: 1.55; }
+  :root body:not(.awaiting-generation) .brake-model-indicator > span,
+  :root body:not(.awaiting-generation) .distance-flag span,
+  :root body:not(.awaiting-generation) .scene .ruler,
+  :root body:not(.awaiting-generation) .scene .ruler span { font-size: 12px; }
+  :root body:not(.awaiting-generation) .experiment-card .parameter-label small,
+  :root body:not(.awaiting-generation) .experiment-card .number-control small { font-size: 12px; }
+  :root body:not(.awaiting-generation) .generic-physics-readout > span,
+  :root body:not(.awaiting-generation) :is(.projectile-readout, .circuit-readout) span { font-size: 12px; }
+  :root body:not(.awaiting-generation) .generic-physics-readout > p,
+  :root body:not(.awaiting-generation) :is(.projectile-readout, .circuit-readout) p,
+  :root body:not(.awaiting-generation) :is(.projectile-readout, .circuit-readout) p .science-math { font-size: 13px; line-height: 1.55; }
+  :root body:not(.awaiting-generation) .generic-physics-readout .stage-facts dt,
+  :root body:not(.awaiting-generation) .circuit-readout dt { font-size: 12px; }
+  :root body:not(.awaiting-generation) .generic-physics-readout .stage-facts dd,
+  :root body:not(.awaiting-generation) .circuit-readout dd,
+  :root body:not(.awaiting-generation) .circuit-readout dd .science-math { font-size: 14px; }
+  :root body:not(.awaiting-generation) .projectile-readout { grid-template-columns: minmax(0, 1fr); padding: 12px 14px; }
+  :root body:not(.awaiting-generation) .projectile-readout > p { grid-column: 1; grid-row: auto; }
+  :root body:not(.awaiting-generation) .projectile-mobile-vectors,
+  :root body:not(.awaiting-generation) .projectile-mobile-vectors .science-math { font-size: 12px; }
+  :root body:not(.awaiting-generation) .circuit-standard-badge { font-size: 12px; }
+  :root body:not(.awaiting-generation) #chemAmounts,
+  :root body:not(.awaiting-generation) #chemAmounts .science-math,
+  :root body:not(.awaiting-generation) .chem-stage-note strong,
+  :root body:not(.awaiting-generation) .chem-label span { font-size: 12px; }
+  :root body:not(.awaiting-generation) .math-slope-note { font-size: 13px; }
+  /* 铁与硫酸铜：反应完成度原来压在读数面板下面，手机上移到读数面板下方右侧 */
+  :root body:not(.awaiting-generation) .scene.subject-chemistry .chem-label { top: 82px; right: 14px; z-index: 13; min-height: 0; padding-top: 3px; padding-bottom: 3px; }
+  :root body:not(.awaiting-generation) .formula-spotlight > span,
+  :root body:not(.awaiting-generation) .formula-spotlight b { font-size: 12px; }
+  :root body:not(.awaiting-generation) .scene-fullscreen-button { width: 40px; height: 40px; border-radius: 12px; }
+  :root body:not(.awaiting-generation) .scene-fullscreen-button svg { width: 16px; }
+  :root body:not(.awaiting-generation) .diagram-zoom-toggle { min-height: 36px; }
+  /* 生物：按钮与结构标签放大到可点尺寸 */
+  :root body:not(.awaiting-generation) .cell-level-toggle button { min-width: 48px; height: 36px; font-size: 13px; }
+  :root body:not(.awaiting-generation) .cell-viewer-actions button { min-height: 36px; padding: 0 10px; font-size: 13px; }
+  :root body:not(.awaiting-generation) .cell-structure-tag { min-height: 36px; font-size: 13px; }
+  :root body:not(.awaiting-generation) :is(.cell-interaction-hint, .cell-model-note summary, .cell-model-note p, .cell-detail-title > span, .cell-detail-card dt) { font-size: 12px; }
+  :root body:not(.awaiting-generation) #cellDetailType { font-size: 12px; }
+  :root body.subject-biology-active:not(.awaiting-generation) .formula-spotlight p:not(.formula-result),
+  :root body.subject-biology-active:not(.awaiting-generation) .formula-spotlight p:not(.formula-result) :is(span, b) { font-size: 13px; }
+
+  /* 木板—滑块：受力和起点标注原为 8.5–9px */
+  :root body:not(.awaiting-generation) .board-slider-world :is(.board-vector span, .block-vector span, .board-slider-origin span) { font-size: 11px; }
+
+  /* 3.7d 全屏按钮移走后，收回原来给场景右上角按钮预留的空白 */
+  :root body.fullscreen-in-header:not(.awaiting-generation) .scene .metric-panel { right: 13px; }
+  :root body.fullscreen-in-header .biology-stage { padding-top: 10px; }
+  :root body.fullscreen-in-header .generic-physics-lab:has(.week1-scene) { margin-top: 10px; }
+  :root body.fullscreen-in-header .generic-physics-visual .diagram-mobile-toolbar { right: 0; }
+
+  /* 3.7c 电路图：线宽不随缩放变化（non-scaling-stroke），缩小到手机宽度后显得很粗；标注用细体且被缩到约 5px */
+  :root body .edu-circuit-svg :is(.edu-wire path, path.edu-wire, .edu-switch line, .edu-switch circle, .edu-meter circle, .resistor-body, .edu-variable-resistor rect, .rheostat-wiper-lead, .rheostat-terminal-lead, .lamp-circle, .lamp-filament) { stroke-width: 2.2; }
+  :root body .edu-circuit-svg .source-long { stroke-width: 1.6; }
+  :root body .edu-circuit-svg .source-short { stroke-width: 4.6; }
+  :root body .edu-circuit-svg .edu-switch .switch-blade { stroke-width: 2.2; }
+  :root body .edu-circuit-svg .edu-switch .switch-terminal-lead { stroke-width: 1.8; }
+  :root body .edu-circuit-svg :is(.slider-arrow, .slider-arrow-head) { stroke-width: 1.8; }
+  :root body .edu-circuit-svg :is(.rheostat-terminal, .rheostat-contact) { stroke-width: 1.6; }
+  :root body .edu-circuit-svg .rheostat-active-track { stroke-width: 2; }
+  :root body .edu-circuit-svg .junction { stroke-width: 1.2; }
+  :root body .edu-circuit-svg :is(.component-label, .current-direction-label, .rheostat-connection-label, .rheostat-state-label) { font-size: 22px; font-weight: 400; fill: #4f6782; }
+  :root body .edu-circuit-svg :is(.component-value, .component-body-value, .circuit-reading-text, .svg-reading-badge text) { font-size: 21px; font-weight: 500; }
+  :root body .edu-circuit-svg .component-symbol { font-size: 21px; font-weight: 500; }
+  :root body .edu-circuit-svg .meter-letter { font-size: 32px; font-weight: 500; }
+  :root body .circuit-standard-badge { right: 12px; left: 12px; padding: 6px 10px; font-family: inherit; font-weight: 400; line-height: 1.45; text-align: center; }
+  :root body .scene.subject-circuit .circuit-board .edu-circuit-svg { top: 64px; height: calc(100% - 70px); }
+
+  /* 3.8 思维链、导师、收藏 */
+  :root body .reasoning-card, :root body .mentor-card, :root body .favorites-card { padding: 16px 14px; border-radius: 22px; }
+  :root body .reasoning-card .section-kicker { font-size: 12px; }
+  :root body .reasoning-card .side-card-header h2 { font-size: 18px; }
+  :root body .mentor-card .online { font-size: 12px; }
+  :root body .mentor-card h3 { font-size: 17px; }
+  :root body .mentor-card #mentorExpandButton { display: none; }
+  :root body .mentor-card .mentor-message { padding: 12px 14px; font-size: 14px; line-height: 1.7; }
+  :root body .mentor-card .mentor-actions { gap: 8px; }
+  :root body .mentor-card .mentor-actions button { min-height: 44px; font-size: 14px; border-radius: 12px; }
+  :root body .favorites-card .history-header h3 { font-size: 16px; }
+  :root body .favorites-card .favorite-count { font-size: 12px; }
+
+  /* 3.9 底部快捷条：滑过输入区后出现 */
+  :root body.prompt-offscreen.insight-inview:not(.awaiting-generation):not(.ai-tutor-route):not(.fullscreen-lock):not(.announcements-open):not(.demo-mode) .mobile-dock { display: flex; }
+  :root body .mobile-dock {
+    position: fixed;
+    z-index: 110;
+    left: 50%;
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    padding: 5px;
+    gap: 4px;
+    border: 1px solid rgba(198, 219, 251, .9);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .94);
+    box-shadow: 0 12px 30px rgba(39, 77, 140, .18);
+    transform: translateX(-50%);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+  :root body .mobile-dock button {
+    display: inline-flex;
+    height: 44px;
+    padding: 0 16px;
+    gap: 7px;
+    align-items: center;
+    color: #24406b;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    border: 0;
+    border-radius: 14px;
+    background: transparent;
+  }
+  :root body .mobile-dock svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  :root body .mobile-dock .mobile-dock-ai { color: #1a56d6; background: linear-gradient(160deg, #f0f6ff, #dcebff); }
+  :root body .mobile-dock .mobile-dock-ai b { font-size: 15px; font-weight: 900; letter-spacing: -.5px; }
+  :root body.prompt-offscreen.insight-inview:not(.awaiting-generation) .toast { bottom: calc(80px + env(safe-area-inset-bottom)); }
+  :root body .toast { right: 12px; left: 12px; bottom: calc(16px + env(safe-area-inset-bottom)); justify-content: center; font-size: 13px; }
+
+  /* 3.9 AI 导师在实验页内嵌展开：与整页问答一致，第一行标志 + 更多/收起，第二行题目/新对话/回答方式 */
+  :root body .ai-tutor-workspace:not(.is-fullscreen):not(.is-floating) .ai-tutor-header { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 8px; }
+  :root body .ai-tutor-workspace:not(.is-fullscreen):not(.is-floating) .ai-tutor-identity { flex: 0 0 auto; }
+  :root body .ai-tutor-workspace:not(.is-fullscreen):not(.is-floating) .ai-tutor-avatar { display: flex; flex-basis: 36px; --mentor-mark-size: 36px; --mentor-mark-radius: 11px; }
+  :root body .ai-tutor-workspace:not(.is-fullscreen):not(.is-floating) .ai-tutor-header-actions { order: 1; width: auto; margin-left: auto; justify-content: flex-end; gap: 6px; }
+  :root body .ai-tutor-workspace:not(.is-fullscreen):not(.is-floating) .ai-tutor-header-actions .ai-tutor-more > summary { min-height: 40px; }
+  :root body .ai-tutor-workspace:not(.is-fullscreen):not(.is-floating) .ai-tutor-header-actions .icon-button { width: 40px; height: 40px; }
+  :root body .ai-tutor-workspace:not(.is-fullscreen):not(.is-floating) .ai-session-toolbar { order: 2; flex: 1 1 100%; align-items: center; gap: 4px; }
+  :root body .ai-tutor-workspace .ai-session-toolbar > button { min-height: 36px; font-size: 14px; }
+  :root body .ai-tutor-workspace .ai-response-mode select { min-height: 36px; font-size: 14px; }
+  :root body .ai-tutor-workspace .ai-hint-chip { min-height: 36px; padding: 4px 11px; font-size: 12px; }
+
+  /* 3.9a 手机不提供 AI 小窗（入口隐藏；已是小窗时由 mobile-shell.js 改为整页） */
+  :root body #aiTutorFloatButton { display: none; }
+
+  /* 3.9b AI 问答与密钥输入：16px 以免 iOS 聚焦时放大页面 */
+  :root body #aiTutorInput, :root body #apiKeyInput { font-size: 16px; }
+  :root body .ai-tutor-workspace .ai-tutor-composer textarea { resize: none; }
+
+  /* 3.10 全屏（竖屏）：隐藏题干，把高度让给画面 */
+  :root body .experiment-card.immersive-mode { border-radius: 0; height: 100vh; height: 100dvh; padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)); }
+  :root body .experiment-card.immersive-mode #problemText, :root body .experiment-card.immersive-mode .problem-toggle { display: none !important; }
+}
+
+/* ---------- 4. 横屏矮屏的全屏：左画面，右标题/播放/参数 ---------- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .experiment-card.immersive-mode {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 34%);
+    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-areas: "scene header" "scene transport" "scene params";
+    height: 100vh;
+    height: 100dvh;
+    padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+    gap: 8px 14px;
+    overflow: hidden;
+  }
+  .experiment-card.immersive-mode .card-header { grid-area: header; min-height: 0; margin: 0; }
+  .experiment-card.immersive-mode .card-header p,
+  .experiment-card.immersive-mode .problem-toggle { display: none !important; }
+  .experiment-card.immersive-mode .title-row h2 { font-size: 15px; }
+  .experiment-card.immersive-mode .transport { position: relative; grid-area: transport; height: 58px; margin: 0; padding: 0 0 16px; gap: 6px; align-items: center; }
+  .experiment-card.immersive-mode .transport .play-button { order: 0; flex: 0 0 40px; width: 40px; height: 40px; }
+  .experiment-card.immersive-mode .transport .timeline { order: 1; flex: 1 1 auto; width: auto; min-width: 0; height: 26px; margin: 0; }
+  .experiment-card.immersive-mode .transport #resetButton { order: 2; }
+  .experiment-card.immersive-mode .transport #playbackButton { order: 3; }
+  .experiment-card.immersive-mode .transport #fullscreenButton { order: 4; }
+  .experiment-card.immersive-mode .transport .timecode { position: absolute; bottom: 0; min-width: 0; font-size: 11px; line-height: 14px; }
+  .experiment-card.immersive-mode .transport #currentTime { left: 46px; }
+  .experiment-card.immersive-mode .transport #totalTime { right: 126px; }
+  .experiment-card.immersive-mode .transport .mini-control { flex: 0 0 36px; width: 36px; min-width: 0; height: 36px; padding: 0; font-size: 12px; }
+  .experiment-card.immersive-mode .scene { grid-area: scene; height: auto !important; min-height: 0; overflow: auto; }
+  .experiment-card.immersive-mode .parameters { grid-area: params; grid-template-columns: 1fr; gap: 10px; padding: 4px 2px 0; overflow-y: auto; }
+}
