@@ -33,7 +33,9 @@
     input.style.overflowY = wanted > max + 1 ? "auto" : "hidden";
   }
 
+  // 宽屏上这些同步都是一次性的轻量操作，直接执行，不占用动画帧（实验动画按“同一时刻只有一个待执行的动画帧”验收）
   function queueFit() {
+    if (!isPhone()) { fitQuestion(); return; }
     if (!fitFrame) fitFrame = requestAnimationFrame(fitQuestion);
   }
 
@@ -181,6 +183,7 @@
   }
 
   function queueProblemSync() {
+    if (!isPhone()) { syncProblemToggle(); return; }
     if (!problemFrame) problemFrame = requestAnimationFrame(syncProblemToggle);
   }
 
@@ -248,12 +251,17 @@
     document.body.classList.toggle("transport-visible", visible);
   }
   function queueTransportFlag() {
+    if (!document.body.classList.contains("fullscreen-in-header")) return; // 只有按钮移到标题区时才用得到
     if (!transportFrame) transportFrame = requestAnimationFrame(syncTransportFlag);
   }
 
+  // 竖屏手机（≤640px）和横屏手机（矮屏、触屏）都放在标题区；横屏全屏时标题区在右侧，退出按钮也在那里
+  const headerQuery = matchMedia("(max-width: 640px), (max-height: 500px) and (orientation: landscape) and (pointer: coarse)");
+  const buttonsInHeader = () => headerQuery.matches;
+
   function placeFullscreenButtons() {
     if (!headerTools) return;
-    const phone = isPhone();
+    const phone = buttonsInHeader();
     fullscreenButtons.slice().reverse().forEach(item => {
       if (phone) {
         if (item.el.parentNode !== headerTools) headerTools.prepend(item.el);
@@ -312,6 +320,7 @@
     }
   }
   function queueProjectileFit() {
+    if (!isPhone()) { if (projectileKey) fitProjectile(); return; }
     if (!projectileFrame) projectileFrame = requestAnimationFrame(fitProjectile);
   }
   if (projectileSvg) {
@@ -330,6 +339,31 @@
     new MutationObserver(leaveFloatingOnPhone).observe(tutorWorkspace, { attributes: true, attributeFilter: ["class"] });
   }
 
+  /* ---------- 提示文字：手机上收藏列表在下方，不在右侧 ---------- */
+  if (typeof window.showToast === "function") {
+    const showToastOriginal = window.showToast;
+    window.showToast = function (message, ...rest) {
+      const text = isPhone() && message === "已收藏到右侧实验列表" ? "已收藏，可在下方“已收藏的实验”中找到" : message;
+      return showToastOriginal.call(this, text, ...rest);
+    };
+  }
+
+  /* ---------- 示意图里的公式标注：跨过手机断点后按新字号重排 ---------- */
+  // ScienceFormula 把带上下标的 SVG 文字拆成 tspan，位置和字号按排版当时的字号写死；
+  // 手机样式会放大示意图文字，横竖屏切换跨过断点时需按现在的字号重排一次，否则字形还停在旧位置。
+  function retypesetSceneFormulas() {
+    const api = window.ScienceFormula;
+    if (typeof api?.enhance !== "function") return;
+    document.querySelectorAll("#scene svg text[data-math-source]").forEach(node => {
+      const original = node.getAttribute("font-size");
+      // 临时改动 font-size 属性让排版签名变化，触发按当前计算字号重排；随后还原属性再排一次
+      node.setAttribute("font-size", getComputedStyle(node).fontSize);
+      api.enhance(node);
+      if (original === null) node.removeAttribute("font-size"); else node.setAttribute("font-size", original);
+      api.enhance(node);
+    });
+  }
+
   /* ---------- 状态同步 ---------- */
   new MutationObserver(() => {
     renderQuickStart();
@@ -344,11 +378,13 @@
   const onLayoutChange = () => {
     queueFit();
     queueProblemSync();
-    if (document.body.classList.contains("fullscreen-in-header") !== isPhone()) placeFullscreenButtons();
+    if (document.body.classList.contains("fullscreen-in-header") !== buttonsInHeader()) placeFullscreenButtons();
     queueProjectileFit();
     leaveFloatingOnPhone();
   };
   phoneQuery.addEventListener?.("change", onLayoutChange);
+  phoneQuery.addEventListener?.("change", () => requestAnimationFrame(retypesetSceneFormulas));
+  headerQuery.addEventListener?.("change", onLayoutChange);
   window.addEventListener("resize", onLayoutChange);
 
   renderQuickStart(true);

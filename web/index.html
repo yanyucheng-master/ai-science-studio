@@ -14,9 +14,11 @@
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;600;700;800&amp;display=swap"></noscript>
   <link rel="stylesheet" href="vendor/katex/katex.min.css?v=0.19.0">
   <link rel="stylesheet" href="styles.css?v=20261025-mobile-1">
+  <link rel="stylesheet" href="math-experiments.css?v=20261030-math-1">
+  <link rel="stylesheet" href="chemistry-equilibria.css?v=20261030-chemistry-v2-1">
   <link rel="stylesheet" href="instant-experiment.css?v=20261018-instant-1">
   <link rel="stylesheet" href="tutor-focus.css?v=20261019-tutor-followups-1">
-  <link rel="stylesheet" href="mobile.css?v=20261025-mobile-3">
+  <link rel="stylesheet" href="mobile.css?v=20261030-mobile-4">
 </head>
 <body class="awaiting-generation">
   <script src="brand-motion.js?v=20261020-splash-1"></script>
@@ -197,9 +199,25 @@
               <span>二元一次方程组与两直线交点</span>
               <small>加减消元 · 交点坐标 · 无解与无数组解</small>
             </button>
+            <button class="preset-option" type="button" data-preset="pythagoras" data-subject="数学" data-level="junior" data-block="几何">
+              <span>勾股定理面积拼图</span>
+              <small>两种拼法 · 刚性搬移 · 面积证明</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="unitCircle" data-subject="数学" data-level="senior" data-block="三角函数">
+              <span>单位圆与正弦余弦</span>
+              <small>角度/弧度 · 投影 · 同步曲线</small>
+            </button>
             <button class="preset-option" type="button" data-preset="tangent" data-subject="数学" data-level="senior" data-block="导数">
               <span>函数图像上的动点与切线斜率</span>
               <small>y′ = f′(x) · 切线斜率 k</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="hclNaohNeutralization" data-subject="化学" data-level="both" data-block="化学计算">
+              <span>强酸强碱中和与pH</span>
+              <small>盐酸中加碱 · 理论等量 · pH曲线</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="kno3Cooling" data-subject="化学" data-level="both" data-block="化学计算">
+              <span>硝酸钾冷却结晶</span>
+              <small>五点溶解度 · 析晶 · 质量守恒</small>
             </button>
             <button class="preset-option" type="button" data-preset="cellPlant" data-subject="生物" data-level="both" data-block="细胞">
               <span>植物细胞：结构与功能</span>
@@ -988,12 +1006,17 @@
   <script src="physics-extra.js?v=20261021-question-conditions-1"></script>
   <script src="question-conditions.js?v=20261021-question-conditions-1"></script>
   <script src="math-extra.js?v=20261016-week2-1"></script>
+  <script src="math-experiments.js?v=20261030-math-1"></script>
+  <script src="unit-circle.js?v=20261030-math-1"></script>
   <script src="chemistry-extra.js?v=20261016-week2-1"></script>
   <script src="chemistry-experiments.js?v=20261022-chemistry-5"></script>
+  <script src="chemistry-equilibria.js?v=20261030-chemistry-v2-1"></script>
+  <script src="chemistry-equilibria-questions.js?v=20261030-chemistry-v2-1"></script>
+  <script src="chemistry-equilibria-experiments.js?v=20261030-chemistry-v2-1"></script>
   <script src="instant-scene.js?v=20261020-incline-data-1"></script>
   <script src="incline-presets.js?v=20261020-incline-competition-1"></script>
   <script src="incline-diagram.js?v=20261020-incline-data-1"></script>
-  <script src="app.js?v=20261025-mobile-3"></script>
+  <script src="app.js?v=20261030-experiments-1"></script>
   <script src="experiment-share.js?v=20261020-share-1"></script>
   <script src="vendor/katex/katex.min.js?v=0.19.0"></script>
   <script src="vendor/katex/mhchem.min.js?v=0.19.0"></script>
@@ -1002,6 +1025,6 @@
   <script src="instant-scene-renderer.js?v=20261020-incline-data-1"></script>
   <script src="instant-experiment.js?v=20261020-incline-competition-1"></script>
   <script src="announcements.js?v=20261008-announcements-2"></script>
-  <script src="mobile-shell.js?v=20261025-mobile-3"></script>
+  <script src="mobile-shell.js?v=20261030-mobile-4"></script>
 </body>
 </html>

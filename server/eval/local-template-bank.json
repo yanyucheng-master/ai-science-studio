@@ -3184,5 +3184,584 @@
    "waterMass": 180
   },
   "note": "Review 5608954415: supported front-loaded ask keeps hand-calculated mass answer"
+ },
+ {
+  "q": "在单位圆中，角θ=30°，求sinθ和cosθ。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "unitCircle",
+  "level": "senior",
+  "answer": {
+   "p1": 30,
+   "p2": 1,
+   "sin": 0.5
+  },
+  "show": [
+   "单位圆",
+   "1/2"
+  ],
+  "note": "独立特殊角30°"
+ },
+ {
+  "q": "求点P的坐标：单位圆中，角θ=-π/2。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "unitCircle",
+  "level": "senior",
+  "answer": {
+   "p1": -90,
+   "p2": 1,
+   "cos": 0,
+   "sin": -1
+  },
+  "note": "负弧度与轴上位置"
+ },
+ {
+  "q": "单位圆中，θ=π/4rad，求sinθ、cosθ。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "unitCircle",
+  "level": "senior",
+  "answer": {
+   "p1": 45,
+   "p2": 1
+  },
+  "show": [
+   "√2"
+  ],
+  "note": "精确根式"
+ },
+ {
+  "q": "单位圆中，角θ=-360°，判断象限或坐标轴位置；说明周期关系。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "unitCircle",
+  "level": "senior",
+  "answer": {
+   "p1": -360,
+   "p2": 1,
+   "cos": 1,
+   "sin": 0
+  },
+  "note": "保留负整周但轴上不归象限"
+ },
+ {
+  "q": "单位圆中，角θ=89.99°，求点P的坐标和终边位置。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "unitCircle",
+  "level": "senior",
+  "answer": {
+   "p1": 89.99,
+   "p2": 1
+  },
+  "show": [
+   "≈",
+   "Ⅰ"
+  ],
+  "note": "近轴不吸附为特殊角"
+ },
+ {
+  "q": "单位圆中，角θ=π/18000弧度，求sinθ。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "unitCircle",
+  "level": "senior",
+  "answer": {
+   "p1": 0.01,
+   "p2": 1
+  },
+  "note": "精确换算精度端点"
+ },
+ {
+  "q": "单位圆中，角θ=π/7，求sinθ。",
+  "expect": "ai",
+  "target": "unitCircle",
+  "note": "不能静默舍入角度"
+ },
+ {
+  "q": "单位圆中，角θ=30，求sinθ。",
+  "expect": "ai",
+  "target": "unitCircle",
+  "note": "度数单位缺失"
+ },
+ {
+  "q": "单位圆中，角θ=30°，求sinθ和tanθ。",
+  "expect": "ai",
+  "target": "unitCircle",
+  "note": "任一范围外子问拒绝"
+ },
+ {
+  "q": "求cosθ。单位圆中，θ=30°（温度）。",
+  "expect": "ai",
+  "target": "unitCircle",
+  "note": "问句前置不能绕过数值角色"
+ },
+ {
+  "q": "单位圆中，θ=π/6°，求cosθ。",
+  "expect": "ai",
+  "target": "unitCircle",
+  "note": "度弧单位冲突"
+ },
+ {
+  "q": "单位圆中，半径为2，θ=30°，求点P的坐标。",
+  "expect": "ai",
+  "target": "unitCircle",
+  "note": "半径不可开放或改写"
+ },
+ {
+  "q": "直角三角形的两条直角边分别为3cm和4cm，求斜边长度和三个边上正方形的面积，说明面积关系。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "pythagoras",
+  "level": "junior",
+  "answer": {
+   "p1": 3,
+   "p2": 4,
+   "readout": "5 cm"
+  },
+  "show": [
+   "两种无重叠终态",
+   "25"
+  ],
+  "note": "新范围：3-4-5与9/16/25，原面积/周长题另保留拒绝反例"
+ },
+ {
+  "q": "求斜边长度：直角三角形的直角边a=5cm，直角边b=12cm。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "pythagoras",
+  "level": "junior",
+  "answer": {
+   "p1": 5,
+   "p2": 12,
+   "readout": "13 cm"
+  },
+  "note": "问句前置与冒号"
+ },
+ {
+  "q": "直角三角形两条直角边分别为1cm和1cm，求斜边长度。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "pythagoras",
+  "level": "junior",
+  "answer": {
+   "p1": 1,
+   "p2": 1,
+   "readout": "√2"
+  },
+  "note": "保留根式"
+ },
+ {
+  "q": "求斜边长度。直角三角形两条直角边分别为3cm和4cm（周长）。",
+  "expect": "ai",
+  "target": "pythagoras",
+  "note": "数值角色不符"
+ },
+ {
+  "q": "直角三角形两条直角边分别为3cm和4cm，求斜边面积。",
+  "expect": "ai",
+  "target": "pythagoras",
+  "note": "数量类型不符"
+ },
+ {
+  "q": "直角三角形两条直角边分别为3cm和4cm，求三角形面积和周长。",
+  "expect": "ai",
+  "target": "pythagoras",
+  "note": "本轮明确收窄为边上正方形面积；保留旧所问拒绝反例"
+ },
+ {
+  "q": "三角形两条边分别为3cm和4cm，求斜边长度。",
+  "expect": "ai",
+  "target": "pythagoras",
+  "note": "不能默认直角"
+ },
+ {
+  "q": "直角三角形两条直角边分别为3.25cm和0.0475m，求三个边上正方形的面积。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "pythagoras",
+  "level": "junior",
+  "answer": {
+   "p1": 3.25,
+   "p2": 4.75,
+   "a2": 10.5625,
+   "b2": 22.5625,
+   "c2": 33.125
+  },
+  "note": "小数与精确单位换算"
+ },
+ {
+  "q": "直角三角形两条直角边分别为3.001cm和4cm，求斜边长度。",
+  "expect": "ai",
+  "target": "pythagoras",
+  "note": "精度超界不舍入"
+ },
+ {
+  "q": "25°C，初始盐酸体积为20mL，累计加入NaOH溶液体积为0mL，HCl与NaOH的浓度均为0.100mol/L，完全电离且体积可加且忽略活度，求理论恰好中和所需NaOH总体积、酸碱性、当前混合液pH。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "hclNaohNeutralization",
+  "answer": {
+   "p1": 20,
+   "p2": 0,
+   "pH": 1,
+   "nature": "酸性"
+  },
+  "show": [
+   "原液无色",
+   "理论等量",
+   "总体积"
+  ],
+  "note": "独立酸碱平衡预期，等量两侧不可舍入为中性"
+ },
+ {
+  "q": "25°C，初始盐酸体积为20mL，累计加入NaOH溶液体积为10mL，HCl与NaOH的浓度均为0.100mol/L，完全电离且体积可加且忽略活度，求理论恰好中和所需NaOH总体积、酸碱性、当前混合液pH。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "hclNaohNeutralization",
+  "answer": {
+   "p1": 20,
+   "p2": 10,
+   "pH": 1.47712125472,
+   "nature": "酸性"
+  },
+  "show": [
+   "原液无色",
+   "理论等量",
+   "总体积"
+  ],
+  "note": "独立酸碱平衡预期，等量两侧不可舍入为中性"
+ },
+ {
+  "q": "25°C，初始盐酸体积为20mL，累计加入NaOH溶液体积为20mL，HCl与NaOH的浓度均为0.100mol/L，完全电离且体积可加且忽略活度，求理论恰好中和所需NaOH总体积、酸碱性、当前混合液pH。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "hclNaohNeutralization",
+  "answer": {
+   "p1": 20,
+   "p2": 20,
+   "pH": 7,
+   "nature": "中性"
+  },
+  "show": [
+   "原液无色",
+   "理论等量",
+   "总体积"
+  ],
+  "note": "独立酸碱平衡预期，等量两侧不可舍入为中性"
+ },
+ {
+  "q": "25°C，初始盐酸体积为20mL，累计加入NaOH溶液体积为30mL，HCl与NaOH的浓度均为0.100mol/L，完全电离且体积可加且忽略活度，求理论恰好中和所需NaOH总体积、酸碱性、当前混合液pH。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "hclNaohNeutralization",
+  "answer": {
+   "p1": 20,
+   "p2": 30,
+   "pH": 12.30102999566,
+   "nature": "碱性"
+  },
+  "show": [
+   "原液无色",
+   "理论等量",
+   "总体积"
+  ],
+  "note": "独立酸碱平衡预期，等量两侧不可舍入为中性"
+ },
+ {
+  "q": "25°C，初始盐酸体积为20mL，累计加入NaOH溶液体积为19.9999mL，HCl与NaOH的浓度均为0.100mol/L，完全电离且体积可加且忽略活度，求理论恰好中和所需NaOH总体积、酸碱性、当前混合液pH。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "hclNaohNeutralization",
+  "answer": {
+   "p1": 20,
+   "p2": 19.9999,
+   "pH": 6.545035287507,
+   "nature": "酸性"
+  },
+  "show": [
+   "原液无色",
+   "理论等量",
+   "总体积"
+  ],
+  "note": "独立酸碱平衡预期，等量两侧不可舍入为中性"
+ },
+ {
+  "q": "25°C，初始盐酸体积为20mL，累计加入NaOH溶液体积为20.0001mL，HCl与NaOH的浓度均为0.100mol/L，完全电离且体积可加且忽略活度，求理论恰好中和所需NaOH总体积、酸碱性、当前混合液pH。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "hclNaohNeutralization",
+  "answer": {
+   "p1": 20,
+   "p2": 20.0001,
+   "pH": 7.454963016858,
+   "nature": "碱性"
+  },
+  "show": [
+   "原液无色",
+   "理论等量",
+   "总体积"
+  ],
+  "note": "独立酸碱平衡预期，等量两侧不可舍入为中性"
+ },
+ {
+  "q": "初中：判断酸碱性。25°C，初始有0.02L盐酸，已加入0.0199999L氢氧化钠溶液，盐酸浓度为0.1000mol/L，NaOH浓度为0.100mol/L。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "hclNaohNeutralization",
+  "answer": {
+   "p1": 20,
+   "p2": 19.9999,
+   "pH": 6.545035287507,
+   "nature": "酸性"
+  },
+  "hide": [
+   "n(HCl)",
+   "−lg"
+  ],
+  "note": "问句前置、L转换、显式初中内容不改变全局高中选择"
+ },
+ {
+  "q": "在25°C下，向20mL0.100mol/L的盐酸中累计加入30mL0.1mol/L的NaOH溶液，计算混合液pH。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "hclNaohNeutralization",
+  "answer": {
+   "p1": 20,
+   "p2": 30,
+   "pH": 12.30102999566
+  }
+ },
+ {
+  "q": "初始为60°C饱和的纯KNO₃水溶液，水质量为100g，冷却至20°C，不蒸发且不损失水，充分达到平衡，求析出晶体质量、终态溶解KNO₃质量、母液质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "kno3Cooling",
+  "answer": {
+   "p1": 100,
+   "p2": 20,
+   "dissolved": 31.6,
+   "crystals": 78.4,
+   "motherLiquor": 131.6,
+   "totalMass": 210
+  },
+  "show": [
+   "初中知识复习",
+   "不用于插值",
+   "母液"
+  ],
+  "note": "教材表五个独立数据点与质量守恒"
+ },
+ {
+  "q": "初始为60°C饱和的纯KNO₃水溶液，水质量为100g，冷却至30°C，不蒸发且不损失水，充分达到平衡，求析出晶体质量、终态溶解KNO₃质量、母液质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "kno3Cooling",
+  "answer": {
+   "p1": 100,
+   "p2": 30,
+   "dissolved": 45.8,
+   "crystals": 64.2,
+   "motherLiquor": 145.8,
+   "totalMass": 210
+  },
+  "show": [
+   "初中知识复习",
+   "不用于插值",
+   "母液"
+  ],
+  "note": "教材表五个独立数据点与质量守恒"
+ },
+ {
+  "q": "初始为60°C饱和的纯KNO₃水溶液，水质量为100g，冷却至40°C，不蒸发且不损失水，充分达到平衡，求析出晶体质量、终态溶解KNO₃质量、母液质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "kno3Cooling",
+  "answer": {
+   "p1": 100,
+   "p2": 40,
+   "dissolved": 63.9,
+   "crystals": 46.1,
+   "motherLiquor": 163.9,
+   "totalMass": 210
+  },
+  "show": [
+   "初中知识复习",
+   "不用于插值",
+   "母液"
+  ],
+  "note": "教材表五个独立数据点与质量守恒"
+ },
+ {
+  "q": "初始为60°C饱和的纯KNO₃水溶液，水质量为100g，冷却至50°C，不蒸发且不损失水，充分达到平衡，求析出晶体质量、终态溶解KNO₃质量、母液质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "kno3Cooling",
+  "answer": {
+   "p1": 100,
+   "p2": 50,
+   "dissolved": 85.5,
+   "crystals": 24.5,
+   "motherLiquor": 185.5,
+   "totalMass": 210
+  },
+  "show": [
+   "初中知识复习",
+   "不用于插值",
+   "母液"
+  ],
+  "note": "教材表五个独立数据点与质量守恒"
+ },
+ {
+  "q": "初始为60°C饱和的纯KNO₃水溶液，水质量为100g，冷却至60°C，不蒸发且不损失水，充分达到平衡，求析出晶体质量、终态溶解KNO₃质量、母液质量。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "kno3Cooling",
+  "answer": {
+   "p1": 100,
+   "p2": 60,
+   "dissolved": 110,
+   "crystals": 0,
+   "motherLiquor": 210,
+   "totalMass": 210
+  },
+  "show": [
+   "初中知识复习",
+   "不用于插值",
+   "母液"
+  ],
+  "note": "教材表五个独立数据点与质量守恒"
+ },
+ {
+  "q": "求析出晶体质量、母液质量：初始为60°C饱和的纯KNO3水溶液，水质量为0.1000001kg，终温为20°C，不蒸发且不损失水，充分达到平衡。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "kno3Cooling",
+  "answer": {
+   "p1": 100.0001,
+   "p2": 20,
+   "crystals": 78.4000784,
+   "dissolved": 31.6000316,
+   "motherLiquor": 131.6001316,
+   "totalMass": 210.00021
+  },
+  "level": "junior",
+  "note": "kg精确转换与前置多问"
+ },
+ {
+  "q": "初始盐酸体积为20mL，累计加入NaOH溶液体积为10mL，HCl与NaOH的浓度均为0.100mol/L，完全电离且体积可加且忽略活度，求理论恰好中和所需NaOH总体积、酸碱性、当前混合液pH。",
+  "expect": "ai",
+  "target": "hclNaohNeutralization",
+  "note": "缺温度"
+ },
+ {
+  "q": "25°C，初始盐酸体积为20mL，累计加入NaOH溶液体积为10mL，HCl与NaOH的浓度均为0.2mol/L，完全电离且体积可加且忽略活度，求理论恰好中和所需NaOH总体积、酸碱性、当前混合液pH。",
+  "expect": "ai",
+  "target": "hclNaohNeutralization",
+  "note": "固定浓度不符"
+ },
+ {
+  "q": "25°C，初始盐酸体积为20mL，累计加入NaOH溶液体积为10mL，HCl与NaOH的浓度均为0.100000000000000001mol/L，完全电离且体积可加且忽略活度，求理论恰好中和所需NaOH总体积、酸碱性、当前混合液pH。",
+  "expect": "ai",
+  "target": "hclNaohNeutralization",
+  "note": "浓度禁止浮点舍入吻合"
+ },
+ {
+  "q": "25°C，消耗盐酸体积为20mL，累计加入NaOH溶液体积为10mL，HCl与NaOH的浓度均为0.100mol/L，完全电离且体积可加且忽略活度，求理论恰好中和所需NaOH总体积、酸碱性、当前混合液pH。",
+  "expect": "ai",
+  "target": "hclNaohNeutralization",
+  "note": "条件角色错误"
+ },
+ {
+  "q": "25°C，初始盐酸体积为20mL，累计加入NaOH溶液体积为10.00001mL，HCl与NaOH的浓度均为0.100mol/L，完全电离且体积可加且忽略活度，求理论恰好中和所需NaOH总体积、酸碱性、当前混合液pH。",
+  "expect": "ai",
+  "target": "hclNaohNeutralization",
+  "note": "精度超界"
+ },
+ {
+  "q": "25°C，初始盐酸体积为20mL，累计加入NaOH溶液体积为10mL，HCl与NaOH的浓度均为0.100mol/L，完全电离且体积可加且忽略活度，求还需加入NaOH体积、酸碱性、当前混合液pH。",
+  "expect": "ai",
+  "target": "hclNaohNeutralization",
+  "note": "所问为剩余需要量"
+ },
+ {
+  "q": "25°C，初始盐酸体积为20mL，累计加入NaOH溶液体积为10mL，HCl与NaOH的浓度均为0.100mol/L，完全电离且体积可加且忽略活度，求酚酞变色的终点体积、酸碱性、当前混合液pH。",
+  "expect": "ai",
+  "target": "hclNaohNeutralization",
+  "note": "理论等量不能替代实际终点"
+ },
+ {
+  "q": "25°C，初始盐酸体积为20mL，累计加入NaOH溶液体积为10mL，HCl与NaOH的浓度均为0.100mol/L，完全电离且体积可加且忽略活度，求理论恰好中和所需NaOH总体积、酸碱性、当前混合液pH。初始盐酸体积为20mL。",
+  "expect": "ai",
+  "target": "hclNaohNeutralization",
+  "note": "重复条件"
+ },
+ {
+  "q": "25°C，初始盐酸体积为20mL，累计加入NaOH溶液体积为10mL，HCl与NaOH的浓度均为0.100mol/L，完全电离且体积可加且忽略活度，求理论恰好中和所需NaOH总体积、反应热、酸碱性、当前混合液pH。",
+  "expect": "ai",
+  "target": "hclNaohNeutralization",
+  "note": "不能忽略额外子问"
+ },
+ {
+  "q": "初始为60°C饱和的纯KNO₃水溶液，溶液总质量为100g，冷却至20°C，不蒸发且不损失水，充分达到平衡，求析出晶体质量、终态溶解KNO₃质量、母液质量。",
+  "expect": "ai",
+  "target": "kno3Cooling",
+  "note": "不可混淆水与溶液质量"
+ },
+ {
+  "q": "初始为60°C饱和的纯KNO₃水溶液，水质量为100g，冷却至25°C，不蒸发且不损失水，充分达到平衡，求析出晶体质量、终态溶解KNO₃质量、母液质量。",
+  "expect": "ai",
+  "target": "kno3Cooling",
+  "note": "离散数据禁止插值"
+ },
+ {
+  "q": "初始为60°C饱和的纯KNO₃水溶液，水质量为100g，冷却至20.00000000000000001°C，不蒸发且不损失水，充分达到平衡，求析出晶体质量、终态溶解KNO₃质量、母液质量。",
+  "expect": "ai",
+  "target": "kno3Cooling",
+  "note": "温度禁止浮点舍入吻合"
+ },
+ {
+  "q": "初始为60°C饱和的KNO₃水溶液，水质量为100g，冷却至20°C，不蒸发且不损失水，充分达到平衡，求析出晶体质量、终态溶解KNO₃质量、母液质量。",
+  "expect": "ai",
+  "target": "kno3Cooling",
+  "note": "不能暗补纯体系"
+ },
+ {
+  "q": "初始为60°C不饱和的纯KNO₃水溶液，水质量为100g，冷却至20°C，不蒸发且不损失水，充分达到平衡，求析出晶体质量、终态溶解KNO₃质量、母液质量。",
+  "expect": "ai",
+  "target": "kno3Cooling",
+  "note": "初始状态超界"
+ },
+ {
+  "q": "初始为60°C饱和的纯KNO₃水溶液，水质量为100g，冷却至20°C，不蒸发且不损失水，求析出晶体质量、终态溶解KNO₃质量、母液质量。",
+  "expect": "ai",
+  "target": "kno3Cooling",
+  "note": "不能暗补达到平衡"
+ },
+ {
+  "q": "初始为60°C饱和的纯KNO₃水溶液，水质量为100g，冷却至20°C，蒸发10g水，充分达到平衡，求析出晶体质量、终态溶解KNO₃质量、母液质量。",
+  "expect": "ai",
+  "target": "kno3Cooling",
+  "note": "水损失超界"
+ },
+ {
+  "q": "初始为60°C饱和的纯KNO₃水溶液，水质量为100g，冷却至20°C，不蒸发且不损失水，充分达到平衡，求析出晶体质量、终态溶解KNO₃质量、母液质量分数。",
+  "expect": "ai",
+  "target": "kno3Cooling",
+  "note": "不支持质量分数子问"
+ },
+ {
+  "q": "初始为60°C饱和的纯KNO₃水溶液，水质量为100g，冷却至20°C，不蒸发且不损失水，充分达到平衡，求析出晶体质量、终态溶解KNO₃质量、母液质量。冷却至30°C。",
+  "expect": "ai",
+  "target": "kno3Cooling",
+  "note": "冲突终温"
+ },
+ {
+  "q": "初始为60°C饱和的纯KNO₃水溶液，水质量为100.00001g，冷却至20°C，不蒸发且不损失水，充分达到平衡，求析出晶体质量、终态溶解KNO₃质量、母液质量。",
+  "expect": "ai",
+  "target": "kno3Cooling",
+  "note": "水质量精度超界"
  }
+
 ]

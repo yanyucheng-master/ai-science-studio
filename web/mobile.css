@@ -82,6 +82,32 @@ button, summary, label, select, a[href], [role="button"], [role="tab"], input[ty
   @keyframes gen-skeleton-pulse { from { opacity: .45; } to { opacity: 1; } }
 }
 
+/* ---------- 2b. 全屏按钮放在收藏、分享那一排 ----------
+   手机竖屏（≤640px）和横屏手机（矮屏、触屏）上由 mobile-shell.js 把播放栏和场景角上的全屏按钮
+   移到标题区，并给 body 加 fullscreen-in-header；播放栏里的按钮跟随播放栏显隐（transport-visible）。 */
+:root body.fullscreen-in-header .experiment-card .header-tools #fullscreenButton { display: none; }
+:root body.fullscreen-in-header.transport-visible .experiment-card .header-tools #fullscreenButton { display: grid; }
+:root body.fullscreen-in-header .experiment-card .header-tools :is(#fullscreenButton, #sceneFullscreenButton) {
+  position: static;
+  flex: 0 0 40px;
+  width: 40px;
+  min-width: 0;
+  height: 40px;
+  padding: 0;
+  place-items: center;
+  color: #5f7090;
+  border: 1px solid #e0e8f4;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+:root body.fullscreen-in-header .experiment-card .header-tools :is(#fullscreenButton, #sceneFullscreenButton) svg { width: 16px; }
+:root body.fullscreen-in-header .experiment-card .header-tools :is(#fullscreenButton, #sceneFullscreenButton).fullscreen-active { color: #fff; border-color: var(--blue); background: var(--blue); }
+/* 场景右上角不再有按钮：收回细胞模型上方为它预留的空白 */
+:root body.fullscreen-in-header .subject-biology .biology-stage { padding-top: 16px; }
+
 /* ---------- 3. 手机竖屏 ---------- */
 @media (max-width: 640px) {
   /* 3.1 顶栏 */
@@ -342,26 +368,6 @@ button, summary, label, select, a[href], [role="button"], [role="tab"], input[ty
   /* 全屏按钮移到标题区后，播放栏右侧只剩重置和倍速两个按钮 */
   :root body.fullscreen-in-header .experiment-card .transport #totalTime { right: 96px; }
 
-  /* 3.5b 全屏按钮放在收藏、分享那一排（由 mobile-shell.js 移动节点） */
-  :root body .experiment-card .header-tools #fullscreenButton { display: none; }
-  :root body.transport-visible .experiment-card .header-tools #fullscreenButton { display: grid; }
-  :root body .experiment-card .header-tools :is(#fullscreenButton, #sceneFullscreenButton) {
-    flex: 0 0 40px;
-    width: 40px;
-    min-width: 0;
-    height: 40px;
-    padding: 0;
-    place-items: center;
-    color: #5f7090;
-    border: 1px solid #e0e8f4;
-    border-radius: 12px;
-    background: #fff;
-    box-shadow: none;
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
-  :root body .experiment-card .header-tools :is(#fullscreenButton, #sceneFullscreenButton) svg { width: 16px; }
-  :root body .experiment-card .header-tools :is(#fullscreenButton, #sceneFullscreenButton).fullscreen-active { color: #fff; border-color: var(--blue); background: var(--blue); }
   :root body .experiment-card .transport .mini-control { flex: 0 0 40px; width: 40px; min-width: 0; height: 40px; padding: 0; font-size: 13px; border-radius: 12px; }
   :root body .experiment-card .transport .mini-control svg { width: 16px; }
 
@@ -418,7 +424,9 @@ button, summary, label, select, a[href], [role="button"], [role="tab"], input[ty
   :root body:not(.awaiting-generation) .experiment-card .parameter-label small,
   :root body:not(.awaiting-generation) .experiment-card .number-control small { font-size: 12px; }
   :root body:not(.awaiting-generation) .generic-physics-readout > span,
-  :root body:not(.awaiting-generation) :is(.projectile-readout, .circuit-readout) span { font-size: 12px; }
+  :root body:not(.awaiting-generation) :is(.projectile-readout, .circuit-readout) > span { font-size: 12px; }
+  /* 读数句子里的数值、公式片段跟随所在行的字号（原规则把读数里所有 span 设为 10px）；上下标仍按公式排版的比例 */
+  :root body:not(.awaiting-generation) :is(.projectile-readout, .circuit-readout) :is(p, dd, strong) span:not(.science-scripts) { font-size: inherit; }
   :root body:not(.awaiting-generation) .generic-physics-readout > p,
   :root body:not(.awaiting-generation) :is(.projectile-readout, .circuit-readout) p,
   :root body:not(.awaiting-generation) :is(.projectile-readout, .circuit-readout) p .science-math { font-size: 13px; line-height: 1.55; }
@@ -485,7 +493,7 @@ button, summary, label, select, a[href], [role="button"], [role="tab"], input[ty
   :root body .reasoning-card .side-card-header h2 { font-size: 18px; }
   :root body .mentor-card .online { font-size: 12px; }
   :root body .mentor-card h3 { font-size: 17px; }
-  :root body .mentor-card #mentorExpandButton { display: none; }
+  :root body .mentor-card #mentorExpandButton { display: grid; place-items: center; width: 40px; height: 40px; margin-left: auto; color: #5f7090; border-color: transparent; background: transparent; box-shadow: none; }
   :root body .mentor-card .mentor-message { padding: 12px 14px; font-size: 14px; line-height: 1.7; }
   :root body .mentor-card .mentor-actions { gap: 8px; }
   :root body .mentor-card .mentor-actions button { min-height: 44px; font-size: 14px; border-radius: 12px; }
@@ -551,6 +559,217 @@ button, summary, label, select, a[href], [role="button"], [role="tab"], input[ty
   /* 3.10 全屏（竖屏）：隐藏题干，把高度让给画面 */
   :root body .experiment-card.immersive-mode { border-radius: 0; height: 100vh; height: 100dvh; padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)); }
   :root body .experiment-card.immersive-mode #problemText, :root body .experiment-card.immersive-mode .problem-toggle { display: none !important; }
+
+  /* ======================================================================
+     3.11 简洁版（2026-10-30）：同一张卡片里只留一层底色，不再“框中框”
+     - 外层卡片保留；卡片内部不再用描边和阴影做容器
+     - 每个实验只保留一块浅色“画面区”（动画舞台或示意图），文字读数直接排在卡片上，用细线分隔
+     - 画面内浮层（读数条、提示）保留半透明白底以便看清，去掉描边和阴影
+     - 次要按钮去掉描边，只留图标或浅色底
+     ====================================================================== */
+  :root body {
+    --m-tint: #f3f7fd;
+    --m-tint-strong: #e8f0fc;
+    --m-line: rgba(31, 69, 128, .1);
+    --m-overlay: rgba(255, 255, 255, .84);
+  }
+
+  /* a. 次要按钮：收藏、分享、全屏、重置、倍速 → 无描边图标按钮 */
+  :root body .experiment-card .header-tools :is(#favoriteButton, #shareButton),
+  :root body.fullscreen-in-header .experiment-card .header-tools :is(#fullscreenButton, #sceneFullscreenButton),
+  :root body:not(.awaiting-generation) .experiment-card .transport .mini-control {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+  }
+  :root body .experiment-card .header-tools { gap: 2px; }
+  :root body .experiment-card .header-tools #favoriteButton.selected { color: var(--blue); border-color: transparent; background: var(--m-tint-strong); }
+  :root body .experiment-card .header-tools #favoriteButton.selected svg { fill: currentColor; }
+  :root body.fullscreen-in-header .experiment-card .header-tools :is(#fullscreenButton, #sceneFullscreenButton).fullscreen-active { color: #fff; border-color: transparent; background: var(--blue); }
+  :root body:not(.awaiting-generation) .experiment-card .transport .mini-control { color: #5f7090; font-size: 14px; }
+  :root body .experiment-card .transport { border-bottom: 0; }
+
+  /* b. 画面区：动画舞台（刹车、木板—滑块、化学反应、函数图）保留浅色底，去掉描边和阴影 */
+  :root body:not(.awaiting-generation) .experiment-card .scene { border-color: transparent; box-shadow: none; border-radius: 16px; }
+  /* 示意图类实验（电路、教材图示、平抛、细胞、溶液、数学拼图/单位圆）：外层不再有底色，示意图自己是唯一的浅色区 */
+  :root body:not(.awaiting-generation) .experiment-card .scene:is(.subject-circuit, .subject-generic-physics, .subject-projectile, .subject-biology) {
+    border-radius: 0;
+    background: transparent;
+    overflow: visible;
+  }
+  :root body:not(.awaiting-generation) .experiment-card .scene:is(.subject-circuit, .subject-generic-physics, .subject-projectile, .subject-biology)::before { content: none; }
+  :root body:not(.awaiting-generation) .experiment-card :is(.circuit-lab, .generic-physics-lab) { inset: 0; margin: 0; padding: 0; gap: 14px; overflow: visible; }
+  :root body:not(.awaiting-generation) .experiment-card .subject-projectile .projectile-lab { margin: 0; }
+  :root body:not(.awaiting-generation) .experiment-card .subject-biology .biology-stage { padding: 0; }
+
+  /* 示意图本身：浅色底、圆角，不描边不加阴影 */
+  :root body:not(.awaiting-generation) .experiment-card :is(.circuit-board, .generic-physics-visual, .projectile-world, .cell-viewer) {
+    border-color: transparent;
+    border-radius: 16px;
+    box-shadow: none;
+  }
+  :root body:not(.awaiting-generation) .experiment-card .cell-viewer { padding: 12px 10px 10px; background: var(--m-tint); }
+  /* 舞台里再套的一层浅色面板（螺线管、木板—滑块、函数图坐标区）去掉，直接画在舞台上 */
+  :root body:not(.awaiting-generation) .experiment-card :is(.solenoid-lab, .board-slider-world) { border-color: transparent; background: none; box-shadow: none; }
+  :root body:not(.awaiting-generation) .experiment-card .scene.subject-math svg.math-graph { border-color: transparent; background: none; }
+
+  /* c. 文字读数与结论：直接排在卡片上，上方一条细线 */
+  :root body:not(.awaiting-generation) .experiment-card :is(.circuit-readout, .generic-physics-readout, .projectile-readout) {
+    padding: 14px 0 0;
+    border: 0;
+    border-top: 1px solid var(--m-line);
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+  :root body:not(.awaiting-generation) .experiment-card .cell-detail-card {
+    padding: 14px 2px 0;
+    border: 0;
+    border-top: 1px solid var(--m-line);
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+  /* 读数小格 → 标签 / 数值两列的行，行间细线 */
+  :root body:not(.awaiting-generation) .experiment-card :is(.circuit-readout dl, .generic-physics-readout .stage-facts) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    margin-top: 10px;
+  }
+  :root body:not(.awaiting-generation) .experiment-card :is(.circuit-readout dl > div, .generic-physics-readout .stage-facts > div) {
+    display: grid;
+    grid-template-columns: minmax(84px, auto) minmax(0, 1fr);
+    align-items: baseline;
+    min-height: 0;
+    gap: 12px;
+    padding: 8px 0;
+    border: 0;
+    border-top: 1px solid var(--m-line);
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+  :root body:not(.awaiting-generation) .experiment-card :is(.circuit-readout dd, .generic-physics-readout .stage-facts dd) { margin: 0; }
+
+  /* d. 画面内浮层：保留半透明白底，去掉描边和阴影 */
+  :root body:not(.awaiting-generation) .experiment-card :is(.metric-panel, .brake-model-indicator, .scene-tip, .chem-stage-note, .chem-label, .math-slope-note, .circuit-standard-badge, .board-slider-constants, .board-slider-live-card, .solenoid-rule-card, .solenoid-inspector) {
+    border-color: transparent;
+    background-color: var(--m-overlay);
+    box-shadow: none;
+  }
+  :root body:not(.awaiting-generation) .experiment-card .metric-panel div { box-shadow: none; }
+
+  /* e. 教材图示的“放大图示”：整条工具栏换成右上角一个小按钮 */
+  :root body .generic-physics-visual:has(.edu-diagram) .diagram-mobile-toolbar {
+    inset: 6px 8px auto auto;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+  :root body .generic-physics-visual:has(.edu-diagram) .diagram-mobile-toolbar > span { display: none; }
+  :root body .generic-physics-visual:has(.edu-diagram) .diagram-pan-viewport { top: 40px; }
+  :root body .generic-physics-visual:has(.edu-diagram) .diagram-zoom-toggle {
+    min-height: 36px;
+    padding: 0 12px;
+    color: #1a56d6;
+    font-size: 13px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--m-overlay);
+    box-shadow: 0 1px 4px rgba(31, 69, 128, .12);
+  }
+
+  /* e2. 教材图示文字：示意图按 760 宽设计，缩到手机宽度后标注只有 6–8px；手机上放大约一成，并收回图示四周的留白。
+         放大幅度按行高较大的字体（思源黑体）检查过：标注之间不重叠、不超出示意图范围 */
+  :root body .generic-physics-visual:has(.edu-diagram) .generic-visual-grid { inset: 0 2px 6px; }
+  :root body .edu-diagram:not(.compact-diagram) .dg-caption { font-size: 22px; }
+  :root body .edu-diagram:not(.compact-diagram) :is(.dg-label, .dg-value-text, .dg-force-text) { font-size: 20.5px; }
+  :root body .edu-diagram:not(.compact-diagram) :is(.dg-small, .dg-note, .dg-dim-text) { font-size: 19px; }
+  :root body .edu-diagram:not(.compact-diagram) .dg-table text { font-size: 19px; } /* 表格框按原字号画，只略放大 */
+  :root body .edu-diagram:not(.compact-diagram) :is(.dg-lever-mark, .dg-scale-num) { font-size: 16.5px; }
+  :root body .edu-diagram.dg-sound .dg-small { font-size: 17.2px; } /* 声音：示波器下方的坐标说明贴着画面底边，保持原字号 */
+  :root body .edu-diagram.dg-buoyancy .dg-caption { font-size: 20.7px; } /* 浮力：标题紧贴测力计刻度的单位 N，保持原字号 */
+  /* 细胞模式图标注 */
+  :root body .cell-label text { font-size: 17px; }
+  :root body .cell-label text.is-long { font-size: 13.5px; } /* “高尔基体”等长名称贴着图边，只略放大 */
+
+  /* f. 参数：去掉装饰图标和步进器外框；标题与数值一行，滑块独占一行 */
+  :root body:not(.awaiting-generation) .experiment-card .parameters { gap: 18px; padding-top: 16px; }
+  :root body:not(.awaiting-generation) .experiment-card .parameters .parameter {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    gap: 4px 12px;
+    align-items: center;
+  }
+  :root body:not(.awaiting-generation) .experiment-card .parameters .parameter-icon { display: none; }
+  :root body:not(.awaiting-generation) .experiment-card .parameters .parameter-label { grid-column: 1; grid-row: 1; min-width: 0; }
+  :root body:not(.awaiting-generation) .experiment-card .parameters .parameter > input[type="range"] { grid-column: 1 / -1; grid-row: 2; width: 100%; }
+  :root body:not(.awaiting-generation) .experiment-card .parameters .number-control {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    justify-self: end;
+    padding: 0;
+    gap: 2px;
+    border: 0;
+    background: none;
+    box-shadow: none;
+  }
+  :root body:not(.awaiting-generation) .experiment-card .parameters .number-control button {
+    width: 36px;
+    height: 36px;
+    color: #3d5a86;
+    border: 0;
+    border-radius: 50%;
+    background: var(--m-tint);
+    box-shadow: none;
+  }
+  :root body:not(.awaiting-generation) .experiment-card .parameters .number-control button:disabled { opacity: .45; }
+  :root body:not(.awaiting-generation) .experiment-card .parameters .number-control strong { min-width: 34px; font-size: 16px; text-align: right; }
+
+  /* f2. 并联电路、平面镜（手机精简版示意图）原本就为手机设计：读数 16–18px，参数按“名称 / 数值 / 滑块”三行排，保持原样 */
+  :root body:not(.awaiting-generation) .experiment-card:has(.week1-scene) .generic-physics-readout > p,
+  :root body:not(.awaiting-generation) .experiment-card:has(.week1-scene) .generic-physics-readout .stage-facts dt { font-size: 16px; line-height: 1.6; }
+  :root body:not(.awaiting-generation) .experiment-card:has(.week1-scene) .generic-physics-readout .stage-facts dd { font-size: 18px; }
+  :root body:not(.awaiting-generation) .experiment-card:has(.week1-scene) .parameters .parameter { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; gap: 8px; }
+  :root body:not(.awaiting-generation) .experiment-card:has(.week1-scene) .parameters .number-control { grid-column: 1; grid-row: 2; }
+  :root body:not(.awaiting-generation) .experiment-card:has(.week1-scene) .parameters .parameter > input[type="range"] { grid-column: 1; grid-row: 3; }
+  :root body:not(.awaiting-generation) .experiment-card:has(.week1-scene) :is(.parameter-label strong, .number-control strong, .number-control small) { font-size: 16px; }
+
+  /* g. 生物：结构标签、按钮、学段切换去掉描边 */
+  :root body:not(.awaiting-generation) .experiment-card :is(.cell-structure-tag, .cell-viewer-actions button) { border-color: transparent; background: #fff; box-shadow: none; }
+  :root body:not(.awaiting-generation) .experiment-card .cell-structure-tag.active { color: #195bb0; border-color: transparent; background: var(--m-tint-strong); }
+  :root body:not(.awaiting-generation) .experiment-card .cell-level-toggle { border-color: transparent; background: #fff; box-shadow: none; }
+
+  /* h0. 页首：英文小标题（AI SCIENCE STUDIO）手机上不显示，问候语与右侧按钮同一行对齐 */
+  :root body .topbar .eyebrow { display: none; }
+  :root body .topbar { align-items: center; }
+  :root body .top-actions { padding-top: 0; }
+
+  /* h. 输入区：识别结果改为一行文字；学科切换去掉外框 */
+  :root body .prompt-main .parse-feedback { margin-top: 10px; padding: 0 2px; border: 0; border-radius: 0; background: none; }
+  :root body .prompt-foot .subject-tabs { border-color: transparent; background: var(--m-tint); }
+  :root body .grade-switch-inline .grade-seg { border-color: transparent; background: var(--m-tint); box-shadow: none; }
+  :root body :is(.grade-switch-inline .grade-seg button[aria-pressed="true"], .prompt-foot .subject-tab.active) { border-color: transparent; box-shadow: 0 1px 4px rgba(31, 69, 128, .12); }
+  :root body .prompt-input-wrap .preset-picker { border-color: transparent; background: var(--m-tint); }
+
+  /* i. 快速开始：卡片改为浅底块，不描边 */
+  :root body .mq-item { border-color: transparent; background: var(--m-tint); }
+  :root body .mq-library { border-color: transparent; background: var(--m-tint); }
+
+  /* j. 思维链与导师卡：内部块去掉描边、阴影和装饰圆 */
+  :root body:not(.awaiting-generation) .reasoning-card .formula-spotlight { border-color: transparent; background: var(--m-tint); box-shadow: none; }
+  :root body:not(.awaiting-generation) .reasoning-card .formula-spotlight::before,
+  :root body:not(.awaiting-generation) .reasoning-card .formula-spotlight::after { content: none; }
+  :root body .mentor-card .mentor-message { border-color: transparent; background: var(--m-tint); }
+  :root body .favorites-card .favorite-count { border-color: transparent; background: var(--m-tint); }
+  /* k. 更新公告：弹窗里的每条公告不再是独立卡片，改为细线分隔的列表 */
+  :root body .announcement-item { margin-bottom: 0; border: 0; border-bottom: 1px solid var(--m-line); border-radius: 0; background: transparent; }
+  :root body .announcement-item summary { padding-left: 2px; }
+  :root body .announcement-item ul { margin: 0 2px 16px; }
+  :root body .mentor-card .mentor-actions #hintButton { border-color: transparent; background: var(--m-tint); box-shadow: none; }
+  :root body .mentor-card .mentor-actions .mentor-open-page { color: #1a56d6; border-color: transparent; background: transparent; box-shadow: none; }
 }
 
 /* ---------- 4. 横屏矮屏的全屏：左画面，右标题/播放/参数 ---------- */
