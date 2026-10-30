@@ -1,0 +1,33 @@
+.chemistry-v2-scene > p { font-size: 14px; line-height: 1.8; overflow-wrap: anywhere; }
+.eq-panels { display: grid; grid-template-columns: minmax(0,.8fr) minmax(0,1.2fr); gap: 24px; align-items: center; margin: 16px 0; }
+.eq-panels figure { min-width: 0; margin: 0; }
+.eq-panels figcaption { font-size: 15px; font-weight: 650; line-height: 1.7; }
+.eq-panels figure > p { color: var(--muted); font-size: 13px; line-height: 1.7; }
+.eq-vessel,.eq-graph { display: block; width: 100%; height: auto; overflow: visible; }
+.eq-vessel { max-width: 260px; margin: auto; }
+.eq-panels svg text { font: 16px system-ui,sans-serif; fill: var(--ink); stroke: none; }
+.eq-axis { fill: none; stroke: var(--muted); stroke-width: 1.4; }
+.eq-grid { fill: none; stroke: #9cabc1; stroke-width: 1; stroke-dasharray: 4 4; }
+.eq-curve { fill: none; stroke: var(--blue); stroke-width: 2; }
+.eq-point { fill: #e58231; stroke: white; stroke-width: 1.5; }
+.eq-table-point { fill: var(--blue); }
+.eq-glass { fill: none; stroke: #7894b5; stroke-width: 2; }
+.eq-liquid { fill: #f6fafc; stroke: #bbd0dd; stroke-width: 1; }
+.eq-drop { fill: #c8dfeb; stroke: #7894b5; }
+.eq-stirrer { fill: none; stroke: #7894b5; stroke-width: 3; }
+.eq-crystal { fill: white; stroke: #7894b5; stroke-width: 1.5; }
+.eq-current { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 14px 0; border-top: 1px solid var(--line); font-size: 14px; line-height: 1.8; overflow-wrap: anywhere; }
+.eq-ph-scale { display: flex; justify-content: space-between; padding: 8px 12px; border-radius: 8px; background: linear-gradient(90deg,#ffe6d6,#ecf7ed,#dfeaff); color: #334d6e; font-size: 13px; }
+.eq-reference { margin-top: 12px; border-top: 1px solid var(--line); }
+.eq-reference summary { cursor: pointer; padding: 12px 0; font-size: 14px; color: var(--blue); min-height: 44px; }
+.eq-reference p { color: var(--muted); font-size: 13px; line-height: 1.8; }
+.eq-mass-bar { display: flex; height: 16px; border: 1px solid #afc7e5; border-radius: 8px; overflow: hidden; background: #e8f0fa; }
+.eq-mass-bar > span:first-child { flex: none; background: var(--blue); }
+.eq-mass-bar > span:last-child { flex: 1; }
+.eq-mass-legend { font-size: 13px; line-height: 1.8; color: var(--muted); }
+@media (max-width: 700px) {
+  .eq-panels { grid-template-columns: minmax(0,1fr); gap: 20px; }
+  .eq-vessel { max-width: 220px; }
+  .eq-panels .eq-graph text { font-size: 18px; }
+  .chemistry-v2-scene .chemistry-scene-heading { padding-right: 0; }
+}

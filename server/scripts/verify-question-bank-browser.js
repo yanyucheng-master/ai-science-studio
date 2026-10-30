@@ -77,8 +77,10 @@ const plans = await planPage.evaluate(items => items.map(item => {
       // 数学通用模板：二次函数的系数 a、顶点、判别式、根；方程组的解的情况与解
       a: p.fixed?.a, vertexX: model.h, vertexY: model.k, delta: model.delta, rootsText: model.rootsText,
       solutionKind: model.solutionKind, solX: model.x, solY: model.y,
+      sin: model.sin, cos: model.cos, a2: model.a2, b2: model.b2, c2: model.c2,
       co2Mass: model.co2Mass, consumedCa: model.consumedCa, consumedHcl: model.consumedHcl, remainingCa: model.remainingCa, remainingHcl: model.remainingHcl, limiting: model.limiting,
-      saltMass: model.saltMass, waterMass: model.waterMass });
+      saltMass: model.saltMass, waterMass: model.waterMass,
+      pH: model.pH, nature: model.nature, crystals: model.crystals, dissolved: model.dissolved, motherLiquor: model.motherLiquor, totalMass: model.totalMass });
   }
   return { ok: true, values };
 }), bank);
