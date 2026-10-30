@@ -6422,8 +6422,8 @@ body.subject-math-active:not(.awaiting-generation) .parameters .parameter:nth-ch
     linear-gradient(145deg, #eef8ff, #f3fbff 60%, #e7f2ef);
 }
 
-body.subject-biology-active:not(.awaiting-generation) .transport,
-body.subject-biology-active:not(.awaiting-generation) .parameters {
+body.subject-biology-active:not(.subject-generic-template-active):not(.awaiting-generation) .transport,
+body.subject-biology-active:not(.subject-generic-template-active):not(.awaiting-generation) .parameters {
   display: none;
 }
 
@@ -8578,74 +8578,35 @@ body.fullscreen-lock {
   white-space: nowrap;
 }
 
-/* Default product waiting state: no topic-specific model appears before generation. */
+/* Default product waiting state: no topic-specific model appears before generation.
+   2026-10-31：生成前只留烧瓶标识和一句提示，不再套虚线框、不再重复标题与说明；
+   卡片标题区（含收藏、分享）在生成实验后出现，见下方 .card-header 规则。 */
 .scene-empty-state {
   position: absolute;
   z-index: 8;
-  inset: 72px 48px 58px;
+  inset: 0;
   display: none;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 24px;
   text-align: center;
-  color: #506783;
-  border: 1px dashed rgba(140, 170, 216, 0.72);
-  border-radius: 18px;
-  background:
-    radial-gradient(circle at 50% 20%, rgba(34, 98, 243, 0.1), transparent 35%),
-    rgba(255, 255, 255, 0.48);
-  backdrop-filter: blur(8px);
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 40%, rgba(45, 115, 246, 0.09), transparent 46%);
 }
 
 .scene-empty-state strong {
-  margin-top: 14px;
-  color: #213455;
+  margin-top: 18px;
+  color: #1f3252;
   font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
-.scene-empty-state p {
-  max-width: 420px;
-  margin: 8px 0 0;
-  color: #75849b;
-  font-size: 12px;
-  line-height: 1.7;
-}
-
-.empty-orbit {
-  position: relative;
-  display: grid;
-  width: 58px;
-  height: 58px;
-  place-items: center;
-  border: 1px solid rgba(87, 130, 215, 0.3);
-  border-radius: 50%;
-  background: rgba(237, 244, 255, 0.72);
-}
-
-.empty-orbit::before,
-.empty-orbit::after {
-  position: absolute;
-  width: 82px;
-  height: 24px;
-  border: 1px solid rgba(91, 139, 226, 0.35);
-  border-radius: 50%;
-  content: "";
-}
-
-.empty-orbit::before {
-  transform: rotate(26deg);
-}
-
-.empty-orbit::after {
-  transform: rotate(-26deg);
-}
-
-.empty-orbit i {
-  width: 22px;
-  height: 22px;
-  border-radius: 8px;
-  background: linear-gradient(145deg, #6aa5ff, #2262f3);
-  box-shadow: 0 0 22px rgba(54, 114, 239, 0.26);
+.empty-logo {
+  flex: none;
+  width: 76px;
+  height: 76px;
 }
 
 .awaiting-generation .scene {
@@ -8655,8 +8616,7 @@ body.fullscreen-lock {
 }
 
 .awaiting-generation .scene::before {
-  opacity: 0.45;
-  mask-image: linear-gradient(to bottom, #000, transparent 86%);
+  opacity: 0;
 }
 
 .awaiting-generation .scene-empty-state {
@@ -8676,6 +8636,12 @@ body.fullscreen-lock {
 
 .awaiting-generation .transport,
 .awaiting-generation .parameters {
+  display: none;
+}
+
+/* 生成前隐藏标题区（标题、说明、收藏、分享），提示只在画面中间出现一次。
+   加 :root 以压过 mobile.css 里手机端 .experiment-card .card-header 的布局规则。 */
+:root body.awaiting-generation .experiment-card > .card-header {
   display: none;
 }
 
@@ -11131,3 +11097,187 @@ body.subject-math-active.subject-generic-template-active:not(.awaiting-generatio
 }
 /* 全屏：播放栏已在场景上方，有播放栏的实验只保留播放栏里的全屏按钮；无播放栏的实验仍用场景右上角按钮 */
 body:not(.awaiting-generation):not(.subject-math-active):not(.subject-biology-active):not(.subject-solenoid-active):not(.subject-circuit-active):not(.subject-extra-physics-active) .experiment-card:is(:fullscreen, .immersive-mode) .scene-fullscreen-button { display: none; }
+
+/* ======================================================================
+   2026-10-31 电脑与平板简洁版：同一张卡片里只留一层底色，不叠小标题
+   沿用手机端 10-30 第四轮（mobile.css 3.11）已确认的规则：
+   - 外层卡片保留；卡片内部不再用描边和阴影做容器
+   - 每个实验只保留一块浅色画面区，文字读数直接排在卡片上，用细线分隔
+   - 画面内浮层保留半透明白底，去掉描边和阴影；次要按钮去掉描边
+   - 标题上方的小标题不再显示，避免“小标题 + 标题 + 副标题”层层叠加
+   手机（≤640px）的版式仍由 mobile.css 负责；下方 1、2 两条对所有宽度生效，其余只在 641px 以上生效。
+   ====================================================================== */
+
+/* 1. 去掉叠在标题上方的小标题：思维链卡片（“电学 × 典型题型模板”等）、实验读数（“初中核心 · 电学”等）。
+      学段已由实验标题旁的标签说明，题型已由实验标题说明。 */
+.reasoning-card .side-card-header .section-kicker,
+:is(.generic-physics-readout, .circuit-readout, .projectile-readout) > span:first-child {
+  display: none;
+}
+
+/* 2. 收藏为空时不再显示“0 个”，空状态本身已经说明 */
+.favorites-card:has(#favoriteEmpty:not([hidden])) .favorite-count {
+  display: none;
+}
+
+@media (min-width: 641px) {
+  :root {
+    --d-tint: #f3f7fd;
+    --d-tint-strong: #e8f0fc;
+    --d-line: rgba(31, 69, 128, .1);
+    --d-overlay: rgba(255, 255, 255, .84);
+  }
+
+  /* a. 次要按钮：收藏、分享、重置、倍速、全屏 → 无描边图标按钮（已收藏时仍是蓝底） */
+  .experiment-card .header-tools :is(#favoriteButton, #shareButton):not(.selected),
+  body:not(.awaiting-generation) .experiment-card .transport .mini-control {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+  }
+  .experiment-card .scene-fullscreen-button {
+    border-color: transparent;
+    background: var(--d-overlay);
+    box-shadow: none;
+  }
+  .experiment-card .transport { border-bottom: 0; }
+
+  /* b. 画面区：动画舞台保留浅色底，去掉描边和阴影 */
+  body:not(.awaiting-generation) .experiment-card .scene {
+    border-color: transparent;
+    box-shadow: none;
+  }
+  /* 示意图类实验（电路、教材图示、平抛、细胞、化学与数学新实验）：外层不再有底色，示意图自己是唯一的浅色区 */
+  body:not(.awaiting-generation) .experiment-card .scene:is(.subject-circuit, .subject-generic-physics, .subject-projectile, .subject-biology) {
+    background: transparent;
+  }
+  body:not(.awaiting-generation) .experiment-card .scene:is(.subject-circuit, .subject-generic-physics, .subject-projectile, .subject-biology)::before {
+    content: none;
+  }
+  body:not(.awaiting-generation) .experiment-card :is(.circuit-lab, .generic-physics-lab, .projectile-lab) {
+    inset: 0;
+    padding: 0;
+    border-color: transparent;
+    background: none;
+    box-shadow: none;
+  }
+  body:not(.awaiting-generation) .experiment-card :is(.circuit-board, .generic-physics-visual, .projectile-world, .cell-viewer) {
+    border-color: transparent;
+    box-shadow: none;
+  }
+  /* 舞台里再套的一层面板（螺线管、木板—滑块、函数图坐标区）去掉，直接画在舞台上 */
+  body:not(.awaiting-generation) .experiment-card :is(.solenoid-lab, .board-slider-world) {
+    border-color: transparent;
+    background: none;
+    box-shadow: none;
+  }
+  body:not(.awaiting-generation) .experiment-card .scene.subject-math svg.math-graph {
+    border-color: transparent;
+    background: none;
+  }
+
+  /* c. 文字读数与结论：直接排在卡片上，上方一条细线；读数小格去掉外框，改为细线分隔 */
+  body:not(.awaiting-generation) .experiment-card :is(.circuit-readout, .generic-physics-readout, .projectile-readout) {
+    padding: 14px 0 0;
+    border: 0;
+    border-top: 1px solid var(--d-line);
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+  body:not(.awaiting-generation) .experiment-card :is(.circuit-readout, .generic-physics-readout, .projectile-readout) .stage-facts > div {
+    padding-right: 0;
+    padding-left: 0;
+    border: 0;
+    border-top: 1px solid var(--d-line);
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+  body:not(.awaiting-generation) .experiment-card .cell-detail-card {
+    padding-right: 2px;
+    padding-left: 2px;
+    border: 0;
+    border-top: 1px solid var(--d-line);
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+  /* 螺线管“实时结论”里的四个读数小格：去掉外框，改为细线分隔 */
+  body:not(.awaiting-generation) .experiment-card .solenoid-inspector dl div {
+    padding-right: 0;
+    padding-left: 0;
+    border: 0;
+    border-top: 1px solid var(--d-line);
+    border-radius: 0;
+    background: none;
+  }
+
+  /* d. 画面内浮层：保留半透明白底，去掉描边和阴影 */
+  body:not(.awaiting-generation) .experiment-card :is(.metric-panel, .brake-model-indicator, .scene-tip, .chem-stage-note, .chem-label, .math-slope-note, .circuit-standard-badge, .board-slider-constants, .board-slider-live-card, .solenoid-rule-card, .solenoid-inspector) {
+    border-color: transparent;
+    background-color: var(--d-overlay);
+    box-shadow: none;
+  }
+  body:not(.awaiting-generation) .experiment-card .metric-panel div { box-shadow: none; }
+
+  /* e. 参数：去掉装饰图标和步进器外框，步进按钮改为浅色圆钮 */
+  body:not(.awaiting-generation) .experiment-card .parameters .parameter-icon { display: none; }
+  body:not(.awaiting-generation) .experiment-card .parameters .number-control {
+    padding: 0;
+    gap: 2px;
+    border: 0;
+    background: none;
+    box-shadow: none;
+  }
+  body:not(.awaiting-generation) .experiment-card .parameters .number-control button {
+    color: #3d5a86;
+    border: 0;
+    border-radius: 50%;
+    background: var(--d-tint);
+    box-shadow: none;
+  }
+  body:not(.awaiting-generation) .experiment-card .parameters .number-control button:disabled { opacity: .45; }
+
+  /* f. 生物：结构标签、按钮、学段切换去掉描边 */
+  body:not(.awaiting-generation) .experiment-card :is(.cell-structure-tag, .cell-viewer-actions button) { border-color: transparent; background: #fff; box-shadow: none; }
+  body:not(.awaiting-generation) .experiment-card .cell-structure-tag.active { color: #195bb0; border-color: transparent; background: var(--d-tint-strong); }
+  body:not(.awaiting-generation) .experiment-card .cell-level-toggle { border-color: transparent; background: #fff; box-shadow: none; }
+
+  /* g. 输入区：识别结果改为一行文字，不再套框；实验库按钮改浅底 */
+  .prompt-main .parse-feedback {
+    padding-right: 2px;
+    padding-left: 2px;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+  .prompt-input-wrap .preset-picker { border-color: transparent; background: var(--d-tint); }
+
+  /* h. 思维链与导师卡：内部块去掉描边、阴影和装饰圆；次要按钮去掉描边 */
+  body:not(.awaiting-generation) .reasoning-card .formula-spotlight {
+    border-color: transparent;
+    background: var(--d-tint);
+    box-shadow: none;
+  }
+  body:not(.awaiting-generation) .reasoning-card .formula-spotlight::before,
+  body:not(.awaiting-generation) .reasoning-card .formula-spotlight::after { content: none; }
+  .mentor-card .mentor-message { border-color: transparent; background: var(--d-tint); }
+  .mentor-card .mentor-actions #hintButton { border-color: transparent; background: var(--d-tint); box-shadow: none; }
+  .mentor-card .mentor-actions .mentor-open-page { color: #1a56d6; border-color: transparent; background: transparent; box-shadow: none; }
+
+  /* i. 收藏：计数改浅底；空状态去掉虚线框 */
+  .favorites-card .favorite-count { border-color: transparent; background: var(--d-tint); }
+  .favorites-card .favorite-empty {
+    min-height: 88px;
+    border: 0;
+    background: none;
+  }
+
+  /* j. 更新公告：每条公告不再是独立卡片，改为细线分隔的列表；标题下的说明文字不再显示 */
+  .announcement-item { margin-bottom: 0; border: 0; border-bottom: 1px solid var(--d-line); border-radius: 0; background: transparent; }
+  .announcement-item summary { padding-left: 2px; }
+  .announcement-item ul { margin-right: 2px; margin-left: 2px; }
+  .announcements-header #announcementsDescription { display: none; }
+}

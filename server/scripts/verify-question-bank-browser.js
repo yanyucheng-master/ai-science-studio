@@ -80,7 +80,10 @@ const plans = await planPage.evaluate(items => items.map(item => {
       sin: model.sin, cos: model.cos, a2: model.a2, b2: model.b2, c2: model.c2,
       co2Mass: model.co2Mass, consumedCa: model.consumedCa, consumedHcl: model.consumedHcl, remainingCa: model.remainingCa, remainingHcl: model.remainingHcl, limiting: model.limiting,
       saltMass: model.saltMass, waterMass: model.waterMass,
-      pH: model.pH, nature: model.nature, crystals: model.crystals, dissolved: model.dissolved, motherLiquor: model.motherLiquor, totalMass: model.totalMass });
+      pH: model.pH, nature: model.nature, crystals: model.crystals, dissolved: model.dissolved, motherLiquor: model.motherLiquor, totalMass: model.totalMass,
+      probabilityAA: model.probabilities?.AA, probabilityAa: model.probabilities?.Aa, probabilityaa: model.probabilities?.aa,
+      expectedAA: model.expected?.AA, expectedAa: model.expected?.Aa, expectedaa: model.expected?.aa,
+      dominantProbability: model.dominant, recessiveProbability: model.recessive });
   }
   return { ok: true, values };
 }), bank);

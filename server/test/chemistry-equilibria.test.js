@@ -29,6 +29,19 @@ test('electroneutrality, water equilibrium and monotonic pH including both volum
 test('missing conditions, unsupported concentration/temperature and excessive precision are rejected',()=>{
   for(const data of [undefined,{},acid(10,{temperature:20}),acid(10,{acidConcentration:.2}),acid(10,{baseConcentration:undefined}),acid(-1),acid(100.0001),acid(19.99999),acid(NaN),acid(10,{acidVolume:9.9999})]) assert.throws(()=>neutralization(data),{name:'RangeError'});
 });
+test('acid added to base: same final state as the reverse mixture, own ranges and equivalence volume',()=>{
+  const base=(va,vb,extra={})=>({direction:'acidIntoBase',acidVolume:va,baseVolume:vb,temperature:25,acidConcentration:.1,baseConcentration:.1,...extra});
+  for(const [va,vb]of [[0,20],[10,20],[20,20],[30,20],[19.9999,20],[20.0001,20],[100,50],[0,10]]){
+    const reverse=neutralization(base(va,vb));
+    assert.equal(reverse.direction,'acidIntoBase');assert.equal(reverse.initialVolume,vb);assert.equal(reverse.addedVolume,va);assert.equal(reverse.equivalentAddedVolume,vb);
+    near(reverse.hydrogen+reverse.sodium,reverse.hydroxide+reverse.chloride,1e-14);
+    if(va>=10&&va<=50&&vb<=100)near(reverse.pH,neutralization(acid(vb,{acidVolume:va})).pH,1e-12);
+  }
+  near(neutralization(base(0,20)).pH,13);near(neutralization(base(20,20)).pH,7);
+  let last=Infinity;for(const va of [0,1,19.9999,20,20.0001,40,100]){const m=neutralization(base(va,20));assert.ok(m.pH<=last);last=m.pH;}
+  for(const data of [base(-1,20),base(100.0001,20),base(10,9.9999),base(10,50.0001),base(10,20,{direction:'sideways'}),base(10,20,{temperature:20})])assert.throws(()=>neutralization(data),{name:'RangeError'});
+  const forward=neutralization(acid(30));assert.equal(forward.direction,'baseIntoAcid');assert.equal(forward.initialVolume,20);assert.equal(forward.addedVolume,30);assert.equal(forward.equivalentAddedVolume,20);
+});
 test('independent textbook data at each supported temperature, water scaling and conservation',()=>{
   for(const [t,d,c,mother]of [[20,31.6,78.4,131.6],[30,45.8,64.2,145.8],[40,63.9,46.1,163.9],[50,85.5,24.5,185.5],[60,110,0,210]]) {
     for(const w of [50,100,200]) {

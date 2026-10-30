@@ -78,6 +78,19 @@ test('generated questions roundtrip all values and asks',()=>{
 test('question-first, condition-first, colon/period and explicit labels',()=>{
  for(const q of ['求斜边长度。直角三角形的两条直角边分别为3cm和4cm。','求斜边长度：直角三角形的直角边a=3cm，直角边b=4cm。','三角形ABC中，∠C=90°，AC=40mm，BC=0.03m，求三个边上正方形的面积。','直角三角形的直角边b=4cm，直角边a=3.25cm，求直角边a上正方形的面积。'])assert.equal(parse(p,q).ok,true,`${q}: ${parse(p,q).message}`);
 });
+test('natural unlabelled-leg phrasing from the 10-30 public acceptance report',()=>{
+ for(const [q,a,b,asks]of [
+  ['两直角边分别为6cm和8cm，求斜边长。',6,8,'hypotenuse'],
+  ['两直角边分别为 6 cm 和 8 cm，求斜边。',6,8,'hypotenuse'],
+  ['一个直角三角形的两条直角边分别是9cm和12cm，用面积拼图验证勾股定理。',9,12,'proof'],
+  ['两条直角边分别是9cm和12cm，用面积拼图验证。',9,12,'proof'],
+  ['Rt△ABC中，两直角边长分别为6和8cm，利用勾股定理求斜边的长。',6,8,'hypotenuse'],
+  ['直角三角形两直角边分别为5cm和12cm，求斜边，并说明面积关系。',5,12,'hypotenuse,proof'],
+  ['直角三角形的直角边分别为30mm、0.04m，求斜边长度。',3,4,'hypotenuse']
+ ]){const v=parse(p,q);assert.equal(v.ok,true,`${q}: ${v.message}`);assert.equal(v.p1,a);assert.equal(v.p2,b);assert.equal(v.fixed.asks,asks);}
+ for(const q of ['两直角边分别为6和8，求斜边。','两直角边分别为6cm和8cm，斜边为10cm，求斜边。','两直角边分别为6cm和8cm，求斜边并求三角形面积。','两直角边之和为14cm，求斜边。','两直角边分别为6cm和8，求斜边。','直角边为6cm，求斜边。','两直角边分别为6cm和8cm，用面积拼图验证周长。'])
+  assert.equal(parse(p,q).ok,false,q);
+});
 test('reject inverse questions, numeric roles, unknown constraints/types/actions and unsupported units',()=>{
  for(const q of [
   '直角三角形两条直角边分别为3cm和4cm（周长），求斜边长度。',

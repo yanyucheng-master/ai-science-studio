@@ -1,0 +1,34 @@
+.scene.subject-generic-physics:has(.biology-mendel-scene) { height: auto; min-height: 0; background: var(--surface); box-shadow: none; }
+.scene.subject-generic-physics:has(.biology-mendel-scene)::before { content: none; }
+.experiment-card:is(:fullscreen, .immersive-mode) .scene.subject-generic-physics:has(.biology-mendel-scene) { flex: 0 0 auto; }
+.generic-physics-stage:has(.biology-mendel-scene) { position: relative; inset: auto; }
+.generic-physics-lab:has(.biology-mendel-scene) { position: relative; inset: auto; display: block; margin: 18px; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.generic-physics-visual:has(.biology-mendel-scene) { height: auto; overflow: visible; border: 0; border-radius: 0; background: none; box-shadow: none; }
+/* The shared transport owns fullscreen, including when moved into the header. */
+.experiment-card:has(.scene.subject-generic-physics .biology-mendel-scene) #sceneFullscreenButton { display: none; }
+.biology-mendel-scene { color: var(--ink); font-size: 14px; line-height: 1.7; overflow-wrap: anywhere; }
+.biology-mendel-scene h3 { font-size: 19px; margin: 0 0 10px; }
+.biology-mendel-scene h4 { margin: 12px 0; font-size: 15px; }
+.mendel-panels { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 28px; align-items: start; }
+.biology-mendel-scene table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 14px; }
+.biology-mendel-scene caption { text-align: left; color: var(--muted); font-size: 13px; margin: 8px 0; }
+.biology-mendel-scene th,.biology-mendel-scene td { text-align: center; padding: 10px 4px; border-bottom: 1px solid var(--line); }
+.mendel-punnett td { font-size: 22px; font-weight: 650; }
+.mendel-AA { background: #e1eefb; }.mendel-Aa { background: #e3f2eb; }.mendel-aa { background: #f0e9fb; }
+.mendel-prob-row { display: grid; grid-template-columns: 30px minmax(0,1fr) 48px; align-items: center; gap: 8px; margin: 16px 0; }
+.mendel-track { height: 12px; background: #e4ebf4; border-radius: 6px; overflow: hidden; }
+.mendel-track i { display: block; height: 100%; background: var(--blue); }
+.mendel-results { margin: 22px 0; }
+.mendel-playback { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 14px 0; }
+.mendel-note,.biology-mendel-scene details { color: var(--muted); font-size: 13px; }
+.biology-mendel-scene summary { padding: 12px 0; cursor: pointer; min-height: 44px; color: var(--blue); }
+.generic-physics-lab:has(.biology-mendel-scene) .generic-physics-readout { min-width: 0; margin-top: 18px; padding: 16px 0 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: none; box-shadow: none; overflow-wrap: anywhere; }
+.generic-physics-lab:has(.biology-mendel-scene) .stage-facts { grid-template-columns: minmax(0,1fr); gap: 0; }
+.generic-physics-lab:has(.biology-mendel-scene) .stage-facts > div { grid-template-columns: 100px minmax(0,1fr); padding: 7px 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+@media(max-width:700px){
+  .mendel-panels{grid-template-columns:minmax(0,1fr);gap:8px}
+  .generic-physics-lab:has(.biology-mendel-scene){margin:12px}
+  .biology-mendel-scene h3{font-size:18px}
+  .experiment-card:has(.scene.subject-generic-physics .biology-mendel-scene) .parameter { min-width: 0; grid-template-columns: minmax(0,1fr); gap: 8px; }
+  .experiment-card:has(.scene.subject-generic-physics .biology-mendel-scene) .number-control { justify-self: end; }
+}

@@ -9,9 +9,10 @@
   const clean = s => s.replace(/[\s，,。；;：:、]/g, '');
   const asksFor = (source, allowed) => {
     const keys = new Set(); let bad = false;
-    const clauses = source.replace(/[,，]\s*(?=求出|求|计算|验证|说明)/g, '；');
+    // "，并求…" "再说明…" start a new ask clause exactly like a plain comma does.
+    const clauses = source.replace(/(?:[,，]\s*)?(?:并且|并|再|同时|然后)\s*(?=求出|求|计算|验证|说明)|[,，]\s*(?=求出|求|计算|验证|说明)/g, '；');
     const rest = clauses.replace(/(?:求出|求|计算|验证|说明)\s*[:：]?\s*([^。;；:：!?！？]+)/g, (_, text) => {
-      const parts = text.split(/以及|[、,，和与及]/).map(s => s.trim()).filter(Boolean);
+      const parts = text.split(/以及|[、,，和与及]/).map(s => s.replace(/\s+/g, '')).filter(Boolean);
       if (!parts.length) bad = true;
       for (const part of parts) {
         const key = Object.keys(allowed).find(k => allowed[k].test(part));
@@ -39,11 +40,16 @@
   }
   function parsePyth(source) {
     let a, b, duplicate = false;
-    const right = /直角三角形|∠\s*C\s*(?:=|为|是)\s*90\s*(?:°|度)/i.test(source);
-    let rest = source.replace(/两条直角边(?:的长度)?(?:分别)?(?:为|是|=)\s*([+-]?\d+(?:\.\d+)?)\s*(cm|厘米|mm|毫米|m|米)\s*(?:和|与|、|,)\s*([+-]?\d+(?:\.\d+)?)\s*(cm|厘米|mm|毫米|m|米)/gi, (_, x, ux, y, uy) => {
+    // "直角边" only exists in a right triangle, so it states the right angle as well.
+    const right = /直角三角形|直角边|∠\s*C\s*(?:=|为|是)\s*90\s*(?:°|度)/i.test(source);
+    // Unlabelled legs: "两直角边分别为6cm和8cm", "两条直角边长6、8cm", "直角边分别是6cm,8cm".
+    // A unit written only after the second value applies to both; at least one unit is required.
+    let rest = source.replace(/(?:(?:两条|两)直角边(?:的)?(?:长度|长)?(?:分别)?|直角边(?:的)?(?:长度|长)?分别)(?:长)?\s*(?:为|是|=|:|：)?\s*([+-]?\d+(?:\.\d+)?)\s*(cm|厘米|mm|毫米|m|米)?\s*(?:和|与|、|,|，)\s*([+-]?\d+(?:\.\d+)?)\s*(cm|厘米|mm|毫米|m|米)(?![A-Za-z])/gi, (_, x, ux, y, uy) => {
       if (a !== undefined || b !== undefined) duplicate = true;
-      a = lengthCm(x, ux); b = lengthCm(y, uy); return ' ';
+      a = lengthCm(x, ux || uy); b = lengthCm(y, uy); return ' ';
     });
+    // "用面积拼图验证（勾股定理）" asks for the area proof even when the verb ends the sentence.
+    rest = rest.replace(/(?:[,，]\s*)?(?:并且|并|再|同时|然后)?\s*(?:请)?(?:用|利用|通过)\s*(?:面积)?\s*拼图(?:的方法)?\s*(?:来)?\s*(?:验证|证明|说明)\s*(?:勾股定理|勾股关系|面积关系|一下)?/g, '；说明面积关系');
     for (const [label, pattern] of [
       ['a', /(?:直角边\s*a(?:\s*=\s*(?:BC|CB))?|(?:a\s*=\s*)?(?:BC|CB))\s*(?:的长度)?\s*(?:为|是|=)\s*([+-]?\d+(?:\.\d+)?)\s*(cm|厘米|mm|毫米|m|米)/gi],
       ['b', /(?:直角边\s*b(?:\s*=\s*(?:AC|CA))?|(?:b\s*=\s*)?(?:AC|CA))\s*(?:的长度)?\s*(?:为|是|=)\s*([+-]?\d+(?:\.\d+)?)\s*(cm|厘米|mm|毫米|m|米)/gi]
@@ -55,7 +61,7 @@
     let rightCount=0;
     rest=rest.replace(/∠\s*C\s*(?:=|为|是)\s*90\s*(?:°|度)/gi,()=>{if(++rightCount>1)duplicate=true;return ' ';});
     const ask = asksFor(rest, pythAsks);
-    const unknown = clean(ask.rest.replace(/直角三角形\s*ABC|三角形\s*ABC|△\s*ABC|直角三角形|已知|一个|在|中|的|请/gi, ''));
+    const unknown = clean(ask.rest.replace(/(?:利用|根据|用|由)勾股定理|Rt\s*△\s*ABC|Rt\s*△|直角三角形\s*ABC|三角形\s*ABC|△\s*ABC|直角三角形|已知|一个|在|中|的|请/gi, ''));
     if (!right || duplicate || !cmHundredths(a) || !cmHundredths(b) || !ask.ok || unknown) return miss('需明确直角及两条直角边，各1–12cm、最多两位小数；支持cm、mm、m的精确换算。仅求斜边、边上正方形面积或说明面积关系；不支持反推、三角形面积/周长及额外条件。');
     return { ok: true, p1: a, p2: b, fixed: { asks: ask.asks } };
   }
@@ -127,9 +133,9 @@
       scene.querySelector('[data-puzzle-status]').textContent=t===1?'两种终态无重叠、无缺口：相同大正方形减去相同四片，剩余面积相等。':t===0?'四片仅作刚性平移；播放或拖动进度至100%，比较两种终态。':'搬移中可能暂时覆盖；此时隐藏剩余面积，不用中间覆盖状态证明等式。';
     }
   }
-  const pyth={id:'pythagoras',subject:'数学',level:'junior',menuTitle:'勾股定理面积拼图',menuMeta:'两种拼法 · 刚性搬移 · 面积证明',stage:'初中',block:'几何',title:'勾股定理：两种拼法的面积证明',defaults:[3,4],keywords:/直角三角形|勾股|∠\s*C\s*(?:=|为|是)\s*90/,
+  const pyth={id:'pythagoras',subject:'数学',level:'junior',menuTitle:'勾股定理面积拼图',menuMeta:'两种拼法 · 刚性搬移 · 面积证明',stage:'初中',block:'几何',title:'勾股定理：两种拼法的面积证明',defaults:[3,4],keywords:/直角三角形|直角边|勾股|∠\s*C\s*(?:=|为|是)\s*90/,
     params:[{label:'直角边 a = BC',desc:'1–12cm，最多两位小数；∠C=90°',unit:'cm',min:1,max:12,step:.01,value:3},{label:'直角边 b = AC',desc:'1–12cm，最多两位小数；c=AB为斜边',unit:'cm',min:1,max:12,step:.01,value:4}],
-    strict:{sameConditions:true,intent:{require:[/直角三角形|勾股|∠\s*C\s*(?:=|为|是)\s*90/]},fixedDefaults:{asks:'areas,hypotenuse,proof'},caps:[[1,12],[1,12]],values:parsePyth,used:(a,b)=>[{cls:'length',value:a/100},{cls:'length',value:b/100},{cls:'angle',value:90}],checkFixed:(f,a,b)=>fixedProblem(f,a,b),asks:{supported:/斜边|面积|勾股|拼图/,unsupported:/周长|角度|体积|概率|反推|质量/}},
+    strict:{sameConditions:true,intent:{require:[/直角三角形|直角边|勾股|∠\s*C\s*(?:=|为|是)\s*90/]},fixedDefaults:{asks:'areas,hypotenuse,proof'},caps:[[1,12],[1,12]],values:parsePyth,used:(a,b)=>[{cls:'length',value:a/100},{cls:'length',value:b/100},{cls:'angle',value:90}],checkFixed:(f,a,b)=>fixedProblem(f,a,b),asks:{supported:/斜边|面积|勾股|拼图/,unsupported:/周长|角度|体积|概率|反推|质量/}},
     question:(a,b,f={asks:'areas,hypotenuse,proof'})=>`直角三角形ABC中，∠C=90°，直角边a=BC=${a}cm，直角边b=AC=${b}cm，${f.asks.split(',').map(k=>({hypotenuse:'求斜边c的长度',areas:'求三个边上正方形的面积',areaA:'求直角边a上正方形的面积',areaB:'求直角边b上正方形的面积',areaC:'求斜边c上正方形的面积',proof:'说明面积关系'}[k])).join('；')}。`,model:pythModel,visual:pythVisual,geometryAt:puzzleGeometry,recognition:m=>`${num(m.a)}cm、${num(m.b)}cm两直角边｜${m.readout}`,formatMetric:num,resetToQuestion:true,motion:{duration:10},renderFrame,
     presetFor:()=>({p1:3,p2:4,fixed:{asks:'areas,hypotenuse,proof'}}),
     copy:m=>({steps:[['明确直角与边的角色',`∠C=90°；a=BC=${num(m.a)}cm，b=AC=${num(m.b)}cm，c=AB。`,'题目必须给两条直角边；不把一般三角形或斜边当直角边。'],['先核对全等与两种分割','拼法Ⅰ中央四边形四边都是c，相邻锐角互余给每个直角；拼法Ⅱ两矩形各由两片铺满，留下a、b两个正方形。','终态无重叠无缺口；移动中可能暂时覆盖，不参与证明。'],['由面积相等得定理','两个大正方形边长同为a+b，减去同样四个全等三角形，故c²=a²+b²。','只依赖全等与分割，没有先用开方计算c来证明。'],['再应用结论回答',m.conclusion,'长度cm、面积cm²；根式或有限小数是精确值，≈后的六位小数仅为近似。']],hint:'先证明两个终态分割成立，再从相同总面积减去相同四片。',mentor:'为什么中央四边形四条边相等且每个角为直角？移动中重叠时能用作面积证明吗？',challenge:'交换a、b，或合法同比放大，比较长度与正方形面积。',sceneTip:m.conclusion,generationStages:stages('核对直角及两条直角边','构造两种无重叠终态','先证明再开方计算')})};
