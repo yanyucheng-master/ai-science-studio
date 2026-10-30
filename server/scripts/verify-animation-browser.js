@@ -13,7 +13,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root=fileURLToPath(new URL('../../',import.meta.url));
 const output=process.env.ANIMATION_QA_OUTPUT || resolve(root,'outputs/animation-upgrade/verification');
 await mkdir(output,{recursive:true});
-const files=new Set(['index.html','app.js','styles.css','science-motion.js','science-formulas.js','physics-extra.js','question-conditions.js','math-extra.js', 'math-experiments.js', 'unit-circle.js', 'math-experiments.css','chemistry-extra.js','chemistry-experiments.js', 'chemistry-equilibria.js', 'chemistry-equilibria-questions.js', 'chemistry-equilibria-experiments.js', 'chemistry-equilibria.css','ai-tutor.js']);
+const files=new Set(['index.html','app.js','styles.css','science-motion.js','science-formulas.js','physics-extra.js','question-conditions.js','math-extra.js', 'math-experiments.js', 'unit-circle.js', 'math-experiments.css','chemistry-extra.js','chemistry-experiments.js', 'chemistry-equilibria.js', 'chemistry-equilibria-questions.js', 'chemistry-equilibria-experiments.js', 'chemistry-equilibria.css', 'biology-mendel-core.js', 'biology-mendel.js', 'biology-mendel.css','ai-tutor.js']);
 const server=createServer(async(req,res)=>{
   const name=new URL(req.url,'http://localhost').pathname.slice(1)||'index.html';
   if(!files.has(name)){res.writeHead(204);res.end();return;}
@@ -295,7 +295,7 @@ try{
   assert.ok(restored.time>hidden.time);assert.ok(restored.time-hidden.time<300);assert.equal(restored.pending,1);
   report.background={hidden,restored,realTabSwitch:true};console.log('real background/restore: passed');
   report.templateBackground=[];
-  const newQuestions=await page.evaluate(()=>['pythagoras','unitCircle','hclNaohNeutralization','kno3Cooling'].map(id=>{
+  const newQuestions=await page.evaluate(()=>['pythagoras','unitCircle','hclNaohNeutralization','kno3Cooling','mendel'].map(id=>{
     const t=MASTER_LAB_TEMPLATES[id],p=t.presetFor('senior');return t.question(p.p1,p.p2,t.fixedWithDefaults(p.fixed));
   }));
   for(const question of ['10g纯碳酸钙与足量稀盐酸反应，求二氧化碳的质量。','20°C时，配制100g质量分数为10%的氯化钠溶液，求所需盐和水的质量。',...newQuestions]){

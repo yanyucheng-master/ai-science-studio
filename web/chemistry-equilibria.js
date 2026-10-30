@@ -13,13 +13,20 @@
     }
     return Math.round(value * SCALE);
   }
+  // direction: 'baseIntoAcid' (default) starts from 10–50 mL HCl and adds 0–100 mL NaOH;
+  // 'acidIntoBase' starts from 10–50 mL NaOH and adds 0–100 mL HCl. The final state only
+  // depends on the two volumes; the direction decides which one is the initial solution.
+  const DIRECTIONS = Object.freeze(['baseIntoAcid', 'acidIntoBase']);
   function neutralization(input) {
     if (!input || input.temperature !== 25 || input.acidConcentration !== 0.1
         || input.baseConcentration !== 0.1) {
       throw new RangeError('必须明确25°C、HCl与NaOH均为0.100mol/L。');
     }
-    const A = ticks(input.acidVolume, 10, 50, '初始盐酸体积');
-    const B = ticks(input.baseVolume, 0, 100, '累计NaOH体积');
+    const direction = input.direction === undefined ? 'baseIntoAcid' : input.direction;
+    if (!DIRECTIONS.includes(direction)) throw new RangeError('加液方向无效。');
+    const reverse = direction === 'acidIntoBase';
+    const A = reverse ? ticks(input.acidVolume, 0, 100, '累计加入盐酸体积') : ticks(input.acidVolume, 10, 50, '初始盐酸体积');
+    const B = reverse ? ticks(input.baseVolume, 10, 50, '初始NaOH溶液体积') : ticks(input.baseVolume, 0, 100, '累计NaOH体积');
     const volumeL = (A + B) / (SCALE * 1000);
     // Integer subtraction preserves the sign next to the equivalence point.
     const delta = 0.1 * (A - B) / (A + B);
@@ -39,7 +46,10 @@
       chloride:0.1 * A / (A + B), sodium:0.1 * B / (A + B),
       delta, hydrogen, hydroxide, pH:-Math.log10(hydrogen), kw:KW,
       nature:A === B ? '中性' : A > B ? '酸性' : '碱性',
-      equivalentBaseVolume:A / SCALE
+      equivalentBaseVolume:A / SCALE,
+      direction, initialVolume:(reverse ? B : A) / SCALE, addedVolume:(reverse ? A : B) / SCALE,
+      // Equal concentrations: the added solution reaches equivalence at the initial volume.
+      equivalentAddedVolume:(reverse ? B : A) / SCALE
     });
   }
   function cooling(input) {
@@ -65,6 +75,6 @@
     });
   }
   window.MasterLabChemistryEquilibria = Object.freeze({
-    version:1, KW, SOLUBILITY, neutralization, cooling
+    version:1, KW, SOLUBILITY, DIRECTIONS, neutralization, cooling
   });
 })();

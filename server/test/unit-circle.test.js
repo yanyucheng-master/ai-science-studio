@@ -59,7 +59,11 @@ const positive=[
  '单位圆中，θ=-360°，求cosθ；说明周期关系。',
  '单位圆中，θ=0rad，判断坐标轴位置。',
  '单位圆中，角度为-30.01°，求正弦值、余弦值。',
- '单位圆中，θ=π/18000弧度，求点P的坐标。'
+ '单位圆中，θ=π/18000弧度，求点P的坐标。',
+ '单位圆中θ=150°，求sinθ、cosθ，并求点P的坐标。',
+ '单位圆中θ=150°，求 sinθ、cosθ，并求点 P 的坐标。',
+ '单位圆中，θ=30°，求sinθ，再判断象限。',
+ '单位圆中，θ=-π/3，求cosθ，求点P的坐标。'
 ];
 for(const q of positive)test(`checked complete question: ${q}`,()=>{const v=parse(q);assert.equal(v.ok,true,v.message);const m=t.model(v.p1,v.p2,v.fixed);assert.ok(!/NaN|undefined|Infinity/.test(m.conclusion));});
 const negative=[
@@ -70,7 +74,8 @@ const negative=[
  '求sinθ。单位圆中，θ=30°（温度）。','求点P的坐标：单位圆中，θ=30°（余弦值）。','单位圆中，sinθ=1/2，求角θ。',
  '单位圆中，θ=30°，求sinθ和tanθ。','单位圆中，θ=30°，求cosθ和温度。','单位圆中，θ=30°，求消耗sinθ。',
  '单位圆中，θ=30°，求sinθ。振幅为2。','单位圆中，θ=30°，求三角方程的解。','单位圆中，θ=30°，求导数。','单位圆中，θ=30°，求反正弦。',
- '单位圆中，θ=30°，求sinθ。另一个角为60°。','角θ=30°，求sinθ。','单位圆中，θ=1+π/6，求sinθ。'
+ '单位圆中，θ=30°，求sinθ。另一个角为60°。','角θ=30°，求sinθ。','单位圆中，θ=1+π/6，求sinθ。',
+ '单位圆中θ=150°，求sinθ，并求tanθ。','单位圆中θ=150°，求sinθ，并求点Q的坐标。'
 ];
 for(const q of negative)test(`reject full-sentence counterexample: ${q}`,()=>assert.equal(parse(q).ok,false,q));
 test('canonical question/fixed unit/asks roundtrip every angle and mode, fixed radius never unlocked',()=>{

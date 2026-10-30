@@ -54,9 +54,11 @@
     // for the full-sentence check, even after an initial question or full stop.
     rest=rest.replace(/圆心(?:为|是)(?:坐标)?原点\s*O?|以原点\s*O?为圆心|单位圆\s*O?|已知|一个|在|中|的|请/gi,'');
     const asks=new Set();let askCount=0;
+    // "，求…" "，并求…" "再判断…" start a new ask clause exactly like "；" does.
+    rest=rest.replace(/(?:[,，]\s*)?(?:并且|并|再|同时|然后)\s*(?=求出|求|计算|判断|确定|说明)|[,，]\s*(?=求出|求|计算|判断|确定|说明)/g,'；');
     rest=rest.replace(/(?:求出|求|计算|判断|确定|说明)\s*[:：]?\s*([^。；;:：!?！？]+)/g,(_,body)=>{
       askCount++;
-      const parts=body.split(/以及|[、,，和与]/).map(s=>s.trim()).filter(Boolean);
+      const parts=body.split(/以及|[、,，和与]/).map(s=>s.replace(/\s+/g,'')).filter(Boolean);
       if(!parts.length)bad=true;
       for(const part of parts){const key=Object.keys(askPatterns).find(k=>askPatterns[k].test(part));if(key)asks.add(key);else bad=true;}
       return ' ';

@@ -7,14 +7,22 @@
   const number=n=>String(Number(n.toFixed(6)));
   const mass=n=>`${Math.round(n*1e6)/1e6===n?'':'≈ '}${number(n)} g`;
   const clamp=p=>Math.max(0,Math.min(1,p));
-  const neutralDefaults={level:'senior',levelLocked:false,temperature:25,acidConcentration:.1,baseConcentration:.1,asks:'equivalence,nature,ph'};
+  const neutralDefaults={level:'senior',levelLocked:false,temperature:25,acidConcentration:.1,baseConcentration:.1,direction:'baseIntoAcid',temperatureAssumed:false,asks:'equivalence,nature,ph'};
+  // p1 is always the solution already in the beaker and p2 the cumulative added volume.
+  const reverseOf=f=>f.direction==='acidIntoBase';
+  const volumesOf=(f,a,b)=>reverseOf(f)?{acidVolume:b,baseVolume:a}:{acidVolume:a,baseVolume:b};
+  const words=f=>reverseOf(f)
+    ?{initial:'NaOH溶液',added:'盐酸',addedFormula:'HCl',adding:'加酸',addedPhase:'酸液',below:'碱性',above:'酸性'}
+    :{initial:'盐酸',added:'NaOH',addedFormula:'NaOH',adding:'加碱',addedPhase:'碱液',below:'酸性',above:'碱性'};
+  const temperatureText=f=>f.temperatureAssumed?'题目未注明温度，按常温25°C':'25°C';
   const coolingDefaults={level:'senior',levelLocked:false,initialTemperature:60,saturated:true,pure:true,waterLoss:0,equilibrium:true,asks:'crystals,dissolved,mother'};
   function modeIssue(f,patterns){
     return !['junior','senior'].includes(f.level)||typeof f.levelLocked!=='boolean'||typeof f.asks!=='string'||!f.asks||f.asks.split(',').some(k=>!Object.hasOwn(patterns,k))?'学段或所问模式无效。':'';
   }
   function neutralIssue(f,a,b){
     const issue=modeIssue(f,Q.acidAsks);if(issue)return issue;
-    try{core.neutralization({...f,acidVolume:a,baseVolume:b});return '';}catch(e){return e.message;}
+    if(!core.DIRECTIONS.includes(f.direction)||typeof f.temperatureAssumed!=='boolean')return '加液方向或温度说明无效。';
+    try{core.neutralization({...f,...volumesOf(f,a,b)});return '';}catch(e){return e.message;}
   }
   function coolingIssue(f,w,t){
     const issue=modeIssue(f,Q.saltAsks);if(issue)return issue;
@@ -22,14 +30,14 @@
   }
   function neutralModel(a,b,f=neutralDefaults){
     const issue=neutralIssue(f,a,b);if(issue)throw new RangeError(issue);
-    const m=core.neutralization({...f,acidVolume:a,baseVolume:b});
-    const answers={ph:`目标混合液 pH ≈ ${number(m.pH)}`,nature:`目标混合液呈${m.nature}`,equivalence:`理论恰好中和需累计加入 NaOH ${number(a)} mL（总体积）`};
-    return {...m,level:f.level,asks:f.asks,metrics:[a,b,m.pH],metricUnit:'',
-      facts:[fact('目标 pH',`≈ ${number(m.pH)}`),fact('目标酸碱性',m.nature),fact('理论中和总加碱量',`${number(a)} mL`)],
-      contextParameters:`25°C；HCl和NaOH均为0.100mol/L；初始盐酸${number(a)}mL，当前目标累计加碱${number(b)}mL。结果对应目标参数，原题保留作重置基准。`,
+    const m=core.neutralization({...f,...volumesOf(f,a,b)}),w=words(f);
+    const answers={ph:`目标混合液 pH ≈ ${number(m.pH)}`,nature:`目标混合液呈${m.nature}`,equivalence:`理论恰好中和需累计加入 ${w.added} ${number(a)} mL（总体积）`};
+    return {...m,temperatureAssumed:Boolean(f.temperatureAssumed),level:f.level,asks:f.asks,metrics:[a,b,m.pH],metricUnit:'',
+      facts:[fact('目标 pH',`≈ ${number(m.pH)}`),fact('目标酸碱性',m.nature),fact(`理论中和总${w.adding}量`,`${number(a)} mL`)],
+      contextParameters:`${temperatureText(f)}；HCl和NaOH均为0.100mol/L；初始${w.initial}${number(a)}mL，当前目标累计${w.adding}${number(b)}mL。结果对应目标参数，原题保留作重置基准。`,
       conclusion:f.asks.split(',').map(k=>answers[k]).join('；')+'。',
       formula:f.level==='junior'?'HCl + NaOH → NaCl + H₂O':'H⁺ + OH⁻ → H₂O；pH = −lg[H⁺]',
-      formulaDetail:f.level==='junior'?`同浓度两液：加碱量小于${number(a)}mL呈酸性，等于时理论中性，大于时呈碱性。`:`混合总体积 ${number(m.volumeL)} L；n(HCl)=${number(m.acidMol)} mol，n(NaOH)=${number(m.baseMol)} mol；计入水电离后 pH ≈ ${number(m.pH)}。`,
+      formulaDetail:f.level==='junior'?`同浓度两液：${w.adding}量小于${number(a)}mL呈${w.below}，等于时理论中性，大于时呈${w.above}。`:`混合总体积 ${number(m.volumeL)} L；n(HCl)=${number(m.acidMol)} mol，n(NaOH)=${number(m.baseMol)} mol；计入水电离后 pH ≈ ${number(m.pH)}。`,
       readout:`目标 pH ≈ ${number(m.pH)} · ${m.nature}`,badge:'理论中和 · 非实际终点'};
   }
   function coolingModel(w,t,f=coolingDefaults){
@@ -48,35 +56,41 @@
   const axes=(ylabel,xlabel)=>`<path d="M48 28V232H420" class="eq-axis"/><text x="48" y="18">${ylabel}</text><text x="234" y="279" text-anchor="middle">${xlabel}</text>`;
   const vessel=crystals=>`<svg class="eq-vessel" viewBox="0 0 240 220" role="img" aria-label="无色溶液容器示意，不代表精确体积"><path d="M42 42V180Q42 196 58 196H182Q198 196 198 180V42" class="eq-glass"/><path d="M46 86H194V180Q194 192 182 192H58Q46 192 46 180Z" class="eq-liquid"/>${crystals?Array.from({length:12},(_,i)=>`<rect data-eq-crystal x="${60+i%6*22}" y="${166+Math.floor(i/6)*13}" width="12" height="10" class="eq-crystal"/>`).join(''):'<path class="eq-drop" data-eq-drop d="M120 15Q103 38 120 38Q137 38 120 15"/><path d="M150 52L132 173" class="eq-stirrer"/>'}<text x="120" y="213" text-anchor="middle">液面、粒子仅为示意</text></svg>`;
   let curveCache;
-  function neutralCurve(a){
-    if(curveCache?.a===a)return curveCache.path;
-    const volumes=[...Array.from({length:201},(_,i)=>i/2),a,a-.0001,a+.0001,a-.01,a+.01].filter(v=>v>=0&&v<=100).sort((x,y)=>x-y);
-    const path=volumes.map((b,i)=>{const m=core.neutralization({...neutralDefaults,acidVolume:a,baseVolume:b});return `${i?'L':'M'}${48+3.72*b},${232-m.pH*14}`;}).join(' ');
-    curveCache={a,path};return path;
+  function neutralCurve(a,direction='baseIntoAcid'){
+    if(curveCache?.a===a&&curveCache.direction===direction)return curveCache.path;
+    const f={...neutralDefaults,direction};
+    // Samples stay on the 0.0001 mL grid: a+0.0001 in floating point (e.g. 20.000200000000003) is rejected by the core.
+    const volumes=[...Array.from({length:201},(_,i)=>i/2),a,a-.0001,a+.0001,a-.01,a+.01].map(v=>Math.round(v*10000)/10000).filter(v=>v>=0&&v<=100).sort((x,y)=>x-y);
+    const path=volumes.map((b,i)=>{const m=core.neutralization({...f,...volumesOf(f,a,b)});return `${i?'L':'M'}${48+3.72*b},${232-m.pH*14}`;}).join(' ');
+    curveCache={a,direction,path};return path;
   }
   function neutralVisual(m){
-    return `<section class="chemistry-lab-scene chemistry-v2-scene eq-neutral" aria-label="盐酸中累计加入氢氧化钠的理论中和实验">
-      <div class="chemistry-scene-heading"><strong>理论中和 · 盐酸中加碱</strong><span data-eq-phase>演示初态</span></div>
-      <p>25°C；两液均为 0.100 mol/L。初始盐酸 ${number(m.acidVolume)} mL；目标累计加碱 ${number(m.baseVolume)} mL。</p>
-      <div class="eq-panels"><figure><figcaption>无指示剂 · 原液无色</figcaption>${vessel(false)}<p>NaOH 累计加入量，不是滴定管一次读数。</p></figure>
-      <figure><figcaption>pH 随累计加碱量变化</figcaption><svg viewBox="0 0 450 290" class="eq-graph" role="img" aria-label="固定初始盐酸体积下的理论pH曲线">${axes('pH','累计加入 NaOH（mL）')}${[0,7,14].map(v=>`<text x="36" y="${238-v*14}" text-anchor="end">${v}</text><path d="M48 ${232-v*14}H420" class="eq-grid"/>`).join('')}${[0,50,100].map(v=>`<text x="${48+3.72*v}" y="254" text-anchor="middle">${v}</text>`).join('')}<path d="${neutralCurve(m.acidVolume)}" class="eq-curve"/><line x1="${48+3.72*m.acidVolume}" x2="${48+3.72*m.acidVolume}" y1="28" y2="232" class="eq-grid"/><circle data-eq-point r="5" class="eq-point"/></svg><p>虚线对应理论等量；实际指示剂终点另按实验判断。</p></figure></div>
+    const reverse=reverseOf(m),w=words(m);
+    const temperature=m.temperatureAssumed?'题目未注明温度，按常温 25°C 计算':'25°C';
+    const direction=reverse?'本场景同为向碱液中加酸，但不加指示剂、不判实际终点，也不完整复刻教材操作。':'本场景方向不同，不判实际终点，也不完整复刻教材操作。';
+    return `<section class="chemistry-lab-scene chemistry-v2-scene eq-neutral" data-eq-direction="${m.direction}" aria-label="${reverse?'氢氧化钠溶液中累计加入盐酸':'盐酸中累计加入氢氧化钠'}的理论中和实验">
+      <div class="chemistry-scene-heading"><strong>理论中和 · ${reverse?'碱液中加酸':'盐酸中加碱'}</strong><span data-eq-phase>演示初态</span></div>
+      <p>${temperature}；两液均为 0.100 mol/L。初始${reverse?' NaOH 溶液':'盐酸'} ${number(m.initialVolume)} mL；目标累计${w.adding} ${number(m.addedVolume)} mL。</p>
+      <div class="eq-panels"><figure><figcaption>无指示剂 · 原液无色</figcaption>${vessel(false)}<p>${reverse?'盐酸累计加入量':'NaOH 累计加入量'}，不是滴定管一次读数。</p></figure>
+      <figure><figcaption>pH 随累计${w.adding}量变化</figcaption><svg viewBox="0 0 450 290" class="eq-graph" role="img" aria-label="固定初始${reverse?'NaOH溶液':'盐酸'}体积下的理论pH曲线">${axes('pH',`累计加入 ${w.addedFormula}（mL）`)}${[0,7,14].map(v=>`<text x="36" y="${238-v*14}" text-anchor="end">${v}</text><path d="M48 ${232-v*14}H420" class="eq-grid"/>`).join('')}${[0,50,100].map(v=>`<text x="${48+3.72*v}" y="254" text-anchor="middle">${v}</text>`).join('')}<path d="${neutralCurve(m.initialVolume,m.direction)}" class="eq-curve"/><line x1="${48+3.72*m.initialVolume}" x2="${48+3.72*m.initialVolume}" y1="28" y2="232" class="eq-grid"/><circle data-eq-point r="5" class="eq-point"/></svg><p>虚线对应理论等量；实际指示剂终点另按实验判断。</p></figure></div>
       <div class="eq-current" aria-live="off"><strong data-eq-current></strong><span data-eq-current-nature></span></div>
       <div class="eq-ph-scale"><span>酸性</span><span>中性</span><span>碱性</span></div><p class="chemistry-model-note">颜色仅为 pH 标尺，原液不会因 pH 改变自动变色。播放展示加液比较过程，下方结果对应目标题目参数；进度不代表真实滴定时间。</p>
-      <details class="eq-reference"><summary>模型条件与教材操作参照</summary><p>完全电离、混合体积可加、忽略活度；采用常温课堂近似 Kw ≈ 1×10⁻¹⁴。pH 是理论读数，不是试纸实测值。</p><p>初中人教实验10-10：5mL稀NaOH中滴入酚酞，再慢慢滴入盐酸并不断搅拌，红色恰好褪去。教材使用烧杯、滴管、玻璃棒；取样测pH用洁净干燥玻璃棒点到试纸，不将试纸浸入原液。</p><p>高中实验活动2：检漏、分别润洗滴定管、排气泡并准确读数；用已知酸滴定20.00mL待测NaOH，滴入酚酞，边滴边摇动；近终点细滴至褪色持续半分钟，记录并重复测定。本场景方向不同，不判实际终点，也不完整复刻教材操作。</p></details>
+      <details class="eq-reference"><summary>模型条件与教材操作参照</summary><p>完全电离、混合体积可加、忽略活度；采用常温课堂近似 Kw ≈ 1×10⁻¹⁴。pH 是理论读数，不是试纸实测值。</p><p>初中人教实验10-10：5mL稀NaOH中滴入酚酞，再慢慢滴入盐酸并不断搅拌，红色恰好褪去。教材使用烧杯、滴管、玻璃棒；取样测pH用洁净干燥玻璃棒点到试纸，不将试纸浸入原液。</p><p>高中实验活动2：检漏、分别润洗滴定管、排气泡并准确读数；用已知酸滴定20.00mL待测NaOH，滴入酚酞，边滴边摇动；近终点细滴至褪色持续半分钟，记录并重复测定。${direction}</p></details>
     </section>`;
   }
   function neutralFrame(m,p){
-    const b=Math.round(m.baseVolume*clamp(p)*10000)/10000;
-    return core.neutralization({...neutralDefaults,acidVolume:m.acidVolume,baseVolume:b});
+    const f={...neutralDefaults,direction:m.direction||'baseIntoAcid'};
+    const added=Math.round(m.addedVolume*clamp(p)*10000)/10000;
+    return core.neutralization({...f,...volumesOf(f,m.initialVolume,added)});
   }
   function renderNeutral(root,m,p,{reducedMotion=false}={}){
     const scene=root.querySelector('.eq-neutral');if(!scene)return;
-    const n=neutralFrame(m,p);scene.dataset.currentBaseVolume=String(n.baseVolume);scene.dataset.currentPh=String(n.pH);
-    scene.querySelector('[data-eq-phase]').textContent=p>=1?'到达目标加碱量':p<=0?'演示初态':'加入碱液示意';
-    scene.querySelector('[data-eq-current]').textContent=`演示当前：累计 ${number(n.baseVolume)} mL；pH ≈ ${number(n.pH)}`;
+    const w=words(m),n=neutralFrame(m,p);scene.dataset.currentBaseVolume=String(n.baseVolume);scene.dataset.currentAddedVolume=String(n.addedVolume);scene.dataset.currentPh=String(n.pH);
+    scene.querySelector('[data-eq-phase]').textContent=p>=1?`到达目标${w.adding}量`:p<=0?'演示初态':`加入${w.addedPhase}示意`;
+    scene.querySelector('[data-eq-current]').textContent=`演示当前：累计 ${number(n.addedVolume)} mL；pH ≈ ${number(n.pH)}`;
     scene.querySelector('[data-eq-current-nature]').textContent=n.nature;
-    const dot=scene.querySelector('[data-eq-point]');dot.setAttribute('cx',String(48+3.72*n.baseVolume));dot.setAttribute('cy',String(232-14*n.pH));
-    scene.querySelector('[data-eq-drop]').style.opacity=m.baseVolume>0&&p>0&&p<1&&!reducedMotion?'1':'0';
+    const dot=scene.querySelector('[data-eq-point]');dot.setAttribute('cx',String(48+3.72*n.addedVolume));dot.setAttribute('cy',String(232-14*n.pH));
+    scene.querySelector('[data-eq-drop]').style.opacity=m.addedVolume>0&&p>0&&p<1&&!reducedMotion?'1':'0';
   }
   function coolingVisual(m){
     return `<section class="chemistry-lab-scene chemistry-v2-scene eq-cooling" aria-label="硝酸钾冷却结晶平衡状态示意">
@@ -107,13 +121,18 @@
   const shared={subject:'化学',level:'both',block:'化学计算',resetToQuestion:true,motion:{duration:10},formatMetric:number};
   const neutral={...shared,id:'hclNaohNeutralization',menuTitle:'强酸强碱中和与pH',menuMeta:'盐酸中加碱 · 理论等量 · pH',stage:'酸碱与中和',title:'盐酸与氢氧化钠：理论中和与pH',defaults:[20,20],keywords:/(?=.*(?:盐酸|HCl))(?=.*(?:氢氧化钠|NaOH))/i,
     params:[{label:'初始盐酸体积',desc:'10–50mL；最多四位小数',unit:'mL',min:10,max:50,step:.1,value:20},{label:'累计加入NaOH',desc:'0–100mL；这是累计总量',unit:'mL',min:0,max:100,step:.1,value:20}],
+    // Same ranges in both directions; only the names follow the solution in the beaker.
+    parameter:(param,index,f)=>reverseOf(f)?{...param,label:index?'累计加入盐酸':'初始NaOH溶液体积'}:param,
     strict:{sameConditions:true,preciseParams:true,caps:[[10,50],[0,100]],fixedDefaults:neutralDefaults,intent:{require:[/盐酸|HCl/i,/氢氧化钠|NaOH/i]},values:(s,t,c)=>Q.neutralization(s,c),checkFixed:neutralIssue,
       used:(a,b)=>[{cls:'volume',value:a},{cls:'volume',value:b},{cls:'temperature',value:25},{cls:'amount',value:.1}],asks:{supported:/pH|酸碱性|中和|体积/i,unsupported:/质量|质量分数|还需|热量|误差|终点|反推/}},
-    question:Q.neutralizationQuestion,model:neutralModel,visual:neutralVisual,frame:neutralFrame,renderFrame:renderNeutral,recognition:m=>`HCl/NaOH｜${m.readout}`,
+    question:Q.neutralizationQuestion,model:neutralModel,visual:neutralVisual,frame:neutralFrame,renderFrame:renderNeutral,
+    recognition:m=>`${reverseOf(m)?'NaOH溶液中加盐酸':'HCl/NaOH'}｜${m.readout}${m.temperatureAssumed?'｜未注明温度，按常温25°C计算':''}`,
     presetFor:level=>({p1:20,p2:20,fixed:{...neutralDefaults,level,asks:level==='junior'?'nature':'equivalence,nature,ph'}}),
-    copy:m=>({steps:[['核对模型条件',`25°C，初始盐酸${number(m.acidVolume)}mL，累计加NaOH ${number(m.baseVolume)}mL；两液同浓度。`,'原题与当前比较条件分开，不能用示意默认值补题。'],['理解中和','HCl + NaOH → NaCl + H₂O',m.level==='junior'?'酸与碱反应生成盐和水；相同浓度下比较两液体积。':'先计算酸、碱的物质的量，混合总体积用于浓度计算。'],['比较酸碱性',m.formulaDetail,m.level==='junior'?'pH为理论读数；初中不要求对数和水自解离推导。':'等量附近同时计入水电离，避免把极少过量误作中性。'],['按所问回答',m.conclusion,'理论等量点不能代替指示剂实际终点。']],hint:'先预测加碱量不足、恰好等量、过量时分别呈什么性质，再比较曲线。',mentor:'为什么计算混合液浓度要用混合总体积？理论等量与实际终点有何区别？',challenge:'保持初始盐酸不变，比较等量点两侧；随后重置回原题。',sceneTip:m.conclusion,generationStages:stages('核对温度、浓度、体积与所问','计算理论中和与水电离平衡','绘制曲线和无色溶液示意')})};
+    copy:m=>{const w=words(m);return {steps:[['核对模型条件',`${temperatureText(m)}，初始${w.initial}${number(m.initialVolume)}mL，累计加${w.added} ${number(m.addedVolume)}mL；两液同浓度。`,m.temperatureAssumed?'题目未写温度，按课本常温约定取25°C（Kw≈1×10⁻¹⁴）；其余条件均来自原题。':'原题与当前比较条件分开，不能用示意默认值补题。'],['理解中和','HCl + NaOH → NaCl + H₂O',m.level==='junior'?'酸与碱反应生成盐和水；相同浓度下比较两液体积。':'先计算酸、碱的物质的量，混合总体积用于浓度计算。'],['比较酸碱性',m.formulaDetail,m.level==='junior'?'pH为理论读数；初中不要求对数和水自解离推导。':'等量附近同时计入水电离，避免把极少过量误作中性。'],['按所问回答',m.conclusion,'理论等量点不能代替指示剂实际终点。']],hint:`先预测${w.adding}量不足、恰好等量、过量时分别呈什么性质，再比较曲线。`,mentor:'为什么计算混合液浓度要用混合总体积？理论等量与实际终点有何区别？',challenge:`保持初始${w.initial}不变，比较等量点两侧；随后重置回原题。`,sceneTip:m.conclusion,generationStages:stages('核对温度、浓度、体积与所问','计算理论中和与水电离平衡','绘制曲线和无色溶液示意')};}};
   const cooling={...shared,id:'kno3Cooling',menuTitle:'硝酸钾冷却结晶',menuMeta:'五点溶解度 · 析晶 · 质量守恒',stage:'溶解度与结晶',title:'硝酸钾：冷却结晶与质量守恒',defaults:[100,20],keywords:/硝酸钾|KNO3/i,
     params:[{label:'水质量 W',desc:'50–200g；不是溶液总质量',unit:'g',min:50,max:200,step:10,value:100},{label:'目标终温',desc:'只支持20、30、40、50、60°C',unit:'°C',min:20,max:60,step:10,value:20}],
+    // preciseParams narrows every step to the stated precision; the final temperature must stay on the five table points.
+    parameter:(param,index)=>index===1?{...param,step:10}:param,
     strict:{sameConditions:true,preciseParams:true,caps:[[50,200],[20,60]],fixedDefaults:coolingDefaults,intent:{require:[/硝酸钾|KNO3/i,/饱和/]},values:(s,t,c)=>Q.cooling(s,c),checkFixed:coolingIssue,
       // The complete grammar above validates every clause. The shared ask
       // scanner can include trailing givens after a question-first colon.

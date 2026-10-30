@@ -3651,9 +3651,17 @@
  },
  {
   "q": "初始盐酸体积为20mL，累计加入NaOH溶液体积为10mL，HCl与NaOH的浓度均为0.100mol/L，完全电离且体积可加且忽略活度，求理论恰好中和所需NaOH总体积、酸碱性、当前混合液pH。",
-  "expect": "ai",
-  "target": "hclNaohNeutralization",
-  "note": "缺温度"
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "hclNaohNeutralization",
+  "answer": {
+   "p1": 20,
+   "p2": 10,
+   "pH": 1.47712125472,
+   "nature": "酸性"
+  },
+  "show": ["未注明温度"],
+  "note": "10-30验收后：未写温度按常温25°C计算并在页面注明（原为缺温度转AI）"
  },
  {
   "q": "25°C，初始盐酸体积为20mL，累计加入NaOH溶液体积为10mL，HCl与NaOH的浓度均为0.2mol/L，完全电离且体积可加且忽略活度，求理论恰好中和所需NaOH总体积、酸碱性、当前混合液pH。",
@@ -3762,6 +3770,557 @@
   "expect": "ai",
   "target": "kno3Cooling",
   "note": "水质量精度超界"
+ },
+ {
+  "q": "两直角边分别为6cm和8cm，求斜边长。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "pythagoras",
+  "level": "junior",
+  "answer": {
+   "p1": 6,
+   "p2": 8,
+   "readout": "10 cm"
+  },
+  "note": "10-30公网验收：未写“条”和“直角三角形”的自然说法"
+ },
+ {
+  "q": "一个直角三角形的两条直角边分别是9cm和12cm，用面积拼图验证勾股定理。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "pythagoras",
+  "level": "junior",
+  "answer": {
+   "p1": 9,
+   "p2": 12
+  },
+  "show": ["两种无重叠终态"],
+  "note": "10-30公网验收：句尾“用面积拼图验证”问证明"
+ },
+ {
+  "q": "Rt△ABC中，两直角边长分别为6和8cm，利用勾股定理求斜边的长。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "pythagoras",
+  "level": "junior",
+  "answer": {
+   "p1": 6,
+   "p2": 8,
+   "readout": "10 cm"
+  },
+  "note": "10-30公网验收：单位只写一次、Rt△记号"
+ },
+ {
+  "q": "直角三角形两直角边分别为5cm和12cm，求斜边，并说明面积关系。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "pythagoras",
+  "level": "junior",
+  "answer": {
+   "p1": 5,
+   "p2": 12,
+   "readout": "13 cm"
+  },
+  "note": "10-30公网验收：“，并说明”复合所问"
+ },
+ {
+  "q": "两直角边分别为6和8，求斜边。",
+  "expect": "ai",
+  "target": "pythagoras",
+  "note": "10-30公网验收：两个数都没有单位，不默认cm"
+ },
+ {
+  "q": "两直角边分别为6cm和8cm，斜边为10cm，求斜边。",
+  "expect": "ai",
+  "target": "pythagoras",
+  "note": "10-30公网验收：多给斜边条件不能忽略"
+ },
+ {
+  "q": "单位圆中θ=150°，求sinθ、cosθ，并求点P的坐标。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "unitCircle",
+  "level": "senior",
+  "answer": {
+   "p1": 150,
+   "p2": 1,
+   "sin": 0.5
+  },
+  "show": ["−√3/2"],
+  "note": "10-30公网验收：“，并求”复合所问"
+ },
+ {
+  "q": "单位圆中，θ=30°，求sinθ，再判断象限。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "unitCircle",
+  "level": "senior",
+  "answer": {
+   "p1": 30,
+   "p2": 1,
+   "sin": 0.5
+  },
+  "note": "10-30公网验收：“再判断”复合所问"
+ },
+ {
+  "q": "单位圆中θ=150°，求sinθ，并求tanθ。",
+  "expect": "ai",
+  "target": "unitCircle",
+  "note": "10-30公网验收：复合所问里有不支持的量"
+ },
+ {
+  "q": "向20mL 0.100mol/L的盐酸中加入15mL 0.100mol/L的NaOH溶液，求混合液的pH。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "hclNaohNeutralization",
+  "answer": {
+   "p1": 20,
+   "p2": 15,
+   "pH": 1.84509804001,
+   "nature": "酸性"
+  },
+  "show": ["未注明温度"],
+  "note": "10-30公网验收：未写温度按常温25°C"
+ },
+ {
+  "q": "常温下，向20mL 0.1mol/L的盐酸中逐滴加入30mL 0.1mol/L的NaOH溶液，求混合液的pH，并判断酸碱性。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "hclNaohNeutralization",
+  "answer": {
+   "p1": 20,
+   "p2": 30,
+   "pH": 12.30102999566,
+   "nature": "碱性"
+  },
+  "note": "10-30公网验收：常温=25°C、逐滴加入、“，并判断”"
+ },
+ {
+  "q": "25°C，将20mL 0.1mol/L盐酸滴入30mL 0.1mol/L NaOH溶液中，求混合液的pH。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "hclNaohNeutralization",
+  "answer": {
+   "p1": 30,
+   "p2": 20,
+   "pH": 12.30102999566,
+   "nature": "碱性"
+  },
+  "show": ["碱液中加酸",
+   "累计加入HCl"],
+  "note": "10-30公网验收：盐酸滴入NaOH：初始为碱液，曲线按加酸"
+ },
+ {
+  "q": "向30mL 0.1mol/L NaOH溶液中滴加20mL 0.1mol/L盐酸，求pH和理论恰好中和所需盐酸的总体积。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "hclNaohNeutralization",
+  "answer": {
+   "p1": 30,
+   "p2": 20,
+   "pH": 12.30102999566
+  },
+  "show": ["累计加入 盐酸 30 mL"],
+  "note": "10-30公网验收：反向加液的理论等量问加入的盐酸"
+ },
+ {
+  "q": "室温下，初始NaOH溶液体积为20mL，累计加入盐酸体积为20.0001mL，HCl与NaOH的浓度均为0.100mol/L，判断酸碱性。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "hclNaohNeutralization",
+  "answer": {
+   "p1": 20,
+   "p2": 20.0001,
+   "pH": 6.545035287507,
+   "nature": "酸性"
+  },
+  "note": "10-30公网验收：反向等量点两侧不可舍入为中性"
+ },
+ {
+  "q": "向30mL 0.1mol/L NaOH溶液中滴加20mL 0.1mol/L盐酸，求理论恰好中和所需NaOH的总体积。",
+  "expect": "ai",
+  "target": "hclNaohNeutralization",
+  "note": "10-30公网验收：理论等量必须针对正在加入的溶液"
+ },
+ {
+  "q": "将20mL 0.1mol/L盐酸滴入30mL NaOH溶液中，求混合液的pH。",
+  "expect": "ai",
+  "target": "hclNaohNeutralization",
+  "note": "10-30公网验收：缺NaOH浓度，不补默认值"
+ },
+ {
+  "q": "25°C，初始盐酸体积为20mL，累计加入盐酸体积为10mL，HCl与NaOH的浓度均为0.100mol/L，求当前混合液pH。",
+  "expect": "ai",
+  "target": "hclNaohNeutralization",
+  "note": "10-30公网验收：初始与加入为同一种溶液，角色冲突"
+ },
+ {
+  "q": "室温下，将20mL 0.1mol/L盐酸与30mL 0.1mol/L NaOH溶液混合，求pH。",
+  "expect": "ai",
+  "target": "hclNaohNeutralization",
+  "note": "10-30公网验收：无加液方向的“混合”暂不建模"
+ },
+ {
+  "q": "20°C，向20mL 0.1mol/L的盐酸中加入30mL 0.1mol/L的NaOH溶液，求混合液的pH。",
+  "expect": "ai",
+  "target": "hclNaohNeutralization",
+  "note": "10-30公网验收：明确写出非25°C时不按常温"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为AA×AA，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "mendel",
+  "level": "junior",
+  "answer": {
+   "probabilityAA": 1,
+   "probabilityAa": 0,
+   "probabilityaa": 0,
+   "expectedAA": 400,
+   "expectedAa": 0,
+   "expectedaa": 0,
+   "dominantProbability": 1,
+   "recessiveProbability": 0
+  },
+  "show": [
+   "期望个数",
+   "本次模拟",
+   "非实测"
+  ],
+  "note": "E4：九种亲本组合的独立概率与期望"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为AA×Aa，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "mendel",
+  "level": "senior",
+  "answer": {
+   "probabilityAA": 0.5,
+   "probabilityAa": 0.5,
+   "probabilityaa": 0,
+   "expectedAA": 200.0,
+   "expectedAa": 200.0,
+   "expectedaa": 0,
+   "dominantProbability": 1,
+   "recessiveProbability": 0
+  },
+  "show": [
+   "期望个数",
+   "本次模拟",
+   "非实测"
+  ],
+  "note": "E4：九种亲本组合的独立概率与期望"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为AA×aa，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "mendel",
+  "level": "junior",
+  "answer": {
+   "probabilityAA": 0,
+   "probabilityAa": 1,
+   "probabilityaa": 0,
+   "expectedAA": 0,
+   "expectedAa": 400,
+   "expectedaa": 0,
+   "dominantProbability": 1,
+   "recessiveProbability": 0
+  },
+  "show": [
+   "期望个数",
+   "本次模拟",
+   "非实测"
+  ],
+  "note": "E4：九种亲本组合的独立概率与期望"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×AA，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "mendel",
+  "level": "senior",
+  "answer": {
+   "probabilityAA": 0.5,
+   "probabilityAa": 0.5,
+   "probabilityaa": 0,
+   "expectedAA": 200.0,
+   "expectedAa": 200.0,
+   "expectedaa": 0,
+   "dominantProbability": 1,
+   "recessiveProbability": 0
+  },
+  "show": [
+   "期望个数",
+   "本次模拟",
+   "非实测"
+  ],
+  "note": "E4：九种亲本组合的独立概率与期望"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "mendel",
+  "level": "junior",
+  "answer": {
+   "probabilityAA": 0.25,
+   "probabilityAa": 0.5,
+   "probabilityaa": 0.25,
+   "expectedAA": 100.0,
+   "expectedAa": 200.0,
+   "expectedaa": 100.0,
+   "dominantProbability": 0.75,
+   "recessiveProbability": 0.25
+  },
+  "show": [
+   "期望个数",
+   "本次模拟",
+   "非实测"
+  ],
+  "note": "E4：九种亲本组合的独立概率与期望"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×aa，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "mendel",
+  "level": "senior",
+  "answer": {
+   "probabilityAA": 0,
+   "probabilityAa": 0.5,
+   "probabilityaa": 0.5,
+   "expectedAA": 0,
+   "expectedAa": 200.0,
+   "expectedaa": 200.0,
+   "dominantProbability": 0.5,
+   "recessiveProbability": 0.5
+  },
+  "show": [
+   "期望个数",
+   "本次模拟",
+   "非实测"
+  ],
+  "note": "E4：九种亲本组合的独立概率与期望"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为aa×AA，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "mendel",
+  "level": "junior",
+  "answer": {
+   "probabilityAA": 0,
+   "probabilityAa": 1,
+   "probabilityaa": 0,
+   "expectedAA": 0,
+   "expectedAa": 400,
+   "expectedaa": 0,
+   "dominantProbability": 1,
+   "recessiveProbability": 0
+  },
+  "show": [
+   "期望个数",
+   "本次模拟",
+   "非实测"
+  ],
+  "note": "E4：九种亲本组合的独立概率与期望"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为aa×Aa，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "mendel",
+  "level": "senior",
+  "answer": {
+   "probabilityAA": 0,
+   "probabilityAa": 0.5,
+   "probabilityaa": 0.5,
+   "expectedAA": 0,
+   "expectedAa": 200.0,
+   "expectedaa": 200.0,
+   "dominantProbability": 0.5,
+   "recessiveProbability": 0.5
+  },
+  "show": [
+   "期望个数",
+   "本次模拟",
+   "非实测"
+  ],
+  "note": "E4：九种亲本组合的独立概率与期望"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为aa×aa，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "mendel",
+  "level": "junior",
+  "answer": {
+   "probabilityAA": 0,
+   "probabilityAa": 0,
+   "probabilityaa": 1,
+   "expectedAA": 0,
+   "expectedAa": 0,
+   "expectedaa": 400,
+   "dominantProbability": 0,
+   "recessiveProbability": 1
+  },
+  "show": [
+   "期望个数",
+   "本次模拟",
+   "非实测"
+  ],
+  "note": "E4：九种亲本组合的独立概率与期望"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为3个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "mendel",
+  "answer": {
+   "p1": 3,
+   "p2": 1,
+   "probabilityaa": 0.25,
+   "expectedAA": 0.75,
+   "expectedAa": 1.5,
+   "expectedaa": 0.75
+  },
+  "show": [
+   "期望允许小数"
+  ],
+  "note": "E4：整数边界、小数期望，种子不改变理论"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为1个，模拟种子为9999，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "mendel",
+  "answer": {
+   "p1": 1,
+   "p2": 9999,
+   "probabilityaa": 0.25,
+   "expectedAA": 0.25,
+   "expectedAa": 0.5,
+   "expectedaa": 0.25
+  },
+  "show": [
+   "期望允许小数"
+  ],
+  "note": "E4：整数边界、小数期望，种子不改变理论"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为2000个，模拟种子为42，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "mendel",
+  "answer": {
+   "p1": 2000,
+   "p2": 42,
+   "probabilityaa": 0.25,
+   "expectedAA": 500.0,
+   "expectedAa": 1000.0,
+   "expectedaa": 500.0
+  },
+  "show": [
+   "期望允许小数"
+  ],
+  "note": "E4：整数边界、小数期望，种子不改变理论"
+ },
+ {
+  "q": "一对性染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "ai",
+  "target": "mendel",
+  "note": "E4：伴性不套常染色体"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a不完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "ai",
+  "target": "mendel",
+  "note": "E4：不完全显性拒绝"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，后代独立且无选择差异，亲本为Aa×Aa，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "ai",
+  "target": "mendel",
+  "note": "E4：缺等概率随机结合"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，亲本为Aa×Aa，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "ai",
+  "target": "mendel",
+  "note": "E4：缺独立无选择"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。其中aa致死。",
+  "expect": "ai",
+  "target": "mendel",
+  "note": "E4：致死条件不可丢失"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。其中A基因使存活率降低。",
+  "expect": "ai",
+  "target": "mendel",
+  "note": "E4：附加选择不可丢失"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×未知，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "ai",
+  "target": "mendel",
+  "note": "E4：不反推亲本"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为400.1个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "ai",
+  "target": "mendel",
+  "note": "E4：后代数非整数"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为0个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "ai",
+  "target": "mendel",
+  "note": "E4：后代数下界"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为2001个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "ai",
+  "target": "mendel",
+  "note": "E4：后代数上界"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为400个，模拟种子为0，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "ai",
+  "target": "mendel",
+  "note": "E4：种子下界"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为400个，模拟种子为10000，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "ai",
+  "target": "mendel",
+  "note": "E4：种子上界"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为400个，求各基因型概率、各基因型期望个数、显隐性概率。",
+  "expect": "ai",
+  "target": "mendel",
+  "note": "E4：缺种子不暗补"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、患病概率。",
+  "expect": "ai",
+  "target": "mendel",
+  "note": "E4：健康状态不可推断"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为400个，模拟种子为1，求各基因型概率、各基因型期望个数、显隐性概率。后代数为20个。",
+  "expect": "ai",
+  "target": "mendel",
+  "note": "E4：重复条件拒绝"
+ },
+ {
+  "q": "一对常染色体等位基因A和a，A对a完全显性，配子等概率且随机受精，后代独立且无选择差异，亲本为Aa×Aa，后代数为400个，模拟种子为1，求各基因型概率、各基因型实际必然个数、显隐性概率。",
+  "expect": "ai",
+  "target": "mendel",
+  "note": "E4：期望不是必然数量"
  }
-
 ]
