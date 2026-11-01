@@ -3,7 +3,7 @@
 .generic-physics-stage:has(.biology-photosynthesis-scene){position:relative;inset:auto}
 .generic-physics-lab:has(.biology-photosynthesis-scene){position:relative;inset:auto;display:block;margin:18px;padding:0;border:0;border-radius:0;background:none;box-shadow:none}
 .generic-physics-visual:has(.biology-photosynthesis-scene){height:auto;overflow:visible;border:0;border-radius:0;background:none;box-shadow:none}
-.experiment-card:has(.biology-photosynthesis-scene) #sceneFullscreenButton,.experiment-card:has(.biology-photosynthesis-scene) .parameters{display:none!important}
+.experiment-card:has(.scene.subject-generic-physics .biology-photosynthesis-scene) #sceneFullscreenButton,.experiment-card:has(.scene.subject-generic-physics .biology-photosynthesis-scene) .parameters{display:none!important}
 .biology-photosynthesis-scene{min-width:0;color:var(--ink);font-size:14px;line-height:1.75;overflow-wrap:anywhere}
 .photo-heading{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .photo-heading h3{margin:0;font-size:19px}.photo-heading>span,.photo-note,.photo-caption{color:var(--muted);font-size:13px}
