@@ -24,6 +24,24 @@
 
 新增 `biology-photosynthesis-core.js`（固定流程/确定性帧）、`biology-photosynthesis.js`（严格解析/登记/场景）、局部CSS。app仅增加步骤导航与菜单组；复用原场景上方的播放、暂停、进度、重置及全屏。六个步骤按钮只移动同一时间轴，不增第二播放器或动画循环。
 
+| 路径 | 实际改动范围 |
+| --- | --- |
+| `web/biology-photosynthesis-core.js` | 六步、器材与可逆的定性状态帧；不包含速率、产量或随机数模型 |
+| `web/biology-photosynthesis.js` | 独立模板登记、全题严格解析、受检模式、教材步骤/解释、原创SVG与当前步骤导师上下文 |
+| `web/biology-photosynthesis.css` | 仅本实验的六步、器材与窄屏布局；锁定参数/重复全屏入口仅在本实验为当前活动场景时隐藏 |
+| `web/app.js` | 六步按钮复用时间轴、植物生理菜单组、已有导师currentStep字段和固定参数实验的挑战文案；不增加协议 |
+| `web/index.html` | 新模块与局部样式引用、资源版本、初中菜单入口 |
+| `web/announcements.json` | 真实新增内容与维护事项，不声称已部署或全部回归全绿 |
+| `server/package.json` | 增加模型与本地浏览器专项入口 |
+| `server/eval/local-template-bank.json` | 仅追加14题，保留原467题的内容与格式 |
+| `server/test/biology-photosynthesis.test.js` | 31项独立顺序/现象/严格解析/恢复反例测试 |
+| `server/test/week2-framework.test.js` | 测试沙箱加载新模块，保留旧断言 |
+| `server/scripts/verify-photosynthesis-browser.js` | 六步交互、四视口与全屏、分享/收藏/导师/实际BFCache及独立浏览器专项 |
+| `server/scripts/verify-animation-browser.js` | 加载新资源并增加实际前后台切换用例 |
+| `server/scripts/verify-tutor-browser.js` | 本地资源白名单增加新模块，不改已有导师断言 |
+| `server/scripts/verify-share-browser.js` | 保留原失败记录后，按现有等待页隐藏按钮契约补测；公开复制边界仍必须拒绝未生成实验，其余断言保留 |
+| `docs/photosynthesis-textbook.md`、`docs/photosynthesis-evidence/` | 教材定位、简化边界与精选脱敏证据；不含教材原PDF、原页和原始日志 |
+
 教材没有给出光强、产量、浴温、照射的精确小时数或速率公式，因此不虚构滑块、定量产量或动力学。原壳层的两个参数位锁定为内部固定标识并隐藏；它们不代表生物量。播放时间仅压缩展示操作顺序，一昼夜、几小时和稍停片刻保留原有定性时间口径。
 
 预设完整写明教材流程。仅接受该固定实验的步骤、现象、结论、操作目的及其组合；完整解析全题，不按“光合作用”关键词默认补条件。拒绝缺暗处理、单面遮光、整叶遮光、直接加热酒精、错序、氧气检验、二氧化碳变量、温度/光强/速率/淀粉质量等其他条件或子问。非法新题保留当前实验，新题导师不得借旧题答案。

@@ -86,9 +86,12 @@ try {
     localStorage.setItem('share-test-chat', 'keep-chat');
   });
   const stored = await receiver.evaluate(() => ({ ...localStorage }));
-  await sender.locator('#shareButton').click();
+  // Current waiting-page UI hides experiment actions. Verify that UI contract and
+  // still exercise the public copy boundary rather than clicking a hidden button.
+  assert.equal(await sender.locator('#shareButton').isVisible(), false);
+  await sender.evaluate(() => MasterLabShare.copy());
   assert.equal(await sender.evaluate(() => __shareCopies.length), 0);
-  mark('uncreated experiment cannot be shared');
+  mark('waiting page hides sharing and uncreated experiment cannot be shared');
   // Exercise real generation and copy controls once; the bank below skips only the cosmetic overlay.
   await sender.locator('#questionInput').fill('汽车以20m/s的初速度行驶，刹车加速度大小为5m/s²，求停止距离。');
   await sender.locator('#generateButton').click();
