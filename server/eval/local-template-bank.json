@@ -928,8 +928,16 @@
   "q": "将 5.6g 铁粉加入足量硫酸铜溶液中，充分反应后生成铜多少克？",
   "expect": "local",
   "kind": "chemistry",
-  "answer": {"cuMass": 6.4, "p1": 5.6, "level": "senior", "excess": "cuso4"},
-  "show": ["n(Fe) = m/M = 5.6 g ÷ 56 g/mol = 0.10 mol", "m(Cu) = n·M = 0.10 mol × 64 g/mol = 6.4 g"],
+  "answer": {
+   "cuMass": 6.4,
+   "p1": 5.6,
+   "level": "senior",
+   "excess": "cuso4"
+  },
+  "show": [
+   "n(Fe) = m/M = 5.6 g ÷ 56 g/mol = 0.10 mol",
+   "m(Cu) = n·M = 0.10 mol × 64 g/mol = 6.4 g"
+  ],
   "note": "足量（第 2 周起本地处理）：按铁计算；题目没写学段，跟随全局学段（高中）"
  },
  {
@@ -1020,7 +1028,11 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "linearSystem",
-  "answer": {"solX": 2, "solY": 1, "solutionKind": "unique"},
+  "answer": {
+   "solX": 2,
+   "solY": 1,
+   "solutionKind": "unique"
+  },
   "note": "方程组（第 2 周新增模板，原为转 AI）"
  },
  {
@@ -1028,8 +1040,15 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "quadratic",
-  "answer": {"vertexX": 2, "vertexY": -1, "delta": 4},
-  "show": ["(1, 0)", "(3, 0)"],
+  "answer": {
+   "vertexX": 2,
+   "vertexY": -1,
+   "delta": 4
+  },
+  "show": [
+   "(1, 0)",
+   "(3, 0)"
+  ],
   "note": "顶点与交点（第 2 周新增模板，原为转 AI）"
  },
  {
@@ -1933,8 +1952,14 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "parallelCircuit",
-  "answer": {"p1": 0.1234, "p2": 3.2},
-  "show": ["0.1234", "6.1234"],
+  "answer": {
+   "p1": 0.1234,
+   "p2": 3.2
+  },
+  "show": [
+   "0.1234",
+   "6.1234"
+  ],
   "note": "保留四位小数输入与滑块精度"
  },
  {
@@ -1942,8 +1967,15 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "planeMirror",
-  "answer": {"p1": 12.1234, "p2": 2.5, "imageDistance": 12.1234, "imageHeight": 2.5},
-  "show": ["12.1234"],
+  "answer": {
+   "p1": 12.1234,
+   "p2": 2.5,
+   "imageDistance": 12.1234,
+   "imageHeight": 2.5
+  },
+  "show": [
+   "12.1234"
+  ],
   "note": "提取条件不能缩短原始小数"
  },
  {
@@ -1970,9 +2002,19 @@
   "kind": "extra",
   "templateId": "friction",
   "level": "junior",
-  "answer": {"p1": 10, "p2": 1, "level": "junior"},
-  "show": ["接触面为木板", "f = F拉"],
-  "hide": ["μ", "动摩擦因数"],
+  "answer": {
+   "p1": 10,
+   "p2": 1,
+   "level": "junior"
+  },
+  "show": [
+   "接触面为木板",
+   "f = F拉"
+  ],
+  "hide": [
+   "μ",
+   "动摩擦因数"
+  ],
   "note": "初中探究预设：只讲影响因素与二力平衡，不出现 μ"
  },
  {
@@ -1980,8 +2022,12 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "friction",
-  "answer": {"level": "junior"},
-  "hide": ["μ"],
+  "answer": {
+   "level": "junior"
+  },
+  "hide": [
+   "μ"
+  ],
   "mapped": "用弹簧测力计沿水平方向拉着木块在长木板上做匀速直线运动，探究滑动摩擦力的大小与压力大小、接触面粗糙程度的关系。",
   "mappedAccepted": true,
   "note": "高中学段下输入初中探究题：照常生成初中讲法（题型不受学段限制）"
@@ -1992,7 +2038,9 @@
   "kind": "extra",
   "templateId": "friction",
   "level": "junior",
-  "answer": {"level": "junior"},
+  "answer": {
+   "level": "junior"
+  },
   "note": "教材实验名称"
  },
  {
@@ -2001,7 +2049,9 @@
   "kind": "extra",
   "templateId": "friction",
   "level": "junior",
-  "answer": {"level": "junior"},
+  "answer": {
+   "level": "junior"
+  },
   "note": "只问一个因素"
  },
  {
@@ -2010,8 +2060,15 @@
   "kind": "extra",
   "templateId": "friction",
   "level": "junior",
-  "answer": {"p1": 10, "p2": 0.3, "force": 3, "level": "senior"},
-  "show": ["f = μF压"],
+  "answer": {
+   "p1": 10,
+   "p2": 0.3,
+   "force": 3,
+   "level": "senior"
+  },
+  "show": [
+   "f = μF压"
+  ],
   "note": "初中学段下输入高中题：照常按 f = μF压 生成，标“高中内容”"
  },
  {
@@ -2019,7 +2076,10 @@
   "expect": "local",
   "kind": "brake",
   "level": "junior",
-  "answer": {"stopDistance": 40, "v0": 20},
+  "answer": {
+   "stopDistance": 40,
+   "v0": 20
+  },
   "note": "初中学段下输入高中题：不受学段限制"
  },
  {
@@ -2070,8 +2130,13 @@
   "q": "观察动物细胞的结构示意图，说出线粒体的功能。",
   "expect": "local",
   "kind": "biology",
-  "answer": {"cellType": "animal", "cellLevel": "senior"},
-  "show": ["与高等植物细胞相比：有中心体，无细胞壁、叶绿体和大液泡"],
+  "answer": {
+   "cellType": "animal",
+   "cellLevel": "senior"
+  },
+  "show": [
+   "与高等植物细胞相比：有中心体，无细胞壁、叶绿体和大液泡"
+  ],
   "note": "题目没写学段：跟随全局学段（高中）"
  },
  {
@@ -2079,16 +2144,26 @@
   "expect": "local",
   "kind": "biology",
   "level": "junior",
-  "answer": {"cellType": "animal", "cellLevel": "junior"},
-  "show": ["动物细胞没有细胞壁、叶绿体和液泡"],
+  "answer": {
+   "cellType": "animal",
+   "cellLevel": "junior"
+  },
+  "show": [
+   "动物细胞没有细胞壁、叶绿体和液泡"
+  ],
   "note": "题目没写学段：跟随全局学段（初中）"
  },
  {
   "q": "七年级生物：观察植物细胞结构示意图，说出叶绿体的功能。",
   "expect": "local",
   "kind": "biology",
-  "answer": {"cellType": "plant", "cellLevel": "junior"},
-  "show": ["植物细胞有细胞壁、叶绿体和液泡，动物细胞没有"],
+  "answer": {
+   "cellType": "plant",
+   "cellLevel": "junior"
+  },
+  "show": [
+   "植物细胞有细胞壁、叶绿体和液泡，动物细胞没有"
+  ],
   "note": "题目写明七年级：按初中讲法，不跟随全局学段（高中）"
  },
  {
@@ -2096,8 +2171,13 @@
   "expect": "local",
   "kind": "biology",
   "level": "junior",
-  "answer": {"cellType": "animal", "cellLevel": "senior"},
-  "show": ["内质网"],
+  "answer": {
+   "cellType": "animal",
+   "cellLevel": "senior"
+  },
+  "show": [
+   "内质网"
+  ],
   "note": "初中学段下：题目写明电子显微镜，按高中讲法"
  },
  {
@@ -2106,9 +2186,27 @@
   "kind": "extra",
   "templateId": "quadratic",
   "level": "junior",
-  "answer": {"p1": -4, "p2": 3, "a": 1, "vertexX": 2, "vertexY": -1, "delta": 4, "level": "junior"},
-  "show": ["顶点 (2, −1)", "x = 2", "(1, 0)", "(3, 0)", "(0, 3)", "y = (x − 2)² − 1"],
-  "hide": ["导数", "零点"],
+  "answer": {
+   "p1": -4,
+   "p2": 3,
+   "a": 1,
+   "vertexX": 2,
+   "vertexY": -1,
+   "delta": 4,
+   "level": "junior"
+  },
+  "show": [
+   "顶点 (2, −1)",
+   "x = 2",
+   "(1, 0)",
+   "(3, 0)",
+   "(0, 3)",
+   "y = (x − 2)² − 1"
+  ],
+  "hide": [
+   "导数",
+   "零点"
+  ],
   "note": "二次函数初中预设：配方法求顶点、增减性、与坐标轴交点"
  },
  {
@@ -2116,8 +2214,18 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "quadratic",
-  "answer": {"p1": -4, "p2": 3, "vertexY": -1, "level": "senior"},
-  "show": ["(−∞, 2]", "[2, +∞)", "最小值", "零点"],
+  "answer": {
+   "p1": -4,
+   "p2": 3,
+   "vertexY": -1,
+   "level": "senior"
+  },
+  "show": [
+   "(−∞, 2]",
+   "[2, +∞)",
+   "最小值",
+   "零点"
+  ],
   "note": "二次函数高中预设：f(x)、单调区间、零点"
  },
  {
@@ -2125,8 +2233,19 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "quadratic",
-  "answer": {"a": -1, "p1": 2, "p2": 3, "vertexX": 1, "vertexY": 4, "level": "senior"},
-  "show": ["(1, 4)", "x = 1", "开口向下"],
+  "answer": {
+   "a": -1,
+   "p1": 2,
+   "p2": 3,
+   "vertexX": 1,
+   "vertexY": 4,
+   "level": "senior"
+  },
+  "show": [
+   "(1, 4)",
+   "x = 1",
+   "开口向下"
+  ],
   "note": "题目没写学段：跟随全局学段（高中）"
  },
  {
@@ -2135,9 +2254,18 @@
   "kind": "extra",
   "templateId": "quadratic",
   "level": "junior",
-  "answer": {"vertexX": 1, "vertexY": 4, "level": "junior"},
-  "show": ["(1, 4)"],
-  "hide": ["零点", "单调"],
+  "answer": {
+   "vertexX": 1,
+   "vertexY": 4,
+   "level": "junior"
+  },
+  "show": [
+   "(1, 4)"
+  ],
+  "hide": [
+   "零点",
+   "单调"
+  ],
   "note": "题目没写学段：跟随全局学段（初中）"
  },
  {
@@ -2145,8 +2273,18 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "quadratic",
-  "answer": {"a": 2, "p1": -8, "p2": 6, "vertexX": 2, "vertexY": -2, "delta": 16},
-  "show": ["(1, 0)", "(3, 0)"],
+  "answer": {
+   "a": 2,
+   "p1": -8,
+   "p2": 6,
+   "vertexX": 2,
+   "vertexY": -2,
+   "delta": 16
+  },
+  "show": [
+   "(1, 0)",
+   "(3, 0)"
+  ],
   "note": "a ≠ 1"
  },
  {
@@ -2154,8 +2292,15 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "quadratic",
-  "answer": {"delta": 0, "vertexX": -1, "vertexY": 0},
-  "show": ["Δ = 0", "(−1, 0)"],
+  "answer": {
+   "delta": 0,
+   "vertexX": -1,
+   "vertexY": 0
+  },
+  "show": [
+   "Δ = 0",
+   "(−1, 0)"
+  ],
   "note": "Δ = 0：顶点在 x 轴上"
  },
  {
@@ -2163,8 +2308,15 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "quadratic",
-  "answer": {"delta": -3, "vertexX": -0.5, "vertexY": 0.75},
-  "show": ["Δ = −3 < 0", "没有交点"],
+  "answer": {
+   "delta": -3,
+   "vertexX": -0.5,
+   "vertexY": 0.75
+  },
+  "show": [
+   "Δ = −3 < 0",
+   "没有交点"
+  ],
   "note": "Δ < 0：与 x 轴没有交点"
  },
  {
@@ -2172,8 +2324,18 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "quadratic",
-  "answer": {"vertexX": 1, "vertexY": -2, "delta": 8, "rootsText": "1 ± √2"},
-  "show": ["1 + √2", "1 − √2", "≈ 2.414", "≈ −0.414"],
+  "answer": {
+   "vertexX": 1,
+   "vertexY": -2,
+   "delta": 8,
+   "rootsText": "1 ± √2"
+  },
+  "show": [
+   "1 + √2",
+   "1 − √2",
+   "≈ 2.414",
+   "≈ −0.414"
+  ],
   "note": "无理根：写根式和近似值"
  },
  {
@@ -2181,8 +2343,17 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "quadratic",
-  "answer": {"a": 0.5, "p1": -2, "p2": 1, "vertexX": 2, "vertexY": -1},
-  "show": ["开口向上", "最小值"],
+  "answer": {
+   "a": 0.5,
+   "p1": -2,
+   "p2": 1,
+   "vertexX": 2,
+   "vertexY": -1
+  },
+  "show": [
+   "开口向上",
+   "最小值"
+  ],
   "note": "小数系数"
  },
  {
@@ -2190,8 +2361,13 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "quadratic",
-  "answer": {"vertexX": 3, "level": "junior"},
-  "show": ["当 x < 3 时，y 随 x 的增大而减小"],
+  "answer": {
+   "vertexX": 3,
+   "level": "junior"
+  },
+  "show": [
+   "当 x < 3 时，y 随 x 的增大而减小"
+  ],
   "note": "增减性（初中说法，锁定初中讲法）"
  },
  {
@@ -2199,8 +2375,18 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "quadratic",
-  "answer": {"a": -1, "p1": 4, "p2": 0, "vertexX": 2, "vertexY": 4, "level": "senior"},
-  "show": ["(−∞, 2]", "最大值"],
+  "answer": {
+   "a": -1,
+   "p1": 4,
+   "p2": 0,
+   "vertexX": 2,
+   "vertexY": 4,
+   "level": "senior"
+  },
+  "show": [
+   "(−∞, 2]",
+   "最大值"
+  ],
   "note": "c = 0：与 y 轴交点也是零点"
  },
  {
@@ -2208,15 +2394,23 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "quadratic",
-  "answer": {"vertexY": -1, "level": "senior"},
-  "show": ["[−1, +∞)"],
+  "answer": {
+   "vertexY": -1,
+   "level": "senior"
+  },
+  "show": [
+   "[−1, +∞)"
+  ],
   "note": "值域（高中说法）"
  },
  {
   "q": "二次函数 y = x² − 4x + 3 的图像在点 (1, 0) 处的切线斜率是多少？",
   "expect": "local",
   "kind": "math",
-  "answer": {"slope": -2, "x": 1},
+  "answer": {
+   "slope": -2,
+   "x": 1
+  },
   "note": "含“切线、斜率”走切线模板"
  },
  {
@@ -2224,7 +2418,10 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "quadratic",
-  "answer": {"vertexX": 2, "vertexY": -1},
+  "answer": {
+   "vertexX": 2,
+   "vertexY": -1
+  },
   "mapped": "二次函数 y = x² − 4x + 3，求图像的顶点坐标。",
   "mappedAccepted": true,
   "note": "条件一致的 AI 改写可以通过原题核对"
@@ -2320,8 +2517,20 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "linearSystem",
-  "answer": {"p1": 5, "p2": 1, "solutionKind": "unique", "solX": 2, "solY": 1, "level": "junior"},
-  "show": ["x = 2", "y = 1", "(2, 1)", "① + ②"],
+  "answer": {
+   "p1": 5,
+   "p2": 1,
+   "solutionKind": "unique",
+   "solX": 2,
+   "solY": 1,
+   "level": "junior"
+  },
+  "show": [
+   "x = 2",
+   "y = 1",
+   "(2, 1)",
+   "① + ②"
+  ],
   "note": "方程组预设：加减消元，解是两直线的交点"
  },
  {
@@ -2329,8 +2538,14 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "linearSystem",
-  "answer": {"solutionKind": "unique", "solX": 2, "solY": 3},
-  "show": ["(2, 3)"],
+  "answer": {
+   "solutionKind": "unique",
+   "solX": 2,
+   "solY": 3
+  },
+  "show": [
+   "(2, 3)"
+  ],
   "note": "斜截式两直线"
  },
  {
@@ -2338,8 +2553,14 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "linearSystem",
-  "answer": {"solX": 2, "solY": 0.5},
-  "show": ["x = 2", "y = 1/2"],
+  "answer": {
+   "solX": 2,
+   "solY": 0.5
+  },
+  "show": [
+   "x = 2",
+   "y = 1/2"
+  ],
   "note": "解是分数"
  },
  {
@@ -2347,8 +2568,14 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "linearSystem",
-  "answer": {"solX": 1.5, "solY": -0.5},
-  "show": ["x = 3/2", "y = −1/2"],
+  "answer": {
+   "solX": 1.5,
+   "solY": -0.5
+  },
+  "show": [
+   "x = 3/2",
+   "y = −1/2"
+  ],
   "note": "两个解都是分数"
  },
  {
@@ -2356,8 +2583,13 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "linearSystem",
-  "answer": {"solutionKind": "none"},
-  "show": ["无解", "平行"],
+  "answer": {
+   "solutionKind": "none"
+  },
+  "show": [
+   "无解",
+   "平行"
+  ],
   "note": "两直线平行：无解"
  },
  {
@@ -2365,8 +2597,13 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "linearSystem",
-  "answer": {"solutionKind": "infinite"},
-  "show": ["无数组解", "重合"],
+  "answer": {
+   "solutionKind": "infinite"
+  },
+  "show": [
+   "无数组解",
+   "重合"
+  ],
   "note": "两直线重合：无数组解"
  },
  {
@@ -2374,8 +2611,13 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "linearSystem",
-  "answer": {"solX": 2, "solY": 3},
-  "show": ["y = 3"],
+  "answer": {
+   "solX": 2,
+   "solY": 3
+  },
+  "show": [
+   "y = 3"
+  ],
   "note": "其中一条是竖直直线 x = 2"
  },
  {
@@ -2383,7 +2625,10 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "linearSystem",
-  "answer": {"solX": 2, "solY": 1},
+  "answer": {
+   "solX": 2,
+   "solY": 1
+  },
   "note": "小数系数"
  },
  {
@@ -2391,9 +2636,14 @@
   "expect": "local",
   "kind": "extra",
   "templateId": "linearSystem",
-  "answer": {"solX": 2, "solY": 1},
+  "answer": {
+   "solX": 2,
+   "solY": 1
+  },
   "level": "senior",
-  "show": ["初中内容"],
+  "show": [
+   "初中内容"
+  ],
   "note": "高中学段下照常生成，标“初中内容”"
  },
  {
@@ -2481,9 +2731,21 @@
   "expect": "local",
   "kind": "chemistry",
   "level": "junior",
-  "answer": {"cuMass": 6.4, "p1": 5.6, "level": "junior", "excess": "cuso4"},
-  "show": ["设生成铜的质量为 x", "56/64 = 5.6g/x", "答：生成铜的质量为 6.4 g"],
-  "hide": ["mol", "物质的量"],
+  "answer": {
+   "cuMass": 6.4,
+   "p1": 5.6,
+   "level": "junior",
+   "excess": "cuso4"
+  },
+  "show": [
+   "设生成铜的质量为 x",
+   "56/64 = 5.6g/x",
+   "答：生成铜的质量为 6.4 g"
+  ],
+  "hide": [
+   "mol",
+   "物质的量"
+  ],
   "note": "初中预设：足量，按质量比列比例式，不出现物质的量"
  },
  {
@@ -2491,9 +2753,19 @@
   "expect": "local",
   "kind": "chemistry",
   "level": "junior",
-  "answer": {"cuMass": 6.4, "p2": 16, "excess": "fe"},
-  "show": ["设生成铜的质量为 x", "160/64 = 16g/x", "答：生成铜的质量为 6.4 g"],
-  "hide": ["mol"],
+  "answer": {
+   "cuMass": 6.4,
+   "p2": 16,
+   "excess": "fe"
+  },
+  "show": [
+   "设生成铜的质量为 x",
+   "160/64 = 16g/x",
+   "答：生成铜的质量为 6.4 g"
+  ],
+  "hide": [
+   "mol"
+  ],
   "note": "铁粉足量：按硫酸铜计算"
  },
  {
@@ -2501,9 +2773,21 @@
   "expect": "local",
   "kind": "chemistry",
   "level": "junior",
-  "answer": {"cuMass": 6.4, "p1": 8.4, "p2": 16, "limiting": "CuSO₄", "level": "junior"},
-  "show": ["铁过量", "答：生成铜的质量为 6.4 g", "剩余铁 2.8 g"],
-  "hide": ["mol"],
+  "answer": {
+   "cuMass": 6.4,
+   "p1": 8.4,
+   "p2": 16,
+   "limiting": "CuSO₄",
+   "level": "junior"
+  },
+  "show": [
+   "铁过量",
+   "答：生成铜的质量为 6.4 g",
+   "剩余铁 2.8 g"
+  ],
+  "hide": [
+   "mol"
+  ],
   "note": "两种反应物都给出质量：初中按质量比判断哪种过量"
  },
  {
@@ -2511,8 +2795,13 @@
   "expect": "local",
   "kind": "chemistry",
   "level": "junior",
-  "answer": {"cuMass": 6.4, "limiting": "恰好完全反应"},
-  "show": ["恰好完全反应"],
+  "answer": {
+   "cuMass": 6.4,
+   "limiting": "恰好完全反应"
+  },
+  "show": [
+   "恰好完全反应"
+  ],
   "note": "恰好完全反应"
  },
  {
@@ -2520,8 +2809,13 @@
   "expect": "local",
   "kind": "chemistry",
   "level": "junior",
-  "answer": {"cuMol": 0.1, "level": "senior"},
-  "show": ["n(Fe) = m/M"],
+  "answer": {
+   "cuMol": 0.1,
+   "level": "senior"
+  },
+  "show": [
+   "n(Fe) = m/M"
+  ],
   "note": "初中学段下输入含物质的量的题：照常按高中讲法，标“高中内容”"
  },
  {
@@ -2529,7 +2823,9 @@
   "expect": "local",
   "kind": "chemistry",
   "level": "junior",
-  "answer": {"cuMass": 6.4},
+  "answer": {
+   "cuMass": 6.4
+  },
   "note": "题目附带的相对原子质量与模板一致"
  },
  {
@@ -2537,8 +2833,12 @@
   "expect": "local",
   "kind": "chemistry",
   "level": "junior",
-  "answer": {"cuMass": 12.8},
-  "show": ["32 g"],
+  "answer": {
+   "cuMass": 12.8
+  },
+  "show": [
+   "32 g"
+  ],
   "note": "问参加反应的硫酸铜"
  },
  {
@@ -3660,7 +3960,9 @@
    "pH": 1.47712125472,
    "nature": "酸性"
   },
-  "show": ["未注明温度"],
+  "show": [
+   "未注明温度"
+  ],
   "note": "10-30验收后：未写温度按常温25°C计算并在页面注明（原为缺温度转AI）"
  },
  {
@@ -3794,7 +4096,9 @@
    "p1": 9,
    "p2": 12
   },
-  "show": ["两种无重叠终态"],
+  "show": [
+   "两种无重叠终态"
+  ],
   "note": "10-30公网验收：句尾“用面积拼图验证”问证明"
  },
  {
@@ -3846,7 +4150,9 @@
    "p2": 1,
    "sin": 0.5
   },
-  "show": ["−√3/2"],
+  "show": [
+   "−√3/2"
+  ],
   "note": "10-30公网验收：“，并求”复合所问"
  },
  {
@@ -3879,7 +4185,9 @@
    "pH": 1.84509804001,
    "nature": "酸性"
   },
-  "show": ["未注明温度"],
+  "show": [
+   "未注明温度"
+  ],
   "note": "10-30公网验收：未写温度按常温25°C"
  },
  {
@@ -3906,8 +4214,10 @@
    "pH": 12.30102999566,
    "nature": "碱性"
   },
-  "show": ["碱液中加酸",
-   "累计加入HCl"],
+  "show": [
+   "碱液中加酸",
+   "累计加入HCl"
+  ],
   "note": "10-30公网验收：盐酸滴入NaOH：初始为碱液，曲线按加酸"
  },
  {
@@ -3920,7 +4230,9 @@
    "p2": 20,
    "pH": 12.30102999566
   },
-  "show": ["累计加入 盐酸 30 mL"],
+  "show": [
+   "累计加入 盐酸 30 mL"
+  ],
   "note": "10-30公网验收：反向加液的理论等量问加入的盐酸"
  },
  {
@@ -3999,8 +4311,8 @@
    "probabilityAA": 0.5,
    "probabilityAa": 0.5,
    "probabilityaa": 0,
-   "expectedAA": 200.0,
-   "expectedAa": 200.0,
+   "expectedAA": 200,
+   "expectedAa": 200,
    "expectedaa": 0,
    "dominantProbability": 1,
    "recessiveProbability": 0
@@ -4045,8 +4357,8 @@
    "probabilityAA": 0.5,
    "probabilityAa": 0.5,
    "probabilityaa": 0,
-   "expectedAA": 200.0,
-   "expectedAa": 200.0,
+   "expectedAA": 200,
+   "expectedAa": 200,
    "expectedaa": 0,
    "dominantProbability": 1,
    "recessiveProbability": 0
@@ -4068,9 +4380,9 @@
    "probabilityAA": 0.25,
    "probabilityAa": 0.5,
    "probabilityaa": 0.25,
-   "expectedAA": 100.0,
-   "expectedAa": 200.0,
-   "expectedaa": 100.0,
+   "expectedAA": 100,
+   "expectedAa": 200,
+   "expectedaa": 100,
    "dominantProbability": 0.75,
    "recessiveProbability": 0.25
   },
@@ -4092,8 +4404,8 @@
    "probabilityAa": 0.5,
    "probabilityaa": 0.5,
    "expectedAA": 0,
-   "expectedAa": 200.0,
-   "expectedaa": 200.0,
+   "expectedAa": 200,
+   "expectedaa": 200,
    "dominantProbability": 0.5,
    "recessiveProbability": 0.5
   },
@@ -4138,8 +4450,8 @@
    "probabilityAa": 0.5,
    "probabilityaa": 0.5,
    "expectedAA": 0,
-   "expectedAa": 200.0,
-   "expectedaa": 200.0,
+   "expectedAa": 200,
+   "expectedaa": 200,
    "dominantProbability": 0.5,
    "recessiveProbability": 0.5
   },
@@ -4218,9 +4530,9 @@
    "p1": 2000,
    "p2": 42,
    "probabilityaa": 0.25,
-   "expectedAA": 500.0,
-   "expectedAa": 1000.0,
-   "expectedaa": 500.0
+   "expectedAA": 500,
+   "expectedAa": 1000,
+   "expectedaa": 500
   },
   "show": [
    "期望允许小数"
@@ -4322,5 +4634,144 @@
   "expect": "ai",
   "target": "mendel",
   "note": "E4：期望不是必然数量"
+ },
+ {
+  "q": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "photosynthesis",
+  "level": "junior",
+  "answer": {
+   "level": "junior"
+  },
+  "show": [
+   "定性对照实验",
+   "酒精",
+   "水浴"
+  ],
+  "note": "光合作用：固定教材流程与所问组合"
+ },
+ {
+  "q": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验现象。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "photosynthesis",
+  "level": "junior",
+  "answer": {
+   "level": "junior"
+  },
+  "show": [
+   "定性对照实验",
+   "酒精",
+   "水浴"
+  ],
+  "note": "光合作用：固定教材流程与所问组合"
+ },
+ {
+  "q": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明操作目的。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "photosynthesis",
+  "level": "junior",
+  "answer": {
+   "level": "junior"
+  },
+  "show": [
+   "定性对照实验",
+   "酒精",
+   "水浴"
+  ],
+  "note": "光合作用：固定教材流程与所问组合"
+ },
+ {
+  "q": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "photosynthesis",
+  "level": "junior",
+  "answer": {
+   "level": "junior"
+  },
+  "show": [
+   "定性对照实验",
+   "酒精",
+   "水浴"
+  ],
+  "note": "光合作用：固定教材流程与所问组合"
+ },
+ {
+  "q": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论、实验现象、操作目的、实验步骤。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "photosynthesis",
+  "level": "junior",
+  "answer": {
+   "level": "junior"
+  },
+  "show": [
+   "定性对照实验",
+   "酒精",
+   "水浴"
+  ],
+  "note": "光合作用：固定教材流程与所问组合"
+ },
+ {
+  "q": "说明实验结论、实验现象、操作目的、实验步骤：按人教版生物学七年级下册教材。探究绿叶在光下制造有机物。盆栽天竺葵先暗处理一昼夜。同一叶片用黑纸片从上下两面局部遮光。放在阳光下几小时后摘叶并移去黑纸片。酒精水浴脱色。清水漂洗后置于培养皿滴加碘液。稍停片刻用清水冲掉碘液再观察。",
+  "expect": "local",
+  "kind": "extra",
+  "templateId": "photosynthesis",
+  "level": "senior",
+  "answer": {
+   "level": "junior"
+  },
+  "note": "光合作用：问句前置仍按初中教材讲解"
+ },
+ {
+  "q": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一小时，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论、实验现象、操作目的、实验步骤。",
+  "expect": "ai",
+  "target": "photosynthesis",
+  "note": "光合作用：缺失、矛盾条件或范围外子问不暗补"
+ },
+ {
+  "q": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论、实验现象、操作目的、实验步骤。",
+  "expect": "ai",
+  "target": "photosynthesis",
+  "note": "光合作用：缺失、矛盾条件或范围外子问不暗补"
+ },
+ {
+  "q": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，直接加热酒精，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论、实验现象、操作目的、实验步骤。",
+  "expect": "ai",
+  "target": "photosynthesis",
+  "note": "光合作用：缺失、矛盾条件或范围外子问不暗补"
+ },
+ {
+  "q": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，不漂洗直接置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论、实验现象、操作目的、实验步骤。",
+  "expect": "ai",
+  "target": "photosynthesis",
+  "note": "光合作用：缺失、矛盾条件或范围外子问不暗补"
+ },
+ {
+  "q": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论、实验现象和淀粉质量、操作目的、实验步骤。",
+  "expect": "ai",
+  "target": "photosynthesis",
+  "note": "光合作用：缺失、矛盾条件或范围外子问不暗补"
+ },
+ {
+  "q": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论、实验现象、操作目的、实验步骤。二氧化碳浓度为0.04%。",
+  "expect": "ai",
+  "target": "photosynthesis",
+  "note": "光合作用：缺失、矛盾条件或范围外子问不暗补"
+ },
+ {
+  "q": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论、实验现象、操作目的、实验步骤。求氧气体积。",
+  "expect": "ai",
+  "target": "photosynthesis",
+  "note": "光合作用：缺失、矛盾条件或范围外子问不暗补"
+ },
+ {
+  "q": "探究光合作用，说明实验现象。",
+  "expect": "ai",
+  "target": "photosynthesis",
+  "note": "光合作用：缺失、矛盾条件或范围外子问不暗补"
  }
 ]

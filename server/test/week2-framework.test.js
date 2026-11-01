@@ -13,6 +13,7 @@ const unitCircleSource = await web('unit-circle.js');
 const chemistrySource = await web('chemistry-extra.js');
 const chemistryExperimentsSource = await web('chemistry-experiments.js');
 const equilibriaSources = await Promise.all(['chemistry-equilibria.js','chemistry-equilibria-questions.js','chemistry-equilibria-experiments.js'].map(web));
+const photosynthesisSources = await Promise.all(['biology-photosynthesis-core.js','biology-photosynthesis.js'].map(web));
 const mendelSources = await Promise.all(['biology-mendel-core.js','biology-mendel.js'].map(web));
 const html = await web('index.html');
 const app = await web('app.js');
@@ -29,6 +30,7 @@ function load() {
   vm.runInNewContext(chemistrySource, sandbox);
   vm.runInNewContext(chemistryExperimentsSource, sandbox);
   equilibriaSources.forEach(source=>vm.runInNewContext(source,sandbox));
+  photosynthesisSources.forEach(source=>vm.runInNewContext(source,sandbox));
   mendelSources.forEach(source=>vm.runInNewContext(source,sandbox));
   return { sandbox, errors };
 }

@@ -1,0 +1,32 @@
+.scene.subject-generic-physics:has(.biology-photosynthesis-scene){height:auto;min-height:0;background:var(--surface);box-shadow:none}
+.scene.subject-generic-physics:has(.biology-photosynthesis-scene)::before{content:none}
+.generic-physics-stage:has(.biology-photosynthesis-scene){position:relative;inset:auto}
+.generic-physics-lab:has(.biology-photosynthesis-scene){position:relative;inset:auto;display:block;margin:18px;padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+.generic-physics-visual:has(.biology-photosynthesis-scene){height:auto;overflow:visible;border:0;border-radius:0;background:none;box-shadow:none}
+.experiment-card:has(.biology-photosynthesis-scene) #sceneFullscreenButton,.experiment-card:has(.biology-photosynthesis-scene) .parameters{display:none!important}
+.biology-photosynthesis-scene{min-width:0;color:var(--ink);font-size:14px;line-height:1.75;overflow-wrap:anywhere}
+.photo-heading{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.photo-heading h3{margin:0;font-size:19px}.photo-heading>span,.photo-note,.photo-caption{color:var(--muted);font-size:13px}
+.photo-steps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:18px 0}
+.photo-steps button{min-height:64px;padding:8px 4px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--muted);font:inherit;font-size:12px;cursor:pointer}
+.photo-steps button span{display:block;font-weight:700;font-size:16px}.photo-steps button.active{background:#edf5ff;border-color:var(--blue);color:var(--blue)}
+.photo-steps button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.photo-stage-layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:center}
+.photo-illustration{min-width:0}.photo-illustration svg{display:block;width:100%;height:auto;overflow:visible}
+.photo-illustration svg text{font-family:inherit;font-size:17px;font-weight:400;fill:var(--ink);stroke:none}
+.photo-caption{margin:8px 0}.photo-explanation h4{font-size:17px;margin:0 0 10px}.photo-explanation p{margin:8px 0}
+.photo-purpose{padding-top:12px;border-top:1px solid var(--line);margin-top:16px}.photo-purpose strong{color:var(--blue)}
+[data-photo-observation]{padding-top:12px;color:var(--muted)}
+.photo-caution{padding:12px 0;color:#895c20;border-top:1px solid var(--line)}
+.biology-photosynthesis-scene summary{min-height:44px;cursor:pointer;color:var(--blue);padding:10px 0}
+.biology-photosynthesis-scene details{color:var(--muted);font-size:13px}
+.generic-physics-lab:has(.biology-photosynthesis-scene) .generic-physics-readout{min-width:0;margin-top:18px;padding:16px 0 0;border:0;border-top:1px solid var(--line);border-radius:0;background:none;box-shadow:none;overflow-wrap:anywhere}
+.generic-physics-lab:has(.biology-photosynthesis-scene) .stage-facts{grid-template-columns:minmax(0,1fr);gap:0}
+.generic-physics-lab:has(.biology-photosynthesis-scene) .stage-facts>div{grid-template-columns:100px minmax(0,1fr);padding:7px 0;border:0;border-radius:0;background:none;box-shadow:none}
+.experiment-card:is(:fullscreen,.immersive-mode) .scene.subject-generic-physics:has(.biology-photosynthesis-scene){flex:0 0 auto}
+@media(max-width:900px){.photo-stage-layout{grid-template-columns:minmax(0,1fr);gap:8px}.photo-steps{grid-template-columns:repeat(3,minmax(0,1fr))}.photo-illustration svg{max-height:370px}}
+@media(max-width:600px){.generic-physics-lab:has(.biology-photosynthesis-scene){margin:12px}.photo-heading h3{font-size:18px}.photo-steps button{font-size:13px}.photo-stage-layout{gap:4px}.photo-illustration svg text{font-size:18px}}
+
+.photo-illustration svg .photo-dark-label{fill:#fff}
+
+@media(max-width:600px){.photo-illustration svg text,.photo-illustration svg .photo-callout{display:none}.photo-caption{font-size:14px;line-height:1.7}}
