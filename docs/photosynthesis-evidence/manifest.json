@@ -1,0 +1,61 @@
+{
+  "sourceSha": "073b2a62512da325addb6b1f2c9aa7354cebb96c",
+  "sourceTree": "022cc18aaf4a302d1a5bd744cc03f56f76263473",
+  "images": [
+    {
+      "file": "waterbath-1366.png",
+      "sourceSha": "073b2a62512da325addb6b1f2c9aa7354cebb96c",
+      "viewportWidth": 1366,
+      "step": 4,
+      "pixels": [
+        930,
+        1065
+      ],
+      "sha256": "0a7c6c023c558eac6cb354225a7819b699a93a2381c4d5eb34f9a82ddf3d67e6"
+    },
+    {
+      "file": "observation-820.png",
+      "sourceSha": "073b2a62512da325addb6b1f2c9aa7354cebb96c",
+      "viewportWidth": 820,
+      "step": 6,
+      "pixels": [
+        796,
+        1449
+      ],
+      "sha256": "51e3c3d66b0a6b299dfb1e06a5cc92f0cfce228b282f3d65c55f4a17c85875a4"
+    },
+    {
+      "file": "observation-390.png",
+      "sourceSha": "073b2a62512da325addb6b1f2c9aa7354cebb96c",
+      "viewportWidth": 390,
+      "step": 6,
+      "pixels": [
+        366,
+        1626
+      ],
+      "sha256": "db3e43077b200d0b35b2823b72f56d85b7dd322da30544fb30a54d77ae87d56f"
+    },
+    {
+      "file": "reference-mendel-1366.png",
+      "sourceSha": "1354fd9d2279d4f76cd72ad236c1557400a457f0",
+      "viewportWidth": 1366,
+      "step": null,
+      "pixels": [
+        930,
+        1347
+      ],
+      "sha256": "a3d48547da595640480e5cb8a34e9c1f8a7f38d8c0b0f553f5a4e28e58d1cdb9"
+    },
+    {
+      "file": "reference-mendel-390.png",
+      "sourceSha": "1354fd9d2279d4f76cd72ad236c1557400a457f0",
+      "viewportWidth": 390,
+      "step": null,
+      "pixels": [
+        366,
+        1927
+      ],
+      "sha256": "511d6d74e147933159e2908063efe66c3e4b7fd2bd458026a7d2ab49f8a51c23"
+    }
+  ]
+}

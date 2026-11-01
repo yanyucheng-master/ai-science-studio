@@ -1,0 +1,2152 @@
+{
+  "schemaVersion": 1,
+  "sourceSha": "073b2a62512da325addb6b1f2c9aa7354cebb96c",
+  "sourceTree": "022cc18aaf4a302d1a5bd744cc03f56f76263473",
+  "baselineSha": "1354fd9d2279d4f76cd72ad236c1557400a457f0",
+  "branch": "codex/photosynthesis-textbook",
+  "environment": {
+    "node": "v24.22.1",
+    "os": "Windows_NT 10.0.26200 x64",
+    "started": "2026-11-01T08:43:35.604Z",
+    "finished": "2026-11-01T09:06:45.545Z"
+  },
+  "policy": "local loopback servers, isolated temporary profiles, mock AI only; no real keys, personal profiles, live evaluation or deployment",
+  "groups": [
+    {
+      "name": "photosynthesis-browser",
+      "command": "node scripts/verify-photosynthesis-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:43:35.605Z",
+      "finished": "2026-11-01T08:44:16.850Z",
+      "counts": {
+        "checks": 180,
+        "layouts": 17
+      },
+      "stdoutSha256": "906a38a52e029cab817150fcecdcdb80b34bcac56f0fbbb7da4fec2357a53187",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "photosynthesis-model",
+      "command": "node --test test/biology-photosynthesis.test.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:44:16.851Z",
+      "finished": "2026-11-01T08:44:17.026Z",
+      "counts": {
+        "tests": 31,
+        "pass": 31,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "stdoutSha256": "76d3dad1b0368b76712b3d79049d027bb0fcb9e67046834466cbb9f3a8d53b55",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "node",
+      "command": "node --test",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:44:17.027Z",
+      "finished": "2026-11-01T08:44:18.762Z",
+      "counts": {
+        "tests": 824,
+        "pass": 824,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "stdoutSha256": "87e9bfeecc2af9a9f09b0b27c2dff83c704a387b6a5984d79052c2d17f25fb74",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "question-bank",
+      "command": "node scripts/verify-question-bank-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:44:18.763Z",
+      "finished": "2026-11-01T08:49:40.307Z",
+      "counts": {
+        "totalQuestions": 481,
+        "local": 233,
+        "mockRoute": 248
+      },
+      "stdoutSha256": "254346ca520dcda635db687641b8b9db6242d5fb02624047cc89005368e05252",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "week1",
+      "command": "node scripts/verify-week1-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:49:40.308Z",
+      "finished": "2026-11-01T08:50:54.889Z",
+      "counts": {
+        "layouts": 50,
+        "failures": 0
+      },
+      "stdoutSha256": "a60bdfa9bc0fee6a86a95086f90fcd7142cde725ec090818e0552a13003d25ae",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "week2",
+      "command": "node scripts/verify-week2-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:50:54.889Z",
+      "finished": "2026-11-01T08:51:34.141Z",
+      "counts": {
+        "checks": 144,
+        "failures": 0
+      },
+      "stdoutSha256": "618e8c266fcce699ffc33acea54c1fdc0aecc0c5180db8b4b47de6c49f1916ff",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "tutor",
+      "command": "node scripts/verify-tutor-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:51:34.142Z",
+      "finished": "2026-11-01T08:51:42.789Z",
+      "counts": {
+        "cases": 9
+      },
+      "stdoutSha256": "6f02cb22cf9bfac50daed7d7867e2b737e16919fc7f29fa4b716c2cfc6a54cd5",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "animation",
+      "command": "node scripts/verify-animation-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:51:42.790Z",
+      "finished": "2026-11-01T08:54:01.315Z",
+      "counts": {
+        "variants": 6
+      },
+      "stdoutSha256": "816348b60e1c06af4f18ecc8f58ad3a101cfc977fd11e69fabec6ae71b0ef8dd",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "announcements",
+      "command": "node scripts/verify-announcements-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:54:01.315Z",
+      "finished": "2026-11-01T08:54:06.241Z",
+      "counts": {
+        "reportedPassLines": 8
+      },
+      "stdoutSha256": "5ac226ba00919f3dc2f569db0d0448209b23f6fe01efd2f14722c2987a1c435d",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "formula",
+      "command": "node scripts/verify-formula-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:54:06.242Z",
+      "finished": "2026-11-01T08:58:22.532Z",
+      "counts": {
+        "layouts": 69,
+        "failures": 0,
+        "ai": 5,
+        "mockAi": 5
+      },
+      "stdoutSha256": "3d8131b56a569313c2e574c4f3c697fe5d481ad30c7b5a3d9b7e06e463a6e8a4",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "ai-quality",
+      "command": "node scripts/verify-ai-quality-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:58:22.533Z",
+      "finished": "2026-11-01T08:58:45.937Z",
+      "counts": {
+        "cases": 17,
+        "passedCases": 17
+      },
+      "stdoutSha256": "9f9fc24f9e3a1854af998b64ee794277fc22825f0751e44a8049953c9c5d40e9",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "share",
+      "command": "node scripts/verify-share-browser.js",
+      "code": 1,
+      "status": "failed",
+      "timeout": false,
+      "started": "2026-11-01T08:58:45.938Z",
+      "finished": "2026-11-01T08:59:17.306Z",
+      "counts": {
+        "checks": 0,
+        "roundTrips": 0
+      },
+      "stdoutSha256": "f673542312903da5aba770b0cfefa5b4d03730e15c9d3dd4137a8332273616da",
+      "stderrSha256": "3f31c7ffc28a2642511f8ae0b0904c258a1c2732ffbc800bc5e44ccab016ade3"
+    },
+    {
+      "name": "instant",
+      "command": "node scripts/verify-instant-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:59:17.307Z",
+      "finished": "2026-11-01T08:59:31.991Z",
+      "counts": {
+        "reportedPassLines": 13
+      },
+      "stdoutSha256": "3f19268087a437a03081e33593ebf9b930bdb22781f8902ab1b35e2e2cc8e8c7",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "instant-routing",
+      "command": "node scripts/verify-instant-routing-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:59:31.992Z",
+      "finished": "2026-11-01T08:59:40.046Z",
+      "counts": {
+        "reportedPassLines": 8
+      },
+      "stdoutSha256": "74b94cc47f9737695b101949d305d9178812f2910ce439233d0d11e62bb5091a",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "tutor-diagram",
+      "command": "node scripts/verify-tutor-diagram-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:59:40.046Z",
+      "finished": "2026-11-01T08:59:51.571Z",
+      "counts": {
+        "cases": 19,
+        "passedCases": 19,
+        "failedCases": 0
+      },
+      "stdoutSha256": "dc1b1816df406233f5064d0c2838fc130dd4ee1cd9bbe87e4da3f949083f68a5",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "tutor-presentation",
+      "command": "node scripts/verify-tutor-presentation-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:59:51.571Z",
+      "finished": "2026-11-01T09:00:08.029Z",
+      "counts": {
+        "cases": 27,
+        "passedCases": 27,
+        "failedCases": 0
+      },
+      "stdoutSha256": "a5635e0dccffdc586a0e99e967f0f975433c989d42d74cdccf72d33c03c83fdd",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "incline-guard",
+      "command": "node scripts/verify-incline-diagram-browser.js --guard-only",
+      "code": 1,
+      "status": "failed",
+      "timeout": false,
+      "started": "2026-11-01T09:00:08.030Z",
+      "finished": "2026-11-01T09:00:12.007Z",
+      "counts": {
+        "cases": 6,
+        "passedCases": 1,
+        "failedCases": 5
+      },
+      "stdoutSha256": "fe9e81e0040b8faaf83c628ea42a86fb6e04b4f2020579572003763b2006c060",
+      "stderrSha256": "eade909559b25ac66d95937fd605c3aff45a0f466b4e7e780dcf848badfe14b2"
+    },
+    {
+      "name": "incline-core",
+      "command": "node scripts/verify-incline-diagram-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:00:12.008Z",
+      "finished": "2026-11-01T09:00:17.066Z",
+      "counts": {
+        "cases": 7,
+        "passedCases": 7,
+        "failedCases": 0
+      },
+      "stdoutSha256": "a2e91740225da931f1d0512b5ab414df80cfd8f2e1b7826949f5ddded9c4fb8a",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "incline-render",
+      "command": "node scripts/verify-incline-diagram-browser.js --render",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:00:17.066Z",
+      "finished": "2026-11-01T09:00:24.062Z",
+      "counts": {
+        "cases": 11,
+        "passedCases": 11,
+        "failedCases": 0
+      },
+      "stdoutSha256": "dbb014a40a5d91ea012dd9323d8832394398582bd4bc111c1bdb653d96e1598a",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "incline-competition",
+      "command": "node scripts/verify-incline-diagram-browser.js --competition",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:00:24.063Z",
+      "finished": "2026-11-01T09:00:37.661Z",
+      "counts": {
+        "cases": 19,
+        "passedCases": 19,
+        "failedCases": 0
+      },
+      "stdoutSha256": "6b7fc922fd8eac0ae91d36baf98df31dd2c8432f0ce9d67e1c99743a19253d56",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "incline-data",
+      "command": "node scripts/verify-incline-diagram-browser.js --data",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:00:37.663Z",
+      "finished": "2026-11-01T09:00:59.814Z",
+      "counts": {
+        "cases": 32,
+        "passedCases": 32,
+        "failedCases": 0
+      },
+      "stdoutSha256": "bf2396644d9b878a2dda361a586217abf2ff83a9b0514a853cb54fd389d8bc35",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "chemistry-model",
+      "command": "node --test test/chemistry-experiments.test.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:00:59.815Z",
+      "finished": "2026-11-01T09:01:00.008Z",
+      "counts": {
+        "tests": 20,
+        "pass": 20,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "stdoutSha256": "fada77cd3a22695d36cffe6e3b242fde3be804a0c651d4aadfbd0e256195c04e",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "chemistry-browser",
+      "command": "node scripts/verify-chemistry-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:01:00.009Z",
+      "finished": "2026-11-01T09:02:29.875Z",
+      "counts": {
+        "checks": 200,
+        "layouts": 6
+      },
+      "stdoutSha256": "1b51d4805e61d002500ddb79c14abf63d14076bed30f0eaef4f8e60c67fdd804",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "math-model",
+      "command": "node --test test/math-experiments.test.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:02:29.875Z",
+      "finished": "2026-11-01T09:02:30.040Z",
+      "counts": {
+        "tests": 25,
+        "pass": 25,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "stdoutSha256": "a77be9dee1dfbf74412ca86ac3f0c562306bd8b3a3a8bc6c20f1987acd7cb353",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "math-browser",
+      "command": "node scripts/verify-math-experiments-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:02:30.041Z",
+      "finished": "2026-11-01T09:02:49.790Z",
+      "counts": {
+        "checks": 203,
+        "layouts": 9
+      },
+      "stdoutSha256": "2f01230a251062dd80ec5b75469b41b7bf36c8db9efd0e7f6e1dd7678f66cf9a",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "experiment-layout",
+      "command": "node scripts/verify-experiment-layout-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:02:49.790Z",
+      "finished": "2026-11-01T09:04:21.537Z",
+      "counts": {
+        "cases": 46,
+        "passedCases": 46,
+        "failedCases": 0
+      },
+      "stdoutSha256": "27cf8326051a574a254018ca274ff69fbb6c7956f95a7380407194973fae884b",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "unit-circle-model",
+      "command": "node --test test/unit-circle.test.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:04:21.538Z",
+      "finished": "2026-11-01T09:04:21.714Z",
+      "counts": {
+        "tests": 73,
+        "pass": 73,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "stdoutSha256": "8a779e2b036a5e794a8d7336227a5ac406c8436ba8abc81e08045b1b6a899752",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "unit-circle-browser",
+      "command": "node scripts/verify-unit-circle-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:04:21.715Z",
+      "finished": "2026-11-01T09:05:03.366Z",
+      "counts": {
+        "checks": 219,
+        "layouts": 15
+      },
+      "stdoutSha256": "ba1290969f9109a5baedd8e1ff24131229120e6c19e5bc9e8af2977694cf61f1",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "equilibria-model",
+      "command": "node --test test/chemistry-equilibria.test.js test/chemistry-equilibria-templates.test.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:05:03.367Z",
+      "finished": "2026-11-01T09:05:03.740Z",
+      "counts": {
+        "tests": 63,
+        "pass": 63,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "stdoutSha256": "0b994c4b083072bc4feb0e798243aa50e3dd444ab949e75a3d38ab5ce20e0c78",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "equilibria-browser",
+      "command": "node scripts/verify-chemistry-equilibria-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:05:03.741Z",
+      "finished": "2026-11-01T09:05:51.208Z",
+      "counts": {
+        "checks": 134,
+        "layouts": 14
+      },
+      "stdoutSha256": "dbc77d89411b7030b59c94dedd3a362e9e6ac39325eb8175482b6e4add2729d9",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "mendel-model",
+      "command": "node --test test/biology-mendel.test.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:05:51.209Z",
+      "finished": "2026-11-01T09:05:51.361Z",
+      "counts": {
+        "tests": 17,
+        "pass": 17,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "stdoutSha256": "faf0bcecbcd67458cd30e4a5605f8e746975950ceb560dd2d75c717172e3f9fb",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "mendel-browser",
+      "command": "node scripts/verify-mendel-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:05:51.361Z",
+      "finished": "2026-11-01T09:06:20.758Z",
+      "counts": {
+        "checks": 105,
+        "layouts": 7
+      },
+      "stdoutSha256": "1280820648d34abcaa0ffb9efca16d1d595c658b9edb01d10210becc6410242f",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "acceptance-fixes",
+      "command": "node scripts/verify-acceptance-fixes-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:06:20.759Z",
+      "finished": "2026-11-01T09:06:45.544Z",
+      "counts": {
+        "checks": 62,
+        "failures": 0
+      },
+      "stdoutSha256": "621a431fb5faa8a32e3737b068ba5279c3f7e91bcebf7ca237873a37bd25b530",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "baselineGroups": [
+    {
+      "name": "node",
+      "command": "node --test",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:38:41.607Z",
+      "finished": "2026-11-01T08:38:43.120Z",
+      "counts": {
+        "tests": 793,
+        "pass": 793,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "stdoutSha256": "9cc8bfe7cbbc0601fedab0a16d5e2ba8f3fff9d267c61cec6e90b6a2483101ba",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "question-bank",
+      "command": "node scripts/verify-question-bank-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:38:43.121Z",
+      "finished": "2026-11-01T08:43:55.004Z",
+      "counts": {
+        "totalQuestions": 467,
+        "local": 227,
+        "mockRoute": 240
+      },
+      "stdoutSha256": "4a16ebe53f1f820094284178c8c105e673765f6460d36aedca8dc01e88c3d556",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "week1",
+      "command": "node scripts/verify-week1-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:43:55.005Z",
+      "finished": "2026-11-01T08:45:09.954Z",
+      "counts": {
+        "layouts": 50,
+        "failures": 0
+      },
+      "stdoutSha256": "a60bdfa9bc0fee6a86a95086f90fcd7142cde725ec090818e0552a13003d25ae",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "week2",
+      "command": "node scripts/verify-week2-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:45:09.954Z",
+      "finished": "2026-11-01T08:45:49.226Z",
+      "counts": {
+        "checks": 144,
+        "failures": 0
+      },
+      "stdoutSha256": "618e8c266fcce699ffc33acea54c1fdc0aecc0c5180db8b4b47de6c49f1916ff",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "tutor",
+      "command": "node scripts/verify-tutor-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:45:49.227Z",
+      "finished": "2026-11-01T08:45:58.377Z",
+      "counts": {
+        "cases": 9
+      },
+      "stdoutSha256": "dc1b64852f2b10b05c2fcea6089a93662389122d57164eb267463e5c28d95e08",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "animation",
+      "command": "node scripts/verify-animation-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:45:58.378Z",
+      "finished": "2026-11-01T08:48:13.444Z",
+      "counts": {
+        "variants": 6
+      },
+      "stdoutSha256": "7504d2f5b7f529c5e057da2ccca96c97cd9fa266310da22260e096fba1e92e90",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "announcements",
+      "command": "node scripts/verify-announcements-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:48:13.445Z",
+      "finished": "2026-11-01T08:48:17.968Z",
+      "counts": {
+        "reportedPassLines": 8
+      },
+      "stdoutSha256": "5ac226ba00919f3dc2f569db0d0448209b23f6fe01efd2f14722c2987a1c435d",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "formula",
+      "command": "node scripts/verify-formula-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:48:17.969Z",
+      "finished": "2026-11-01T08:52:33.782Z",
+      "counts": {
+        "layouts": 69,
+        "failures": 0,
+        "ai": 5,
+        "mockAi": 5
+      },
+      "stdoutSha256": "3d8131b56a569313c2e574c4f3c697fe5d481ad30c7b5a3d9b7e06e463a6e8a4",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "ai-quality",
+      "command": "node scripts/verify-ai-quality-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:52:33.783Z",
+      "finished": "2026-11-01T08:52:57.297Z",
+      "counts": {
+        "cases": 17,
+        "passedCases": 17
+      },
+      "stdoutSha256": "9f9fc24f9e3a1854af998b64ee794277fc22825f0751e44a8049953c9c5d40e9",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "share",
+      "command": "node scripts/verify-share-browser.js",
+      "code": 1,
+      "status": "failed",
+      "timeout": false,
+      "started": "2026-11-01T08:52:57.298Z",
+      "finished": "2026-11-01T08:53:28.776Z",
+      "counts": {
+        "checks": 0,
+        "roundTrips": 0
+      },
+      "stdoutSha256": "7c5caafaeb2b7e6e65b1bdc711cbb0bd974c916866ed22510f7dc03248c939b5",
+      "stderrSha256": "507c97ed9e6f3928c8b7c5470fbad6bcfafac9a392e88d8dc17cfbe7cc22d4d5"
+    },
+    {
+      "name": "instant",
+      "command": "node scripts/verify-instant-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:53:28.777Z",
+      "finished": "2026-11-01T08:53:43.588Z",
+      "counts": {
+        "reportedPassLines": 13
+      },
+      "stdoutSha256": "3f19268087a437a03081e33593ebf9b930bdb22781f8902ab1b35e2e2cc8e8c7",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "instant-routing",
+      "command": "node scripts/verify-instant-routing-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:53:43.589Z",
+      "finished": "2026-11-01T08:53:51.430Z",
+      "counts": {
+        "reportedPassLines": 8
+      },
+      "stdoutSha256": "74b94cc47f9737695b101949d305d9178812f2910ce439233d0d11e62bb5091a",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "tutor-diagram",
+      "command": "node scripts/verify-tutor-diagram-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:53:51.430Z",
+      "finished": "2026-11-01T08:54:02.839Z",
+      "counts": {
+        "cases": 19,
+        "passedCases": 19,
+        "failedCases": 0
+      },
+      "stdoutSha256": "dc1b1816df406233f5064d0c2838fc130dd4ee1cd9bbe87e4da3f949083f68a5",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "tutor-presentation",
+      "command": "node scripts/verify-tutor-presentation-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:54:02.840Z",
+      "finished": "2026-11-01T08:54:19.229Z",
+      "counts": {
+        "cases": 27,
+        "passedCases": 27,
+        "failedCases": 0
+      },
+      "stdoutSha256": "a5635e0dccffdc586a0e99e967f0f975433c989d42d74cdccf72d33c03c83fdd",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "incline-guard",
+      "command": "node scripts/verify-incline-diagram-browser.js --guard-only",
+      "code": 1,
+      "status": "failed",
+      "timeout": false,
+      "started": "2026-11-01T08:54:19.230Z",
+      "finished": "2026-11-01T08:54:23.162Z",
+      "counts": {
+        "cases": 6,
+        "passedCases": 1,
+        "failedCases": 5
+      },
+      "stdoutSha256": "fe9e81e0040b8faaf83c628ea42a86fb6e04b4f2020579572003763b2006c060",
+      "stderrSha256": "eade909559b25ac66d95937fd605c3aff45a0f466b4e7e780dcf848badfe14b2"
+    },
+    {
+      "name": "incline-core",
+      "command": "node scripts/verify-incline-diagram-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:54:23.163Z",
+      "finished": "2026-11-01T08:54:28.173Z",
+      "counts": {
+        "cases": 7,
+        "passedCases": 7,
+        "failedCases": 0
+      },
+      "stdoutSha256": "a2e91740225da931f1d0512b5ab414df80cfd8f2e1b7826949f5ddded9c4fb8a",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "incline-render",
+      "command": "node scripts/verify-incline-diagram-browser.js --render",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:54:28.173Z",
+      "finished": "2026-11-01T08:54:34.996Z",
+      "counts": {
+        "cases": 11,
+        "passedCases": 11,
+        "failedCases": 0
+      },
+      "stdoutSha256": "dbb014a40a5d91ea012dd9323d8832394398582bd4bc111c1bdb653d96e1598a",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "incline-competition",
+      "command": "node scripts/verify-incline-diagram-browser.js --competition",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:54:34.997Z",
+      "finished": "2026-11-01T08:54:46.031Z",
+      "counts": {
+        "cases": 19,
+        "passedCases": 19,
+        "failedCases": 0
+      },
+      "stdoutSha256": "6b7fc922fd8eac0ae91d36baf98df31dd2c8432f0ce9d67e1c99743a19253d56",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "incline-data",
+      "command": "node scripts/verify-incline-diagram-browser.js --data",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:54:46.032Z",
+      "finished": "2026-11-01T08:55:03.508Z",
+      "counts": {
+        "cases": 32,
+        "passedCases": 32,
+        "failedCases": 0
+      },
+      "stdoutSha256": "bf2396644d9b878a2dda361a586217abf2ff83a9b0514a853cb54fd389d8bc35",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "chemistry-model",
+      "command": "node --test test/chemistry-experiments.test.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:55:03.508Z",
+      "finished": "2026-11-01T08:55:03.702Z",
+      "counts": {
+        "tests": 20,
+        "pass": 20,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "stdoutSha256": "89bca8cb1b9ea73c6fd3e4a4abba012c08a05787845700865dc3b61f01eae935",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "chemistry-browser",
+      "command": "node scripts/verify-chemistry-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:55:03.703Z",
+      "finished": "2026-11-01T08:56:33.682Z",
+      "counts": {
+        "checks": 200,
+        "layouts": 6
+      },
+      "stdoutSha256": "1b51d4805e61d002500ddb79c14abf63d14076bed30f0eaef4f8e60c67fdd804",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "math-model",
+      "command": "node --test test/math-experiments.test.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:56:33.683Z",
+      "finished": "2026-11-01T08:56:33.843Z",
+      "counts": {
+        "tests": 25,
+        "pass": 25,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "stdoutSha256": "06de792146e5205c6319d860cf262d7ea7a337448f871ef9ce9d533dbc6a2133",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "math-browser",
+      "command": "node scripts/verify-math-experiments-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:56:33.844Z",
+      "finished": "2026-11-01T08:56:53.542Z",
+      "counts": {
+        "checks": 203,
+        "layouts": 9
+      },
+      "stdoutSha256": "2f01230a251062dd80ec5b75469b41b7bf36c8db9efd0e7f6e1dd7678f66cf9a",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "experiment-layout",
+      "command": "node scripts/verify-experiment-layout-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:56:53.543Z",
+      "finished": "2026-11-01T08:58:25.313Z",
+      "counts": {
+        "cases": 46,
+        "passedCases": 46,
+        "failedCases": 0
+      },
+      "stdoutSha256": "27cf8326051a574a254018ca274ff69fbb6c7956f95a7380407194973fae884b",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "unit-circle-model",
+      "command": "node --test test/unit-circle.test.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:58:25.313Z",
+      "finished": "2026-11-01T08:58:25.513Z",
+      "counts": {
+        "tests": 73,
+        "pass": 73,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "stdoutSha256": "2982ab738960d09505361c5cd05f17e499aa0707b6af92d8ad1ac4e6930fd859",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "unit-circle-browser",
+      "command": "node scripts/verify-unit-circle-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:58:25.514Z",
+      "finished": "2026-11-01T08:59:07.142Z",
+      "counts": {
+        "checks": 219,
+        "layouts": 15
+      },
+      "stdoutSha256": "ba1290969f9109a5baedd8e1ff24131229120e6c19e5bc9e8af2977694cf61f1",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "equilibria-model",
+      "command": "node --test test/chemistry-equilibria.test.js test/chemistry-equilibria-templates.test.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:59:07.143Z",
+      "finished": "2026-11-01T08:59:07.509Z",
+      "counts": {
+        "tests": 63,
+        "pass": 63,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "stdoutSha256": "939d49261f064618c2a90d9184471ab6767b2973551204cb6ef7568691213c0b",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "equilibria-browser",
+      "command": "node scripts/verify-chemistry-equilibria-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:59:07.510Z",
+      "finished": "2026-11-01T08:59:55.780Z",
+      "counts": {
+        "checks": 134,
+        "layouts": 14
+      },
+      "stdoutSha256": "dbc77d89411b7030b59c94dedd3a362e9e6ac39325eb8175482b6e4add2729d9",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "mendel-model",
+      "command": "node --test test/biology-mendel.test.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:59:55.781Z",
+      "finished": "2026-11-01T08:59:55.955Z",
+      "counts": {
+        "tests": 17,
+        "pass": 17,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "stdoutSha256": "4e73d8a437dee022dc29cc87a051aa7e764c224d738a8e17087bdd6b1c639d82",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "mendel-browser",
+      "command": "node scripts/verify-mendel-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T08:59:55.956Z",
+      "finished": "2026-11-01T09:00:26.347Z",
+      "counts": {
+        "checks": 105,
+        "layouts": 7
+      },
+      "stdoutSha256": "1280820648d34abcaa0ffb9efca16d1d595c658b9edb01d10210becc6410242f",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "acceptance-fixes",
+      "command": "node scripts/verify-acceptance-fixes-browser.js",
+      "code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started": "2026-11-01T09:00:26.347Z",
+      "finished": "2026-11-01T09:00:54.659Z",
+      "counts": {
+        "checks": 62,
+        "failures": 0
+      },
+      "stdoutSha256": "621a431fb5faa8a32e3737b068ba5279c3f7e91bcebf7ca237873a37bd25b530",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "totals": {
+    "passed": 31,
+    "failed": 2,
+    "timeout": 0,
+    "notExecutedGroups": 0
+  },
+  "baselineTotals": {
+    "passed": 29,
+    "failed": 2,
+    "timeout": 0
+  },
+  "scientificExpected": {
+    "protocol": [
+      "一昼夜暗处理",
+      "同叶上下两面局部遮光后光照",
+      "几小时后摘叶去纸",
+      "酒精水浴脱色",
+      "清水漂洗后培养皿滴碘",
+      "稍停、清水冲去碘液、观察"
+    ],
+    "beforeFinalWash": "no final blue observation",
+    "afterFinalWash": {
+      "originalExposed": "blue",
+      "originalCovered": "not blue"
+    },
+    "scope": "starch product and light condition only; no yield, kinetics, oxygen assay or CO2 assay"
+  },
+  "newExperiment": {
+    "edge": {
+      "browser": "156.0.4314.58",
+      "secondaryBrowser": "151.0.7922.34",
+      "checks": 180,
+      "assertions": [
+        "1366: menu generates actual junior textbook experiment",
+        "1366: navigate textbook step 1",
+        "1366: do not reveal final blue test early at step 1",
+        "1366: navigate textbook step 2",
+        "1366: do not reveal final blue test early at step 2",
+        "1366: navigate textbook step 3",
+        "1366: do not reveal final blue test early at step 3",
+        "1366: navigate textbook step 4",
+        "1366: do not reveal final blue test early at step 4",
+        "photo-step4-1366: text, captions and SVG labels fit",
+        "photo-step4-1366: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-1366: readable captions and touch targets",
+        "1366: navigate textbook step 5",
+        "1366: do not reveal final blue test early at step 5",
+        "1366: navigate textbook step 6",
+        "1366: same leaf final contrast",
+        "photosynthesis-1366: text, captions and SVG labels fit",
+        "photosynthesis-1366: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-1366: readable captions and touch targets",
+        "1366: tutor distinguishes original question, current water bath and final expected result",
+        "1366: reset restores first dark-treatment step",
+        "1366: shared pause stops timeline",
+        "1366: intermediate iodine is not final blue",
+        "1366: shared timeline reaches washed observation",
+        "photo-fullscreen-1366: text, captions and SVG labels fit",
+        "photo-fullscreen-1366: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-1366: readable captions and touch targets",
+        "1366: fullscreen reaches .photo-heading",
+        "1366: fullscreen reaches .photo-steps",
+        "1366: fullscreen reaches .photo-caution",
+        "1366: fullscreen reaches .biology-photosynthesis-scene summary",
+        "1366: fullscreen reaches .generic-physics-readout",
+        "820: menu generates actual junior textbook experiment",
+        "820: navigate textbook step 1",
+        "820: do not reveal final blue test early at step 1",
+        "820: navigate textbook step 2",
+        "820: do not reveal final blue test early at step 2",
+        "820: navigate textbook step 3",
+        "820: do not reveal final blue test early at step 3",
+        "820: navigate textbook step 4",
+        "820: do not reveal final blue test early at step 4",
+        "photo-step4-820: text, captions and SVG labels fit",
+        "photo-step4-820: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-820: readable captions and touch targets",
+        "820: navigate textbook step 5",
+        "820: do not reveal final blue test early at step 5",
+        "820: navigate textbook step 6",
+        "820: same leaf final contrast",
+        "photosynthesis-820: text, captions and SVG labels fit",
+        "photosynthesis-820: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-820: readable captions and touch targets",
+        "820: tutor distinguishes original question, current water bath and final expected result",
+        "820: reset restores first dark-treatment step",
+        "820: shared pause stops timeline",
+        "820: intermediate iodine is not final blue",
+        "820: shared timeline reaches washed observation",
+        "photo-fullscreen-820: text, captions and SVG labels fit",
+        "photo-fullscreen-820: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-820: readable captions and touch targets",
+        "820: fullscreen reaches .photo-heading",
+        "820: fullscreen reaches .photo-steps",
+        "820: fullscreen reaches .photo-caution",
+        "820: fullscreen reaches .biology-photosynthesis-scene summary",
+        "820: fullscreen reaches .generic-physics-readout",
+        "390: menu generates actual junior textbook experiment",
+        "390: navigate textbook step 1",
+        "390: do not reveal final blue test early at step 1",
+        "photo-step1-390: text, captions and SVG labels fit",
+        "photo-step1-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step1-390: readable captions and touch targets",
+        "390: navigate textbook step 2",
+        "390: do not reveal final blue test early at step 2",
+        "photo-step2-390: text, captions and SVG labels fit",
+        "photo-step2-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step2-390: readable captions and touch targets",
+        "390: navigate textbook step 3",
+        "390: do not reveal final blue test early at step 3",
+        "photo-step3-390: text, captions and SVG labels fit",
+        "photo-step3-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step3-390: readable captions and touch targets",
+        "390: navigate textbook step 4",
+        "390: do not reveal final blue test early at step 4",
+        "photo-step4-390: text, captions and SVG labels fit",
+        "photo-step4-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-390: readable captions and touch targets",
+        "390: navigate textbook step 5",
+        "390: do not reveal final blue test early at step 5",
+        "photo-step5-390: text, captions and SVG labels fit",
+        "photo-step5-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step5-390: readable captions and touch targets",
+        "390: navigate textbook step 6",
+        "390: same leaf final contrast",
+        "photo-step6-390: text, captions and SVG labels fit",
+        "photo-step6-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step6-390: readable captions and touch targets",
+        "photosynthesis-390: text, captions and SVG labels fit",
+        "photosynthesis-390: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-390: readable captions and touch targets",
+        "390: tutor distinguishes original question, current water bath and final expected result",
+        "390: reset restores first dark-treatment step",
+        "390: shared pause stops timeline",
+        "390: intermediate iodine is not final blue",
+        "390: shared timeline reaches washed observation",
+        "photo-fullscreen-390: text, captions and SVG labels fit",
+        "photo-fullscreen-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-390: readable captions and touch targets",
+        "390: fullscreen reaches .photo-heading",
+        "390: fullscreen reaches .photo-steps",
+        "390: fullscreen reaches .photo-caution",
+        "390: fullscreen reaches .biology-photosynthesis-scene summary",
+        "390: fullscreen reaches .generic-physics-readout",
+        "844: menu generates actual junior textbook experiment",
+        "844: navigate textbook step 1",
+        "844: do not reveal final blue test early at step 1",
+        "844: navigate textbook step 2",
+        "844: do not reveal final blue test early at step 2",
+        "844: navigate textbook step 3",
+        "844: do not reveal final blue test early at step 3",
+        "844: navigate textbook step 4",
+        "844: do not reveal final blue test early at step 4",
+        "photo-step4-844: text, captions and SVG labels fit",
+        "photo-step4-844: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-844: readable captions and touch targets",
+        "844: navigate textbook step 5",
+        "844: do not reveal final blue test early at step 5",
+        "844: navigate textbook step 6",
+        "844: same leaf final contrast",
+        "photosynthesis-844: text, captions and SVG labels fit",
+        "photosynthesis-844: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-844: readable captions and touch targets",
+        "844: tutor distinguishes original question, current water bath and final expected result",
+        "844: reset restores first dark-treatment step",
+        "844: shared pause stops timeline",
+        "844: intermediate iodine is not final blue",
+        "844: shared timeline reaches washed observation",
+        "photo-fullscreen-844: text, captions and SVG labels fit",
+        "photo-fullscreen-844: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-844: readable captions and touch targets",
+        "844: fullscreen reaches .photo-heading",
+        "844: fullscreen reaches .photo-steps",
+        "844: fullscreen reaches .photo-caution",
+        "844: fullscreen reaches .biology-photosynthesis-scene summary",
+        "844: fullscreen reaches .generic-physics-readout",
+        "subject roundtrip preserves current observation step",
+        "AI page roundtrip preserves stage",
+        "A: independent import restores checked questions and fixed mode",
+        "A: share starts at first operation, not a stored playback position",
+        "A: active reset starts the original protocol",
+        "B: independent import restores checked questions and fixed mode",
+        "B: share starts at first operation, not a stored playback position",
+        "B: active reset starts the original protocol",
+        "A again: independent import restores checked questions and fixed mode",
+        "A again: share starts at first operation, not a stored playback position",
+        "A again: active reset starts the original protocol",
+        "favorite restores the same fixed textbook protocol",
+        "unsupported new question is rejected without replacing the existing experiment",
+        "invalid new question cannot borrow old scientific result or step",
+        "tampered share rejected: change locked parameter",
+        "tampered share rejected: direct heating",
+        "tampered share rejected: extra subquestion",
+        "actual BFCache preserves active operation",
+        "separate browser imports the identical textbook experiment",
+        "separate touch browser completes observation",
+        "leaving photo restores dedicated parameters: plant cell",
+        "leaving photo restores dedicated fullscreen: plant cell",
+        "leaving photo restores dedicated parameters: braking",
+        "leaving photo restores dedicated fullscreen: braking",
+        "leaving photo restores dedicated parameters: tangent",
+        "leaving photo restores dedicated fullscreen: tangent",
+        "leaving photo restores dedicated parameters: iron reaction",
+        "leaving photo restores dedicated fullscreen: iron reaction",
+        "existing template is not captured: mendel",
+        "existing template is not captured: hclNaohNeutralization",
+        "existing template is not captured: kno3Cooling",
+        "existing template is not captured: pythagoras",
+        "existing template is not captured: unitCircle",
+        "actual mocked tutor request preserves original protocol and current water-bath step",
+        "actual invalid-question tutor request does not send old result or old step",
+        "no page or console errors: ",
+        "no unexpected AI attempts; only explicit local tutor fixtures"
+      ],
+      "pageAndConsoleErrors": [],
+      "unexpectedApi": [],
+      "mockTutorRequests": [
+        {
+          "originalQuestion": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论、实验现象、操作目的、实验步骤。",
+          "currentStep": "当前教材第4步：酒精水浴脱色。将叶片放入装有酒精的小烧杯，再将小烧杯放入水浴锅中加热。当前还不能把最终显色当作已经观察到的结果。确定性结果区列的是完整教材流程完成后的预期，非实测。",
+          "hasDeterministicResult": true
+        },
+        {
+          "originalQuestion": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论、实验现象、操作目的、实验步骤。求光合作用速率。",
+          "currentStep": "",
+          "hasDeterministicResult": false
+        }
+      ],
+      "layoutCount": 17,
+      "layouts": [
+        {
+          "name": "photo-step4-1366",
+          "viewport": 1366,
+          "pageWidth": 1366,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        },
+        {
+          "name": "photosynthesis-1366",
+          "viewport": 1366,
+          "pageWidth": 1366,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        },
+        {
+          "name": "photo-fullscreen-1366",
+          "viewport": 1366,
+          "pageWidth": 1366,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        },
+        {
+          "name": "photo-step4-820",
+          "viewport": 820,
+          "pageWidth": 820,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        },
+        {
+          "name": "photosynthesis-820",
+          "viewport": 820,
+          "pageWidth": 820,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        },
+        {
+          "name": "photo-fullscreen-820",
+          "viewport": 820,
+          "pageWidth": 820,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        },
+        {
+          "name": "photo-step1-390",
+          "viewport": 390,
+          "pageWidth": 390,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 14
+        },
+        {
+          "name": "photo-step2-390",
+          "viewport": 390,
+          "pageWidth": 390,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 14
+        },
+        {
+          "name": "photo-step3-390",
+          "viewport": 390,
+          "pageWidth": 390,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 14
+        },
+        {
+          "name": "photo-step4-390",
+          "viewport": 390,
+          "pageWidth": 390,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 14
+        },
+        {
+          "name": "photo-step5-390",
+          "viewport": 390,
+          "pageWidth": 390,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 14
+        },
+        {
+          "name": "photo-step6-390",
+          "viewport": 390,
+          "pageWidth": 390,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 14
+        },
+        {
+          "name": "photosynthesis-390",
+          "viewport": 390,
+          "pageWidth": 390,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 14
+        },
+        {
+          "name": "photo-fullscreen-390",
+          "viewport": 390,
+          "pageWidth": 390,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 14
+        },
+        {
+          "name": "photo-step4-844",
+          "viewport": 844,
+          "pageWidth": 844,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        },
+        {
+          "name": "photosynthesis-844",
+          "viewport": 844,
+          "pageWidth": 844,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        },
+        {
+          "name": "photo-fullscreen-844",
+          "viewport": 844,
+          "pageWidth": 844,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        }
+      ]
+    },
+    "chromium": {
+      "browser": "151.0.7922.34",
+      "secondaryBrowser": "156.0.4314.58",
+      "checks": 180,
+      "assertions": [
+        "1366: menu generates actual junior textbook experiment",
+        "1366: navigate textbook step 1",
+        "1366: do not reveal final blue test early at step 1",
+        "1366: navigate textbook step 2",
+        "1366: do not reveal final blue test early at step 2",
+        "1366: navigate textbook step 3",
+        "1366: do not reveal final blue test early at step 3",
+        "1366: navigate textbook step 4",
+        "1366: do not reveal final blue test early at step 4",
+        "photo-step4-1366: text, captions and SVG labels fit",
+        "photo-step4-1366: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-1366: readable captions and touch targets",
+        "1366: navigate textbook step 5",
+        "1366: do not reveal final blue test early at step 5",
+        "1366: navigate textbook step 6",
+        "1366: same leaf final contrast",
+        "photosynthesis-1366: text, captions and SVG labels fit",
+        "photosynthesis-1366: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-1366: readable captions and touch targets",
+        "1366: tutor distinguishes original question, current water bath and final expected result",
+        "1366: reset restores first dark-treatment step",
+        "1366: shared pause stops timeline",
+        "1366: intermediate iodine is not final blue",
+        "1366: shared timeline reaches washed observation",
+        "photo-fullscreen-1366: text, captions and SVG labels fit",
+        "photo-fullscreen-1366: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-1366: readable captions and touch targets",
+        "1366: fullscreen reaches .photo-heading",
+        "1366: fullscreen reaches .photo-steps",
+        "1366: fullscreen reaches .photo-caution",
+        "1366: fullscreen reaches .biology-photosynthesis-scene summary",
+        "1366: fullscreen reaches .generic-physics-readout",
+        "820: menu generates actual junior textbook experiment",
+        "820: navigate textbook step 1",
+        "820: do not reveal final blue test early at step 1",
+        "820: navigate textbook step 2",
+        "820: do not reveal final blue test early at step 2",
+        "820: navigate textbook step 3",
+        "820: do not reveal final blue test early at step 3",
+        "820: navigate textbook step 4",
+        "820: do not reveal final blue test early at step 4",
+        "photo-step4-820: text, captions and SVG labels fit",
+        "photo-step4-820: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-820: readable captions and touch targets",
+        "820: navigate textbook step 5",
+        "820: do not reveal final blue test early at step 5",
+        "820: navigate textbook step 6",
+        "820: same leaf final contrast",
+        "photosynthesis-820: text, captions and SVG labels fit",
+        "photosynthesis-820: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-820: readable captions and touch targets",
+        "820: tutor distinguishes original question, current water bath and final expected result",
+        "820: reset restores first dark-treatment step",
+        "820: shared pause stops timeline",
+        "820: intermediate iodine is not final blue",
+        "820: shared timeline reaches washed observation",
+        "photo-fullscreen-820: text, captions and SVG labels fit",
+        "photo-fullscreen-820: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-820: readable captions and touch targets",
+        "820: fullscreen reaches .photo-heading",
+        "820: fullscreen reaches .photo-steps",
+        "820: fullscreen reaches .photo-caution",
+        "820: fullscreen reaches .biology-photosynthesis-scene summary",
+        "820: fullscreen reaches .generic-physics-readout",
+        "390: menu generates actual junior textbook experiment",
+        "390: navigate textbook step 1",
+        "390: do not reveal final blue test early at step 1",
+        "photo-step1-390: text, captions and SVG labels fit",
+        "photo-step1-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step1-390: readable captions and touch targets",
+        "390: navigate textbook step 2",
+        "390: do not reveal final blue test early at step 2",
+        "photo-step2-390: text, captions and SVG labels fit",
+        "photo-step2-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step2-390: readable captions and touch targets",
+        "390: navigate textbook step 3",
+        "390: do not reveal final blue test early at step 3",
+        "photo-step3-390: text, captions and SVG labels fit",
+        "photo-step3-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step3-390: readable captions and touch targets",
+        "390: navigate textbook step 4",
+        "390: do not reveal final blue test early at step 4",
+        "photo-step4-390: text, captions and SVG labels fit",
+        "photo-step4-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-390: readable captions and touch targets",
+        "390: navigate textbook step 5",
+        "390: do not reveal final blue test early at step 5",
+        "photo-step5-390: text, captions and SVG labels fit",
+        "photo-step5-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step5-390: readable captions and touch targets",
+        "390: navigate textbook step 6",
+        "390: same leaf final contrast",
+        "photo-step6-390: text, captions and SVG labels fit",
+        "photo-step6-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step6-390: readable captions and touch targets",
+        "photosynthesis-390: text, captions and SVG labels fit",
+        "photosynthesis-390: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-390: readable captions and touch targets",
+        "390: tutor distinguishes original question, current water bath and final expected result",
+        "390: reset restores first dark-treatment step",
+        "390: shared pause stops timeline",
+        "390: intermediate iodine is not final blue",
+        "390: shared timeline reaches washed observation",
+        "photo-fullscreen-390: text, captions and SVG labels fit",
+        "photo-fullscreen-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-390: readable captions and touch targets",
+        "390: fullscreen reaches .photo-heading",
+        "390: fullscreen reaches .photo-steps",
+        "390: fullscreen reaches .photo-caution",
+        "390: fullscreen reaches .biology-photosynthesis-scene summary",
+        "390: fullscreen reaches .generic-physics-readout",
+        "844: menu generates actual junior textbook experiment",
+        "844: navigate textbook step 1",
+        "844: do not reveal final blue test early at step 1",
+        "844: navigate textbook step 2",
+        "844: do not reveal final blue test early at step 2",
+        "844: navigate textbook step 3",
+        "844: do not reveal final blue test early at step 3",
+        "844: navigate textbook step 4",
+        "844: do not reveal final blue test early at step 4",
+        "photo-step4-844: text, captions and SVG labels fit",
+        "photo-step4-844: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-844: readable captions and touch targets",
+        "844: navigate textbook step 5",
+        "844: do not reveal final blue test early at step 5",
+        "844: navigate textbook step 6",
+        "844: same leaf final contrast",
+        "photosynthesis-844: text, captions and SVG labels fit",
+        "photosynthesis-844: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-844: readable captions and touch targets",
+        "844: tutor distinguishes original question, current water bath and final expected result",
+        "844: reset restores first dark-treatment step",
+        "844: shared pause stops timeline",
+        "844: intermediate iodine is not final blue",
+        "844: shared timeline reaches washed observation",
+        "photo-fullscreen-844: text, captions and SVG labels fit",
+        "photo-fullscreen-844: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-844: readable captions and touch targets",
+        "844: fullscreen reaches .photo-heading",
+        "844: fullscreen reaches .photo-steps",
+        "844: fullscreen reaches .photo-caution",
+        "844: fullscreen reaches .biology-photosynthesis-scene summary",
+        "844: fullscreen reaches .generic-physics-readout",
+        "subject roundtrip preserves current observation step",
+        "AI page roundtrip preserves stage",
+        "A: independent import restores checked questions and fixed mode",
+        "A: share starts at first operation, not a stored playback position",
+        "A: active reset starts the original protocol",
+        "B: independent import restores checked questions and fixed mode",
+        "B: share starts at first operation, not a stored playback position",
+        "B: active reset starts the original protocol",
+        "A again: independent import restores checked questions and fixed mode",
+        "A again: share starts at first operation, not a stored playback position",
+        "A again: active reset starts the original protocol",
+        "favorite restores the same fixed textbook protocol",
+        "unsupported new question is rejected without replacing the existing experiment",
+        "invalid new question cannot borrow old scientific result or step",
+        "tampered share rejected: change locked parameter",
+        "tampered share rejected: direct heating",
+        "tampered share rejected: extra subquestion",
+        "actual BFCache preserves active operation",
+        "separate browser imports the identical textbook experiment",
+        "separate touch browser completes observation",
+        "leaving photo restores dedicated parameters: plant cell",
+        "leaving photo restores dedicated fullscreen: plant cell",
+        "leaving photo restores dedicated parameters: braking",
+        "leaving photo restores dedicated fullscreen: braking",
+        "leaving photo restores dedicated parameters: tangent",
+        "leaving photo restores dedicated fullscreen: tangent",
+        "leaving photo restores dedicated parameters: iron reaction",
+        "leaving photo restores dedicated fullscreen: iron reaction",
+        "existing template is not captured: mendel",
+        "existing template is not captured: hclNaohNeutralization",
+        "existing template is not captured: kno3Cooling",
+        "existing template is not captured: pythagoras",
+        "existing template is not captured: unitCircle",
+        "actual mocked tutor request preserves original protocol and current water-bath step",
+        "actual invalid-question tutor request does not send old result or old step",
+        "no page or console errors: ",
+        "no unexpected AI attempts; only explicit local tutor fixtures"
+      ],
+      "pageAndConsoleErrors": [],
+      "unexpectedApi": [],
+      "mockTutorRequests": [
+        {
+          "originalQuestion": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论、实验现象、操作目的、实验步骤。",
+          "currentStep": "当前教材第4步：酒精水浴脱色。将叶片放入装有酒精的小烧杯，再将小烧杯放入水浴锅中加热。当前还不能把最终显色当作已经观察到的结果。确定性结果区列的是完整教材流程完成后的预期，非实测。",
+          "hasDeterministicResult": true
+        },
+        {
+          "originalQuestion": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论、实验现象、操作目的、实验步骤。求光合作用速率。",
+          "currentStep": "",
+          "hasDeterministicResult": false
+        }
+      ],
+      "layoutCount": 17,
+      "layouts": [
+        {
+          "name": "photo-step4-1366",
+          "viewport": 1366,
+          "pageWidth": 1366,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        },
+        {
+          "name": "photosynthesis-1366",
+          "viewport": 1366,
+          "pageWidth": 1366,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        },
+        {
+          "name": "photo-fullscreen-1366",
+          "viewport": 1366,
+          "pageWidth": 1366,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        },
+        {
+          "name": "photo-step4-820",
+          "viewport": 820,
+          "pageWidth": 820,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        },
+        {
+          "name": "photosynthesis-820",
+          "viewport": 820,
+          "pageWidth": 820,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        },
+        {
+          "name": "photo-fullscreen-820",
+          "viewport": 820,
+          "pageWidth": 820,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        },
+        {
+          "name": "photo-step1-390",
+          "viewport": 390,
+          "pageWidth": 390,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 14
+        },
+        {
+          "name": "photo-step2-390",
+          "viewport": 390,
+          "pageWidth": 390,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 14
+        },
+        {
+          "name": "photo-step3-390",
+          "viewport": 390,
+          "pageWidth": 390,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 14
+        },
+        {
+          "name": "photo-step4-390",
+          "viewport": 390,
+          "pageWidth": 390,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 14
+        },
+        {
+          "name": "photo-step5-390",
+          "viewport": 390,
+          "pageWidth": 390,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 14
+        },
+        {
+          "name": "photo-step6-390",
+          "viewport": 390,
+          "pageWidth": 390,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 14
+        },
+        {
+          "name": "photosynthesis-390",
+          "viewport": 390,
+          "pageWidth": 390,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 14
+        },
+        {
+          "name": "photo-fullscreen-390",
+          "viewport": 390,
+          "pageWidth": 390,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 14
+        },
+        {
+          "name": "photo-step4-844",
+          "viewport": 844,
+          "pageWidth": 844,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        },
+        {
+          "name": "photosynthesis-844",
+          "viewport": 844,
+          "pageWidth": 844,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        },
+        {
+          "name": "photo-fullscreen-844",
+          "viewport": 844,
+          "pageWidth": 844,
+          "textOverflow": [],
+          "svgLabelsInside": true,
+          "parameterSlidersVisible": false,
+          "players": 1,
+          "fullscreenControls": 1,
+          "captionFont": 13
+        }
+      ]
+    }
+  },
+  "animation": {
+    "browser": "156.0.4314.58",
+    "background": {
+      "hidden": {
+        "visibility": "hidden",
+        "time": 181.10000000000002,
+        "pending": 0
+      },
+      "restored": {
+        "visibility": "visible",
+        "time": 347.9999999999999,
+        "pending": 1
+      },
+      "realTabSwitch": true
+    },
+    "templateBackground": [
+      {
+        "template": "caco3Hcl",
+        "before": {
+          "id": "caco3Hcl",
+          "time": 0.16119999999999984,
+          "pending": 0
+        },
+        "after": {
+          "time": 0.32800000000000007,
+          "pending": 1,
+          "maxPending": 1,
+          "overlap": []
+        },
+        "realTabSwitch": true
+      },
+      {
+        "template": "naclSolution",
+        "before": {
+          "id": "naclSolution",
+          "time": 0.15570000000000073,
+          "pending": 0
+        },
+        "after": {
+          "time": 0.3279000000000015,
+          "pending": 1,
+          "maxPending": 1,
+          "overlap": []
+        },
+        "realTabSwitch": true
+      },
+      {
+        "template": "pythagoras",
+        "before": {
+          "id": "pythagoras",
+          "time": 0.1501000000000004,
+          "pending": 0
+        },
+        "after": {
+          "time": 0.32749999999999996,
+          "pending": 1,
+          "maxPending": 1,
+          "overlap": []
+        },
+        "realTabSwitch": true
+      },
+      {
+        "template": "unitCircle",
+        "before": {
+          "id": "unitCircle",
+          "time": 0.16110000000000038,
+          "pending": 0
+        },
+        "after": {
+          "time": 0.3390000000000018,
+          "pending": 1,
+          "maxPending": 1,
+          "overlap": []
+        },
+        "realTabSwitch": true
+      },
+      {
+        "template": "hclNaohNeutralization",
+        "before": {
+          "id": "hclNaohNeutralization",
+          "time": 0.15000000000000005,
+          "pending": 0
+        },
+        "after": {
+          "time": 0.3279000000000015,
+          "pending": 1,
+          "maxPending": 1,
+          "overlap": []
+        },
+        "realTabSwitch": true
+      },
+      {
+        "template": "kno3Cooling",
+        "before": {
+          "id": "kno3Cooling",
+          "time": 0.1612000000000008,
+          "pending": 0
+        },
+        "after": {
+          "time": 0.3390999999999986,
+          "pending": 1,
+          "maxPending": 1,
+          "overlap": []
+        },
+        "realTabSwitch": true
+      },
+      {
+        "template": "mendel",
+        "before": {
+          "id": "mendel",
+          "time": 0.16119999999999718,
+          "pending": 0
+        },
+        "after": {
+          "time": 0.3391999999999972,
+          "pending": 1,
+          "maxPending": 1,
+          "overlap": []
+        },
+        "realTabSwitch": true
+      },
+      {
+        "template": "photosynthesis",
+        "before": {
+          "id": "photosynthesis",
+          "time": 0.16100000000000006,
+          "pending": 0
+        },
+        "after": {
+          "time": 0.3389000000000016,
+          "pending": 1,
+          "maxPending": 1,
+          "overlap": []
+        },
+        "realTabSwitch": true
+      }
+    ]
+  },
+  "exploratory": [
+    {
+      "phase": "uncommitted preflight",
+      "result": "fresh-page routing failed because preset omitted the biology subject name",
+      "fix": "preset now states the full textbook subject; menu and standalone generation tested"
+    },
+    {
+      "phase": "uncommitted tutor preflight",
+      "result": "request contexts were correct but UI assertion assumed old replies survive a new question",
+      "fix": "assert actual request count/context and completed response; do not expect retained old answers"
+    },
+    {
+      "source": "18755bf",
+      "result": "full candidate run interrupted before completion",
+      "fix": "active-scene CSS scope plus dedicated cell/brake/tangent/iron roundtrip assertions; complete rerun on073b2a6"
+    }
+  ],
+  "unexecutedOutsideScope": [
+    "real AI/live evaluation",
+    "Firefox",
+    "Safari",
+    "physical devices",
+    "deployment"
+  ],
+  "ci": "GitHub records are queried separately at delivery head; local results or zero records are not CI/security/signature success.",
+  "failureComparison": [
+    {
+      "name": "share",
+      "candidateStatus": "failed",
+      "baselineStatus": "failed",
+      "exactSignaturesEqual": true,
+      "candidate": [
+        "locator.click: Timeout 30000ms exceeded.",
+        "locator('#shareButton')",
+        "element is not visible"
+      ],
+      "baseline": [
+        "locator.click: Timeout 30000ms exceeded.",
+        "locator('#shareButton')",
+        "element is not visible"
+      ]
+    },
+    {
+      "name": "incline-guard",
+      "candidateStatus": "failed",
+      "baselineStatus": "failed",
+      "exactSignaturesEqual": true,
+      "candidate": [
+        {
+          "name": "original-1366",
+          "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1"
+        },
+        {
+          "name": "original-820",
+          "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1"
+        },
+        {
+          "name": "original-390",
+          "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1"
+        },
+        {
+          "name": "personal-original",
+          "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1"
+        },
+        {
+          "name": "supported-session-and-tampering",
+          "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1"
+        }
+      ],
+      "baseline": [
+        {
+          "name": "original-1366",
+          "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1"
+        },
+        {
+          "name": "original-820",
+          "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1"
+        },
+        {
+          "name": "original-390",
+          "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1"
+        },
+        {
+          "name": "personal-original",
+          "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1"
+        },
+        {
+          "name": "supported-session-and-tampering",
+          "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1"
+        }
+      ]
+    }
+  ],
+  "supplementalShare": {
+    "candidate": {
+      "sourceSha": "2de6b4e034339ab15b357de6fc4be6cd0399951f",
+      "productSha": "073b2a62512da325addb6b1f2c9aa7354cebb96c",
+      "fixtureChange": "assert hidden share button on waiting page, call public copy boundary and assert zero clipboard writes; all subsequent assertions unchanged",
+      "command": "node scripts/verify-share-browser.js",
+      "exitCode": 0,
+      "checks": 14,
+      "roundTrips": 233,
+      "adjustedTemplates": 40,
+      "bfcachePersisted": true,
+      "pageErrors": [],
+      "unexpectedApi": [],
+      "stdoutSha256": "94e87b6dd03f5ec67ff79e7b893532b3d03812d1ff8f9db1023d6b1f8b59fd44",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureSha256": "04cda5a8cbcf3ae9d6f46b226b0b99a969e271a0096ea9e96658636582253d24"
+    },
+    "baseline": {
+      "sourceSha": "1354fd9d2279d4f76cd72ad236c1557400a457f0",
+      "productSha": "1354fd9d2279d4f76cd72ad236c1557400a457f0",
+      "fixtureChange": "assert hidden share button on waiting page, call public copy boundary and assert zero clipboard writes; all subsequent assertions unchanged",
+      "command": "node scripts/verify-share-browser.js",
+      "exitCode": 0,
+      "checks": 14,
+      "roundTrips": 227,
+      "adjustedTemplates": 38,
+      "bfcachePersisted": true,
+      "pageErrors": [],
+      "unexpectedApi": [],
+      "stdoutSha256": "368a3070ed837e768f107a22114b59491d76b21c5b30504839e2f83d7d57649d",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureModifiedFromSource": true,
+      "fixtureSha256": "04cda5a8cbcf3ae9d6f46b226b0b99a969e271a0096ea9e96658636582253d24"
+    }
+  },
+  "internalEarlyAborts": [
+    {
+      "group": "share",
+      "frozenSource": "073b2a62512da325addb6b1f2c9aa7354cebb96c",
+      "completedBeforeFailure": 0,
+      "remainingOriginalAssertions": "not reached in the frozen original run; executed separately by the updated UI fixture at supplementalShare.candidate"
+    },
+    {
+      "group": "incline-guard",
+      "caseCount": 6,
+      "failed": 5,
+      "passed": 1,
+      "note": "five old coordinate-request expectations fail before their subsequent case assertions; guard-only reports preserved, current incline core/render/competition/data run separately"
+    }
+  ],
+  "postRunDelta": {
+    "sha": "2de6b4e034339ab15b357de6fc4be6cd0399951f",
+    "files": [
+      "docs/photosynthesis-textbook.md",
+      "server/scripts/verify-share-browser.js",
+      "web/announcements.json"
+    ],
+    "productLogicAndStylesUnchanged": true,
+    "announcementCheck": [
+      {
+        "name": "announcements",
+        "command": "node scripts/verify-announcements-browser.js",
+        "code": 0,
+        "status": "passed"
+      }
+    ],
+    "note": "Full 33-group evidence belongs to sourceSha. Later source changes are limited to the waiting-page test fixture, mapping documentation and announcement metadata; affected share and announcement browser checks rerun at this SHA. Delivery adds reviewed evidence files and announcement metadata only."
+  }
+}
