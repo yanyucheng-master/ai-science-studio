@@ -1,0 +1,73 @@
+{
+  "sourceSha": "e5105a8c835bbe576d531221c5fa3a9d7996443e",
+  "sourceTree": "0f750726b398f04eff34e6ab8a30a551f38edd05",
+  "completeRunSourceSha": "0be3a530662ec9835731026eb8d5797e62c5e492",
+  "images": [
+    {
+      "file": "syringe-1366.png",
+      "sourceSha": "e5105a8c835bbe576d531221c5fa3a9d7996443e",
+      "viewportWidth": 1366,
+      "step": 2,
+      "pixels": [
+        930,
+        1346
+      ],
+      "sha256": "28aabffd319e5466bac0c3768767ff10006d3652579287f1bafe02e2c7b5e927"
+    },
+    {
+      "file": "lighting-820.png",
+      "sourceSha": "e5105a8c835bbe576d531221c5fa3a9d7996443e",
+      "viewportWidth": 820,
+      "step": 5,
+      "pixels": [
+        796,
+        1728
+      ],
+      "sha256": "ae704f44c3f41e6060b8ea142e1fa8fb04f050868510fea08c37946f95dc242c"
+    },
+    {
+      "file": "mechanism-records-390.png",
+      "sourceSha": "e5105a8c835bbe576d531221c5fa3a9d7996443e",
+      "viewportWidth": 390,
+      "step": 6,
+      "pixels": [
+        366,
+        1850
+      ],
+      "sha256": "034b830367a2b5eabaf7e1c4e5dc7640970fe5e1171f73abcd7305d495c13db9"
+    },
+    {
+      "file": "punch-390.png",
+      "sourceSha": "e5105a8c835bbe576d531221c5fa3a9d7996443e",
+      "viewportWidth": 390,
+      "step": 1,
+      "pixels": [
+        366,
+        1850
+      ],
+      "sha256": "01a60e944636c6e27f68c6a7b6e2bb50e45415d3b31ad45f67aa2045455aa452"
+    },
+    {
+      "file": "reference-microscope-1366.png",
+      "sourceSha": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+      "viewportWidth": 1366,
+      "step": null,
+      "pixels": [
+        930,
+        1280
+      ],
+      "sha256": "996694b0eae5e2f820c9c01bf00016eaff3ee9dbb7115816aedbe59a520d68fd"
+    },
+    {
+      "file": "reference-microscope-390.png",
+      "sourceSha": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+      "viewportWidth": 390,
+      "step": null,
+      "pixels": [
+        366,
+        2028
+      ],
+      "sha256": "2494479d7464c7e8e5d93346c2800d25994e0e7f19be32d112f5e1c3943e2e26"
+    }
+  ]
+}
