@@ -27,6 +27,7 @@ unmatched question returns `AI_NOT_CONFIGURED` instead of a fabricated answer.
 - `POST /api/v1/experiment/generate`
 - `POST /api/v1/tutor/suggest` for HarmonyOS compatibility
 - `POST /api/v1/tutor/chat` for structured multi-turn tutoring
+- `POST /api/v1/question/recognize` transcribes a photo of a question (see below)
 
 The chat response is validated into controlled text, step, formula, check and
 optional parameter-patch fields. A parameter patch can only target an existing
@@ -46,6 +47,39 @@ answer states one with numbers, evaluated as a line in `v` so that `5-0.4v`,
 student's own `a(v)` quoted back for checking. When history exceeds its
 8000-character budget, the newest turns are kept. Clients that send no quotes
 or suggestions are unaffected.
+
+### Photo question recognition
+
+`POST /api/v1/question/recognize` accepts `{ "image": "data:image/jpeg;base64,..." }`
+(JPEG, PNG or WebP only; the bytes must match the declared type and decode to
+at most 2 MiB; the web client downsizes photos to at most 1920 px and about
+1.5 MB before sending). The route has its own request-body limit of 3 MiB while
+all other routes keep 16 KiB, and its own rate limit
+(`RECOGNIZE_RATE_LIMIT_MAX`, default 12 per `RATE_LIMIT_WINDOW_MS`;
+`RECOGNIZE_TIMEOUT_MS`, default 45000). Recognition also has a separate
+concurrency cap (`RECOGNIZE_MAX_CONCURRENT_REQUESTS`, default 2, range 1–4),
+without changing the existing tutor request settings.
+
+The image goes to the configured `deepseek-flash` vision model in a
+`user` message only, with thinking disabled. The model is asked to transcribe,
+not to solve, and to write unreadable characters as `[?]`. The reply is
+`{ isQuestion, text, unclear, multiple, model, source, requestId }`; `text` is
+at most 1500 characters (`truncated: true` when cut). Errors: `INVALID_IMAGE`
+(400), `BODY_TOO_LARGE` (413), `RATE_LIMITED` (429), `AI_NOT_CONFIGURED` (503),
+`AI_TIMEOUT` (504), `INVALID_AI_RESPONSE` (502), `AI_UNAVAILABLE` (503).
+The gateway does not log or persist photos or transcriptions. The web client
+only puts the text into the question box; the student checks it before
+generating. Invalid result objects are rejected; mathematical comparison
+signs are preserved, and the client warns if a result was cut to 1500 characters.
+`AI_BUSY` (429) indicates the recognition concurrency cap was reached.
+`GET /health` includes `photoRecognition` configuration and size/concurrency
+limits without making a paid model call. Model protocol reference:
+https://api-docs.deepseek.com/guides/vision/ (checked 2026-11-01).
+
+The implementation lives in `src/question-recognizer.js`, which depends only on
+`src/config.js`; the route is a self-contained block in `src/server.js`, so both
+can be ported to another gateway branch while preserving that branch's existing
+timeouts, model settings, tutor error handling and client cancellation.
 
 ## Deployment
 
