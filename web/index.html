@@ -19,7 +19,8 @@
   <link rel="stylesheet" href="biology-mendel.css?v=20261031-mendel-1">
   <link rel="stylesheet" href="instant-experiment.css?v=20261018-instant-1">
   <link rel="stylesheet" href="tutor-focus.css?v=20261019-tutor-followups-1">
-  <link rel="stylesheet" href="mobile.css?v=20261030-mobile-4">
+  <link rel="stylesheet" href="photo-question.css?v=20261031-photo-1">
+  <link rel="stylesheet" href="mobile.css?v=20261102-photo-1">
 </head>
 <body class="awaiting-generation">
   <script src="brand-motion.js?v=20261020-splash-1"></script>
@@ -96,12 +97,14 @@
           </div>
           <div class="prompt-input-wrap">
             <textarea id="questionInput" rows="1" placeholder="请输入或粘贴一道理科题目" autocomplete="off" enterkeyhint="go" spellcheck="false" aria-label="输入理科题目">一辆汽车以 20m/s 的速度行驶，紧急刹车后加速度大小为 5m/s²，求刹车距离。</textarea>
-            <button class="input-tool" data-toast="拍照识题入口已打开" aria-label="拍照识题">
-              <svg viewBox="0 0 24 24"><path d="M4 7h4l2-3h4l2 3h4v13H4z"/><circle cx="12" cy="13" r="4"/></svg>
-            </button>
-            <button class="input-tool" data-toast="正在聆听，请读出题目" aria-label="语音输入">
-              <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0m-7 7v3m-4 0h8"/></svg>
-            </button>
+            <span class="photo-tools">
+              <button class="input-tool photo-tool" id="photoCameraButton" type="button" aria-label="拍照识题" title="拍照识题">
+                <svg viewBox="0 0 24 24"><path d="M4 7h4l2-3h4l2 3h4v13H4z"/><circle cx="12" cy="13" r="4"/></svg>
+              </button>
+              <button class="input-tool photo-tool" id="photoFileButton" type="button" aria-label="上传题目照片" title="上传题目照片">
+                <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m5 17 4.5-4.5 3.5 3.5 2.5-2.5L20 17"/></svg>
+              </button>
+            </span>
             <button class="preset-picker" id="physicsPresetToggle" type="button" aria-label="展开物理预设实验" aria-expanded="false" aria-controls="physicsPresetDropdown">
               <span class="preset-picker-label" aria-hidden="true">实验库</span>
               <i></i>
@@ -111,6 +114,9 @@
               <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
             </button>
           </div>
+          <p class="photo-status" id="photoStatus" role="status" aria-live="polite" hidden></p>
+          <input id="photoFileInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+          <input id="photoCameraInput" type="file" accept="image/*" capture="environment" hidden>
           <div class="preset-dropdown" id="physicsPresetDropdown" aria-hidden="true">
             <button class="preset-option" type="button" data-preset="brake" data-subject="物理" data-level="senior" data-block="力学">
               <span>刹车距离实验 · 速度如何归零</span>
@@ -983,6 +989,23 @@
 
   <div class="toast" id="toast"><span></span><p>操作成功</p></div>
 
+  <div class="photo-camera" id="photoCamera" role="dialog" aria-modal="true" aria-label="拍照识题" hidden>
+    <div class="photo-camera-panel">
+      <div class="photo-camera-stage">
+        <video id="photoCameraVideo" playsinline muted autoplay></video>
+        <img id="photoCameraReview" alt="已拍摄的题目照片" hidden>
+        <p class="photo-camera-hint">让题目占满画面，光线充足</p>
+      </div>
+      <div class="photo-camera-bar">
+        <button type="button" class="photo-camera-text" id="photoCameraCancel">取消</button>
+        <button type="button" class="photo-camera-text" id="photoCameraRetake" hidden>重拍</button>
+        <button type="button" class="photo-shutter" id="photoCameraShutter" aria-label="拍照" disabled></button>
+        <button type="button" class="photo-camera-text photo-camera-use" id="photoCameraUse" hidden>使用这张</button>
+        <button type="button" class="photo-camera-text" id="photoCameraFlip" hidden>翻转</button>
+      </div>
+    </div>
+  </div>
+
   <div class="modal-backdrop" id="apiKeyModal" aria-hidden="true">
     <div class="ar-modal api-key-modal" role="dialog" aria-modal="true" aria-labelledby="apiKeyModalTitle">
       <button class="modal-close" id="apiKeyModalClose" type="button" aria-label="关闭">
@@ -1051,6 +1074,7 @@
   <script src="instant-scene-renderer.js?v=20261020-incline-data-1"></script>
   <script src="instant-experiment.js?v=20261020-incline-competition-1"></script>
   <script src="announcements.js?v=20261008-announcements-2"></script>
+  <script src="photo-question.js?v=20261102-photo-2"></script>
   <script src="mobile-shell.js?v=20261030-mobile-4"></script>
 </body>
 </html>
