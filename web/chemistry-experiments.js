@@ -206,7 +206,7 @@
         ["计量判断",`${equation}；${f.level==="junior"?"相关质量比 100:73:44":`n(CaCO₃)/1 与 n(HCl)/2 比较`}；${m.limitingText}。`,"先确定真正参与反应的量。"],
         ["按所问列式",m.formulaDetail,"按原题的每个子问列式，采用课堂近似质量常量，结果由本地模型计算。"],
         ["质量核对",m.conclusion,"播放仅展示计量关系，不据此推断真实速率。"]],
-      hint:"小提示：先区分盐酸溶液与 HCl 溶质，再判断限量反应物。",mentor:"关键追问：改变一种反应物的质量，CO₂ 是否始终增加？哪一方先耗尽？",challenge:"拖动未锁定的质量控件，比较限量、CO₂ 和剩余质量；重置回到原题配置。",sceneTip:m.conclusion}),
+      hint:"小提示：先区分盐酸溶液与 HCl 溶质，再判断限量反应物。",mentor:"改变一种反应物的质量，CO₂ 是否始终增加？哪一方先耗尽？",challenge:"拖动未锁定的质量控件，比较限量、CO₂ 和剩余质量；重置回到原题配置。",sceneTip:m.conclusion}),
     motion:{duration:8},resetToQuestion:true,frame:caFrame,renderFrame:renderCa};
   caco3Hcl.presetFor = level => ({p1:10,p2:7.3,fixed:{level,levelLocked:false,excess:"",asks:"co2,limiting"}});
 
@@ -316,7 +316,7 @@
       checkFixed:(f,m,w)=>!preciseParam(m)||!preciseParam(w)||m<20||m>500||w<0||w>20?'参数超出演示范围或超过四位小数。':f.temperature!==20||!['junior','senior'].includes(f.level)||typeof f.levelLocked!=='boolean'||typeof f.asks!=='string'||f.asks.split(',').some(k=>!Object.hasOwn(solutionAskText,k))?'配制模型固定条件无效。':'',
       used:(m,w)=>[{cls:'mass',value:m/1000},{cls:'percent',value:w},{cls:'temperature',value:20}],asks:{supported:/质量|氯化钠|NaCl|食盐|盐|水|步骤|方法|配制|多少/,unsupported:/体积|密度|溶解度|浓度.*变化/}},
     failMessage:'请给出目标溶液总质量与溶质质量分数。',question:solutionQuestion,model:solutionModel,visual:solutionVisual,recognition:m=>`NaCl 配制｜M=${fmt(m.mass)}g，w=${fmt(m.w)}%｜${m.readout}`,
-    copy:(m)=>({metrics:[['溶液总质量','g'],['目标质量分数','%'],['所需 NaCl','g']],steps:[['提取条件',`20°C，目标总质量 ${grams(m.mass)}，质量分数 ${fmt(m.w)}%。`,'确认给出的是溶液总质量。'],['质量分数定义','w = m(溶质) / m(溶液) × 100%',m.level==='junior'?'分母包含盐和水，不能只取水的质量。':'质量分数为无量纲比值；用质量守恒核对配料，不引入体积加和或物质的量浓度。'],['计算配料',m.formulaDetail,'盐质量与水质量之和必须等于目标总质量。'],['称量与混匀',m.w===0?'无需称盐，称取纯水后加入容器。':`称取 NaCl ${grams(m.saltMass)}、水 ${grams(m.waterMass)}，依次加入并搅拌至完全溶解。`,'盐水保持无色，操作进度不表示真实溶解速率。']],hint:'小提示：百分数的分母是溶液总质量；求盐后，再用总质量减去盐质量求水。',mentor:'关键追问：固定质量分数使总质量加倍，盐和水各怎样变化？固定总质量提高质量分数时呢？',challenge:'调整总质量或质量分数，观察配料关系；主动重置回原题配置。',sceneTip:m.conclusion}),
+    copy:(m)=>({metrics:[['溶液总质量','g'],['目标质量分数','%'],['所需 NaCl','g']],steps:[['提取条件',`20°C，目标总质量 ${grams(m.mass)}，质量分数 ${fmt(m.w)}%。`,'确认给出的是溶液总质量。'],['质量分数定义','w = m(溶质) / m(溶液) × 100%',m.level==='junior'?'分母包含盐和水，不能只取水的质量。':'质量分数为无量纲比值；用质量守恒核对配料，不引入体积加和或物质的量浓度。'],['计算配料',m.formulaDetail,'盐质量与水质量之和必须等于目标总质量。'],['称量与混匀',m.w===0?'无需称盐，称取纯水后加入容器。':`称取 NaCl ${grams(m.saltMass)}、水 ${grams(m.waterMass)}，依次加入并搅拌至完全溶解。`,'盐水保持无色，操作进度不表示真实溶解速率。']],hint:'小提示：百分数的分母是溶液总质量；求盐后，再用总质量减去盐质量求水。',mentor:'固定质量分数使总质量加倍，盐和水各怎样变化？固定总质量提高质量分数时呢？',challenge:'调整总质量或质量分数，观察配料关系；主动重置回原题配置。',sceneTip:m.conclusion}),
     presetFor:level=>({p1:level==='junior'?100:200,p2:level==='junior'?10:5,fixed:{level,levelLocked:false,temperature:20,asks:'salt,steps,water'}}),motion:{duration:10},resetToQuestion:true,frame:solutionFrame,renderFrame:renderSolution};
   kit.register({caco3Hcl,naclSolution});
 })();

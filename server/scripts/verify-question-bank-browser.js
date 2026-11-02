@@ -83,7 +83,10 @@ const plans = await planPage.evaluate(items => items.map(item => {
       pH: model.pH, nature: model.nature, crystals: model.crystals, dissolved: model.dissolved, motherLiquor: model.motherLiquor, totalMass: model.totalMass,
       probabilityAA: model.probabilities?.AA, probabilityAa: model.probabilities?.Aa, probabilityaa: model.probabilities?.aa,
       expectedAA: model.expected?.AA, expectedAa: model.expected?.Aa, expectedaa: model.expected?.aa,
-      dominantProbability: model.dominant, recessiveProbability: model.recessive });
+      dominantProbability: model.dominant, recessiveProbability: model.recessive,
+      totalMagnification: model.totalMagnification, fieldDiameterRatio: model.diameterRatio, fieldAreaRatio: model.areaRatio,
+      approximateCells: model.approximateCount, imageDirection: model.image?.direction,
+      populationQuantity: model.quantity, populationTrend: model.trend, populationGrowthRate: model.growthRate, populationPeakRate: model.peakRate, populationPeakTime: model.peakTime });
   }
   return { ok: true, values };
 }), bank);

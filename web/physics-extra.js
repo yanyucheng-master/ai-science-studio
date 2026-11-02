@@ -1524,7 +1524,7 @@
           ["读数记录", model.formulaDetail, "测力计示数就是滑动摩擦力的大小（演示读数为模拟值）。"],
           ["得出结论", "压力越大、接触面越粗糙，滑动摩擦力越大", "分别拖动压力和接触面，验证结论。"]
         ],
-        mentor: "关键追问：探究滑动摩擦力与压力的关系时，为什么要保持<strong>接触面不变</strong>？",
+        mentor: "探究滑动摩擦力与压力的关系时，为什么要保持<strong>接触面不变</strong>？",
         hint: "小提示：只有沿水平方向<strong>匀速直线</strong>拉动木块时，弹簧测力计的示数才等于滑动摩擦力；改变一个因素时，要保持另一个因素不变。",
         challenge: "试试看：保持压力不变，把接触面从<strong>木板</strong>换成<strong>毛巾</strong>，测力计示数会怎样变化？"
       } : {}
@@ -2134,7 +2134,7 @@
           model.formulaDetail,
           model.conclusion
         ]),
-        mentor: `关键追问：这个题型中，哪个量是被控制的变量？哪个量会随着参数变化而改变？`,
+        mentor: `这个题型中，哪个量是被控制的变量？哪个量会随着参数变化而改变？`,
         hint: `小提示：先锁定核心公式 <strong>${model.formula}</strong>，再逐一代入题目给出的物理量。`,
         challenge: `试试看：拖动下方参数，观察 <strong>${model.facts[0].label}</strong> 如何变化，并用公式解释。`,
         generationStages: stages(`识别${template.menuTitle}条件`, `匹配核心关系：${model.badge}`, `生成结论：${model.readout}`),

@@ -11281,3 +11281,19 @@ body:not(.awaiting-generation):not(.subject-math-active):not(.subject-biology-ac
   .announcement-item ul { margin-right: 2px; margin-left: 2px; }
   .announcements-header #announcementsDescription { display: none; }
 }
+
+/* 2026-10-31 晚：巡检遗留项
+   - 页首英文小标题（AI SCIENCE STUDIO）电脑端也不再显示，与手机一致；问候语与右侧按钮同一行对齐
+   - 生物题的公式卡：生物概念行的 p 规则（display: grid、10.5px）误用到了“结果”行，使“结果”标签被拉成整行 */
+.topbar .eyebrow { display: none; }
+.topbar { align-items: center; }
+.top-actions { padding-top: 0; }
+body.subject-biology-active:not(.awaiting-generation) .reasoning-card .formula-spotlight p.formula-result {
+  display: flex;
+  margin-top: 10px;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  font-size: 15px;
+  line-height: 1.5;
+}

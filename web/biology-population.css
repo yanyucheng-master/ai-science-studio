@@ -1,0 +1,47 @@
+.scene.subject-generic-physics:has(.biology-population-scene) { height:auto; min-height:0; background:var(--surface); box-shadow:none; }
+.scene.subject-generic-physics:has(.biology-population-scene)::before { content:none; }
+.experiment-card:is(:fullscreen,.immersive-mode) .scene.subject-generic-physics:has(.biology-population-scene) { flex:0 0 auto; }
+.generic-physics-stage:has(.biology-population-scene) { position:relative; inset:auto; }
+.generic-physics-lab:has(.biology-population-scene) { position:relative; inset:auto; display:block; margin:18px; padding:0; border:0; border-radius:0; background:none; box-shadow:none; }
+.generic-physics-visual:has(.biology-population-scene) { height:auto; overflow:visible; border:0; border-radius:0; background:none; box-shadow:none; }
+.experiment-card:has(.scene.subject-generic-physics .biology-population-scene) #sceneFullscreenButton { display:none; }
+:root body .experiment-card:has(.scene.subject-generic-physics .biology-population-scene) .transport { height:auto; min-height:0; padding:10px 16px; justify-content:flex-end; gap:12px; }
+.experiment-card:has(.scene.subject-generic-physics .biology-population-scene) .transport :is(#playButton,#timeline,#currentTime,#totalTime,#playbackButton) { display:none; }
+:root body .experiment-card:has(.scene.subject-generic-physics .biology-population-scene) #resetButton { display:flex; align-items:center; justify-content:center; gap:8px; flex:0 0 auto; width:auto; padding:8px 12px; }
+.experiment-card:has(.scene.subject-generic-physics .biology-population-scene) #resetButton::after { content:'恢复原题'; white-space:nowrap; }
+:root body .experiment-card:has(.scene.subject-generic-physics .biology-population-scene) #fullscreenButton.fullscreen-active { color:var(--blue); background:#edf3ff; }
+.biology-population-scene { min-width:0; font-size:14px; line-height:1.7; color:var(--ink); overflow-wrap:anywhere; }
+.biology-population-scene h3 { font-size:19px; margin:0 0 14px; }
+.population-answer { display:flex; flex-direction:column; gap:5px; margin:18px 0; }
+.population-answer strong { color:var(--blue); font-size:26px; }
+.population-answer span:last-child { font-weight:600; }
+.biology-population-scene .population-chart { display:block; width:100%; max-width:680px; height:auto; margin:12px auto; stroke:none; fill:none; }
+.biology-population-scene .population-chart text { fill:var(--ink); stroke:none; font-family:inherit; font-size:19px; }
+.population-chart .population-grid { stroke:#dce5ef; stroke-width:1; }
+.population-chart .population-axis { stroke:#697c94; stroke-width:1.5; }
+.population-chart .population-guide { stroke:#718fbd; stroke-width:2; stroke-dasharray:4 4; }
+.population-chart circle { fill:#2563cf; }
+.population-chart .population-curve { fill:none; stroke:#2563cf; stroke-width:2.5; }
+.population-chart .population-capacity { stroke:#c87524; stroke-width:1.5; stroke-dasharray:6 4; }
+.population-chart .population-peak { fill:#c87524; stroke:#fff; stroke-width:1.5; }
+.biology-population-scene .population-chart .population-guide-label { fill:#97520c; font-size:17px; }
+.population-logistic-charts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.population-examples { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:18px; padding-top:12px; border-top:1px solid var(--line); }
+.population-examples button { min-height:44px; padding:8px 12px; color:var(--blue); background:#edf3ff; border:1px solid #cfdef5; border-radius:9px; cursor:pointer; font:inherit; }
+.population-examples button:focus-visible { outline:3px solid var(--blue); outline-offset:2px; }
+.population-note { font-size:13px; color:var(--muted); }
+.biology-population-scene summary { min-height:44px; padding:12px 0; cursor:pointer; color:var(--blue); }
+.biology-population-scene summary:focus-visible { outline:3px solid var(--blue); }
+.biology-population-scene table { width:100%; border-collapse:collapse; font-size:14px; }
+.biology-population-scene td,.biology-population-scene th { padding:8px; text-align:right; border-bottom:1px solid var(--line); }
+.biology-population-scene th:first-child { text-align:left; }
+.generic-physics-lab:has(.biology-population-scene) .generic-physics-readout { min-width:0; margin-top:18px; padding:16px 0 0; border:0; border-top:1px solid var(--line); border-radius:0; background:none; box-shadow:none; overflow-wrap:anywhere; }
+.generic-physics-lab:has(.biology-population-scene) .stage-facts { grid-template-columns:minmax(0,1fr); gap:0; }
+.generic-physics-lab:has(.biology-population-scene) .stage-facts > div { grid-template-columns:110px minmax(0,1fr); padding:7px 0; border:0; border-radius:0; background:none; box-shadow:none; }
+@media(max-width:1100px){ .population-logistic-charts { grid-template-columns:minmax(0,1fr); } }
+@media(max-width:700px){
+  .population-logistic-charts { grid-template-columns:minmax(0,1fr); gap:8px; }
+  .generic-physics-lab:has(.biology-population-scene){margin:12px;}
+  .experiment-card:has(.scene.subject-generic-physics .biology-population-scene) .parameter{min-width:0;grid-template-columns:minmax(0,1fr);gap:8px;}
+  .experiment-card:has(.scene.subject-generic-physics .biology-population-scene) .number-control{justify-self:end;}
+}

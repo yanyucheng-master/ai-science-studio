@@ -14,6 +14,8 @@ const chemistrySource = await web('chemistry-extra.js');
 const chemistryExperimentsSource = await web('chemistry-experiments.js');
 const equilibriaSources = await Promise.all(['chemistry-equilibria.js','chemistry-equilibria-questions.js','chemistry-equilibria-experiments.js'].map(web));
 const mendelSources = await Promise.all(['biology-mendel-core.js','biology-mendel.js'].map(web));
+const microscopeSources = await Promise.all(['biology-microscope-core.js','biology-microscope-questions.js','biology-microscope.js'].map(web));
+const populationSources = await Promise.all(['biology-population-core.js','biology-population-questions.js','biology-population.js'].map(web));
 const html = await web('index.html');
 const app = await web('app.js');
 const bank = JSON.parse(await readFile(new URL('../eval/local-template-bank.json', import.meta.url), 'utf8'));
@@ -30,6 +32,8 @@ function load() {
   vm.runInNewContext(chemistryExperimentsSource, sandbox);
   equilibriaSources.forEach(source=>vm.runInNewContext(source,sandbox));
   mendelSources.forEach(source=>vm.runInNewContext(source,sandbox));
+  microscopeSources.forEach(source=>vm.runInNewContext(source,sandbox));
+  populationSources.forEach(source=>vm.runInNewContext(source,sandbox));
   return { sandbox, errors };
 }
 const { sandbox } = load();
