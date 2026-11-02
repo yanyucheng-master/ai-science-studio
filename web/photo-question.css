@@ -1,0 +1,160 @@
+/* 拍照 / 上传照片识题：输入框里的相机、文件按钮，识别状态行，电脑端取景框。 */
+
+/* 桌面：包裹元素不参与布局，两个按钮仍是输入框 flex 行里的子项；手机端见 mobile.css */
+.photo-tools { display: contents; }
+
+.photo-tool:disabled { opacity: .45; cursor: default; }
+.photo-tool:disabled:hover { color: #7f90ad; background: transparent; }
+.photo-tool:focus-visible { outline: 2px solid #3174e8; outline-offset: -2px; }
+
+.photo-status {
+  display: flex;
+  margin: 8px 2px 0;
+  gap: 8px;
+  align-items: center;
+  color: #4a6288;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.photo-status[hidden] { display: none; }
+.photo-status[data-tone="ok"] { color: #0f766e; }
+.photo-status[data-tone="warn"] { color: #a35200; }
+.photo-status[data-tone="error"] { color: #b42318; }
+.photo-status i {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #c6dbfb;
+  border-top-color: #2d73f6;
+  border-radius: 50%;
+  animation: photo-spin .8s linear infinite;
+}
+.photo-status button {
+  flex: none;
+  padding: 2px 4px;
+  color: #1a56d6;
+  font: inherit;
+  font-weight: 700;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+}
+.photo-status button:hover { background: #edf4ff; }
+.photo-status button:focus-visible { outline: 2px solid #3174e8; outline-offset: 1px; }
+
+@keyframes photo-spin { to { transform: rotate(360deg); } }
+
+/* 取景框（电脑端 getUserMedia） */
+.photo-camera {
+  position: fixed;
+  inset: 0;
+  z-index: 10020;
+  display: grid;
+  padding: 16px;
+  place-items: center;
+  background: rgba(14, 24, 44, .62);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.photo-camera[hidden] { display: none; }
+body.photo-camera-open { overflow: hidden; }
+
+.photo-camera-panel {
+  display: flex;
+  width: min(720px, 100%);
+  max-height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #0f1a30;
+  box-shadow: 0 24px 60px rgba(8, 16, 32, .45);
+}
+.photo-camera-stage {
+  position: relative;
+  min-height: 0;
+  aspect-ratio: 4 / 3;
+  background: #0b1426;
+}
+.photo-camera-stage video,
+.photo-camera-stage img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.photo-camera-stage [hidden] { display: none; }
+.photo-camera-hint {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  left: 12px;
+  margin: 0;
+  color: #fff;
+  font-size: 13px;
+  text-align: center;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+  pointer-events: none;
+}
+.photo-camera-bar {
+  display: grid;
+  min-height: 84px;
+  padding: 12px 16px;
+  gap: 12px;
+  align-items: center;
+  grid-template-columns: 1fr auto 1fr;
+}
+.photo-camera-bar > button[hidden] { display: none; }
+.photo-camera-bar .photo-camera-text {
+  min-height: 44px;
+  padding: 0 14px;
+  color: #e6eefc;
+  font-size: 14px;
+  font-weight: 600;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .08);
+  cursor: pointer;
+}
+.photo-camera-bar .photo-camera-text:hover { background: rgba(255, 255, 255, .16); }
+#photoCameraCancel,
+#photoCameraRetake { grid-column: 1; justify-self: start; }
+#photoCameraShutter,
+#photoCameraUse { grid-column: 2; }
+#photoCameraFlip { grid-column: 3; justify-self: end; }
+.photo-camera[data-mode="review"] .photo-camera-hint { display: none; }
+.photo-camera-bar .photo-camera-use {
+  min-width: 132px;
+  color: #fff;
+  background: #2d73f6;
+}
+.photo-camera-bar .photo-camera-use:hover { background: #1f62e0; }
+.photo-shutter {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+.photo-shutter::after {
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: #fff;
+  content: "";
+  transition: transform 120ms ease;
+}
+.photo-shutter:active::after { transform: scale(.88); }
+.photo-shutter:disabled { opacity: .45; cursor: default; }
+.photo-camera button:focus-visible { outline: 2px solid #8db6ff; outline-offset: 3px; }
+
+@media (max-height: 560px) {
+  .photo-camera-stage { aspect-ratio: auto; height: min(62vh, 360px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo-status i { animation-duration: 2.4s; }
+  .photo-shutter::after { transition: none; }
+}

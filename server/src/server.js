@@ -5,6 +5,7 @@ import { pathToFileURL } from 'node:url';
 import { config, DEEPSEEK_OFFICIAL_MODEL } from './config.js';
 import { DeepSeekClient } from './deepseek-client.js';
 import { InstantSceneService } from './instant-scene-service.js';
+import { MAX_IMAGE_BYTES, MAX_RECOGNIZE_BODY_BYTES, QuestionRecognizer, sanitizeRecognizeRequest } from './question-recognizer.js';
 import { localGenerateFallback, localTutorChatFallback, localTutorFallback } from './local-fallback.js';
 import {
   sanitizeTutorChatRequest,
@@ -103,12 +104,12 @@ function aiErrorStatus(error) {
   return { status: 503, error: 'AI_UNAVAILABLE' };
 }
 
-async function readJsonBody(request) {
+async function readJsonBody(request, maxBytes = MAX_BODY_BYTES) {
   const chunks = [];
   let size = 0;
   for await (const chunk of request) {
     size += chunk.length;
-    if (size > MAX_BODY_BYTES) {
+    if (size > maxBytes) {
       throw new Error('BODY_TOO_LARGE');
     }
     chunks.push(chunk);
@@ -128,6 +129,8 @@ export function createMasterLabServer(options = {}) {
   const instantScenes = options.instantSceneService || new InstantSceneService();
   const allowedOrigins = options.allowedOrigins || config.allowedOrigins;
   const limiter = options.rateLimiter || new RateLimiter(config.rateLimitMax, config.rateLimitWindowMs);
+  const recognizer = options.questionRecognizer || new QuestionRecognizer();
+  const recognizeLimiter = options.recognizeRateLimiter || new RateLimiter(config.recognizeRateLimitMax, config.rateLimitWindowMs);
   const trustedProxyHops = options.trustedProxyHops ?? config.trustedProxyHops;
 
   return createHttpServer(async (request, response) => {
@@ -161,7 +164,14 @@ export function createMasterLabServer(options = {}) {
           model: DEEPSEEK_OFFICIAL_MODEL.id,
           modelVersion: DEEPSEEK_OFFICIAL_MODEL.version,
           modelLabel: DEEPSEEK_OFFICIAL_MODEL.label,
-          aiConfigured: deepSeek.configured
+          aiConfigured: deepSeek.configured,
+          photoRecognition: {
+            configured: recognizer.configured,
+            model: config.deepSeekModel,
+            maxImageBytes: MAX_IMAGE_BYTES,
+            maxBodyBytes: MAX_RECOGNIZE_BODY_BYTES,
+            maxConcurrentRequests: config.recognizeMaxConcurrentRequests
+          }
         }, requestId);
         return;
       }
@@ -173,6 +183,45 @@ export function createMasterLabServer(options = {}) {
       if (!limiter.allow(clientAddress(request, trustedProxyHops))) {
         status = 429;
         sendJson(response, status, { error: 'RATE_LIMITED' }, requestId);
+        return;
+      }
+
+      if (url.pathname === '/api/v1/question/recognize') {
+        // 照片识题：请求体上限单独放宽到约 3 MiB，并使用更严格的限流；照片和识别结果都不记录日志。
+        if (!recognizeLimiter.allow(clientAddress(request, trustedProxyHops))) {
+          status = 429;
+          sendJson(response, status, { error: 'RATE_LIMITED' }, requestId);
+          return;
+        }
+        const body = await readJsonBody(request, MAX_RECOGNIZE_BODY_BYTES);
+        const image = sanitizeRecognizeRequest(body);
+        if (!image) {
+          status = 400;
+          sendJson(response, status, { error: 'INVALID_IMAGE' }, requestId);
+          return;
+        }
+        if (!recognizer.configured) {
+          status = 503;
+          sendJson(response, status, { error: 'AI_NOT_CONFIGURED' }, requestId);
+          return;
+        }
+        const controller = new AbortController();
+        const cancel = () => { if (!response.writableEnded) controller.abort(); };
+        response.once('close', cancel);
+        try {
+          const result = await recognizer.recognize(image, { signal: controller.signal });
+          if (!response.destroyed) { status = 200; sendJson(response, status, { ...result, source: 'deepseek', requestId }, requestId); }
+          else status = 499;
+        } catch (error) {
+          if (response.destroyed) {
+            status = 499;
+          } else {
+            const mapped = error?.code === 'INVALID_AI_RESPONSE' ? { status: 502, error: 'INVALID_AI_RESPONSE' }
+              : error?.code === 'AI_BUSY' ? { status: 429, error: 'AI_BUSY' } : aiErrorStatus(error);
+            status = mapped.status;
+            sendJson(response, status, { error: mapped.error }, requestId);
+          }
+        } finally { response.off('close', cancel); }
         return;
       }
 
