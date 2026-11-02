@@ -3447,6 +3447,17 @@ function renderDiagramVisual(content) {
 }
 
 elements.genericPhysicsVisual?.addEventListener("click", event => {
+  if (state.hasGenerated && activeGenericId() === "leafDisks") {
+    const step = event.target.closest?.("[data-leaf-step]");
+    if (step) {
+      const index = Number(step.dataset.leafStep);
+      if (!Number.isInteger(index) || index < 0 || index > 5) return;
+      state.playing = false;
+      state.time = (index === 5 ? 1 : index / 6) * duration();
+      updateScene();
+      return;
+    }
+  }
   if (activeGenericId() === "population") {
     const example = event.target.closest?.("[data-population-example]");
     if (example) {
@@ -6791,7 +6802,9 @@ function buildMasterLabAIContext() {
       ...gradeLevelContext(experimentLevelInfo()?.content)
     },
     formula: displayedSource($(".formula-spotlight strong")).trim().slice(0, 600),
-    currentStep: displayedSource(currentReasoning).replace(/\s+/g, " ").trim().slice(0, 600)
+    currentStep: (genericModel && activeGenericTemplate()?.stepContext
+      ? activeGenericTemplate().stepContext(state.time / duration())
+      : displayedSource(currentReasoning).replace(/\s+/g, " ").trim()).slice(0, 600)
   };
 }
 
@@ -7483,7 +7496,7 @@ function currentPhysicsPresetKey() {
 /* ===== 预设菜单（各学科，按学段与板块分组，2026-10-16）=====
    菜单项写在 index.html（data-subject / data-level / data-block）。打开时按当前学科和学段重新分组：
    本学段按板块分组排在前面，另一学段折叠在底部；当前已预选的那一项隐藏。 */
-const PRESET_BLOCK_ORDER = Object.freeze(["力学", "电学", "电磁学", "光学", "热学", "声学", "化学计算", "几何", "函数", "方程（组）", "三角函数", "导数", "细胞", "遗传", "观察工具", "种群"]);
+const PRESET_BLOCK_ORDER = Object.freeze(["力学", "电学", "电磁学", "光学", "热学", "声学", "化学计算", "几何", "函数", "方程（组）", "三角函数", "导数", "细胞", "遗传", "观察工具", "种群", "植物生理"]);
 const DEDICATED_PRESET_KEYS = new Set(["brake", "solenoid", "boardSlider", "projectile", "circuit", "feCuSO4", "tangent", "cellPlant", "cellAnimal"]);
 const PRESET_OPTIONS = $$("#physicsPresetDropdown .preset-option");
 PRESET_OPTIONS.forEach(option => {
@@ -8363,7 +8376,7 @@ async function generateExperiment(options = {}) {
   updateGradeTag();
   dispatchAIContextChanged();
   setDemoStep(3, "点击播放或请求 AI 导师提示");
-  if (!options.shared) showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : genericParse ? `${GENERIC_TEMPLATES[genericParse.templateId].subject}典型题模板已生成，可拖动参数观察变化` : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
+  if (!options.shared) showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : genericParse?.templateId === "leafDisks" ? "高中光合作用教材流程已生成，可播放或回看六步操作": genericParse ? `${GENERIC_TEMPLATES[genericParse.templateId].subject}典型题模板已生成，可拖动参数观察变化` : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
   return true;
 }
 
@@ -8544,6 +8557,11 @@ $("#challengeButton").addEventListener("click", () => {
   if (genericTemplate) {
     const template = genericTemplate;
     const fixed = template.fixedWithDefaults(state.extraFixed?.[template.id]);
+    if (template.parameter && template.params.every((param, index) => template.parameter(param, index, fixed).locked)) {
+      setReasoningStep(4, `<span>教材追问</span>${buildGenericContent().challenge}`);
+      showToast("按教材流程回看并解释操作目的");
+      return;
+    }
     const custom = template.variant?.(state.p1, state.p2, fixed);
     if (custom) {
       state.p1 = custom.p1;
