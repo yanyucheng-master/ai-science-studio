@@ -1,81 +1,126 @@
-# 光合作用教材实验：交付证据
+# 光合作用退回修复证据（2026-11-03）
 
-固定完整执行源码 `073b2a62512da325addb6b1f2c9aa7354cebb96c`，树 `022cc18aaf4a302d1a5bd744cc03f56f76263473`；基线 `1354fd9d2279d4f76cd72ad236c1557400a457f0`。完整执行期间不改产品/测试源码。后续测试夹具、文档和公告提交另列，实验产品逻辑与样式未改。
+针对[负责人退回评论](https://github.com/yanyucheng-master/ai-science-studio/issues/9#issuecomment-6603663397)补交。本页对应人教七下2024审核体系正文29–30页的已授权样例。仅为J02同叶遮光或H11叶圆片的部分，不申报J01–J08/H01–H12全专题完成，也未代用户确认20族整体方案。
 
-[教材正文映射](../photosynthesis-textbook.md) · [命令/退出码/计数/失败对照及交互摘要](execution-summary.json) · [图片SHA256](manifest.json)
+## 版本与主线保留
 
-候选33组：31通过、2失败、0进程超时、0未执行组。基线31组：29通过、2失败、0进程超时。组内定位超时/提前中止需与组统计分开读取，不把失败包装成全绿。
+- 完整执行源码：`1bc37ace51b73f30f49e471e55702dfd835f87ef`；树`39a8acb9fd2a466faf419176a69cdc7404043e22`。运行期间隔离源码未变。最终PR若只增加证据/公告元数据，另验公告并在Issue列最终head，不将旧执行重命名为新提交执行。
+- fetch基线：`e6f43c5b398fb039c80e2f02382119d3566ae1f5`。两PR仍独立面向master、Draft；初中追加合并提交接入主线，无历史重写。主线560题原样保留，初中574、高中586题。
+- 联用审查分支`codex/photosynthesis-joint-review`含两个修复源码，归并共享app/page/menu、题库、公告与测试夹具；完整联用源码`45be585eafd38aa72761c78fefca438a55c3c502`、树`6b63f13e1c544b204f67ba1d6f078721c1fe5447`，600=560+14+26题。该分支供负责人核查，不表示PR已接纳，不合并PR/主线、不部署。
+- [逐文件和数据保留核对](source-preservation.json)：拍题、移动样式、显微镜、种群的12个相关文件与master逐字节一致；主线既有公告不改。共享文件只归并本实验必要片段。
 
-分享/公告补测SHA `2de6b4e034339ab15b357de6fc4be6cd0399951f`：两组退出码均0；分享14项检查、233题往返、38组调参、实际BFCache通过。干净基线补测只应用相同等待页夹具（并非未改测试源码），227题、38组、BFCache通过。两份夹具SHA256一致；见supplementalShare。此后交付仅增加证据和公告元数据，公告在最终交付head另验。
+## 等义题修复证据
 
-| 组 | 命令（server目录） | 退出码 | 实际计数 |
+[真实模板API前后对照](review-reproduction.json)：旧head的原句成功、两条独立改写失败；修复版原句与改写均成功。`expectedAccepted=true`表示正确语义预期，旧版false是已复现缺陷，不能当成正确拒绝。
+
+[逐例输入、独立预期、实际页面结果](semantic-cases.json)：38例（14正、24反），手写输入不调用模板生成器当预期。覆盖明确等义操作、问句前/后置、条件反序、句号/冒号/分号、适用单位、逐项缺失、矛盾/重复、数字角色、错误操作和附加子问。页面逐例实际生成或拒绝；拒绝后原题/播放位置保留，而新题导师无旧结果/旧步骤。
+
+解析逐条件消费完整题目、独立核对所有所问；不再整句相等才通过，也不是只看关键词。只支持列明的有限等义词法，不宣称理解任意自然语言；未知片段或缺项具体提示，不补条件、不吞子问、不弱化拒绝。事实列举可以换序，明确写出的操作先后关系仍逐项核对。
+
+Node总计975/975，本实验专项69已含在总数中，不重复相加。Edge/Chromium专项分别265/265项、25/25份布局记录。
+
+## 完整适用执行
+
+| 集合 | 源码 | 通过 | 失败 | 进程超时 | 未执行组 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 本实验38组 | `1bc37ace51b7` | 37 | 1 | 0 | 0 |
+| 干净主线36组 | `e6f43c5b398f` | 33 | 3 | 0 | 0 |
+| 两项联用41组 | `45be585eafd3` | 39 | 2 | 0 | 0 |
+
+未执行组0仅表示列出的进程都实际启动并结束，**失败脚本在中止点之后的断言不计通过**。本轮重新完整执行，不沿用旧31/45项专项当补证。原始时间戳UTC；环境Windows、Nodev24.22.1、Playwright1.62.1、Edge156.0.4314.58、Chromium151.0.7922.34。两浏览器同引擎。
+
+[脱敏执行摘要](execution-summary.json)包含每个集合的命令、退出码、计数、失败内容、日志哈希、DOM/几何断言、浏览器与分享/动画记录。原始日志和未选图片留本地`.handoff/photosynthesis-review-20261103/`独立目录。设置安装环境的`PLAYWRIGHT_MODULE`、隔离`PLAYWRIGHT_BROWSERS_PATH`、`BROWSER_CHANNEL`和`SECONDARY_BROWSER_CHANNEL`，从`server`目录按下表复跑；无需真实AI密钥。
+
+| 命令（server目录） | 退出码 | 状态 | 计数摘要 |
+| --- | ---: | --- | --- |
+| `node scripts/verify-photosynthesis-browser.js` | 0 | 通过 | checks=265, layouts=25, semanticCases=38 |
+| `node --test test/biology-photosynthesis.test.js` | 0 | 通过 | tests=69, pass=69, fail=0, cancelled=0, skipped=0, todo=0 |
+| `node --test` | 0 | 通过 | tests=975, pass=975, fail=0, cancelled=0, skipped=0, todo=0 |
+| `node scripts/verify-question-bank-browser.js` | 0 | 通过 | totalQuestions=574, local=268, mockRoute=306 |
+| `node scripts/verify-week1-browser.js` | 0 | 通过 | layouts=50, failures=0 |
+| `node scripts/verify-week2-browser.js` | 0 | 通过 | checks=144, failures=0 |
+| `node scripts/verify-tutor-browser.js` | 0 | 通过 | reportCases=9 |
+| `node scripts/verify-animation-browser.js` | 0 | 通过 | variants=6 |
+| `node scripts/verify-announcements-browser.js` | 0 | 通过 | cases=8, passedCases=8, failedCases=0, reportedPasses=8 |
+| `node scripts/verify-formula-browser.js` | 0 | 通过 | layouts=69, failures=0, ai=5 |
+| `node scripts/verify-ai-quality-browser.js` | 0 | 通过 | reportCases=17 |
+| `node scripts/verify-share-browser.js` | 0 | 通过 | checks=14, roundTrips=268, adjustedTemplates=43 |
+| `node scripts/verify-instant-browser.js` | 0 | 通过 | reportedPassLines=13 |
+| `node scripts/verify-instant-routing-browser.js` | 0 | 通过 | reportedPassLines=8 |
+| `node scripts/verify-tutor-diagram-browser.js` | 0 | 通过 | cases=19, passedCases=19, failedCases=0 |
+| `node scripts/verify-tutor-presentation-browser.js` | 0 | 通过 | cases=27, passedCases=27, failedCases=0 |
+| `node scripts/verify-incline-diagram-browser.js --guard-only` | 1 | 失败 | cases=6, passedCases=1, failedCases=5 |
+| `node scripts/verify-incline-diagram-browser.js` | 0 | 通过 | cases=7, passedCases=7, failedCases=0 |
+| `node scripts/verify-incline-diagram-browser.js --render` | 0 | 通过 | cases=11, passedCases=11, failedCases=0 |
+| `node scripts/verify-incline-diagram-browser.js --competition` | 0 | 通过 | cases=19, passedCases=19, failedCases=0 |
+| `node scripts/verify-incline-diagram-browser.js --data` | 0 | 通过 | cases=32, passedCases=32, failedCases=0 |
+| `node --test test/chemistry-experiments.test.js` | 0 | 通过 | tests=20, pass=20, fail=0, cancelled=0, skipped=0, todo=0 |
+| `node scripts/verify-chemistry-browser.js` | 0 | 通过 | checks=200, layouts=6 |
+| `node --test test/math-experiments.test.js` | 0 | 通过 | tests=25, pass=25, fail=0, cancelled=0, skipped=0, todo=0 |
+| `node scripts/verify-math-experiments-browser.js` | 0 | 通过 | checks=203, layouts=9 |
+| `node scripts/verify-experiment-layout-browser.js` | 0 | 通过 | layoutsCases=73, cases=46, passedCases=46, failedCases=0 |
+| `node --test test/unit-circle.test.js` | 0 | 通过 | tests=73, pass=73, fail=0, cancelled=0, skipped=0, todo=0 |
+| `node scripts/verify-unit-circle-browser.js` | 0 | 通过 | checks=219, layouts=15 |
+| `node --test test/chemistry-equilibria.test.js test/chemistry-equilibria-templates.test.js` | 0 | 通过 | tests=63, pass=63, fail=0, cancelled=0, skipped=0, todo=0 |
+| `node scripts/verify-chemistry-equilibria-browser.js` | 0 | 通过 | checks=134, layouts=14 |
+| `node --test test/biology-mendel.test.js` | 0 | 通过 | tests=17, pass=17, fail=0, cancelled=0, skipped=0, todo=0 |
+| `node scripts/verify-mendel-browser.js` | 0 | 通过 | checks=105, layouts=7 |
+| `node scripts/verify-acceptance-fixes-browser.js` | 0 | 通过 | checks=62, failures=0 |
+| `node --test test/biology-microscope.test.js test/biology-microscope-questions.test.js test/biology-microscope-templates.test.js` | 0 | 通过 | tests=36, pass=36, fail=0, cancelled=0, skipped=0, todo=0 |
+| `node scripts/verify-microscope-browser.js` | 0 | 通过 | checks=249, layouts=21 |
+| `node --test test/biology-population.test.js test/biology-population-logistic.test.js` | 0 | 通过 | tests=65, pass=65, fail=0, cancelled=0, skipped=0, todo=0 |
+| `node scripts/verify-population-browser.js` | 0 | 通过 | checks=215, layouts=16 |
+| `node scripts/verify-population-background-browser.js` | 0 | 通过 | checks=2 |
+
+## 失败与未执行边界
+
+- 旧斜面guard断言保留；干净基线、两候选与联用的原始结果分别记录。共同失败不计通过，也不据同签名断言已证明根因。
+- 种群后台若在S型暂停后pending RAF=1、期望0处停止，离散部分与停止前已到达内容单列；S型其后断言未到达。未接手重写种群。
+- 干净主线原share在等待页点击隐藏按钮的原始超时保留。另份基线副本仅改等待页夹具：断言按钮隐藏并调用公开copy确认拒绝未生成实验，之后全部原断言保留。候选/联用采用该夹具；原失败与补测通过分开列，不倒改为全绿。
+- 联用探索首轮漏配主动追问mock，4次本地503使无错误断言失败；补齐模拟响应后完整重跑，原失败留本地，未删断言。高中探索预检期间资源元数据同步不作冻结证据，本页完整执行使用固定源码。
+- Firefox/Safari、真机、真实相机/OCR准确率、真实AI/live、部署未执行。Edge/Chromium不能代替跨引擎结果。本地通过不等于CI/安全扫描/签名通过，最终GitHub记录在Issue另报。
+
+## 精选页面
+
+新图来自上述完整执行源码，基线图来自同一干净master。1366/820/390/**360**及844×390均覆盖真实页面、触控模拟、全屏滚动、文本边界、按钮尺寸与SVG/图线断言；联用另验跨模板A→B→A、AI往返、固定追问、模拟照片上传只填题、显微镜与种群入口。独立导入、刷新、收藏、重置、实际BFCache由专项和完整share验证。截图不能替代实际交互检查。
+
+[PNG尺寸/哈希/源码SHA](manifest.json)。教材映射见上级文档。没有提交教材原PDF/页图、密钥、个人配置、原始日志或未选产物。
+
+### 本轮种群后台的实际差异
+
+| 集合 | 实际状态 | 已完成模式 | 停止点 |
 | --- | --- | --- | --- |
-| photosynthesis-browser | `node scripts/verify-photosynthesis-browser.js` | 0 | {"checks": 180, "layouts": 17} |
-| photosynthesis-model | `node --test test/biology-photosynthesis.test.js` | 0 | {"tests": 31, "pass": 31, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0} |
-| node | `node --test` | 0 | {"tests": 824, "pass": 824, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0} |
-| question-bank | `node scripts/verify-question-bank-browser.js` | 0 | {"totalQuestions": 481, "local": 233, "mockRoute": 248} |
-| week1 | `node scripts/verify-week1-browser.js` | 0 | {"layouts": 50, "failures": 0} |
-| week2 | `node scripts/verify-week2-browser.js` | 0 | {"checks": 144, "failures": 0} |
-| tutor | `node scripts/verify-tutor-browser.js` | 0 | {"cases": 9} |
-| animation | `node scripts/verify-animation-browser.js` | 0 | {"variants": 6} |
-| announcements | `node scripts/verify-announcements-browser.js` | 0 | {"reportedPassLines": 8} |
-| formula | `node scripts/verify-formula-browser.js` | 0 | {"layouts": 69, "failures": 0, "ai": 5, "mockAi": 5} |
-| ai-quality | `node scripts/verify-ai-quality-browser.js` | 0 | {"cases": 17, "passedCases": 17} |
-| share | `node scripts/verify-share-browser.js` | 1 | {"checks": 0, "roundTrips": 0} |
-| instant | `node scripts/verify-instant-browser.js` | 0 | {"reportedPassLines": 13} |
-| instant-routing | `node scripts/verify-instant-routing-browser.js` | 0 | {"reportedPassLines": 8} |
-| tutor-diagram | `node scripts/verify-tutor-diagram-browser.js` | 0 | {"cases": 19, "passedCases": 19, "failedCases": 0} |
-| tutor-presentation | `node scripts/verify-tutor-presentation-browser.js` | 0 | {"cases": 27, "passedCases": 27, "failedCases": 0} |
-| incline-guard | `node scripts/verify-incline-diagram-browser.js --guard-only` | 1 | {"cases": 6, "passedCases": 1, "failedCases": 5} |
-| incline-core | `node scripts/verify-incline-diagram-browser.js` | 0 | {"cases": 7, "passedCases": 7, "failedCases": 0} |
-| incline-render | `node scripts/verify-incline-diagram-browser.js --render` | 0 | {"cases": 11, "passedCases": 11, "failedCases": 0} |
-| incline-competition | `node scripts/verify-incline-diagram-browser.js --competition` | 0 | {"cases": 19, "passedCases": 19, "failedCases": 0} |
-| incline-data | `node scripts/verify-incline-diagram-browser.js --data` | 0 | {"cases": 32, "passedCases": 32, "failedCases": 0} |
-| chemistry-model | `node --test test/chemistry-experiments.test.js` | 0 | {"tests": 20, "pass": 20, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0} |
-| chemistry-browser | `node scripts/verify-chemistry-browser.js` | 0 | {"checks": 200, "layouts": 6} |
-| math-model | `node --test test/math-experiments.test.js` | 0 | {"tests": 25, "pass": 25, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0} |
-| math-browser | `node scripts/verify-math-experiments-browser.js` | 0 | {"checks": 203, "layouts": 9} |
-| experiment-layout | `node scripts/verify-experiment-layout-browser.js` | 0 | {"cases": 46, "passedCases": 46, "failedCases": 0} |
-| unit-circle-model | `node --test test/unit-circle.test.js` | 0 | {"tests": 73, "pass": 73, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0} |
-| unit-circle-browser | `node scripts/verify-unit-circle-browser.js` | 0 | {"checks": 219, "layouts": 15} |
-| equilibria-model | `node --test test/chemistry-equilibria.test.js test/chemistry-equilibria-templates.test.js` | 0 | {"tests": 63, "pass": 63, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0} |
-| equilibria-browser | `node scripts/verify-chemistry-equilibria-browser.js` | 0 | {"checks": 134, "layouts": 14} |
-| mendel-model | `node --test test/biology-mendel.test.js` | 0 | {"tests": 17, "pass": 17, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0} |
-| mendel-browser | `node scripts/verify-mendel-browser.js` | 0 | {"checks": 105, "layouts": 7} |
-| acceptance-fixes | `node scripts/verify-acceptance-fixes-browser.js` | 0 | {"checks": 62, "failures": 0} |
+| baseline-full | 失败 | discrete | 暂停后pending RAF=1，期望0；其后S型断言未到达 |
+| junior-full | 通过 | discrete, logistic | 两种模式及最终检查完成 |
+| senior-full | 失败 | discrete | 暂停后pending RAF=1，期望0；其后S型断言未到达 |
+| joint-full | 失败 | discrete | 暂停后pending RAF=1，期望0；其后S型断言未到达 |
+| baseline-population-repeat | 失败 | discrete | 暂停后pending RAF=1，期望0；其后S型断言未到达 |
+| junior-population-repeat | 通过 | discrete, logistic | 两种模式及最终检查完成 |
 
-## 原始失败与补测
+初中完整执行和定向复核都通过，而同一未改主线的完整执行和定向复核都在S型暂停计数处失败；其余集合如表。没有以初中的通过删除原失败，也没有把现象差异归因为本实验修复或宣称根因已确认。
 
-完整执行保留两个与干净基线同签名的失败组：旧 share 在等待页点击隐藏按钮而提前超时；旧 incline --guard-only 的6例中5例仍期待已停用的坐标请求，实际0、断言1。未删除或弱化这些失败，也不把组内未到达的断言算通过。当前斜面 core/render/competition/data 另行完整执行。
+### 新版本完整六步后的同叶显色 · 1366
 
-share 仅更新等待页契约：断言按钮隐藏，并直接调用公开复制边界核对拒绝及0次复制；其后全部旧断言保留。干净基线与候选补测结果、源码/产品SHA、往返数量、38组调参和真实BFCache见 execution-summary.json 的 supplementalShare。原始失败仍在上表中，不改称33组全绿。
+![新版本完整六步后的同叶显色 · 1366](photosynthesis-1366.png)
 
-## 书上内容与网页示意
+### 新版本完整六步后的同叶显色 · 820
 
-采用人教2024审核体系七下正文29–30页，具体纸质印次未标。器材、六步顺序、两次清水处理与预期现象按正文对齐。图稿是原创交互示意，不能声称是教材照片的复制，也不把动画秒数、颜色或尺寸当实测数据。未引入光强/温度/产量参数或其他光合作用实验。
+![新版本完整六步后的同叶显色 · 820](photosynthesis-820.png)
 
-共享播放/暂停/进度/重置/全屏是唯一播放器；六步按钮供回看。原见光区与原遮光区来自同一叶片，最后冲洗前不宣称已观察到最终变蓝。模型、页面、分享与导师的条件口径一致。
+### 新版本完整六步后的同叶显色 · 390
 
-## 三宽实页与同基线风格对照
+![新版本完整六步后的同叶显色 · 390](photosynthesis-390.png)
 
-三张新实验图取水浴操作和最终观察；像素尺寸是完整实验卡裁图，视口宽度另列。两张已有孟德尔实验作同基线主题/控件/卡片参照。原始全量日志与截图、教材PDF/原页不提交。
+### 新版本完整六步后的同叶显色 · 360
 
-### waterbath-1366.png（视口1366）
+![新版本完整六步后的同叶显色 · 360](photosynthesis-360.png)
 
-![waterbath-1366.png](waterbath-1366.png)
+### 同一基线显微镜布局对照 · 1366
 
-### observation-820.png（视口820）
+![同一基线显微镜布局对照 · 1366](baseline-microscope-1366.png)
 
-![observation-820.png](observation-820.png)
+### 同一基线显微镜布局对照 · 390
 
-### observation-390.png（视口390）
+![同一基线显微镜布局对照 · 390](baseline-microscope-390.png)
 
-![observation-390.png](observation-390.png)
-
-### reference-mendel-1366.png（视口1366）
-
-![reference-mendel-1366.png](reference-mendel-1366.png)
-
-### reference-mendel-390.png（视口390）
-
-![reference-mendel-390.png](reference-mendel-390.png)
+上轮失败和版本映射仍可在[原交付提交](https://github.com/yanyucheng-master/ai-science-studio/blob/d023f53ebaf33a6d8393e03cae532f9ef1328a59/docs/photosynthesis-evidence/README.md)核对，没有改称本轮执行。
