@@ -115,3 +115,6 @@ test('scene and tutor retain no measured data and distinguish mechanism from gro
   assert.match(html, /5 W是灯功率/); assert.match(html, /零片上浮也不等于光合作用为零/);
   assert.match(context, /尚未提供.*实际观察记录/); assert.doesNotMatch(html, /<script|onclick=|setInterval|requestAnimationFrame/);
 });
+
+const paraphrases=JSON.parse(await readFile(new URL('../eval/leaf-disks-paraphrases.json',import.meta.url),'utf8'));
+for(const row of paraphrases)test('independent semantic case '+row.id,()=>{const p=T.parseQuestion(row.question);assert.equal(p.ok,row.expected,JSON.stringify({question:row.question,message:p.message}));if(!p.ok)assert.match(p.message,/缺少|无法确认|重复|子问|所问/);});
