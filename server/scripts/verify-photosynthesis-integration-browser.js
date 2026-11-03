@@ -30,15 +30,17 @@ async function generate(page,q){await page.locator('#questionInput').fill(q);awa
 async function share(page){await page.locator('#shareButton').click();return page.evaluate(()=>window.__copies.at(-1));}
 
 try {
+ report.mockTutor=[];
  const samples={photosynthesis:JSON.parse(await readFile(resolve(root,'server/eval/photosynthesis-paraphrases.json'),'utf8'))[1].question,leafDisks:JSON.parse(await readFile(resolve(root,'server/eval/leaf-disks-paraphrases.json'),'utf8'))[1].question};
  for(const width of [1366,360]){
   const c=await context(width,900),p=await c.newPage();await p.goto(base);await p.waitForFunction(()=>MASTER_LAB_TEMPLATES.photosynthesis&&MASTER_LAB_TEMPLATES.leafDisks);await p.evaluate(()=>clearTimeout(state.autoDemoTimer));
+  await c.route('**/api/v1/tutor/chat',route=>{report.mockTutor.push(route.request().postDataJSON().context);return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({mode:'explain',summary:'本地模拟教材追问，固定流程保持。',steps:[],formulas:[],finalAnswer:null,checks:[],warnings:[],followUp:'',parameterPatch:null})});});
   const urls={};
   for(const [id,q] of Object.entries(samples)){
    await generate(p,q);check(await p.evaluate(id=>activeGenericId()===id,id),width+': complete question selects '+id);
    const selector=id==='photosynthesis'?'[data-photosynthesis-step="3"]':'[data-leaf-step="3"]';await p.locator(selector).click();check(await p.evaluate(()=>buildMasterLabAIContext().currentStep.includes('第4步')),width+': own step context '+id);
    await p.locator('#favoriteButton').click();urls[id]=await share(p);
-   await p.locator('#challengeButton').click();check(await p.evaluate(id=>activeGenericId()===id,id),width+': fixed challenge keeps own experiment '+id);
+   await p.locator('#challengeButton').click();await p.waitForFunction(()=>document.querySelector('#aiTutorWorkspace').getAttribute('aria-busy')!=='true'&&document.querySelector('.ai-message.assistant:not(.pending):not(.error)'));check(await p.evaluate(id=>activeGenericId()===id,id),width+': fixed challenge keeps own experiment '+id);
    check(await p.locator('#playButton:visible').count()===1&&await p.locator('#fullscreenButton:visible,#sceneFullscreenButton:visible').count()===1,width+': unique shared controls '+id);
   }
   const rp=await c.newPage();await rp.goto(urls.photosynthesis);await rp.waitForFunction(()=>state.hasGenerated&&activeGenericId()==='photosynthesis');
@@ -59,5 +61,6 @@ try {
   check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),width+': integration viewport has no horizontal overflow');
   await c.close();
  }
+ check(report.mockTutor.length===4&&report.mockTutor.every(x=>x.currentStep.includes('第4步')&&x.deterministicResult.resultText),'four explicit mocked challenge requests retain matching protocol and step');
  check(!report.errors.length,'no page or console errors');check(!report.api.length,'no unexpected AI attempts');
 }catch(e){report.failure=e.stack;process.exitCode=1;console.error(e);}finally{await writeFile(resolve(out,'report.json'),JSON.stringify(report,null,2));await Promise.allSettled(contexts.map(c=>c.close()));if(secondary)await secondary.close();await browser.close();server.close();}
