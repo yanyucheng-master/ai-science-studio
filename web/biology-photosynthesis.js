@@ -17,20 +17,47 @@
     const asks=f.asks.split(',');
     return !asks.length||new Set(asks).size!==asks.length||asks.some(k=>!Object.hasOwn(askNames,k))?'所问超出当前教材实验范围。':'';
   }
-  function parse(text){
-    const seen=new Set(),asks=new Set();let bad=false,afterAsk=false;
-    for(const raw of norm(text).split(/[，,。；;？?：:]+/).filter(Boolean)){
-      const ask=raw.match(/^(?:请)?(?:说明|解释|比较|说出)(.+)$/);
-      const names=(ask?ask[1]:raw).split(/以及|和|、|及/),keys=names.map(n=>Object.keys(askNames).find(k=>askNames[k]===n));
-      if(ask||afterAsk&&keys.every(Boolean)){
-        if(keys.some(k=>!k))bad=true;else keys.forEach(k=>asks.add(k));
-        afterAsk=true;continue;
+
+  // Bounded semantic grammar, not a keyword recognizer: every condition and ask must be consumed.
+  const RULES=[
+    ['人教七下教材范围',/^(?:按|依据)(?:人教版|人民教育出版社)(?:生物学)?七年级下册教材/],
+    ['探究绿叶在光下制造有机物',/^(?:探究|研究)绿叶在光下(?:制造|产生)有机物/],
+    ['盆栽天竺葵暗处理一昼夜',/^盆栽天竺葵(?:先)?(?:暗处理|在黑暗处处理|置于黑暗处|放在黑暗处)(?:一昼夜|1昼夜|24小时|一天一夜)/],
+    ['同一叶片黑纸双面局部遮光',/^同一(?:片)?叶片(?:用黑纸片)?(?:从上下两面局部遮光|局部用黑纸(?:片)?遮住(?:叶片的)?上下两面|(?:的)?局部上下两面(?:均|都)用黑纸(?:片)?遮住)/],
+    ['阳光下几小时后摘叶去纸',/^(?:放|置)在阳光下(?:几|数)小时后(?:摘叶|摘下叶片)并(?:移去|去掉|除去)黑纸(?:片)?/],
+    ['酒精水浴脱色',/^(?:用)?酒精(?:水浴脱色|隔水加热脱色|在水浴中加热脱色)/],
+    ['先清水漂洗再培养皿滴碘',/^(?:用)?清水(?:漂洗|冲洗)(?:后|再)(?:置于|放入|放在)培养皿(?:中)?(?:滴加|滴上|滴入)碘液/],
+    ['稍停后清水冲碘再观察',/^(?:稍停片刻|稍等片刻|稍停一会)(?:后)?(?:用)?清水(?:冲掉|冲去|洗去)碘液(?:再|后)(?:观察|进行观察)/]
+  ];
+  const ASK_RULES={conclusion:/^(?:本实验的)?(?:实验结论|所得结论)/,phenomenon:/^(?:本实验的)?(?:实验现象|观察现象|预期现象)/,purpose:/^(?:本实验的)?(?:操作目的|各步骤的目的|各步操作的目的)/,steps:/^(?:本实验的)?(?:实验步骤|操作步骤|实验操作顺序|操作流程)/};
+
+  function parse(text) {
+    if (typeof text !== 'string' || !text.trim()) return {ok:false,message:'请输入完整实验条件和所问。'};
+    let rest = norm(text).replace(/[，,。；;：:！？?、]/g,'').replace(/(?<!\d)\.|\.(?!\d)/g,'');
+    const seen = new Set(), asks = new Set();
+    let askMode = false;
+    const reject = message => ({ok:false,message});
+    while (rest) {
+      const marker = rest.match(/^(?:请)?(?:说明|解释|比较|说出|指出|描述|列出)/);
+      if (marker) { rest=rest.slice(marker[0].length); askMode=true; }
+      if (askMode) {
+        const found = Object.entries(ASK_RULES).map(([key,re])=>({key,match:rest.match(re)})).find(x=>x.match);
+        if (found) {
+          asks.add(found.key); rest=rest.slice(found.match[0].length);
+          const connector=rest.match(/^(?:以及|和|及|与)/);
+          if (connector) { rest=rest.slice(connector[0].length); if (!Object.values(ASK_RULES).some(re=>re.test(rest))) return reject('所问含未支持或不完整的子问：'+rest.slice(0,38)+'。'); }
+          continue;
+        }
+        if (marker) return reject('无法确认所问的类型：'+rest.slice(0,38)+'。本流程仅支持'+Object.values(askNames).join('、')+'。');
       }
-      afterAsk=false;
-      const index=clauses.map(norm).indexOf(raw);
-      if(index<0||seen.has(index))bad=true;else seen.add(index);
+      const found=RULES.map(([name,re],index)=>({name,index,match:rest.match(re)})).find(x=>x.match);
+      if (!found) return reject('无法确认这段条件或子问：'+rest.slice(0,42)+'。请核对操作、数值角色与所问；不会自动补条件。');
+      if (seen.has(found.index)) return reject('条件重复或可能矛盾：'+found.name+'。请只给出一致条件。');
+      seen.add(found.index); rest=rest.slice(found.match[0].length); askMode=false;
     }
-    if(bad||seen.size!==clauses.length||!asks.size)return {ok:false,message:fail};
+    const missing=RULES.filter((_,i)=>!seen.has(i)).map(([name])=>name);
+    if (missing.length) return reject('缺少可核对条件：'+missing.join('；')+'。');
+    if (!asks.size) return reject('尚未明确所问。本流程支持'+Object.values(askNames).join('、')+'。');
     return {ok:true,p1:1,p2:1,fixed:{...defaults,asks:[...asks].sort().join(',')}};
   }
   function question(p1=1,p2=1,f=defaults){
@@ -76,7 +103,7 @@
   }
   kit.register({photosynthesis:{id:'photosynthesis',subject:'生物',level:'junior',block:'植物生理',stage:'光合作用',title:'光合作用：绿叶在光下制造有机物',menuTitle:'绿叶在光下制造有机物',menuMeta:'同叶遮光 · 酒精水浴 · 碘液检验',defaults:[1,1],resetToQuestion:true,motion:{duration:12},formatMetric:String,keywords:/光合作用|绿叶.*有机物|天竺葵/,
     params:[{label:'教材固定流程',desc:'按人教七下六步操作',unit:'',min:1,max:1,step:1,value:1},{label:'同叶遮光对照',desc:'上下两面局部遮光',unit:'',min:1,max:1,step:1,value:1}],parameter:param=>({...param,locked:true,lockText:'教材固定设置'}),
-    strict:{sameConditions:true,caps:[[1,1],[1,1]],fixedDefaults:defaults,intent:{require:[/绿叶/,/有机物/]},values:parse,checkFixed:issue,used:()=>[],asks:{supported:/实验步骤|实验现象|实验结论|操作目的/,unsupported:/速率|产量|体积|质量|氧气|二氧化碳|光强|温度/}},
+    strict:{sameConditions:true,caps:[[1,1],[1,1]],fixedDefaults:defaults,intent:{require:[/绿叶/,/有机物/]},values:parse,checkFixed:issue,used:()=>[{cls:"time",value:86400}],asks:{supported:/实验步骤|操作步骤|实验操作顺序|操作流程|实验现象|观察现象|预期现象|实验结论|所得结论|操作目的|各步骤的目的|各步操作的目的/,unsupported:/速率|产量|体积|质量|氧气|二氧化碳|光强|温度/}},
     question,model,visual,renderFrame,presetFor:()=>({p1:1,p2:1,fixed:{...defaults}}),recognition:m=>m.readout,
     stepContext:p=>{const f=C.frame(p),s=C.STEPS[f.step];return `当前教材第${f.step+1}步：${s.title}。${s.action}${f.observationReady?'冲洗后已可观察原见光区与原遮光区的显色。':'当前还不能把最终显色当作已经观察到的结果。'}确定性结果区列的是完整教材流程完成后的预期，非实测。`;},
     copy:m=>({steps:C.STEPS.map((s,i)=>[`${i+1} ${s.title}`,s.action,s.purpose]),hint:'先区分原见光区和原遮光区，再判断淀粉检验完成之前能否得出显色结论。',mentor:'同一叶片的两部分主要差别是什么？为什么暗处理和脱色都不能替代最后的碘液检验？',challenge:'用上方同一时间轴回看六步，说明暗处理、双面遮光、脱色和滴碘的目的。',sceneTip:'本实验的预期结论只涉及淀粉与光照条件；先完成全部操作，再根据对照现象解释。',generationStages:stages('核对完整教材流程与所问','建立同叶遮光的定性对照','准备教材六步的交互示意')})}});

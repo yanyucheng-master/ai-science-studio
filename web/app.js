@@ -3457,6 +3457,40 @@ elements.genericPhysicsVisual?.addEventListener("click", event => {
 });
 
 elements.genericPhysicsVisual?.addEventListener("click", event => {
+  if (activeGenericId() === "population") {
+    const example = event.target.closest?.("[data-population-example]");
+    if (example) {
+      const mode = example.dataset.populationExample;
+      if (!["discrete", "logistic"].includes(mode)) return;
+      const template = activeGenericTemplate(), preset = template.presetFor(state.gradeLevel, mode);
+      $("#questionInput").value = template.question(preset.p1, preset.p2, preset.fixed);
+      $("#questionInput").dispatchEvent(new Event("input", { bubbles: true }));
+      generateExperiment({ allowAiFallback: false });
+      return;
+    }
+  }
+  if (activeGenericId() === "microscope") {
+    const example = event.target.closest?.("[data-microscope-example]");
+    if (example) {
+      const mode = example.dataset.microscopeExample;
+      if (!["magnification", "field", "direction"].includes(mode)) return;
+      const template = activeGenericTemplate();
+      const preset = template.presetFor(state.gradeLevel, mode);
+      $("#questionInput").value = template.question(preset.p1, preset.p2, preset.fixed);
+      $("#questionInput").dispatchEvent(new Event("input", { bubbles: true }));
+      generateExperiment({ allowAiFallback: false });
+      return;
+    }
+    const move = event.target.closest?.("[data-microscope-move]");
+    if (move && state.extraFixed?.microscope?.mode === "direction") {
+      const action = { left: [0, -1], right: [0, 1], up: [1, 1], down: [1, -1] }[move.dataset.microscopeMove];
+      if (!action) return;
+      const range = elements.ranges[action[0]];
+      range.value = String(clamp(Number(range.value) + action[1], Number(range.min), Number(range.max)));
+      range.dispatchEvent(new Event("input", { bubbles: true }));
+      return;
+    }
+  }
   const button = event.target.closest?.(".diagram-zoom-toggle");
   if (!button) return;
   const visual = elements.genericPhysicsVisual;
@@ -6360,7 +6394,7 @@ function renderWaitingReasoning() {
       <span class="step-index">${index + 1}</span>
       <div><strong>${title}</strong></div>
     </button>`).join("");
-  elements.mentorMessage.innerHTML = "生成实验后，我会根据题目给出关键追问、提示和变式迁移。";
+  elements.mentorMessage.innerHTML = "我会根据题目给出追问、提示和变式迁移。";
   hideMentorFeedback();
 }
 
@@ -7373,7 +7407,7 @@ function detectSubjectStrict(question) {
   if (/化学|硝酸钾|KNO[₃3]|氢氧化钠|NaOH|碳酸钙|CaCO[₃3]|盐酸|HCl|氯化钠|NaCl|反应物|生成物|充分反应|恰好反应|完全反应|化学方程式|浓度|溶液|铁粉|硫酸铜|CuSO|Fe\b|生成铜|生成 Cu|物质的量|\dmol/i.test(question)) return "化学";
   if (isPhysicsBoardSliderQuestion(question)) return "物理";
   if (/(?:f|F)(?:阻)?\s*(?:=|＝)\s*-?\s*k\s*v|阻力.{0,12}(?:速度|速率).{0,8}成正比|(?:质量|m\s*(?:=|＝)).{0,12}(?:kg|千克|吨).{0,24}(?:初速度|速度)|(?:动摩擦因数|摩擦系数|车轮抱死)/i.test(question)) return "物理";
-  if (/遗传|基因|表现型|杂合|纯合|孟德尔|配子|有丝分裂|减数分裂|DNA/i.test(question)) return "生物";
+  if (/遗传|基因|表现型|杂合|纯合|孟德尔|配子|有丝分裂|减数分裂|DNA|显微镜|目镜|物镜|种群/i.test(question)) return "生物";
   if (/重力|斜面|弹簧|简谐|动量|碰撞|磁场|电场|电容|电荷|受力|牛顿|机械能|千克|\bkg\b|m\s*\/\s*s/i.test(question)) return "物理";
   if (/概率|随机|排列|组合|数列|方程|不等式|几何|三角形|直角边|斜边|勾股|△|圆锥|单位圆|函数|抛物线|斜率|切线|导数|数学|y\s*(?:=|＝)|ln\s*x|sin\s*x|cos\s*x|e\^x|exp\s*\(|sqrt|√/i.test(question)) return "数学";
   if (identifyExtraPhysicsTemplate(question)) return "物理";
@@ -7461,7 +7495,7 @@ function currentPhysicsPresetKey() {
 /* ===== 预设菜单（各学科，按学段与板块分组，2026-10-16）=====
    菜单项写在 index.html（data-subject / data-level / data-block）。打开时按当前学科和学段重新分组：
    本学段按板块分组排在前面，另一学段折叠在底部；当前已预选的那一项隐藏。 */
-const PRESET_BLOCK_ORDER = Object.freeze(["力学", "电学", "电磁学", "光学", "热学", "声学", "化学计算", "几何", "函数", "方程（组）", "三角函数", "导数", "细胞", "植物生理", "遗传"]);
+const PRESET_BLOCK_ORDER = Object.freeze(["力学", "电学", "电磁学", "光学", "热学", "声学", "化学计算", "几何", "函数", "方程（组）", "三角函数", "导数", "细胞", "植物生理", "遗传", "观察工具", "种群"]);
 const DEDICATED_PRESET_KEYS = new Set(["brake", "solenoid", "boardSlider", "projectile", "circuit", "feCuSO4", "tangent", "cellPlant", "cellAnimal"]);
 const PRESET_OPTIONS = $$("#physicsPresetDropdown .preset-option");
 PRESET_OPTIONS.forEach(option => {
@@ -8908,7 +8942,7 @@ function applyGradeLevelToExperiment(level = state.gradeLevel) {
     if (!fixed.levelLocked) {
       state.extraFixed = { ...state.extraFixed, [generic.id]: { ...stored, level } };
       refreshExperimentAfterLevelChange(ours);
-    } else if (ours && generic.presetFor) {
+    } else if (ours && generic.presetFor && !generic.preserveExplicitGrade) {
       const preset = generic.presetFor(level);
       state.extraFixed = { ...state.extraFixed, [generic.id]: preset.fixed };
       state.p1 = preset.p1;

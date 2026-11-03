@@ -13,7 +13,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root=fileURLToPath(new URL('../../',import.meta.url));
 const output=process.env.ANIMATION_QA_OUTPUT || resolve(root,'outputs/animation-upgrade/verification');
 await mkdir(output,{recursive:true});
-const files=new Set(['index.html','app.js','styles.css','science-motion.js','science-formulas.js','physics-extra.js','question-conditions.js','math-extra.js', 'math-experiments.js', 'unit-circle.js', 'math-experiments.css','chemistry-extra.js','chemistry-experiments.js', 'chemistry-equilibria.js', 'chemistry-equilibria-questions.js', 'chemistry-equilibria-experiments.js', 'chemistry-equilibria.css', 'biology-mendel-core.js', 'biology-mendel.js', 'biology-mendel.css','biology-photosynthesis-core.js','biology-photosynthesis.js','biology-photosynthesis.css','ai-tutor.js']);
+const files=new Set(['index.html','app.js','styles.css','science-motion.js','science-formulas.js','physics-extra.js','question-conditions.js','math-extra.js', 'math-experiments.js', 'unit-circle.js', 'math-experiments.css','chemistry-extra.js','chemistry-experiments.js', 'chemistry-equilibria.js', 'chemistry-equilibria-questions.js', 'chemistry-equilibria-experiments.js', 'chemistry-equilibria.css', 'biology-mendel-core.js', 'biology-mendel.js', 'biology-mendel.css', 'biology-microscope-core.js', 'biology-microscope-questions.js', 'biology-microscope.js', 'biology-microscope.css', 'biology-population-core.js', 'biology-population-questions.js', 'biology-population.js', 'biology-population.css','biology-photosynthesis-core.js', 'biology-photosynthesis.js', 'biology-photosynthesis.css', 'ai-tutor.js']);
 const server=createServer(async(req,res)=>{
   const name=new URL(req.url,'http://localhost').pathname.slice(1)||'index.html';
   if(!files.has(name)){res.writeHead(204);res.end();return;}
@@ -308,6 +308,18 @@ try{
     report.templateBackground.push({template:before.id,before,after,realTabSwitch:true});
     assert.ok(after.time>before.time);assert.ok(after.time-before.time<.3);assert.equal(after.pending,1);assert.equal(after.maxPending,1);
     await page.locator('#playButton').click();assert.equal(await page.evaluate(()=>motionAudit.pending.size),0);
+  }
+  report.microscopeBackground=[];
+  for(const mode of ['field','magnification','direction']){
+    const question=await page.evaluate(mode=>{const t=MASTER_LAB_TEMPLATES.microscope,p=t.presetFor('junior',mode);return t.question(p.p1,p.p2,p.fixed);},mode);
+    await generate(page,question);await page.evaluate(()=>document.activeElement.blur());await page.keyboard.press('Space');await page.waitForTimeout(150);
+    assert.equal(await page.evaluate(()=>state.playing),false);assert.equal(await page.evaluate(()=>motionAudit.pending.size),0);
+    const before=await page.evaluate(()=>JSON.stringify({p1:state.p1,p2:state.p2,mode:buildGenericContent().model.mode,time:state.time}));
+    await background.bringToFront();await page.waitForFunction(()=>document.hidden,null,{polling:20});await page.waitForTimeout(200);
+    assert.equal(await page.evaluate(()=>motionAudit.pending.size),0);
+    await page.bringToFront();await page.waitForFunction(()=>!document.hidden,null,{polling:20});await page.waitForTimeout(100);
+    assert.equal(await page.evaluate(()=>JSON.stringify({p1:state.p1,p2:state.p2,mode:buildGenericContent().model.mode,time:state.time})),before);
+    assert.equal(await page.evaluate(()=>motionAudit.pending.size),0);report.microscopeBackground.push({mode,realTabSwitch:true,pending:0,retained:true});
   }
  }finally{
   if(headed){await (await headed.newBrowserCDPSession()).send('Browser.close').catch(()=>{});await headed.close();}

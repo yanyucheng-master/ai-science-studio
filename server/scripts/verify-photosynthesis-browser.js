@@ -40,13 +40,13 @@ async function layout(page,name){
  await page.waitForFunction(()=>!document.querySelector('.toast.show'),null,{timeout:6000});const path=resolve(out,name+'.png');await page.locator('.experiment-card').screenshot({path,animations:'disabled'});report.screenshots.push(path);
 }
 try{
- for(const [width,height]of [[1366,1000],[820,1000],[390,900],[844,390]]){
+ for(const [width,height]of [[1366,1000],[820,1000],[390,900],[360,900],[844,390]]){
   const c=await context(width,height),page=await c.newPage();await page.goto(base);await page.waitForFunction(()=>MASTER_LAB_TEMPLATES.photosynthesis);await page.evaluate(()=>clearTimeout(state.autoDemoTimer));
   await page.locator('.grade-switch:visible [data-grade="junior"]').first().click();await page.locator('.subject-tab[data-subject="生物"]').click();await page.locator('#physicsPresetToggle').click();await page.locator('[data-preset="photosynthesis"]').click();const q=await page.locator('#questionInput').inputValue();await generate(page,q);await page.waitForFunction(()=>getComputedStyle(document.querySelector('#generationOverlay')).opacity==='0');
   check(await page.evaluate(()=>activeGenericId()==='photosynthesis'&&buildGenericContent().level==='junior'),width+': menu generates actual junior textbook experiment');
   for(let step=1;step<=6;step++){
    await jump(page,step,width<=844);const f=await page.locator('.biology-photosynthesis-scene').evaluate(e=>({...e.dataset}));check(Number(f.step)===step,width+': navigate textbook step '+step);if(step<6)check(f.observationReady==='false',width+': do not reveal final blue test early at step '+step);else check(f.exposed==='blue'&&f.covered==='yellowWhite',width+': same leaf final contrast');
-   if(width===390||step===4)await layout(page,`photo-step${step}-${width}`);
+   if(width<=390||step===4)await layout(page,`photo-step${step}-${width}`);
   }
   await layout(page,`photosynthesis-${width}`);
   await jump(page,4);const ai=await page.evaluate(()=>buildMasterLabAIContext());check(ai.originalQuestion===q&&ai.currentStep.includes('第4步')&&ai.currentStep.includes('预期')&&ai.deterministicResult.resultText.includes('淀粉'),width+': tutor distinguishes original question, current water bath and final expected result');
@@ -74,6 +74,15 @@ try{
   ['iron reaction','将5.6g铁粉加入含0.2mol硫酸铜的溶液中，求生成铜的质量。',true]
  ]){await generate(page,q);await generate(page,question);check(await page.locator('.parameters').isVisible()===parameters,'leaving photo restores dedicated parameters: '+name);check(await page.locator('#fullscreenButton:visible,#sceneFullscreenButton:visible').count()===1,'leaving photo restores dedicated fullscreen: '+name);}
  for(const id of ['mendel','hclNaohNeutralization','kno3Cooling','pythagoras','unitCircle']){const question=await page.evaluate(id=>{const t=MASTER_LAB_TEMPLATES[id],p=t.presetFor('senior');return t.question(p.p1,p.p2,t.fixedWithDefaults(p.fixed));},id);await generate(page,question);check(await page.evaluate(id=>activeGenericId()===id,id),'existing template is not captured: '+id);}
+
+ const cases=JSON.parse(await readFile(resolve(root,'server/eval/photosynthesis-paraphrases.json'),'utf8'));report.semanticCases=[];
+ for(const row of cases){
+  await generate(page,q);await jump(page,4);const before=await page.evaluate(()=>({question:state.generatedQuestion,time:state.time}));
+  await page.locator('#questionInput').fill(row.question);await page.evaluate(()=>generateExperiment({allowAiFallback:false}));
+  if(row.expected)await page.waitForFunction(q=>state.generatedQuestion===q&&!document.querySelector('#generationOverlay').classList.contains('show'),row.question);
+  const actual=await page.evaluate(({expected,before})=>({ok:state.generatedQuestion===document.querySelector('#questionInput').value,feedback:document.querySelector('#parseFeedback').textContent,preserved:state.generatedQuestion===before.question&&state.time===before.time,cleanTutor:!buildMasterLabAIContext().deterministicResult.resultText&&!buildMasterLabAIContext().currentStep}),{expected:row.expected,before});
+  check(actual.ok===row.expected&& (row.expected||actual.preserved&&actual.cleanTutor),'actual page semantic case '+row.id);report.semanticCases.push({...row,actual});
+ }
  report.mockTutor=[];
  await c.route('**/api/v1/tutor/chat',route=>{report.mockTutor.push(route.request().postDataJSON().context);return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({mode:'explain',summary:'本地模拟导师已读取当前题目与步骤。',steps:[],formulas:[],finalAnswer:null,checks:[],warnings:[],followUp:'',parameterPatch:null})});});
  await generate(page,q);await jump(page,4);

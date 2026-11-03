@@ -165,7 +165,7 @@ button, summary, label, select, a[href], [role="button"], [role="tab"], input[ty
     grid-column: 1 / -1;
     grid-row: 3;
     grid-template-columns: auto minmax(0, 1fr) auto;
-    grid-template-areas: "text text text" "library . generate";
+    grid-template-areas: "text text text" "library tools generate";
     height: auto;
     min-height: 0;
     margin-top: 10px;
@@ -189,7 +189,15 @@ button, summary, label, select, a[href], [role="button"], [role="tab"], input[ty
     overflow-wrap: anywhere;
     overflow-y: hidden;
   }
-  :root body .prompt-input-wrap .input-tool { display: none; }
+  :root body .prompt-input-wrap .photo-tools { display: flex; grid-area: tools; align-items: center; justify-self: end; gap: 2px; }
+  :root body .prompt-input-wrap .input-tool { display: grid; width: 40px; height: 40px; border-radius: 12px; }
+  :root body.demo-mode .prompt-input-wrap .photo-tools { display: none; }
+  :root body .prompt-main .photo-status { grid-column: 1 / -1; grid-row: 6; font-size: 13px; }
+  /* 窄屏放不下“实验库 + 两个工具 + 生成实验”，工具单独占一行，靠左 */
+  @media (max-width: 389px) {
+    :root body .prompt-input-wrap { grid-template-areas: "text text text" "tools tools tools" "library . generate"; }
+    :root body .prompt-input-wrap .photo-tools { justify-self: start; }
+  }
   :root body .prompt-input-wrap .preset-picker {
     display: inline-flex;
     grid-area: library;

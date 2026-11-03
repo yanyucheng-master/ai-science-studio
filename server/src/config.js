@@ -32,6 +32,9 @@ export const config = Object.freeze({
   thinkingTimeoutMs: integerFromEnv('THINKING_TIMEOUT_MS', 75000, 10000, 120000),
   rateLimitMax: integerFromEnv('RATE_LIMIT_MAX', 30, 1, 500),
   rateLimitWindowMs: integerFromEnv('RATE_LIMIT_WINDOW_MS', 600000, 60000, 3600000),
+  recognizeTimeoutMs: integerFromEnv('RECOGNIZE_TIMEOUT_MS', 45000, 5000, 90000),
+  recognizeRateLimitMax: integerFromEnv('RECOGNIZE_RATE_LIMIT_MAX', 12, 1, 200),
+  recognizeMaxConcurrentRequests: integerFromEnv('RECOGNIZE_MAX_CONCURRENT_REQUESTS', 2, 1, 4),
   // Trust no forwarding headers until the deployment's proxy chain is verified.
   trustedProxyHops: /^[0-8]$/.test(process.env.TRUST_PROXY_HOPS || '') ? Number(process.env.TRUST_PROXY_HOPS) : 0,
   allowedOrigins: listFromEnv('ALLOWED_ORIGINS')

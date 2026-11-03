@@ -78,3 +78,6 @@ test('visual is local markup and does not echo untrusted input or add a player',
  assert.match(html,/水浴/);assert.match(html,/不是真实生理速率/);
  assert.equal(t.parseQuestion(q+'<img src=x onerror=alert(1)>').ok,false);
 });
+
+const paraphrases=JSON.parse(await readFile(new URL('../eval/photosynthesis-paraphrases.json',import.meta.url),'utf8'));
+for(const row of paraphrases)test('independent semantic case '+row.id,()=>{const p=t.parseQuestion(row.question);assert.equal(p.ok,row.expected,JSON.stringify({question:row.question,message:p.message}));if(!p.ok)assert.match(p.message,/缺少|无法确认|重复|子问|所问/);});
