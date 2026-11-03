@@ -20,7 +20,7 @@
 
 ## 界面、解析与状态
 
-基线为实际fetch的master `1354fd9`（含新化学、数学和孟德尔）；新分支 `codex/photosynthesis-textbook`，不叠加旧数学PR，不改后端、模型配置、部署或公网分支。
+初版基线为master `1354fd9`；2026-11-03退回修订实际fetch的master仍为`e6f43c5b398fb039c80e2f02382119d3566ae1f5`，已通过追加合并提交整合拍题、显微镜、种群和当前移动布局；新分支 `codex/photosynthesis-textbook`，不叠加旧数学PR，不改后端、模型配置、部署或公网分支。
 
 新增 `biology-photosynthesis-core.js`（固定流程/确定性帧）、`biology-photosynthesis.js`（严格解析/登记/场景）、局部CSS。app仅增加步骤导航与菜单组；复用原场景上方的播放、暂停、进度、重置及全屏。六个步骤按钮只移动同一时间轴，不增第二播放器或动画循环。
 
@@ -33,10 +33,10 @@
 | `web/index.html` | 新模块与局部样式引用、资源版本、初中菜单入口 |
 | `web/announcements.json` | 真实新增内容与维护事项，不声称已部署或全部回归全绿 |
 | `server/package.json` | 增加模型与本地浏览器专项入口 |
-| `server/eval/local-template-bank.json` | 仅追加14题，保留原467题的内容与格式 |
-| `server/test/biology-photosynthesis.test.js` | 31项独立顺序/现象/严格解析/恢复反例测试 |
+| `server/eval/local-template-bank.json` | 保留当前主线560题的完整内容与顺序，再追加本实验14题，共574题 |
+| `server/test/biology-photosynthesis.test.js` | 69项顺序/现象/语义/恢复测试，其中38项为本次手写等义/反例 |
 | `server/test/week2-framework.test.js` | 测试沙箱加载新模块，保留旧断言 |
-| `server/scripts/verify-photosynthesis-browser.js` | 六步交互、四视口与全屏、分享/收藏/导师/实际BFCache及独立浏览器专项 |
+| `server/scripts/verify-photosynthesis-browser.js` | 六步交互、五视口（含360）与全屏、分享/收藏/导师/实际BFCache及独立浏览器专项 |
 | `server/scripts/verify-animation-browser.js` | 加载新资源并增加实际前后台切换用例 |
 | `server/scripts/verify-tutor-browser.js` | 本地资源白名单增加新模块，不改已有导师断言 |
 | `server/scripts/verify-share-browser.js` | 保留原失败记录后，按现有等待页隐藏按钮契约补测；公开复制边界仍必须拒绝未生成实验，其余断言保留 |
@@ -50,6 +50,16 @@
 
 ## 验证与交付
 
-独立核对六步顺序、遮光区域、脱色/碘液状态与结论边界；正反例覆盖问句先后、句号/冒号、额外子问、缺失/矛盾条件和篡改分享。专项检查实际页面六步、统一控件、触控、1366/820/390与全屏、收藏/分享/导师、学科往返、真实BFCache、独立浏览器与前后台暂停。
+独立核对六步顺序、遮光区域、脱色/碘液状态与结论边界；正反例覆盖问句先后、句号/冒号、额外子问、缺失/矛盾条件和篡改分享。专项检查实际页面六步、统一控件、触控、1366/820/390/360、844×390与全屏、收藏/分享/导师、学科往返、真实BFCache、独立浏览器与前后台暂停。
 
 按实际基线枚举全部Node、题库、共享/学段菜单收藏、导师、animation、announcements、formula、ai-quality、当前斜面含data、三套旧绘图、tutor-presentation及已有数学/化学/孟德尔入口。仅本地服务器、独立配置和模拟响应；失败与基线对照、超时及未执行单列，不削弱断言。精选三宽页面与脱敏结果可提交，原始产物本地保留。完成后仅推功能分支并交Draft PR，不自动合并或发布。
+
+## 2026-11-03退回修订
+
+[负责人审查](https://github.com/yanyucheng-master/ai-science-studio/issues/9#issuecomment-6603663397)提出的等义短语拒绝已在真实模板API重现并修复。固定科学内容、教材器材与流程、确定性模型均未扩大；解析改为逐项条件规则与完整所问核对，支持明确等义表述、问句前后置、事实条件换序、适用标点和单位等价。明确操作关系仍按教材核对；不把附加条件或子问忽略。无法可靠识别的原文片段或缺失项具体提示，不要求用户机械复写原句。
+
+新增`server/eval/photosynthesis-paraphrases.json`独立手写用例，与真实页面生成/拒绝检查共用公开输入及独立预期；不是调用模板生成器自证。原有错操作/错序、数值前后角色、缺失、矛盾、重复与附加子问反例保留。非法新题继续保留当前实验，但导师不借旧结果或步骤。
+
+本次完整执行源码`1bc37ace51b73f30f49e471e55702dfd835f87ef`，38组37通过/1失败/0进程超时；干净当前主线36组33通过/3失败/0超时。单独联用源码`45be585eafd38aa72761c78fefca438a55c3c502`运行41组，39通过/2失败/0超时。两独立PR不互相覆盖；联用分支只供审查，保留主线560条题库，两实验合计600条。详细逐文件保留核对、前后复现、逐例预期/实际、360补验、完整命令/退出码/失败/未执行与可访问截图见[本轮证据](photosynthesis-evidence/README.md)。
+
+仅完成J02教材同叶遮光样例或H11叶圆片参考案例的部分；不申报20族专题、P0逐族矩阵或四批整体验收完成。更大范围本人确认未由开发侧代作。原有自动化保持暂停；无主线/公网推送、PR合并、部署或真实AI请求。

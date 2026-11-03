@@ -1,0 +1,315 @@
+{
+  "junior": {
+    "sha": "1bc37ace51b73f30f49e471e55702dfd835f87ef",
+    "tree": "39a8acb9fd2a466faf419176a69cdc7404043e22",
+    "base": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+    "masterAncestor": true,
+    "bank": {
+      "master": 560,
+      "total": 574,
+      "masterRowsUnchangedInOrder": true,
+      "bankSha256": "ae7e34dc7eef68f26461b19f4eb347466976af42a6497075ad26b3b1e34b40b3"
+    },
+    "unchangedMasterFiles": [
+      {
+        "path": "web/photo-question.js",
+        "sha256": "8014134acf058fb63fd729599ca4bf9e83dc42b8d5d9ae6424878aeec6870dac"
+      },
+      {
+        "path": "web/photo-question.css",
+        "sha256": "c5f0d7e7faad78dd160974d2a85fbb6b214cc683cdc1ba784d5ce1755380419a"
+      },
+      {
+        "path": "web/mobile.css",
+        "sha256": "d26099f126cb84c9d31f622116143bc3cd327a86a782d1165c895b47a1ef4f52"
+      },
+      {
+        "path": "web/styles.css",
+        "sha256": "29e1bea088dd588055895ad0cdadb63bcd77fffea23dc474788e44b00c85e23c"
+      },
+      {
+        "path": "web/biology-microscope-core.js",
+        "sha256": "ef91e71cea9ba5a21e97ef472c6e6741e9beceb0752572b1f2a9cf7cddcf2155"
+      },
+      {
+        "path": "web/biology-microscope-questions.js",
+        "sha256": "c2a4959054d5172841a0a26b04483b35b1968d1a2730ec15388f306513751227"
+      },
+      {
+        "path": "web/biology-microscope.js",
+        "sha256": "e5dcd4bb0830b97b4f6151141d07eda0163196cc0aec0464730e5a6741c244c2"
+      },
+      {
+        "path": "web/biology-microscope.css",
+        "sha256": "ca0523ebc83a6f93feabe8646956ab99e1322533d8904f132a9ba8534d04c28b"
+      },
+      {
+        "path": "web/biology-population-core.js",
+        "sha256": "635681ede9cf5f336cc0e89e6f857f2b00b9a27a8e4cec3db78f5980cebee7c6"
+      },
+      {
+        "path": "web/biology-population-questions.js",
+        "sha256": "c82ad1f8ae7c8d30b480b2a9471ae270affce68d7bfd452a599eb066d9e53056"
+      },
+      {
+        "path": "web/biology-population.js",
+        "sha256": "12fa04203eda884f58b4a845dc6252956483b8718d52c59962332067ee26908b"
+      },
+      {
+        "path": "web/biology-population.css",
+        "sha256": "f69a7c8acff0898c0611b16c41c1c9b015b38df770df5d50d3ce76e9ede9181c"
+      }
+    ],
+    "masterAnnouncementRowsUnchanged": 48,
+    "relativeMasterFiles": [
+      "docs/photosynthesis-evidence/README.md",
+      "docs/photosynthesis-evidence/execution-summary.json",
+      "docs/photosynthesis-evidence/manifest.json",
+      "docs/photosynthesis-evidence/observation-390.png",
+      "docs/photosynthesis-evidence/observation-820.png",
+      "docs/photosynthesis-evidence/reference-mendel-1366.png",
+      "docs/photosynthesis-evidence/reference-mendel-390.png",
+      "docs/photosynthesis-evidence/waterbath-1366.png",
+      "docs/photosynthesis-textbook.md",
+      "server/eval/local-template-bank.json",
+      "server/eval/photosynthesis-paraphrases.json",
+      "server/package.json",
+      "server/scripts/verify-animation-browser.js",
+      "server/scripts/verify-photosynthesis-browser.js",
+      "server/scripts/verify-share-browser.js",
+      "server/scripts/verify-tutor-browser.js",
+      "server/test/biology-photosynthesis.test.js",
+      "server/test/week2-framework.test.js",
+      "web/announcements.json",
+      "web/app.js",
+      "web/biology-photosynthesis-core.js",
+      "web/biology-photosynthesis.css",
+      "web/biology-photosynthesis.js",
+      "web/index.html"
+    ]
+  },
+  "senior": {
+    "sha": "34809407d34e077ac80640b7ab1a3a5a558492e3",
+    "tree": "ecf39b2cd0bb53543087dafa4b0a4559e2d91ebc",
+    "base": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+    "masterAncestor": true,
+    "bank": {
+      "master": 560,
+      "total": 586,
+      "masterRowsUnchangedInOrder": true,
+      "bankSha256": "eabbe00fd29739092b8c8e42ebf738890e2c5492ab46ad20c7296eb4aa3bae43"
+    },
+    "unchangedMasterFiles": [
+      {
+        "path": "web/photo-question.js",
+        "sha256": "8014134acf058fb63fd729599ca4bf9e83dc42b8d5d9ae6424878aeec6870dac"
+      },
+      {
+        "path": "web/photo-question.css",
+        "sha256": "c5f0d7e7faad78dd160974d2a85fbb6b214cc683cdc1ba784d5ce1755380419a"
+      },
+      {
+        "path": "web/mobile.css",
+        "sha256": "d26099f126cb84c9d31f622116143bc3cd327a86a782d1165c895b47a1ef4f52"
+      },
+      {
+        "path": "web/styles.css",
+        "sha256": "29e1bea088dd588055895ad0cdadb63bcd77fffea23dc474788e44b00c85e23c"
+      },
+      {
+        "path": "web/biology-microscope-core.js",
+        "sha256": "ef91e71cea9ba5a21e97ef472c6e6741e9beceb0752572b1f2a9cf7cddcf2155"
+      },
+      {
+        "path": "web/biology-microscope-questions.js",
+        "sha256": "c2a4959054d5172841a0a26b04483b35b1968d1a2730ec15388f306513751227"
+      },
+      {
+        "path": "web/biology-microscope.js",
+        "sha256": "e5dcd4bb0830b97b4f6151141d07eda0163196cc0aec0464730e5a6741c244c2"
+      },
+      {
+        "path": "web/biology-microscope.css",
+        "sha256": "ca0523ebc83a6f93feabe8646956ab99e1322533d8904f132a9ba8534d04c28b"
+      },
+      {
+        "path": "web/biology-population-core.js",
+        "sha256": "635681ede9cf5f336cc0e89e6f857f2b00b9a27a8e4cec3db78f5980cebee7c6"
+      },
+      {
+        "path": "web/biology-population-questions.js",
+        "sha256": "c82ad1f8ae7c8d30b480b2a9471ae270affce68d7bfd452a599eb066d9e53056"
+      },
+      {
+        "path": "web/biology-population.js",
+        "sha256": "12fa04203eda884f58b4a845dc6252956483b8718d52c59962332067ee26908b"
+      },
+      {
+        "path": "web/biology-population.css",
+        "sha256": "f69a7c8acff0898c0611b16c41c1c9b015b38df770df5d50d3ce76e9ede9181c"
+      }
+    ],
+    "masterAnnouncementRowsUnchanged": 48,
+    "relativeMasterFiles": [
+      "docs/leaf-disks-evidence/README.md",
+      "docs/leaf-disks-evidence/execution-summary.json",
+      "docs/leaf-disks-evidence/lighting-820.png",
+      "docs/leaf-disks-evidence/manifest.json",
+      "docs/leaf-disks-evidence/mechanism-records-390.png",
+      "docs/leaf-disks-evidence/punch-390.png",
+      "docs/leaf-disks-evidence/reference-microscope-1366.png",
+      "docs/leaf-disks-evidence/reference-microscope-390.png",
+      "docs/leaf-disks-evidence/syringe-1366.png",
+      "docs/leaf-disks-textbook.md",
+      "server/eval/leaf-disks-paraphrases.json",
+      "server/eval/local-template-bank.json",
+      "server/package.json",
+      "server/scripts/verify-animation-browser.js",
+      "server/scripts/verify-leaf-disks-browser.js",
+      "server/scripts/verify-share-browser.js",
+      "server/scripts/verify-tutor-browser.js",
+      "server/test/biology-leaf-disks.test.js",
+      "server/test/week2-framework.test.js",
+      "web/announcements.json",
+      "web/app.js",
+      "web/biology-leaf-disks-core.js",
+      "web/biology-leaf-disks-questions.js",
+      "web/biology-leaf-disks.css",
+      "web/biology-leaf-disks.js",
+      "web/index.html"
+    ]
+  },
+  "joint": {
+    "sha": "45be585eafd38aa72761c78fefca438a55c3c502",
+    "tree": "6b63f13e1c544b204f67ba1d6f078721c1fe5447",
+    "base": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+    "masterAncestor": true,
+    "bank": {
+      "master": 560,
+      "total": 600,
+      "masterRowsUnchangedInOrder": true,
+      "bankSha256": "a7f9bec7709989bc2c07b3d0aeaf541be8c1fd776f70f3bb4dee94a061f2f42f"
+    },
+    "unchangedMasterFiles": [
+      {
+        "path": "web/photo-question.js",
+        "sha256": "8014134acf058fb63fd729599ca4bf9e83dc42b8d5d9ae6424878aeec6870dac"
+      },
+      {
+        "path": "web/photo-question.css",
+        "sha256": "c5f0d7e7faad78dd160974d2a85fbb6b214cc683cdc1ba784d5ce1755380419a"
+      },
+      {
+        "path": "web/mobile.css",
+        "sha256": "d26099f126cb84c9d31f622116143bc3cd327a86a782d1165c895b47a1ef4f52"
+      },
+      {
+        "path": "web/styles.css",
+        "sha256": "29e1bea088dd588055895ad0cdadb63bcd77fffea23dc474788e44b00c85e23c"
+      },
+      {
+        "path": "web/biology-microscope-core.js",
+        "sha256": "ef91e71cea9ba5a21e97ef472c6e6741e9beceb0752572b1f2a9cf7cddcf2155"
+      },
+      {
+        "path": "web/biology-microscope-questions.js",
+        "sha256": "c2a4959054d5172841a0a26b04483b35b1968d1a2730ec15388f306513751227"
+      },
+      {
+        "path": "web/biology-microscope.js",
+        "sha256": "e5dcd4bb0830b97b4f6151141d07eda0163196cc0aec0464730e5a6741c244c2"
+      },
+      {
+        "path": "web/biology-microscope.css",
+        "sha256": "ca0523ebc83a6f93feabe8646956ab99e1322533d8904f132a9ba8534d04c28b"
+      },
+      {
+        "path": "web/biology-population-core.js",
+        "sha256": "635681ede9cf5f336cc0e89e6f857f2b00b9a27a8e4cec3db78f5980cebee7c6"
+      },
+      {
+        "path": "web/biology-population-questions.js",
+        "sha256": "c82ad1f8ae7c8d30b480b2a9471ae270affce68d7bfd452a599eb066d9e53056"
+      },
+      {
+        "path": "web/biology-population.js",
+        "sha256": "12fa04203eda884f58b4a845dc6252956483b8718d52c59962332067ee26908b"
+      },
+      {
+        "path": "web/biology-population.css",
+        "sha256": "f69a7c8acff0898c0611b16c41c1c9b015b38df770df5d50d3ce76e9ede9181c"
+      }
+    ],
+    "masterAnnouncementRowsUnchanged": 48,
+    "relativeMasterFiles": [
+      "docs/leaf-disks-evidence/README.md",
+      "docs/leaf-disks-evidence/execution-summary.json",
+      "docs/leaf-disks-evidence/lighting-820.png",
+      "docs/leaf-disks-evidence/manifest.json",
+      "docs/leaf-disks-evidence/mechanism-records-390.png",
+      "docs/leaf-disks-evidence/punch-390.png",
+      "docs/leaf-disks-evidence/reference-microscope-1366.png",
+      "docs/leaf-disks-evidence/reference-microscope-390.png",
+      "docs/leaf-disks-evidence/syringe-1366.png",
+      "docs/leaf-disks-textbook.md",
+      "docs/photosynthesis-evidence/README.md",
+      "docs/photosynthesis-evidence/execution-summary.json",
+      "docs/photosynthesis-evidence/manifest.json",
+      "docs/photosynthesis-evidence/observation-390.png",
+      "docs/photosynthesis-evidence/observation-820.png",
+      "docs/photosynthesis-evidence/reference-mendel-1366.png",
+      "docs/photosynthesis-evidence/reference-mendel-390.png",
+      "docs/photosynthesis-evidence/waterbath-1366.png",
+      "docs/photosynthesis-textbook.md",
+      "server/eval/leaf-disks-paraphrases.json",
+      "server/eval/local-template-bank.json",
+      "server/eval/photosynthesis-paraphrases.json",
+      "server/package.json",
+      "server/scripts/verify-animation-browser.js",
+      "server/scripts/verify-leaf-disks-browser.js",
+      "server/scripts/verify-photosynthesis-browser.js",
+      "server/scripts/verify-photosynthesis-integration-browser.js",
+      "server/scripts/verify-share-browser.js",
+      "server/scripts/verify-tutor-browser.js",
+      "server/test/biology-leaf-disks.test.js",
+      "server/test/biology-photosynthesis.test.js",
+      "server/test/week2-framework.test.js",
+      "web/announcements.json",
+      "web/app.js",
+      "web/biology-leaf-disks-core.js",
+      "web/biology-leaf-disks-questions.js",
+      "web/biology-leaf-disks.css",
+      "web/biology-leaf-disks.js",
+      "web/biology-photosynthesis-core.js",
+      "web/biology-photosynthesis.css",
+      "web/biology-photosynthesis.js",
+      "web/index.html"
+    ]
+  },
+  "frozenSourceArchiveVerification": {
+    "baseline": {
+      "comparedTrackedFiles": 250,
+      "changedTrackedPaths": [],
+      "archiveSha256": "c0e19041061b4ce3a1162061c253964c123392e68dc847bbe0f17f18714266f9",
+      "archiveLinks": []
+    },
+    "junior": {
+      "comparedTrackedFiles": 265,
+      "changedTrackedPaths": [],
+      "archiveSha256": "dc8cf8b9c2db022b37d84258d27c2fb8f4f15897a77d94e8f5544875a79f9d19",
+      "archiveLinks": []
+    },
+    "senior": {
+      "comparedTrackedFiles": 267,
+      "changedTrackedPaths": [],
+      "archiveSha256": "ae406ec601a1c0c675986986640a0e821ce168ccc69de41ec871f089068cef6a",
+      "archiveLinks": []
+    },
+    "joint": {
+      "comparedTrackedFiles": 283,
+      "changedTrackedPaths": [],
+      "archiveSha256": "576011658c90ba9bcb8c6a964384f30c5b3d301cedbae4fa868e369c57283937",
+      "archiveLinks": []
+    }
+  }
+}

@@ -1,0 +1,68 @@
+[
+  {
+    "kind": "junior",
+    "label": "before",
+    "sourceSha": "d023f53ebaf33a6d8393e03cae532f9ef1328a59",
+    "id": "control",
+    "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+    "expectedAccepted": true,
+    "expectedObservedForReproduction": true,
+    "actual": true,
+    "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝"
+  },
+  {
+    "kind": "junior",
+    "label": "before",
+    "sourceSha": "d023f53ebaf33a6d8393e03cae532f9ef1328a59",
+    "id": "review-dark",
+    "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先在黑暗处处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+    "expectedAccepted": true,
+    "expectedObservedForReproduction": false,
+    "actual": false,
+    "message": "本模板只演示人教七下的同叶遮光检验淀粉实验。请保留暗处理一昼夜、双面局部遮光、阳光照射、摘叶去纸、酒精水浴脱色、漂洗滴碘和冲洗观察；支持步骤、现象、结论、操作目的，不计算产量或速率。"
+  },
+  {
+    "kind": "junior",
+    "label": "before",
+    "sourceSha": "d023f53ebaf33a6d8393e03cae532f9ef1328a59",
+    "id": "review-paper",
+    "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片局部用黑纸遮住叶片的上下两面，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+    "expectedAccepted": true,
+    "expectedObservedForReproduction": false,
+    "actual": false,
+    "message": "本模板只演示人教七下的同叶遮光检验淀粉实验。请保留暗处理一昼夜、双面局部遮光、阳光照射、摘叶去纸、酒精水浴脱色、漂洗滴碘和冲洗观察；支持步骤、现象、结论、操作目的，不计算产量或速率。"
+  },
+  {
+    "kind": "junior",
+    "label": "after",
+    "sourceSha": "1bc37ace51b73f30f49e471e55702dfd835f87ef",
+    "id": "control",
+    "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+    "expectedAccepted": true,
+    "expectedObservedForReproduction": true,
+    "actual": true,
+    "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝"
+  },
+  {
+    "kind": "junior",
+    "label": "after",
+    "sourceSha": "1bc37ace51b73f30f49e471e55702dfd835f87ef",
+    "id": "review-dark",
+    "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先在黑暗处处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+    "expectedAccepted": true,
+    "expectedObservedForReproduction": true,
+    "actual": true,
+    "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝"
+  },
+  {
+    "kind": "junior",
+    "label": "after",
+    "sourceSha": "1bc37ace51b73f30f49e471e55702dfd835f87ef",
+    "id": "review-paper",
+    "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片局部用黑纸遮住叶片的上下两面，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+    "expectedAccepted": true,
+    "expectedObservedForReproduction": true,
+    "actual": true,
+    "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝"
+  }
+]
