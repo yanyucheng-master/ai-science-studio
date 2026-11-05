@@ -56,7 +56,7 @@ try{
  }
  if(!ids.length){report.baselineSharedSinkObservation=true;report.observedUnsafeCases=report.sinks.filter(x=>x.elements.length||x.event).length;await probe.close();}
  else{
- await probe.close();const cases=JSON.parse(await readFile(resolve(root,'server/eval/photosynthesis-review-cases.json'),'utf8'));report.normalButtonCases=[];report.requestScenarios=[];
+ await probe.close();const cases=[...JSON.parse(await readFile(resolve(root,'server/eval/photosynthesis-review-cases.json'),'utf8')),...JSON.parse(await readFile(resolve(root,'server/eval/photosynthesis-numeric-boundary-cases.json'),'utf8'))];report.normalButtonCases=[];report.requestScenarios=[];
  for(const noTutor of [false,true])for(const order of ids.length===2?['junior','senior']:['single']){
   const c=await context(),p=await c.newPage();await p.goto(base+'/?noTutor='+(noTutor?'1':'0')+'&order='+order);await p.waitForFunction(()=>typeof planLocalExperiment==='function');await p.evaluate(()=>{clearTimeout(state.autoDemoTimer);window.__unexpectedEvent=0;});
   check(await p.evaluate(m=>Boolean(window.MasterLabAITutor)!==m,noTutor),'tutor availability scenario '+noTutor+'/'+order);
