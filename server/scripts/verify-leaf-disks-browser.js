@@ -80,7 +80,8 @@ try{
  const cases=JSON.parse(await readFile(resolve(root,'server/eval/leaf-disks-paraphrases.json'),'utf8'));report.semanticCases=[];
  for(const row of cases){
   await generate(page,q);await jump(page,4);const before=await page.evaluate(()=>({question:state.generatedQuestion,time:state.time}));
-  await page.locator('#questionInput').fill(row.question);await page.evaluate(()=>generateExperiment({allowAiFallback:false}));
+  await page.locator('#questionInput').fill(row.question);await page.locator('#generateButton').click();
+  if(!row.expected)await page.locator('#parseFeedback.error.show').waitFor();
   if(row.expected)await page.waitForFunction(q=>state.generatedQuestion===q&&!document.querySelector('#generationOverlay').classList.contains('show'),row.question);
   const actual=await page.evaluate(({expected,before})=>({ok:state.generatedQuestion===document.querySelector('#questionInput').value,feedback:document.querySelector('#parseFeedback').textContent,preserved:state.generatedQuestion===before.question&&state.time===before.time,cleanTutor:!buildMasterLabAIContext().deterministicResult.resultText&&!buildMasterLabAIContext().currentStep}),{expected:row.expected,before});
   check(actual.ok===row.expected&& (row.expected||actual.preserved&&actual.cleanTutor),'actual page semantic case '+row.id);report.semanticCases.push({...row,actual});

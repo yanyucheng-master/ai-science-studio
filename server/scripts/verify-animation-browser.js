@@ -13,7 +13,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root=fileURLToPath(new URL('../../',import.meta.url));
 const output=process.env.ANIMATION_QA_OUTPUT || resolve(root,'outputs/animation-upgrade/verification');
 await mkdir(output,{recursive:true});
-const files=new Set(['index.html','app.js','styles.css','science-motion.js','science-formulas.js','physics-extra.js','question-conditions.js','math-extra.js', 'math-experiments.js', 'unit-circle.js', 'math-experiments.css','chemistry-extra.js','chemistry-experiments.js', 'chemistry-equilibria.js', 'chemistry-equilibria-questions.js', 'chemistry-equilibria-experiments.js', 'chemistry-equilibria.css', 'biology-mendel-core.js', 'biology-mendel.js', 'biology-mendel.css', 'biology-microscope-core.js', 'biology-microscope-questions.js', 'biology-microscope.js', 'biology-microscope.css', 'biology-population-core.js', 'biology-population-questions.js', 'biology-population.js', 'biology-population.css', 'biology-leaf-disks-core.js', 'biology-leaf-disks-questions.js', 'biology-leaf-disks.js', 'biology-leaf-disks.css','ai-tutor.js']);
+const files=new Set(['index.html','app.js','styles.css','science-motion.js','science-formulas.js','biology-protocol-questions.js','physics-extra.js','question-conditions.js','math-extra.js', 'math-experiments.js', 'unit-circle.js', 'math-experiments.css','chemistry-extra.js','chemistry-experiments.js', 'chemistry-equilibria.js', 'chemistry-equilibria-questions.js', 'chemistry-equilibria-experiments.js', 'chemistry-equilibria.css', 'biology-mendel-core.js', 'biology-mendel.js', 'biology-mendel.css', 'biology-microscope-core.js', 'biology-microscope-questions.js', 'biology-microscope.js', 'biology-microscope.css', 'biology-population-core.js', 'biology-population-questions.js', 'biology-population.js', 'biology-population.css', 'biology-leaf-disks-core.js', 'biology-leaf-disks-questions.js', 'biology-leaf-disks.js', 'biology-leaf-disks.css','ai-tutor.js']);
 const server=createServer(async(req,res)=>{
   const name=new URL(req.url,'http://localhost').pathname.slice(1)||'index.html';
   if(!files.has(name)){res.writeHead(204);res.end();return;}
@@ -308,6 +308,23 @@ try{
     report.templateBackground.push({template:before.id,before,after,realTabSwitch:true});
     assert.ok(after.time>before.time);assert.ok(after.time-before.time<.3);assert.equal(after.pending,1);assert.equal(after.maxPending,1);
     await page.locator('#playButton').click();assert.equal(await page.evaluate(()=>motionAudit.pending.size),0);
+    if (['photosynthesis','leafDisks'].includes(before.id)) {
+      await page.locator('#playButton').click();
+      const selector=before.id==='photosynthesis'?'[data-photosynthesis-step="1"]':'[data-leaf-step="1"]';
+      await page.locator(selector).click();
+      assert.equal(await page.evaluate(()=>state.playing),false);
+      assert.equal(await page.locator('#playButton').getAttribute('aria-label'),'播放实验');
+      assert.equal(await page.locator('#playButton').getAttribute('aria-pressed'),'false');
+      assert.equal(await page.evaluate(()=>motionAudit.pending.size),0);
+      const paused=await page.evaluate(()=>state.time);
+      await background.bringToFront();await page.waitForFunction(()=>document.hidden,null,{polling:20});await page.waitForTimeout(150);
+      await page.bringToFront();await page.waitForFunction(()=>!document.hidden,null,{polling:20});
+      assert.equal(await page.evaluate(()=>state.time),paused);assert.equal(await page.evaluate(()=>motionAudit.pending.size),0);
+      await page.locator('#playButton').click();await page.waitForFunction(t=>state.playing&&state.time>t,paused,{polling:20});
+      assert.equal(await page.locator('#playButton').getAttribute('aria-label'),'暂停实验');
+      await page.locator('#playButton').click();
+      report.templateBackground.push({template:before.id,stepSwitchPause:true,realTabSwitch:true,pending:0,resumed:true});
+    }
   }
   report.microscopeBackground=[];
   for(const mode of ['field','magnification','direction']){
