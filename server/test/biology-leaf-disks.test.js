@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import { readFile } from 'node:fs/promises';
-const names = ['physics-extra.js', 'biology-leaf-disks-core.js', 'biology-leaf-disks-questions.js', 'biology-leaf-disks.js'];
+const names = ['biology-protocol-questions.js','physics-extra.js', 'biology-leaf-disks-core.js', 'biology-leaf-disks-questions.js', 'biology-leaf-disks.js'];
 const sources = await Promise.all(names.map(name => readFile(new URL('../../web/' + name, import.meta.url), 'utf8')));
 const box = { console }; box.window = box;
 sources.forEach(source => vm.runInNewContext(source, box));

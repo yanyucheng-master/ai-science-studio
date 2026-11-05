@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFile} from 'node:fs/promises';
 const box={console,ScienceMotion:{circuitMarkup:()=>''}};box.window=box;
-for(const f of ['physics-extra.js','biology-photosynthesis-core.js','biology-photosynthesis.js'])vm.runInNewContext(await readFile(new URL('../../web/'+f,import.meta.url),'utf8'),box);
+for(const f of ['biology-protocol-questions.js','physics-extra.js','biology-photosynthesis-core.js','biology-photosynthesis.js'])vm.runInNewContext(await readFile(new URL('../../web/'+f,import.meta.url),'utf8'),box);
 const C=box.MasterLabPhotosynthesis,t=box.MASTER_LAB_TEMPLATES.photosynthesis;
 const f=t.fixedWithDefaults(),q=t.question(1,1),json=x=>JSON.parse(JSON.stringify(x));
 

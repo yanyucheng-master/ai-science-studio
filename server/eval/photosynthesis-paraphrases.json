@@ -72,7 +72,8 @@
   {
     "id": "missing-0",
     "question": "探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
-    "expected": false
+    "expected": true,
+    "policyNote": "Book provenance and absence-of-data metadata are optional; all scientific conditions/asks remain complete. No observed data is inferred."
   },
   {
     "id": "missing-1",
