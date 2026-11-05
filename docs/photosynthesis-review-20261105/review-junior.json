@@ -1,0 +1,1566 @@
+{
+  "edge": {
+    "sourceSha": "d93c05b42c74aa578070154fec34aa74da0f72be",
+    "browser": "156.0.4314.58",
+    "templates": [
+      "photosynthesis"
+    ],
+    "checksPassed": 165,
+    "sharedSinks": [
+      {
+        "mode": "error",
+        "input": "<b data-probe=\"plain\">中文 & \"双引号\" '单引号'</b>",
+        "text": "<b data-probe=\"plain\">中文 & \"双引号\" '单引号'</b>",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "error",
+        "input": "＜b＞全角＜/b＞",
+        "text": "＜b＞全角＜/b＞",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "error",
+        "input": "<img src=x onerror=\"window.__unexpectedEvent=1\">",
+        "text": "<img src=x onerror=\"window.__unexpectedEvent=1\">",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "error",
+        "input": "比较 a < b & c > d，普通中文",
+        "text": "比较 a < b & c > d，普通中文",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "pending",
+        "input": "<b data-probe=\"plain\">中文 & \"双引号\" '单引号'</b>",
+        "text": "<b data-probe=\"plain\">中文 & \"双引号\" '单引号'</b>",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "pending",
+        "input": "＜b＞全角＜/b＞",
+        "text": "＜b＞全角＜/b＞",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "pending",
+        "input": "<img src=x onerror=\"window.__unexpectedEvent=1\">",
+        "text": "<img src=x onerror=\"window.__unexpectedEvent=1\">",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "pending",
+        "input": "比较 a < b & c > d，普通中文",
+        "text": "比较 a < b & c > d，普通中文",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "success",
+        "input": "<b data-probe=\"plain\">中文 & \"双引号\" '单引号'</b>",
+        "text": "<b data-probe=\"plain\">中文 & \"双引号\" '单引号'</b>",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "success",
+        "input": "＜b＞全角＜/b＞",
+        "text": "＜b＞全角＜/b＞",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "success",
+        "input": "<img src=x onerror=\"window.__unexpectedEvent=1\">",
+        "text": "<img src=x onerror=\"window.__unexpectedEvent=1\">",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "success",
+        "input": "比较 a < b & c > d，普通中文",
+        "text": "比较 a < b & c > d，普通中文",
+        "elements": [],
+        "event": 0
+      }
+    ],
+    "normalButtonCases": [
+      {
+        "kind": "junior",
+        "id": "review-dark",
+        "expected": true,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-dark"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "review-paper",
+        "expected": true,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-paper"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "subject-object-shift",
+        "expected": true,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "subject-object-shift"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "passive-cover",
+        "expected": true,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "passive-cover"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "verb-shift",
+        "expected": true,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "verb-shift"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "without-book",
+        "expected": true,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "without-book"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "asks-front",
+        "expected": true,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsafe-14",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「<b data-probe=\"plain\">中文 & 原意</b>」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsafe-15",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「<img src=x onerror=\"window.__unexpectedEvent=1\">」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsafe-16",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「＜b＞全角＜/b＞」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsafe-17",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「普通中文「引号」 & < > \"单独引号'\"」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "bad-time",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「盆栽天竺葵先暗处理一小时」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "bad-side",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「同一叶片用黑纸片从上面局部遮光」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "bad-order",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「滴加碘液后清水漂洗」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsupported-extra",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「求总产氧量」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "numeric-split-time-space",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「先将盆栽天竺葵放在黑暗处2 4小时」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "numeric-split-time-comma",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「先将盆栽天竺葵放在黑暗处2,4小时」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "numeric-valid-time-unit-space",
+        "expected": true,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "numeric-valid-time-unit-space"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "review-dark",
+        "expected": true,
+        "noTutor": true,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-dark"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "review-paper",
+        "expected": true,
+        "noTutor": true,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-paper"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsafe-14",
+        "expected": false,
+        "noTutor": true,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「<b data-probe=\"plain\">中文 & 原意</b>」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-paper"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsafe-15",
+        "expected": false,
+        "noTutor": true,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「<img src=x onerror=\"window.__unexpectedEvent=1\">」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-paper"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsafe-16",
+        "expected": false,
+        "noTutor": true,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「＜b＞全角＜/b＞」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-paper"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsafe-17",
+        "expected": false,
+        "noTutor": true,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「普通中文「引号」 & < > \"单独引号'\"」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-paper"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsupported-extra",
+        "expected": false,
+        "noTutor": true,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「求总产氧量」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-paper"
+          }
+        }
+      }
+    ],
+    "requestScenarios": [
+      {
+        "noTutor": false,
+        "order": "single",
+        "defaultButtonRequests": 0,
+        "disabledFallbackRequests": 0
+      },
+      {
+        "noTutor": true,
+        "order": "single",
+        "defaultButtonRequests": 0,
+        "disabledFallbackRequests": 0
+      }
+    ],
+    "explicitTutorRequests": [
+      {
+        "originalQuestion": {
+          "kind": "junior",
+          "id": "unsafe-14"
+        },
+        "hasOldResult": false,
+        "currentStep": "",
+        "responseStatus": 503,
+        "source": "explicit user chat, local mocked response"
+      }
+    ],
+    "automaticOrUnexpectedApi": [],
+    "expectedLocal503ConsoleErrors": [
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+    ],
+    "playback": [
+      {
+        "width": 1366,
+        "id": "photosynthesis",
+        "frames": [
+          {
+            "percent": 84,
+            "id": "photosynthesis",
+            "step": 5,
+            "local": 0.040000000000000036,
+            "completed": 5,
+            "dark": false,
+            "paper": false,
+            "detached": true,
+            "paperRemoved": true,
+            "decolorized": true,
+            "iodine": true,
+            "waterRinse": false,
+            "observationReady": false,
+            "exposed": "iodine",
+            "covered": "iodine",
+            "counts": [],
+            "label": "播放实验"
+          },
+          {
+            "percent": 90,
+            "id": "photosynthesis",
+            "step": 5,
+            "local": 0.40000000000000036,
+            "completed": 5,
+            "dark": false,
+            "paper": false,
+            "detached": true,
+            "paperRemoved": true,
+            "decolorized": true,
+            "iodine": true,
+            "waterRinse": true,
+            "observationReady": false,
+            "exposed": "iodine",
+            "covered": "iodine",
+            "counts": [],
+            "label": "播放实验"
+          },
+          {
+            "percent": 96,
+            "id": "photosynthesis",
+            "step": 5,
+            "local": 0.7599999999999998,
+            "completed": 5,
+            "dark": false,
+            "paper": false,
+            "detached": true,
+            "paperRemoved": true,
+            "decolorized": true,
+            "iodine": true,
+            "waterRinse": false,
+            "observationReady": true,
+            "exposed": "blue",
+            "covered": "yellowWhite",
+            "counts": [],
+            "label": "播放实验"
+          },
+          {
+            "percent": 100,
+            "id": "photosynthesis",
+            "step": 5,
+            "local": 1,
+            "completed": 6,
+            "dark": false,
+            "paper": false,
+            "detached": true,
+            "paperRemoved": true,
+            "decolorized": true,
+            "iodine": true,
+            "waterRinse": false,
+            "observationReady": true,
+            "exposed": "blue",
+            "covered": "yellowWhite",
+            "counts": [],
+            "label": "播放实验"
+          }
+        ]
+      },
+      {
+        "width": 360,
+        "id": "photosynthesis",
+        "frames": [
+          {
+            "percent": 84,
+            "id": "photosynthesis",
+            "step": 5,
+            "local": 0.040000000000000036,
+            "completed": 5,
+            "dark": false,
+            "paper": false,
+            "detached": true,
+            "paperRemoved": true,
+            "decolorized": true,
+            "iodine": true,
+            "waterRinse": false,
+            "observationReady": false,
+            "exposed": "iodine",
+            "covered": "iodine",
+            "counts": [],
+            "label": "播放实验"
+          },
+          {
+            "percent": 90,
+            "id": "photosynthesis",
+            "step": 5,
+            "local": 0.40000000000000036,
+            "completed": 5,
+            "dark": false,
+            "paper": false,
+            "detached": true,
+            "paperRemoved": true,
+            "decolorized": true,
+            "iodine": true,
+            "waterRinse": true,
+            "observationReady": false,
+            "exposed": "iodine",
+            "covered": "iodine",
+            "counts": [],
+            "label": "播放实验"
+          },
+          {
+            "percent": 96,
+            "id": "photosynthesis",
+            "step": 5,
+            "local": 0.7599999999999998,
+            "completed": 5,
+            "dark": false,
+            "paper": false,
+            "detached": true,
+            "paperRemoved": true,
+            "decolorized": true,
+            "iodine": true,
+            "waterRinse": false,
+            "observationReady": true,
+            "exposed": "blue",
+            "covered": "yellowWhite",
+            "counts": [],
+            "label": "播放实验"
+          },
+          {
+            "percent": 100,
+            "id": "photosynthesis",
+            "step": 5,
+            "local": 1,
+            "completed": 6,
+            "dark": false,
+            "paper": false,
+            "detached": true,
+            "paperRemoved": true,
+            "decolorized": true,
+            "iodine": true,
+            "waterRinse": false,
+            "observationReady": true,
+            "exposed": "blue",
+            "covered": "yellowWhite",
+            "counts": [],
+            "label": "播放实验"
+          }
+        ]
+      }
+    ]
+  },
+  "chromium": {
+    "sourceSha": "d93c05b42c74aa578070154fec34aa74da0f72be",
+    "browser": "151.0.7922.34",
+    "templates": [
+      "photosynthesis"
+    ],
+    "checksPassed": 165,
+    "sharedSinks": [
+      {
+        "mode": "error",
+        "input": "<b data-probe=\"plain\">中文 & \"双引号\" '单引号'</b>",
+        "text": "<b data-probe=\"plain\">中文 & \"双引号\" '单引号'</b>",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "error",
+        "input": "＜b＞全角＜/b＞",
+        "text": "＜b＞全角＜/b＞",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "error",
+        "input": "<img src=x onerror=\"window.__unexpectedEvent=1\">",
+        "text": "<img src=x onerror=\"window.__unexpectedEvent=1\">",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "error",
+        "input": "比较 a < b & c > d，普通中文",
+        "text": "比较 a < b & c > d，普通中文",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "pending",
+        "input": "<b data-probe=\"plain\">中文 & \"双引号\" '单引号'</b>",
+        "text": "<b data-probe=\"plain\">中文 & \"双引号\" '单引号'</b>",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "pending",
+        "input": "＜b＞全角＜/b＞",
+        "text": "＜b＞全角＜/b＞",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "pending",
+        "input": "<img src=x onerror=\"window.__unexpectedEvent=1\">",
+        "text": "<img src=x onerror=\"window.__unexpectedEvent=1\">",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "pending",
+        "input": "比较 a < b & c > d，普通中文",
+        "text": "比较 a < b & c > d，普通中文",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "success",
+        "input": "<b data-probe=\"plain\">中文 & \"双引号\" '单引号'</b>",
+        "text": "<b data-probe=\"plain\">中文 & \"双引号\" '单引号'</b>",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "success",
+        "input": "＜b＞全角＜/b＞",
+        "text": "＜b＞全角＜/b＞",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "success",
+        "input": "<img src=x onerror=\"window.__unexpectedEvent=1\">",
+        "text": "<img src=x onerror=\"window.__unexpectedEvent=1\">",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "success",
+        "input": "比较 a < b & c > d，普通中文",
+        "text": "比较 a < b & c > d，普通中文",
+        "elements": [],
+        "event": 0
+      }
+    ],
+    "normalButtonCases": [
+      {
+        "kind": "junior",
+        "id": "review-dark",
+        "expected": true,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-dark"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "review-paper",
+        "expected": true,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-paper"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "subject-object-shift",
+        "expected": true,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "subject-object-shift"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "passive-cover",
+        "expected": true,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "passive-cover"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "verb-shift",
+        "expected": true,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "verb-shift"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "without-book",
+        "expected": true,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "without-book"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "asks-front",
+        "expected": true,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsafe-14",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「<b data-probe=\"plain\">中文 & 原意</b>」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsafe-15",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「<img src=x onerror=\"window.__unexpectedEvent=1\">」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsafe-16",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「＜b＞全角＜/b＞」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsafe-17",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「普通中文「引号」 & < > \"单独引号'\"」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "bad-time",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「盆栽天竺葵先暗处理一小时」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "bad-side",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「同一叶片用黑纸片从上面局部遮光」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "bad-order",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「滴加碘液后清水漂洗」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsupported-extra",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「求总产氧量」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "numeric-split-time-space",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「先将盆栽天竺葵放在黑暗处2 4小时」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "numeric-split-time-comma",
+        "expected": false,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「先将盆栽天竺葵放在黑暗处2,4小时」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "asks-front"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "numeric-valid-time-unit-space",
+        "expected": true,
+        "noTutor": false,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "numeric-valid-time-unit-space"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "review-dark",
+        "expected": true,
+        "noTutor": true,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-dark"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "review-paper",
+        "expected": true,
+        "noTutor": true,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 0,
+          "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+          "kept": true,
+          "tutorHasResult": true,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-paper"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsafe-14",
+        "expected": false,
+        "noTutor": true,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「<b data-probe=\"plain\">中文 & 原意</b>」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-paper"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsafe-15",
+        "expected": false,
+        "noTutor": true,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「<img src=x onerror=\"window.__unexpectedEvent=1\">」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-paper"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsafe-16",
+        "expected": false,
+        "noTutor": true,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「＜b＞全角＜/b＞」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-paper"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsafe-17",
+        "expected": false,
+        "noTutor": true,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「普通中文「引号」 & < > \"单独引号'\"」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-paper"
+          }
+        }
+      },
+      {
+        "kind": "junior",
+        "id": "unsupported-extra",
+        "expected": false,
+        "noTutor": true,
+        "order": "single",
+        "method": "normal generate button",
+        "actual": {
+          "id": "photosynthesis",
+          "time": 2,
+          "feedback": "无法确认条件或子问：「求总产氧量」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "diagnostic": "photosynthesis",
+          "kept": true,
+          "tutorHasResult": false,
+          "retainedOrGeneratedQuestion": {
+            "kind": "junior",
+            "id": "review-paper"
+          }
+        }
+      }
+    ],
+    "requestScenarios": [
+      {
+        "noTutor": false,
+        "order": "single",
+        "defaultButtonRequests": 0,
+        "disabledFallbackRequests": 0
+      },
+      {
+        "noTutor": true,
+        "order": "single",
+        "defaultButtonRequests": 0,
+        "disabledFallbackRequests": 0
+      }
+    ],
+    "explicitTutorRequests": [
+      {
+        "originalQuestion": {
+          "kind": "junior",
+          "id": "unsafe-14"
+        },
+        "hasOldResult": false,
+        "currentStep": "",
+        "responseStatus": 503,
+        "source": "explicit user chat, local mocked response"
+      }
+    ],
+    "automaticOrUnexpectedApi": [],
+    "expectedLocal503ConsoleErrors": [
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+    ],
+    "playback": [
+      {
+        "width": 1366,
+        "id": "photosynthesis",
+        "frames": [
+          {
+            "percent": 84,
+            "id": "photosynthesis",
+            "step": 5,
+            "local": 0.040000000000000036,
+            "completed": 5,
+            "dark": false,
+            "paper": false,
+            "detached": true,
+            "paperRemoved": true,
+            "decolorized": true,
+            "iodine": true,
+            "waterRinse": false,
+            "observationReady": false,
+            "exposed": "iodine",
+            "covered": "iodine",
+            "counts": [],
+            "label": "播放实验"
+          },
+          {
+            "percent": 90,
+            "id": "photosynthesis",
+            "step": 5,
+            "local": 0.40000000000000036,
+            "completed": 5,
+            "dark": false,
+            "paper": false,
+            "detached": true,
+            "paperRemoved": true,
+            "decolorized": true,
+            "iodine": true,
+            "waterRinse": true,
+            "observationReady": false,
+            "exposed": "iodine",
+            "covered": "iodine",
+            "counts": [],
+            "label": "播放实验"
+          },
+          {
+            "percent": 96,
+            "id": "photosynthesis",
+            "step": 5,
+            "local": 0.7599999999999998,
+            "completed": 5,
+            "dark": false,
+            "paper": false,
+            "detached": true,
+            "paperRemoved": true,
+            "decolorized": true,
+            "iodine": true,
+            "waterRinse": false,
+            "observationReady": true,
+            "exposed": "blue",
+            "covered": "yellowWhite",
+            "counts": [],
+            "label": "播放实验"
+          },
+          {
+            "percent": 100,
+            "id": "photosynthesis",
+            "step": 5,
+            "local": 1,
+            "completed": 6,
+            "dark": false,
+            "paper": false,
+            "detached": true,
+            "paperRemoved": true,
+            "decolorized": true,
+            "iodine": true,
+            "waterRinse": false,
+            "observationReady": true,
+            "exposed": "blue",
+            "covered": "yellowWhite",
+            "counts": [],
+            "label": "播放实验"
+          }
+        ]
+      },
+      {
+        "width": 360,
+        "id": "photosynthesis",
+        "frames": [
+          {
+            "percent": 84,
+            "id": "photosynthesis",
+            "step": 5,
+            "local": 0.040000000000000036,
+            "completed": 5,
+            "dark": false,
+            "paper": false,
+            "detached": true,
+            "paperRemoved": true,
+            "decolorized": true,
+            "iodine": true,
+            "waterRinse": false,
+            "observationReady": false,
+            "exposed": "iodine",
+            "covered": "iodine",
+            "counts": [],
+            "label": "播放实验"
+          },
+          {
+            "percent": 90,
+            "id": "photosynthesis",
+            "step": 5,
+            "local": 0.40000000000000036,
+            "completed": 5,
+            "dark": false,
+            "paper": false,
+            "detached": true,
+            "paperRemoved": true,
+            "decolorized": true,
+            "iodine": true,
+            "waterRinse": true,
+            "observationReady": false,
+            "exposed": "iodine",
+            "covered": "iodine",
+            "counts": [],
+            "label": "播放实验"
+          },
+          {
+            "percent": 96,
+            "id": "photosynthesis",
+            "step": 5,
+            "local": 0.7599999999999998,
+            "completed": 5,
+            "dark": false,
+            "paper": false,
+            "detached": true,
+            "paperRemoved": true,
+            "decolorized": true,
+            "iodine": true,
+            "waterRinse": false,
+            "observationReady": true,
+            "exposed": "blue",
+            "covered": "yellowWhite",
+            "counts": [],
+            "label": "播放实验"
+          },
+          {
+            "percent": 100,
+            "id": "photosynthesis",
+            "step": 5,
+            "local": 1,
+            "completed": 6,
+            "dark": false,
+            "paper": false,
+            "detached": true,
+            "paperRemoved": true,
+            "decolorized": true,
+            "iodine": true,
+            "waterRinse": false,
+            "observationReady": true,
+            "exposed": "blue",
+            "covered": "yellowWhite",
+            "counts": [],
+            "label": "播放实验"
+          }
+        ]
+      }
+    ]
+  }
+}

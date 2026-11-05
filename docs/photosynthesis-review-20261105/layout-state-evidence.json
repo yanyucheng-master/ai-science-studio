@@ -1,0 +1,5254 @@
+{
+  "junior": {
+    "edge": {
+      "sourceSha": "d93c05b42c74aa578070154fec34aa74da0f72be",
+      "browser": "156.0.4314.58",
+      "checksPassed": 265,
+      "checks": [
+        "1366: menu generates actual junior textbook experiment",
+        "1366: navigate textbook step 1",
+        "1366: do not reveal final blue test early at step 1",
+        "1366: navigate textbook step 2",
+        "1366: do not reveal final blue test early at step 2",
+        "1366: navigate textbook step 3",
+        "1366: do not reveal final blue test early at step 3",
+        "1366: navigate textbook step 4",
+        "1366: do not reveal final blue test early at step 4",
+        "photo-step4-1366: text, captions and SVG labels fit",
+        "photo-step4-1366: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-1366: readable captions and touch targets",
+        "1366: navigate textbook step 5",
+        "1366: do not reveal final blue test early at step 5",
+        "1366: navigate textbook step 6",
+        "1366: step six begins before rinse completion",
+        "photosynthesis-1366: text, captions and SVG labels fit",
+        "photosynthesis-1366: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-1366: readable captions and touch targets",
+        "1366: tutor distinguishes original question, current water bath and final expected result",
+        "1366: reset restores first dark-treatment step",
+        "1366: shared pause stops timeline",
+        "1366: intermediate iodine is not final blue",
+        "1366: shared timeline reaches washed observation",
+        "photo-fullscreen-1366: text, captions and SVG labels fit",
+        "photo-fullscreen-1366: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-1366: readable captions and touch targets",
+        "1366: fullscreen reaches .photo-heading",
+        "1366: fullscreen reaches .photo-steps",
+        "1366: fullscreen reaches .photo-caution",
+        "1366: fullscreen reaches .biology-photosynthesis-scene summary",
+        "1366: fullscreen reaches .generic-physics-readout",
+        "820: menu generates actual junior textbook experiment",
+        "820: navigate textbook step 1",
+        "820: do not reveal final blue test early at step 1",
+        "820: navigate textbook step 2",
+        "820: do not reveal final blue test early at step 2",
+        "820: navigate textbook step 3",
+        "820: do not reveal final blue test early at step 3",
+        "820: navigate textbook step 4",
+        "820: do not reveal final blue test early at step 4",
+        "photo-step4-820: text, captions and SVG labels fit",
+        "photo-step4-820: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-820: readable captions and touch targets",
+        "820: navigate textbook step 5",
+        "820: do not reveal final blue test early at step 5",
+        "820: navigate textbook step 6",
+        "820: step six begins before rinse completion",
+        "photosynthesis-820: text, captions and SVG labels fit",
+        "photosynthesis-820: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-820: readable captions and touch targets",
+        "820: tutor distinguishes original question, current water bath and final expected result",
+        "820: reset restores first dark-treatment step",
+        "820: shared pause stops timeline",
+        "820: intermediate iodine is not final blue",
+        "820: shared timeline reaches washed observation",
+        "photo-fullscreen-820: text, captions and SVG labels fit",
+        "photo-fullscreen-820: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-820: readable captions and touch targets",
+        "820: fullscreen reaches .photo-heading",
+        "820: fullscreen reaches .photo-steps",
+        "820: fullscreen reaches .photo-caution",
+        "820: fullscreen reaches .biology-photosynthesis-scene summary",
+        "820: fullscreen reaches .generic-physics-readout",
+        "390: menu generates actual junior textbook experiment",
+        "390: navigate textbook step 1",
+        "390: do not reveal final blue test early at step 1",
+        "photo-step1-390: text, captions and SVG labels fit",
+        "photo-step1-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step1-390: readable captions and touch targets",
+        "390: navigate textbook step 2",
+        "390: do not reveal final blue test early at step 2",
+        "photo-step2-390: text, captions and SVG labels fit",
+        "photo-step2-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step2-390: readable captions and touch targets",
+        "390: navigate textbook step 3",
+        "390: do not reveal final blue test early at step 3",
+        "photo-step3-390: text, captions and SVG labels fit",
+        "photo-step3-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step3-390: readable captions and touch targets",
+        "390: navigate textbook step 4",
+        "390: do not reveal final blue test early at step 4",
+        "photo-step4-390: text, captions and SVG labels fit",
+        "photo-step4-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-390: readable captions and touch targets",
+        "390: navigate textbook step 5",
+        "390: do not reveal final blue test early at step 5",
+        "photo-step5-390: text, captions and SVG labels fit",
+        "photo-step5-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step5-390: readable captions and touch targets",
+        "390: navigate textbook step 6",
+        "390: step six begins before rinse completion",
+        "photo-step6-390: text, captions and SVG labels fit",
+        "photo-step6-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step6-390: readable captions and touch targets",
+        "photosynthesis-390: text, captions and SVG labels fit",
+        "photosynthesis-390: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-390: readable captions and touch targets",
+        "390: tutor distinguishes original question, current water bath and final expected result",
+        "390: reset restores first dark-treatment step",
+        "390: shared pause stops timeline",
+        "390: intermediate iodine is not final blue",
+        "390: shared timeline reaches washed observation",
+        "photo-fullscreen-390: text, captions and SVG labels fit",
+        "photo-fullscreen-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-390: readable captions and touch targets",
+        "390: fullscreen reaches .photo-heading",
+        "390: fullscreen reaches .photo-steps",
+        "390: fullscreen reaches .photo-caution",
+        "390: fullscreen reaches .biology-photosynthesis-scene summary",
+        "390: fullscreen reaches .generic-physics-readout",
+        "360: menu generates actual junior textbook experiment",
+        "360: navigate textbook step 1",
+        "360: do not reveal final blue test early at step 1",
+        "photo-step1-360: text, captions and SVG labels fit",
+        "photo-step1-360: one shared player/fullscreen and no invented variable sliders",
+        "photo-step1-360: readable captions and touch targets",
+        "360: navigate textbook step 2",
+        "360: do not reveal final blue test early at step 2",
+        "photo-step2-360: text, captions and SVG labels fit",
+        "photo-step2-360: one shared player/fullscreen and no invented variable sliders",
+        "photo-step2-360: readable captions and touch targets",
+        "360: navigate textbook step 3",
+        "360: do not reveal final blue test early at step 3",
+        "photo-step3-360: text, captions and SVG labels fit",
+        "photo-step3-360: one shared player/fullscreen and no invented variable sliders",
+        "photo-step3-360: readable captions and touch targets",
+        "360: navigate textbook step 4",
+        "360: do not reveal final blue test early at step 4",
+        "photo-step4-360: text, captions and SVG labels fit",
+        "photo-step4-360: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-360: readable captions and touch targets",
+        "360: navigate textbook step 5",
+        "360: do not reveal final blue test early at step 5",
+        "photo-step5-360: text, captions and SVG labels fit",
+        "photo-step5-360: one shared player/fullscreen and no invented variable sliders",
+        "photo-step5-360: readable captions and touch targets",
+        "360: navigate textbook step 6",
+        "360: step six begins before rinse completion",
+        "photo-step6-360: text, captions and SVG labels fit",
+        "photo-step6-360: one shared player/fullscreen and no invented variable sliders",
+        "photo-step6-360: readable captions and touch targets",
+        "photosynthesis-360: text, captions and SVG labels fit",
+        "photosynthesis-360: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-360: readable captions and touch targets",
+        "360: tutor distinguishes original question, current water bath and final expected result",
+        "360: reset restores first dark-treatment step",
+        "360: shared pause stops timeline",
+        "360: intermediate iodine is not final blue",
+        "360: shared timeline reaches washed observation",
+        "photo-fullscreen-360: text, captions and SVG labels fit",
+        "photo-fullscreen-360: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-360: readable captions and touch targets",
+        "360: fullscreen reaches .photo-heading",
+        "360: fullscreen reaches .photo-steps",
+        "360: fullscreen reaches .photo-caution",
+        "360: fullscreen reaches .biology-photosynthesis-scene summary",
+        "360: fullscreen reaches .generic-physics-readout",
+        "844: menu generates actual junior textbook experiment",
+        "844: navigate textbook step 1",
+        "844: do not reveal final blue test early at step 1",
+        "844: navigate textbook step 2",
+        "844: do not reveal final blue test early at step 2",
+        "844: navigate textbook step 3",
+        "844: do not reveal final blue test early at step 3",
+        "844: navigate textbook step 4",
+        "844: do not reveal final blue test early at step 4",
+        "photo-step4-844: text, captions and SVG labels fit",
+        "photo-step4-844: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-844: readable captions and touch targets",
+        "844: navigate textbook step 5",
+        "844: do not reveal final blue test early at step 5",
+        "844: navigate textbook step 6",
+        "844: step six begins before rinse completion",
+        "photosynthesis-844: text, captions and SVG labels fit",
+        "photosynthesis-844: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-844: readable captions and touch targets",
+        "844: tutor distinguishes original question, current water bath and final expected result",
+        "844: reset restores first dark-treatment step",
+        "844: shared pause stops timeline",
+        "844: intermediate iodine is not final blue",
+        "844: shared timeline reaches washed observation",
+        "photo-fullscreen-844: text, captions and SVG labels fit",
+        "photo-fullscreen-844: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-844: readable captions and touch targets",
+        "844: fullscreen reaches .photo-heading",
+        "844: fullscreen reaches .photo-steps",
+        "844: fullscreen reaches .photo-caution",
+        "844: fullscreen reaches .biology-photosynthesis-scene summary",
+        "844: fullscreen reaches .generic-physics-readout",
+        "subject roundtrip preserves current observation step",
+        "AI page roundtrip preserves stage",
+        "A: independent import restores checked questions and fixed mode",
+        "A: share starts at first operation, not a stored playback position",
+        "A: active reset starts the original protocol",
+        "B: independent import restores checked questions and fixed mode",
+        "B: share starts at first operation, not a stored playback position",
+        "B: active reset starts the original protocol",
+        "A again: independent import restores checked questions and fixed mode",
+        "A again: share starts at first operation, not a stored playback position",
+        "A again: active reset starts the original protocol",
+        "favorite restores the same fixed textbook protocol",
+        "unsupported new question is rejected without replacing the existing experiment",
+        "invalid new question cannot borrow old scientific result or step",
+        "tampered share rejected: change locked parameter",
+        "tampered share rejected: direct heating",
+        "tampered share rejected: extra subquestion",
+        "actual BFCache preserves active operation",
+        "separate browser imports the identical textbook experiment",
+        "separate touch browser completes observation",
+        "leaving photo restores dedicated parameters: plant cell",
+        "leaving photo restores dedicated fullscreen: plant cell",
+        "leaving photo restores dedicated parameters: braking",
+        "leaving photo restores dedicated fullscreen: braking",
+        "leaving photo restores dedicated parameters: tangent",
+        "leaving photo restores dedicated fullscreen: tangent",
+        "leaving photo restores dedicated parameters: iron reaction",
+        "leaving photo restores dedicated fullscreen: iron reaction",
+        "existing template is not captured: mendel",
+        "existing template is not captured: hclNaohNeutralization",
+        "existing template is not captured: kno3Cooling",
+        "existing template is not captured: pythagoras",
+        "existing template is not captured: unitCircle",
+        "actual page semantic case control",
+        "actual page semantic case review-dark",
+        "actual page semantic case review-paper",
+        "actual page semantic case natural-dark",
+        "actual page semantic case duration-equivalent",
+        "actual page semantic case waterbath",
+        "actual page semantic case wash",
+        "actual page semantic case final-wash",
+        "actual page semantic case ask-synonyms",
+        "actual page semantic case front-12290",
+        "actual page semantic case front-65306",
+        "actual page semantic case front-65307",
+        "actual page semantic case front-44",
+        "actual page semantic case split-operation",
+        "actual page semantic case missing-0",
+        "actual page semantic case missing-1",
+        "actual page semantic case missing-2",
+        "actual page semantic case missing-3",
+        "actual page semantic case missing-4",
+        "actual page semantic case missing-5",
+        "actual page semantic case missing-6",
+        "actual page semantic case missing-7",
+        "actual page semantic case reject-duration",
+        "actual page semantic case reject-single-side",
+        "actual page semantic case reject-whole-leaf",
+        "actual page semantic case reject-wrong-source",
+        "actual page semantic case reject-keep-paper",
+        "actual page semantic case reject-direct-heat",
+        "actual page semantic case reject-wrong-liquid",
+        "actual page semantic case reject-wrong-order",
+        "actual page semantic case reject-no-wash",
+        "actual page semantic case reject-numeric-role",
+        "actual page semantic case reject-extra-ask",
+        "actual page semantic case late-0",
+        "actual page semantic case late-1",
+        "actual page semantic case late-2",
+        "actual page semantic case late-3",
+        "actual page semantic case late-4",
+        "actual mocked tutor request preserves original protocol and current water-bath step",
+        "actual invalid-question tutor request does not send old result or old step",
+        "no page or console errors: ",
+        "no unexpected AI attempts; only explicit local tutor fixtures"
+      ],
+      "layouts": [
+        {
+          "name": "photo-step4-1366",
+          "width": 1366,
+          "pageWidth": 1366,
+          "bad": [],
+          "labels": [
+            {
+              "text": "小烧杯 · 酒精",
+              "inside": true
+            },
+            {
+              "text": "水",
+              "inside": true
+            },
+            {
+              "text": "水浴锅 · 隔水加热",
+              "inside": true
+            },
+            {
+              "text": "叶绿素溶入酒精 · 叶片变黄白",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.34375,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "photosynthesis-1366",
+          "width": 1366,
+          "pageWidth": 1366,
+          "bad": [],
+          "labels": [
+            {
+              "text": "滴碘后稍停片刻",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.34375,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "photo-fullscreen-1366",
+          "width": 1366,
+          "pageWidth": 1366,
+          "bad": [],
+          "labels": [
+            {
+              "text": "冲去碘液后的预期现象",
+              "inside": true
+            },
+            {
+              "text": "原见光区：蓝色",
+              "inside": true
+            },
+            {
+              "text": "原遮光区：不变蓝",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "photo-step4-820",
+          "width": 820,
+          "pageWidth": 820,
+          "bad": [],
+          "labels": [
+            {
+              "text": "小烧杯 · 酒精",
+              "inside": true
+            },
+            {
+              "text": "水",
+              "inside": true
+            },
+            {
+              "text": "水浴锅 · 隔水加热",
+              "inside": true
+            },
+            {
+              "text": "叶绿素溶入酒精 · 叶片变黄白",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "photosynthesis-820",
+          "width": 820,
+          "pageWidth": 820,
+          "bad": [],
+          "labels": [
+            {
+              "text": "滴碘后稍停片刻",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "photo-fullscreen-820",
+          "width": 820,
+          "pageWidth": 820,
+          "bad": [],
+          "labels": [
+            {
+              "text": "冲去碘液后的预期现象",
+              "inside": true
+            },
+            {
+              "text": "原见光区：蓝色",
+              "inside": true
+            },
+            {
+              "text": "原遮光区：不变蓝",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "photo-step1-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step2-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step3-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step4-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step5-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step6-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photosynthesis-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-fullscreen-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 117.328125,
+              "h": 68.75
+            },
+            {
+              "w": 117.328125,
+              "h": 68.75
+            },
+            {
+              "w": 117.34375,
+              "h": 68.75
+            },
+            {
+              "w": 117.328125,
+              "h": 68.75
+            },
+            {
+              "w": 117.328125,
+              "h": 68.75
+            },
+            {
+              "w": 117.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step1-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.34375,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step2-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.34375,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step3-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.34375,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step4-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.34375,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step5-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.34375,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step6-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.34375,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photosynthesis-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.34375,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-fullscreen-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step4-844",
+          "width": 844,
+          "pageWidth": 844,
+          "bad": [],
+          "labels": [
+            {
+              "text": "小烧杯 · 酒精",
+              "inside": true
+            },
+            {
+              "text": "水",
+              "inside": true
+            },
+            {
+              "text": "水浴锅 · 隔水加热",
+              "inside": true
+            },
+            {
+              "text": "叶绿素溶入酒精 · 叶片变黄白",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "photosynthesis-844",
+          "width": 844,
+          "pageWidth": 844,
+          "bad": [],
+          "labels": [
+            {
+              "text": "滴碘后稍停片刻",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "photo-fullscreen-844",
+          "width": 844,
+          "pageWidth": 844,
+          "bad": [],
+          "labels": [
+            {
+              "text": "冲去碘液后的预期现象",
+              "inside": true
+            },
+            {
+              "text": "原见光区：蓝色",
+              "inside": true
+            },
+            {
+              "text": "原遮光区：不变蓝",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            }
+          ]
+        }
+      ],
+      "noErrors": [],
+      "unexpectedApi": []
+    },
+    "chromium": {
+      "sourceSha": "d93c05b42c74aa578070154fec34aa74da0f72be",
+      "browser": "151.0.7922.34",
+      "checksPassed": 265,
+      "checks": [
+        "1366: menu generates actual junior textbook experiment",
+        "1366: navigate textbook step 1",
+        "1366: do not reveal final blue test early at step 1",
+        "1366: navigate textbook step 2",
+        "1366: do not reveal final blue test early at step 2",
+        "1366: navigate textbook step 3",
+        "1366: do not reveal final blue test early at step 3",
+        "1366: navigate textbook step 4",
+        "1366: do not reveal final blue test early at step 4",
+        "photo-step4-1366: text, captions and SVG labels fit",
+        "photo-step4-1366: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-1366: readable captions and touch targets",
+        "1366: navigate textbook step 5",
+        "1366: do not reveal final blue test early at step 5",
+        "1366: navigate textbook step 6",
+        "1366: step six begins before rinse completion",
+        "photosynthesis-1366: text, captions and SVG labels fit",
+        "photosynthesis-1366: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-1366: readable captions and touch targets",
+        "1366: tutor distinguishes original question, current water bath and final expected result",
+        "1366: reset restores first dark-treatment step",
+        "1366: shared pause stops timeline",
+        "1366: intermediate iodine is not final blue",
+        "1366: shared timeline reaches washed observation",
+        "photo-fullscreen-1366: text, captions and SVG labels fit",
+        "photo-fullscreen-1366: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-1366: readable captions and touch targets",
+        "1366: fullscreen reaches .photo-heading",
+        "1366: fullscreen reaches .photo-steps",
+        "1366: fullscreen reaches .photo-caution",
+        "1366: fullscreen reaches .biology-photosynthesis-scene summary",
+        "1366: fullscreen reaches .generic-physics-readout",
+        "820: menu generates actual junior textbook experiment",
+        "820: navigate textbook step 1",
+        "820: do not reveal final blue test early at step 1",
+        "820: navigate textbook step 2",
+        "820: do not reveal final blue test early at step 2",
+        "820: navigate textbook step 3",
+        "820: do not reveal final blue test early at step 3",
+        "820: navigate textbook step 4",
+        "820: do not reveal final blue test early at step 4",
+        "photo-step4-820: text, captions and SVG labels fit",
+        "photo-step4-820: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-820: readable captions and touch targets",
+        "820: navigate textbook step 5",
+        "820: do not reveal final blue test early at step 5",
+        "820: navigate textbook step 6",
+        "820: step six begins before rinse completion",
+        "photosynthesis-820: text, captions and SVG labels fit",
+        "photosynthesis-820: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-820: readable captions and touch targets",
+        "820: tutor distinguishes original question, current water bath and final expected result",
+        "820: reset restores first dark-treatment step",
+        "820: shared pause stops timeline",
+        "820: intermediate iodine is not final blue",
+        "820: shared timeline reaches washed observation",
+        "photo-fullscreen-820: text, captions and SVG labels fit",
+        "photo-fullscreen-820: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-820: readable captions and touch targets",
+        "820: fullscreen reaches .photo-heading",
+        "820: fullscreen reaches .photo-steps",
+        "820: fullscreen reaches .photo-caution",
+        "820: fullscreen reaches .biology-photosynthesis-scene summary",
+        "820: fullscreen reaches .generic-physics-readout",
+        "390: menu generates actual junior textbook experiment",
+        "390: navigate textbook step 1",
+        "390: do not reveal final blue test early at step 1",
+        "photo-step1-390: text, captions and SVG labels fit",
+        "photo-step1-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step1-390: readable captions and touch targets",
+        "390: navigate textbook step 2",
+        "390: do not reveal final blue test early at step 2",
+        "photo-step2-390: text, captions and SVG labels fit",
+        "photo-step2-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step2-390: readable captions and touch targets",
+        "390: navigate textbook step 3",
+        "390: do not reveal final blue test early at step 3",
+        "photo-step3-390: text, captions and SVG labels fit",
+        "photo-step3-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step3-390: readable captions and touch targets",
+        "390: navigate textbook step 4",
+        "390: do not reveal final blue test early at step 4",
+        "photo-step4-390: text, captions and SVG labels fit",
+        "photo-step4-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-390: readable captions and touch targets",
+        "390: navigate textbook step 5",
+        "390: do not reveal final blue test early at step 5",
+        "photo-step5-390: text, captions and SVG labels fit",
+        "photo-step5-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step5-390: readable captions and touch targets",
+        "390: navigate textbook step 6",
+        "390: step six begins before rinse completion",
+        "photo-step6-390: text, captions and SVG labels fit",
+        "photo-step6-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-step6-390: readable captions and touch targets",
+        "photosynthesis-390: text, captions and SVG labels fit",
+        "photosynthesis-390: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-390: readable captions and touch targets",
+        "390: tutor distinguishes original question, current water bath and final expected result",
+        "390: reset restores first dark-treatment step",
+        "390: shared pause stops timeline",
+        "390: intermediate iodine is not final blue",
+        "390: shared timeline reaches washed observation",
+        "photo-fullscreen-390: text, captions and SVG labels fit",
+        "photo-fullscreen-390: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-390: readable captions and touch targets",
+        "390: fullscreen reaches .photo-heading",
+        "390: fullscreen reaches .photo-steps",
+        "390: fullscreen reaches .photo-caution",
+        "390: fullscreen reaches .biology-photosynthesis-scene summary",
+        "390: fullscreen reaches .generic-physics-readout",
+        "360: menu generates actual junior textbook experiment",
+        "360: navigate textbook step 1",
+        "360: do not reveal final blue test early at step 1",
+        "photo-step1-360: text, captions and SVG labels fit",
+        "photo-step1-360: one shared player/fullscreen and no invented variable sliders",
+        "photo-step1-360: readable captions and touch targets",
+        "360: navigate textbook step 2",
+        "360: do not reveal final blue test early at step 2",
+        "photo-step2-360: text, captions and SVG labels fit",
+        "photo-step2-360: one shared player/fullscreen and no invented variable sliders",
+        "photo-step2-360: readable captions and touch targets",
+        "360: navigate textbook step 3",
+        "360: do not reveal final blue test early at step 3",
+        "photo-step3-360: text, captions and SVG labels fit",
+        "photo-step3-360: one shared player/fullscreen and no invented variable sliders",
+        "photo-step3-360: readable captions and touch targets",
+        "360: navigate textbook step 4",
+        "360: do not reveal final blue test early at step 4",
+        "photo-step4-360: text, captions and SVG labels fit",
+        "photo-step4-360: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-360: readable captions and touch targets",
+        "360: navigate textbook step 5",
+        "360: do not reveal final blue test early at step 5",
+        "photo-step5-360: text, captions and SVG labels fit",
+        "photo-step5-360: one shared player/fullscreen and no invented variable sliders",
+        "photo-step5-360: readable captions and touch targets",
+        "360: navigate textbook step 6",
+        "360: step six begins before rinse completion",
+        "photo-step6-360: text, captions and SVG labels fit",
+        "photo-step6-360: one shared player/fullscreen and no invented variable sliders",
+        "photo-step6-360: readable captions and touch targets",
+        "photosynthesis-360: text, captions and SVG labels fit",
+        "photosynthesis-360: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-360: readable captions and touch targets",
+        "360: tutor distinguishes original question, current water bath and final expected result",
+        "360: reset restores first dark-treatment step",
+        "360: shared pause stops timeline",
+        "360: intermediate iodine is not final blue",
+        "360: shared timeline reaches washed observation",
+        "photo-fullscreen-360: text, captions and SVG labels fit",
+        "photo-fullscreen-360: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-360: readable captions and touch targets",
+        "360: fullscreen reaches .photo-heading",
+        "360: fullscreen reaches .photo-steps",
+        "360: fullscreen reaches .photo-caution",
+        "360: fullscreen reaches .biology-photosynthesis-scene summary",
+        "360: fullscreen reaches .generic-physics-readout",
+        "844: menu generates actual junior textbook experiment",
+        "844: navigate textbook step 1",
+        "844: do not reveal final blue test early at step 1",
+        "844: navigate textbook step 2",
+        "844: do not reveal final blue test early at step 2",
+        "844: navigate textbook step 3",
+        "844: do not reveal final blue test early at step 3",
+        "844: navigate textbook step 4",
+        "844: do not reveal final blue test early at step 4",
+        "photo-step4-844: text, captions and SVG labels fit",
+        "photo-step4-844: one shared player/fullscreen and no invented variable sliders",
+        "photo-step4-844: readable captions and touch targets",
+        "844: navigate textbook step 5",
+        "844: do not reveal final blue test early at step 5",
+        "844: navigate textbook step 6",
+        "844: step six begins before rinse completion",
+        "photosynthesis-844: text, captions and SVG labels fit",
+        "photosynthesis-844: one shared player/fullscreen and no invented variable sliders",
+        "photosynthesis-844: readable captions and touch targets",
+        "844: tutor distinguishes original question, current water bath and final expected result",
+        "844: reset restores first dark-treatment step",
+        "844: shared pause stops timeline",
+        "844: intermediate iodine is not final blue",
+        "844: shared timeline reaches washed observation",
+        "photo-fullscreen-844: text, captions and SVG labels fit",
+        "photo-fullscreen-844: one shared player/fullscreen and no invented variable sliders",
+        "photo-fullscreen-844: readable captions and touch targets",
+        "844: fullscreen reaches .photo-heading",
+        "844: fullscreen reaches .photo-steps",
+        "844: fullscreen reaches .photo-caution",
+        "844: fullscreen reaches .biology-photosynthesis-scene summary",
+        "844: fullscreen reaches .generic-physics-readout",
+        "subject roundtrip preserves current observation step",
+        "AI page roundtrip preserves stage",
+        "A: independent import restores checked questions and fixed mode",
+        "A: share starts at first operation, not a stored playback position",
+        "A: active reset starts the original protocol",
+        "B: independent import restores checked questions and fixed mode",
+        "B: share starts at first operation, not a stored playback position",
+        "B: active reset starts the original protocol",
+        "A again: independent import restores checked questions and fixed mode",
+        "A again: share starts at first operation, not a stored playback position",
+        "A again: active reset starts the original protocol",
+        "favorite restores the same fixed textbook protocol",
+        "unsupported new question is rejected without replacing the existing experiment",
+        "invalid new question cannot borrow old scientific result or step",
+        "tampered share rejected: change locked parameter",
+        "tampered share rejected: direct heating",
+        "tampered share rejected: extra subquestion",
+        "actual BFCache preserves active operation",
+        "separate browser imports the identical textbook experiment",
+        "separate touch browser completes observation",
+        "leaving photo restores dedicated parameters: plant cell",
+        "leaving photo restores dedicated fullscreen: plant cell",
+        "leaving photo restores dedicated parameters: braking",
+        "leaving photo restores dedicated fullscreen: braking",
+        "leaving photo restores dedicated parameters: tangent",
+        "leaving photo restores dedicated fullscreen: tangent",
+        "leaving photo restores dedicated parameters: iron reaction",
+        "leaving photo restores dedicated fullscreen: iron reaction",
+        "existing template is not captured: mendel",
+        "existing template is not captured: hclNaohNeutralization",
+        "existing template is not captured: kno3Cooling",
+        "existing template is not captured: pythagoras",
+        "existing template is not captured: unitCircle",
+        "actual page semantic case control",
+        "actual page semantic case review-dark",
+        "actual page semantic case review-paper",
+        "actual page semantic case natural-dark",
+        "actual page semantic case duration-equivalent",
+        "actual page semantic case waterbath",
+        "actual page semantic case wash",
+        "actual page semantic case final-wash",
+        "actual page semantic case ask-synonyms",
+        "actual page semantic case front-12290",
+        "actual page semantic case front-65306",
+        "actual page semantic case front-65307",
+        "actual page semantic case front-44",
+        "actual page semantic case split-operation",
+        "actual page semantic case missing-0",
+        "actual page semantic case missing-1",
+        "actual page semantic case missing-2",
+        "actual page semantic case missing-3",
+        "actual page semantic case missing-4",
+        "actual page semantic case missing-5",
+        "actual page semantic case missing-6",
+        "actual page semantic case missing-7",
+        "actual page semantic case reject-duration",
+        "actual page semantic case reject-single-side",
+        "actual page semantic case reject-whole-leaf",
+        "actual page semantic case reject-wrong-source",
+        "actual page semantic case reject-keep-paper",
+        "actual page semantic case reject-direct-heat",
+        "actual page semantic case reject-wrong-liquid",
+        "actual page semantic case reject-wrong-order",
+        "actual page semantic case reject-no-wash",
+        "actual page semantic case reject-numeric-role",
+        "actual page semantic case reject-extra-ask",
+        "actual page semantic case late-0",
+        "actual page semantic case late-1",
+        "actual page semantic case late-2",
+        "actual page semantic case late-3",
+        "actual page semantic case late-4",
+        "actual mocked tutor request preserves original protocol and current water-bath step",
+        "actual invalid-question tutor request does not send old result or old step",
+        "no page or console errors: ",
+        "no unexpected AI attempts; only explicit local tutor fixtures"
+      ],
+      "layouts": [
+        {
+          "name": "photo-step4-1366",
+          "width": 1366,
+          "pageWidth": 1366,
+          "bad": [],
+          "labels": [
+            {
+              "text": "小烧杯 · 酒精",
+              "inside": true
+            },
+            {
+              "text": "水",
+              "inside": true
+            },
+            {
+              "text": "水浴锅 · 隔水加热",
+              "inside": true
+            },
+            {
+              "text": "叶绿素溶入酒精 · 叶片变黄白",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.34375,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "photosynthesis-1366",
+          "width": 1366,
+          "pageWidth": 1366,
+          "bad": [],
+          "labels": [
+            {
+              "text": "滴碘后稍停片刻",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.34375,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "photo-fullscreen-1366",
+          "width": 1366,
+          "pageWidth": 1366,
+          "bad": [],
+          "labels": [
+            {
+              "text": "冲去碘液后的预期现象",
+              "inside": true
+            },
+            {
+              "text": "原见光区：蓝色",
+              "inside": true
+            },
+            {
+              "text": "原遮光区：不变蓝",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "photo-step4-820",
+          "width": 820,
+          "pageWidth": 820,
+          "bad": [],
+          "labels": [
+            {
+              "text": "小烧杯 · 酒精",
+              "inside": true
+            },
+            {
+              "text": "水",
+              "inside": true
+            },
+            {
+              "text": "水浴锅 · 隔水加热",
+              "inside": true
+            },
+            {
+              "text": "叶绿素溶入酒精 · 叶片变黄白",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "photosynthesis-820",
+          "width": 820,
+          "pageWidth": 820,
+          "bad": [],
+          "labels": [
+            {
+              "text": "滴碘后稍停片刻",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "photo-fullscreen-820",
+          "width": 820,
+          "pageWidth": 820,
+          "bad": [],
+          "labels": [
+            {
+              "text": "冲去碘液后的预期现象",
+              "inside": true
+            },
+            {
+              "text": "原见光区：蓝色",
+              "inside": true
+            },
+            {
+              "text": "原遮光区：不变蓝",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "photo-step1-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step2-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step3-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step4-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step5-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step6-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photosynthesis-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-fullscreen-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 117.328125,
+              "h": 68.75
+            },
+            {
+              "w": 117.328125,
+              "h": 68.75
+            },
+            {
+              "w": 117.34375,
+              "h": 68.75
+            },
+            {
+              "w": 117.328125,
+              "h": 68.75
+            },
+            {
+              "w": 117.328125,
+              "h": 68.75
+            },
+            {
+              "w": 117.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step1-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.34375,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step2-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.34375,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step3-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.34375,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step4-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.34375,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step5-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.34375,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step6-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.34375,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photosynthesis-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 91.5
+            },
+            {
+              "w": 97.34375,
+              "h": 91.5
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-fullscreen-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "photo-step4-844",
+          "width": 844,
+          "pageWidth": 844,
+          "bad": [],
+          "labels": [
+            {
+              "text": "小烧杯 · 酒精",
+              "inside": true
+            },
+            {
+              "text": "水",
+              "inside": true
+            },
+            {
+              "text": "水浴锅 · 隔水加热",
+              "inside": true
+            },
+            {
+              "text": "叶绿素溶入酒精 · 叶片变黄白",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "photosynthesis-844",
+          "width": 844,
+          "pageWidth": 844,
+          "bad": [],
+          "labels": [
+            {
+              "text": "滴碘后稍停片刻",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "photo-fullscreen-844",
+          "width": 844,
+          "pageWidth": 844,
+          "bad": [],
+          "labels": [
+            {
+              "text": "冲去碘液后的预期现象",
+              "inside": true
+            },
+            {
+              "text": "原见光区：蓝色",
+              "inside": true
+            },
+            {
+              "text": "原遮光区：不变蓝",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            }
+          ]
+        }
+      ],
+      "noErrors": [],
+      "unexpectedApi": []
+    }
+  },
+  "senior": {
+    "edge": {
+      "sourceSha": "64abb1cb521a91de41a27d76223b467f5296e2c2",
+      "browser": "156.0.4314.58",
+      "checksPassed": 301,
+      "checks": [
+        "1366: menu generates actual senior textbook experiment",
+        "1366: navigate textbook step 1",
+        "1366: no invented group observations at step 1",
+        "1366: punch hole stays within blade and away from drawn large veins",
+        "1366: navigate textbook step 2",
+        "1366: no invented group observations at step 2",
+        "leaf-step2-1366: text, captions and SVG labels fit",
+        "leaf-step2-1366: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step2-1366: readable captions and touch targets",
+        "1366: navigate textbook step 3",
+        "1366: no invented group observations at step 3",
+        "1366: navigate textbook step 4",
+        "1366: no invented group observations at step 4",
+        "1366: navigate textbook step 5",
+        "1366: no invented group observations at step 5",
+        "1366: equal-height identical beakers, ten leaves each; distance alone changes",
+        "1366: visible treatment labels clear the lamp rays; narrow caption names all three groups",
+        "1366: navigate textbook step 6",
+        "1366: no invented group observations at step 6",
+        "1366: isolated single-disk mechanism, not group observations",
+        "leaf-disks-1366: text, captions and SVG labels fit",
+        "leaf-disks-1366: one shared player/fullscreen and no invented variable sliders",
+        "leaf-disks-1366: readable captions and touch targets",
+        "1366: tutor distinguishes original question, current carbon-preparation operation and unmeasured observations",
+        "1366: reset restores first leaf-preparation step",
+        "1366: shared pause stops timeline",
+        "1366: timeline reaches grouped lighting setup",
+        "1366: shared timeline reaches mechanism without fabricating measurements",
+        "leaf-fullscreen-1366: text, captions and SVG labels fit",
+        "leaf-fullscreen-1366: one shared player/fullscreen and no invented variable sliders",
+        "leaf-fullscreen-1366: readable captions and touch targets",
+        "1366: fullscreen reaches .leaf-disks-heading",
+        "1366: fullscreen reaches .leaf-disks-steps",
+        "1366: fullscreen reaches .leaf-disks-note",
+        "1366: fullscreen reaches .biology-leaf-disks-scene summary",
+        "1366: fullscreen reaches .generic-physics-readout",
+        "820: menu generates actual senior textbook experiment",
+        "820: navigate textbook step 1",
+        "820: no invented group observations at step 1",
+        "820: punch hole stays within blade and away from drawn large veins",
+        "820: navigate textbook step 2",
+        "820: no invented group observations at step 2",
+        "leaf-step2-820: text, captions and SVG labels fit",
+        "leaf-step2-820: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step2-820: readable captions and touch targets",
+        "820: navigate textbook step 3",
+        "820: no invented group observations at step 3",
+        "820: navigate textbook step 4",
+        "820: no invented group observations at step 4",
+        "820: navigate textbook step 5",
+        "820: no invented group observations at step 5",
+        "820: equal-height identical beakers, ten leaves each; distance alone changes",
+        "820: visible treatment labels clear the lamp rays; narrow caption names all three groups",
+        "820: navigate textbook step 6",
+        "820: no invented group observations at step 6",
+        "820: isolated single-disk mechanism, not group observations",
+        "leaf-disks-820: text, captions and SVG labels fit",
+        "leaf-disks-820: one shared player/fullscreen and no invented variable sliders",
+        "leaf-disks-820: readable captions and touch targets",
+        "820: tutor distinguishes original question, current carbon-preparation operation and unmeasured observations",
+        "820: reset restores first leaf-preparation step",
+        "820: shared pause stops timeline",
+        "820: timeline reaches grouped lighting setup",
+        "820: shared timeline reaches mechanism without fabricating measurements",
+        "leaf-fullscreen-820: text, captions and SVG labels fit",
+        "leaf-fullscreen-820: one shared player/fullscreen and no invented variable sliders",
+        "leaf-fullscreen-820: readable captions and touch targets",
+        "820: fullscreen reaches .leaf-disks-heading",
+        "820: fullscreen reaches .leaf-disks-steps",
+        "820: fullscreen reaches .leaf-disks-note",
+        "820: fullscreen reaches .biology-leaf-disks-scene summary",
+        "820: fullscreen reaches .generic-physics-readout",
+        "390: menu generates actual senior textbook experiment",
+        "390: navigate textbook step 1",
+        "390: no invented group observations at step 1",
+        "390: punch hole stays within blade and away from drawn large veins",
+        "leaf-step1-390: text, captions and SVG labels fit",
+        "leaf-step1-390: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step1-390: readable captions and touch targets",
+        "390: navigate textbook step 2",
+        "390: no invented group observations at step 2",
+        "leaf-step2-390: text, captions and SVG labels fit",
+        "leaf-step2-390: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step2-390: readable captions and touch targets",
+        "390: navigate textbook step 3",
+        "390: no invented group observations at step 3",
+        "leaf-step3-390: text, captions and SVG labels fit",
+        "leaf-step3-390: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step3-390: readable captions and touch targets",
+        "390: navigate textbook step 4",
+        "390: no invented group observations at step 4",
+        "leaf-step4-390: text, captions and SVG labels fit",
+        "leaf-step4-390: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step4-390: readable captions and touch targets",
+        "390: navigate textbook step 5",
+        "390: no invented group observations at step 5",
+        "390: equal-height identical beakers, ten leaves each; distance alone changes",
+        "390: visible treatment labels clear the lamp rays; narrow caption names all three groups",
+        "leaf-step5-390: text, captions and SVG labels fit",
+        "leaf-step5-390: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step5-390: readable captions and touch targets",
+        "390: navigate textbook step 6",
+        "390: no invented group observations at step 6",
+        "390: isolated single-disk mechanism, not group observations",
+        "leaf-step6-390: text, captions and SVG labels fit",
+        "leaf-step6-390: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step6-390: readable captions and touch targets",
+        "leaf-disks-390: text, captions and SVG labels fit",
+        "leaf-disks-390: one shared player/fullscreen and no invented variable sliders",
+        "leaf-disks-390: readable captions and touch targets",
+        "390: tutor distinguishes original question, current carbon-preparation operation and unmeasured observations",
+        "390: reset restores first leaf-preparation step",
+        "390: shared pause stops timeline",
+        "390: timeline reaches grouped lighting setup",
+        "390: shared timeline reaches mechanism without fabricating measurements",
+        "leaf-fullscreen-390: text, captions and SVG labels fit",
+        "leaf-fullscreen-390: one shared player/fullscreen and no invented variable sliders",
+        "leaf-fullscreen-390: readable captions and touch targets",
+        "390: fullscreen reaches .leaf-disks-heading",
+        "390: fullscreen reaches .leaf-disks-steps",
+        "390: fullscreen reaches .leaf-disks-note",
+        "390: fullscreen reaches .biology-leaf-disks-scene summary",
+        "390: fullscreen reaches .generic-physics-readout",
+        "360: menu generates actual senior textbook experiment",
+        "360: navigate textbook step 1",
+        "360: no invented group observations at step 1",
+        "360: punch hole stays within blade and away from drawn large veins",
+        "leaf-step1-360: text, captions and SVG labels fit",
+        "leaf-step1-360: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step1-360: readable captions and touch targets",
+        "360: navigate textbook step 2",
+        "360: no invented group observations at step 2",
+        "leaf-step2-360: text, captions and SVG labels fit",
+        "leaf-step2-360: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step2-360: readable captions and touch targets",
+        "360: navigate textbook step 3",
+        "360: no invented group observations at step 3",
+        "leaf-step3-360: text, captions and SVG labels fit",
+        "leaf-step3-360: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step3-360: readable captions and touch targets",
+        "360: navigate textbook step 4",
+        "360: no invented group observations at step 4",
+        "leaf-step4-360: text, captions and SVG labels fit",
+        "leaf-step4-360: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step4-360: readable captions and touch targets",
+        "360: navigate textbook step 5",
+        "360: no invented group observations at step 5",
+        "360: equal-height identical beakers, ten leaves each; distance alone changes",
+        "360: visible treatment labels clear the lamp rays; narrow caption names all three groups",
+        "leaf-step5-360: text, captions and SVG labels fit",
+        "leaf-step5-360: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step5-360: readable captions and touch targets",
+        "360: navigate textbook step 6",
+        "360: no invented group observations at step 6",
+        "360: isolated single-disk mechanism, not group observations",
+        "leaf-step6-360: text, captions and SVG labels fit",
+        "leaf-step6-360: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step6-360: readable captions and touch targets",
+        "leaf-disks-360: text, captions and SVG labels fit",
+        "leaf-disks-360: one shared player/fullscreen and no invented variable sliders",
+        "leaf-disks-360: readable captions and touch targets",
+        "360: tutor distinguishes original question, current carbon-preparation operation and unmeasured observations",
+        "360: reset restores first leaf-preparation step",
+        "360: shared pause stops timeline",
+        "360: timeline reaches grouped lighting setup",
+        "360: shared timeline reaches mechanism without fabricating measurements",
+        "leaf-fullscreen-360: text, captions and SVG labels fit",
+        "leaf-fullscreen-360: one shared player/fullscreen and no invented variable sliders",
+        "leaf-fullscreen-360: readable captions and touch targets",
+        "360: fullscreen reaches .leaf-disks-heading",
+        "360: fullscreen reaches .leaf-disks-steps",
+        "360: fullscreen reaches .leaf-disks-note",
+        "360: fullscreen reaches .biology-leaf-disks-scene summary",
+        "360: fullscreen reaches .generic-physics-readout",
+        "844: menu generates actual senior textbook experiment",
+        "844: navigate textbook step 1",
+        "844: no invented group observations at step 1",
+        "844: punch hole stays within blade and away from drawn large veins",
+        "844: navigate textbook step 2",
+        "844: no invented group observations at step 2",
+        "leaf-step2-844: text, captions and SVG labels fit",
+        "leaf-step2-844: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step2-844: readable captions and touch targets",
+        "844: navigate textbook step 3",
+        "844: no invented group observations at step 3",
+        "844: navigate textbook step 4",
+        "844: no invented group observations at step 4",
+        "844: navigate textbook step 5",
+        "844: no invented group observations at step 5",
+        "844: equal-height identical beakers, ten leaves each; distance alone changes",
+        "844: visible treatment labels clear the lamp rays; narrow caption names all three groups",
+        "844: navigate textbook step 6",
+        "844: no invented group observations at step 6",
+        "844: isolated single-disk mechanism, not group observations",
+        "leaf-disks-844: text, captions and SVG labels fit",
+        "leaf-disks-844: one shared player/fullscreen and no invented variable sliders",
+        "leaf-disks-844: readable captions and touch targets",
+        "844: tutor distinguishes original question, current carbon-preparation operation and unmeasured observations",
+        "844: reset restores first leaf-preparation step",
+        "844: shared pause stops timeline",
+        "844: timeline reaches grouped lighting setup",
+        "844: shared timeline reaches mechanism without fabricating measurements",
+        "leaf-fullscreen-844: text, captions and SVG labels fit",
+        "leaf-fullscreen-844: one shared player/fullscreen and no invented variable sliders",
+        "leaf-fullscreen-844: readable captions and touch targets",
+        "844: fullscreen reaches .leaf-disks-heading",
+        "844: fullscreen reaches .leaf-disks-steps",
+        "844: fullscreen reaches .leaf-disks-note",
+        "844: fullscreen reaches .biology-leaf-disks-scene summary",
+        "844: fullscreen reaches .generic-physics-readout",
+        "subject roundtrip preserves current observation step",
+        "AI page roundtrip preserves stage",
+        "A: independent import restores checked questions and fixed mode",
+        "A: share starts at first operation, not a stored playback position",
+        "A: active reset starts the original protocol",
+        "B: independent import restores checked questions and fixed mode",
+        "B: share starts at first operation, not a stored playback position",
+        "B: active reset starts the original protocol",
+        "A again: independent import restores checked questions and fixed mode",
+        "A again: share starts at first operation, not a stored playback position",
+        "A again: active reset starts the original protocol",
+        "equivalent encoding after AI return keeps active operation",
+        "old subject waiting route then A reimports",
+        "real refresh starts shared original protocol",
+        "favorite restores the same fixed textbook protocol",
+        "unsupported new question is rejected without replacing the existing experiment",
+        "invalid new question cannot borrow old scientific result or step",
+        "tampered share rejected: change locked parameter",
+        "tampered share rejected: wrong lamp power",
+        "tampered share rejected: extra subquestion",
+        "actual BFCache preserves active operation",
+        "separate browser imports the identical textbook experiment",
+        "separate touch browser retains unmeasured records",
+        "leaving photo restores dedicated parameters: plant cell",
+        "leaving photo restores dedicated fullscreen: plant cell",
+        "leaving photo restores dedicated parameters: braking",
+        "leaving photo restores dedicated fullscreen: braking",
+        "leaving photo restores dedicated parameters: tangent",
+        "leaving photo restores dedicated fullscreen: tangent",
+        "leaving photo restores dedicated parameters: iron reaction",
+        "leaving photo restores dedicated fullscreen: iron reaction",
+        "existing template is not captured: mendel",
+        "existing template is not captured: hclNaohNeutralization",
+        "existing template is not captured: kno3Cooling",
+        "existing template is not captured: pythagoras",
+        "existing template is not captured: unitCircle",
+        "existing template is not captured: microscope",
+        "existing template is not captured: population",
+        "actual page semantic case control",
+        "actual page semantic case review-take",
+        "actual page semantic case review-beaker",
+        "actual page semantic case material",
+        "actual page semantic case mm",
+        "actual page semantic case decimal-cm",
+        "actual page semantic case lamp-unit",
+        "actual page semantic case carbon",
+        "actual page semantic case syringe",
+        "actual page semantic case standby",
+        "actual page semantic case observation",
+        "actual page semantic case asks",
+        "actual page semantic case front-12290",
+        "actual page semantic case front-65306",
+        "actual page semantic case front-65307",
+        "actual page semantic case front-44",
+        "actual page semantic case split-operation",
+        "actual page semantic case missing-0",
+        "actual page semantic case missing-1",
+        "actual page semantic case missing-2",
+        "actual page semantic case missing-3",
+        "actual page semantic case missing-4",
+        "actual page semantic case missing-5",
+        "actual page semantic case missing-6",
+        "actual page semantic case missing-7",
+        "actual page semantic case missing-8",
+        "actual page semantic case missing-9",
+        "actual page semantic case missing-10",
+        "actual page semantic case missing-11",
+        "actual page semantic case reject-wrong-species",
+        "actual page semantic case reject-radius",
+        "actual page semantic case reject-diameter",
+        "actual page semantic case reject-total",
+        "actual page semantic case reject-per-group",
+        "actual page semantic case reject-remaining-role",
+        "actual page semantic case reject-count-role",
+        "actual page semantic case reject-wrong-order",
+        "actual page semantic case reject-no-degas",
+        "actual page semantic case reject-wrong-standby",
+        "actual page semantic case reject-wrong-carbon",
+        "actual page semantic case reject-wrong-power",
+        "actual page semantic case reject-different-time",
+        "actual page semantic case reject-observed-data",
+        "actual page semantic case reject-extra-ask",
+        "actual page semantic case late-0",
+        "actual page semantic case late-1",
+        "actual page semantic case late-2",
+        "actual page semantic case late-3",
+        "actual page semantic case late-4",
+        "actual mocked tutor request preserves original protocol and current carbon-preparation step",
+        "actual invalid-question tutor request does not send old result or old step",
+        "no page or console errors: ",
+        "no unexpected AI attempts; only explicit local tutor fixtures"
+      ],
+      "layouts": [
+        {
+          "name": "leaf-step2-1366",
+          "width": 1366,
+          "pageWidth": 1366,
+          "bad": [],
+          "labels": [
+            {
+              "text": "先排尽残留空气",
+              "inside": true
+            },
+            {
+              "text": "吸入清水，排残余空气",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.34375,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "leaf-disks-1366",
+          "width": 1366,
+          "pageWidth": 1366,
+          "bad": [],
+          "labels": [
+            {
+              "text": "单片上浮机理示意",
+              "inside": true
+            },
+            {
+              "text": "不是任一组数据，不表示真实速度",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.34375,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "leaf-fullscreen-1366",
+          "width": 1366,
+          "pageWidth": 1366,
+          "bad": [],
+          "labels": [
+            {
+              "text": "单片上浮机理示意",
+              "inside": true
+            },
+            {
+              "text": "不是任一组数据，不表示真实速度",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "leaf-step2-820",
+          "width": 820,
+          "pageWidth": 820,
+          "bad": [],
+          "labels": [
+            {
+              "text": "先排尽残留空气",
+              "inside": true
+            },
+            {
+              "text": "吸入清水，排残余空气",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "leaf-disks-820",
+          "width": 820,
+          "pageWidth": 820,
+          "bad": [],
+          "labels": [
+            {
+              "text": "单片上浮机理示意",
+              "inside": true
+            },
+            {
+              "text": "不是任一组数据，不表示真实速度",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "leaf-fullscreen-820",
+          "width": 820,
+          "pageWidth": 820,
+          "bad": [],
+          "labels": [
+            {
+              "text": "单片上浮机理示意",
+              "inside": true
+            },
+            {
+              "text": "不是任一组数据，不表示真实速度",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "leaf-step1-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step2-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step3-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step4-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step5-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step6-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-disks-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-fullscreen-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 117.328125,
+              "h": 68.75
+            },
+            {
+              "w": 117.328125,
+              "h": 68.75
+            },
+            {
+              "w": 117.34375,
+              "h": 68.75
+            },
+            {
+              "w": 117.328125,
+              "h": 68.75
+            },
+            {
+              "w": 117.328125,
+              "h": 68.75
+            },
+            {
+              "w": 117.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step1-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step2-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step3-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step4-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step5-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step6-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-disks-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-fullscreen-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step2-844",
+          "width": 844,
+          "pageWidth": 844,
+          "bad": [],
+          "labels": [
+            {
+              "text": "先排尽残留空气",
+              "inside": true
+            },
+            {
+              "text": "吸入清水，排残余空气",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "leaf-disks-844",
+          "width": 844,
+          "pageWidth": 844,
+          "bad": [],
+          "labels": [
+            {
+              "text": "单片上浮机理示意",
+              "inside": true
+            },
+            {
+              "text": "不是任一组数据，不表示真实速度",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "leaf-fullscreen-844",
+          "width": 844,
+          "pageWidth": 844,
+          "bad": [],
+          "labels": [
+            {
+              "text": "单片上浮机理示意",
+              "inside": true
+            },
+            {
+              "text": "不是任一组数据，不表示真实速度",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            }
+          ]
+        }
+      ],
+      "noErrors": [],
+      "unexpectedApi": []
+    },
+    "chromium": {
+      "sourceSha": "64abb1cb521a91de41a27d76223b467f5296e2c2",
+      "browser": "151.0.7922.34",
+      "checksPassed": 301,
+      "checks": [
+        "1366: menu generates actual senior textbook experiment",
+        "1366: navigate textbook step 1",
+        "1366: no invented group observations at step 1",
+        "1366: punch hole stays within blade and away from drawn large veins",
+        "1366: navigate textbook step 2",
+        "1366: no invented group observations at step 2",
+        "leaf-step2-1366: text, captions and SVG labels fit",
+        "leaf-step2-1366: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step2-1366: readable captions and touch targets",
+        "1366: navigate textbook step 3",
+        "1366: no invented group observations at step 3",
+        "1366: navigate textbook step 4",
+        "1366: no invented group observations at step 4",
+        "1366: navigate textbook step 5",
+        "1366: no invented group observations at step 5",
+        "1366: equal-height identical beakers, ten leaves each; distance alone changes",
+        "1366: visible treatment labels clear the lamp rays; narrow caption names all three groups",
+        "1366: navigate textbook step 6",
+        "1366: no invented group observations at step 6",
+        "1366: isolated single-disk mechanism, not group observations",
+        "leaf-disks-1366: text, captions and SVG labels fit",
+        "leaf-disks-1366: one shared player/fullscreen and no invented variable sliders",
+        "leaf-disks-1366: readable captions and touch targets",
+        "1366: tutor distinguishes original question, current carbon-preparation operation and unmeasured observations",
+        "1366: reset restores first leaf-preparation step",
+        "1366: shared pause stops timeline",
+        "1366: timeline reaches grouped lighting setup",
+        "1366: shared timeline reaches mechanism without fabricating measurements",
+        "leaf-fullscreen-1366: text, captions and SVG labels fit",
+        "leaf-fullscreen-1366: one shared player/fullscreen and no invented variable sliders",
+        "leaf-fullscreen-1366: readable captions and touch targets",
+        "1366: fullscreen reaches .leaf-disks-heading",
+        "1366: fullscreen reaches .leaf-disks-steps",
+        "1366: fullscreen reaches .leaf-disks-note",
+        "1366: fullscreen reaches .biology-leaf-disks-scene summary",
+        "1366: fullscreen reaches .generic-physics-readout",
+        "820: menu generates actual senior textbook experiment",
+        "820: navigate textbook step 1",
+        "820: no invented group observations at step 1",
+        "820: punch hole stays within blade and away from drawn large veins",
+        "820: navigate textbook step 2",
+        "820: no invented group observations at step 2",
+        "leaf-step2-820: text, captions and SVG labels fit",
+        "leaf-step2-820: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step2-820: readable captions and touch targets",
+        "820: navigate textbook step 3",
+        "820: no invented group observations at step 3",
+        "820: navigate textbook step 4",
+        "820: no invented group observations at step 4",
+        "820: navigate textbook step 5",
+        "820: no invented group observations at step 5",
+        "820: equal-height identical beakers, ten leaves each; distance alone changes",
+        "820: visible treatment labels clear the lamp rays; narrow caption names all three groups",
+        "820: navigate textbook step 6",
+        "820: no invented group observations at step 6",
+        "820: isolated single-disk mechanism, not group observations",
+        "leaf-disks-820: text, captions and SVG labels fit",
+        "leaf-disks-820: one shared player/fullscreen and no invented variable sliders",
+        "leaf-disks-820: readable captions and touch targets",
+        "820: tutor distinguishes original question, current carbon-preparation operation and unmeasured observations",
+        "820: reset restores first leaf-preparation step",
+        "820: shared pause stops timeline",
+        "820: timeline reaches grouped lighting setup",
+        "820: shared timeline reaches mechanism without fabricating measurements",
+        "leaf-fullscreen-820: text, captions and SVG labels fit",
+        "leaf-fullscreen-820: one shared player/fullscreen and no invented variable sliders",
+        "leaf-fullscreen-820: readable captions and touch targets",
+        "820: fullscreen reaches .leaf-disks-heading",
+        "820: fullscreen reaches .leaf-disks-steps",
+        "820: fullscreen reaches .leaf-disks-note",
+        "820: fullscreen reaches .biology-leaf-disks-scene summary",
+        "820: fullscreen reaches .generic-physics-readout",
+        "390: menu generates actual senior textbook experiment",
+        "390: navigate textbook step 1",
+        "390: no invented group observations at step 1",
+        "390: punch hole stays within blade and away from drawn large veins",
+        "leaf-step1-390: text, captions and SVG labels fit",
+        "leaf-step1-390: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step1-390: readable captions and touch targets",
+        "390: navigate textbook step 2",
+        "390: no invented group observations at step 2",
+        "leaf-step2-390: text, captions and SVG labels fit",
+        "leaf-step2-390: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step2-390: readable captions and touch targets",
+        "390: navigate textbook step 3",
+        "390: no invented group observations at step 3",
+        "leaf-step3-390: text, captions and SVG labels fit",
+        "leaf-step3-390: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step3-390: readable captions and touch targets",
+        "390: navigate textbook step 4",
+        "390: no invented group observations at step 4",
+        "leaf-step4-390: text, captions and SVG labels fit",
+        "leaf-step4-390: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step4-390: readable captions and touch targets",
+        "390: navigate textbook step 5",
+        "390: no invented group observations at step 5",
+        "390: equal-height identical beakers, ten leaves each; distance alone changes",
+        "390: visible treatment labels clear the lamp rays; narrow caption names all three groups",
+        "leaf-step5-390: text, captions and SVG labels fit",
+        "leaf-step5-390: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step5-390: readable captions and touch targets",
+        "390: navigate textbook step 6",
+        "390: no invented group observations at step 6",
+        "390: isolated single-disk mechanism, not group observations",
+        "leaf-step6-390: text, captions and SVG labels fit",
+        "leaf-step6-390: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step6-390: readable captions and touch targets",
+        "leaf-disks-390: text, captions and SVG labels fit",
+        "leaf-disks-390: one shared player/fullscreen and no invented variable sliders",
+        "leaf-disks-390: readable captions and touch targets",
+        "390: tutor distinguishes original question, current carbon-preparation operation and unmeasured observations",
+        "390: reset restores first leaf-preparation step",
+        "390: shared pause stops timeline",
+        "390: timeline reaches grouped lighting setup",
+        "390: shared timeline reaches mechanism without fabricating measurements",
+        "leaf-fullscreen-390: text, captions and SVG labels fit",
+        "leaf-fullscreen-390: one shared player/fullscreen and no invented variable sliders",
+        "leaf-fullscreen-390: readable captions and touch targets",
+        "390: fullscreen reaches .leaf-disks-heading",
+        "390: fullscreen reaches .leaf-disks-steps",
+        "390: fullscreen reaches .leaf-disks-note",
+        "390: fullscreen reaches .biology-leaf-disks-scene summary",
+        "390: fullscreen reaches .generic-physics-readout",
+        "360: menu generates actual senior textbook experiment",
+        "360: navigate textbook step 1",
+        "360: no invented group observations at step 1",
+        "360: punch hole stays within blade and away from drawn large veins",
+        "leaf-step1-360: text, captions and SVG labels fit",
+        "leaf-step1-360: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step1-360: readable captions and touch targets",
+        "360: navigate textbook step 2",
+        "360: no invented group observations at step 2",
+        "leaf-step2-360: text, captions and SVG labels fit",
+        "leaf-step2-360: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step2-360: readable captions and touch targets",
+        "360: navigate textbook step 3",
+        "360: no invented group observations at step 3",
+        "leaf-step3-360: text, captions and SVG labels fit",
+        "leaf-step3-360: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step3-360: readable captions and touch targets",
+        "360: navigate textbook step 4",
+        "360: no invented group observations at step 4",
+        "leaf-step4-360: text, captions and SVG labels fit",
+        "leaf-step4-360: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step4-360: readable captions and touch targets",
+        "360: navigate textbook step 5",
+        "360: no invented group observations at step 5",
+        "360: equal-height identical beakers, ten leaves each; distance alone changes",
+        "360: visible treatment labels clear the lamp rays; narrow caption names all three groups",
+        "leaf-step5-360: text, captions and SVG labels fit",
+        "leaf-step5-360: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step5-360: readable captions and touch targets",
+        "360: navigate textbook step 6",
+        "360: no invented group observations at step 6",
+        "360: isolated single-disk mechanism, not group observations",
+        "leaf-step6-360: text, captions and SVG labels fit",
+        "leaf-step6-360: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step6-360: readable captions and touch targets",
+        "leaf-disks-360: text, captions and SVG labels fit",
+        "leaf-disks-360: one shared player/fullscreen and no invented variable sliders",
+        "leaf-disks-360: readable captions and touch targets",
+        "360: tutor distinguishes original question, current carbon-preparation operation and unmeasured observations",
+        "360: reset restores first leaf-preparation step",
+        "360: shared pause stops timeline",
+        "360: timeline reaches grouped lighting setup",
+        "360: shared timeline reaches mechanism without fabricating measurements",
+        "leaf-fullscreen-360: text, captions and SVG labels fit",
+        "leaf-fullscreen-360: one shared player/fullscreen and no invented variable sliders",
+        "leaf-fullscreen-360: readable captions and touch targets",
+        "360: fullscreen reaches .leaf-disks-heading",
+        "360: fullscreen reaches .leaf-disks-steps",
+        "360: fullscreen reaches .leaf-disks-note",
+        "360: fullscreen reaches .biology-leaf-disks-scene summary",
+        "360: fullscreen reaches .generic-physics-readout",
+        "844: menu generates actual senior textbook experiment",
+        "844: navigate textbook step 1",
+        "844: no invented group observations at step 1",
+        "844: punch hole stays within blade and away from drawn large veins",
+        "844: navigate textbook step 2",
+        "844: no invented group observations at step 2",
+        "leaf-step2-844: text, captions and SVG labels fit",
+        "leaf-step2-844: one shared player/fullscreen and no invented variable sliders",
+        "leaf-step2-844: readable captions and touch targets",
+        "844: navigate textbook step 3",
+        "844: no invented group observations at step 3",
+        "844: navigate textbook step 4",
+        "844: no invented group observations at step 4",
+        "844: navigate textbook step 5",
+        "844: no invented group observations at step 5",
+        "844: equal-height identical beakers, ten leaves each; distance alone changes",
+        "844: visible treatment labels clear the lamp rays; narrow caption names all three groups",
+        "844: navigate textbook step 6",
+        "844: no invented group observations at step 6",
+        "844: isolated single-disk mechanism, not group observations",
+        "leaf-disks-844: text, captions and SVG labels fit",
+        "leaf-disks-844: one shared player/fullscreen and no invented variable sliders",
+        "leaf-disks-844: readable captions and touch targets",
+        "844: tutor distinguishes original question, current carbon-preparation operation and unmeasured observations",
+        "844: reset restores first leaf-preparation step",
+        "844: shared pause stops timeline",
+        "844: timeline reaches grouped lighting setup",
+        "844: shared timeline reaches mechanism without fabricating measurements",
+        "leaf-fullscreen-844: text, captions and SVG labels fit",
+        "leaf-fullscreen-844: one shared player/fullscreen and no invented variable sliders",
+        "leaf-fullscreen-844: readable captions and touch targets",
+        "844: fullscreen reaches .leaf-disks-heading",
+        "844: fullscreen reaches .leaf-disks-steps",
+        "844: fullscreen reaches .leaf-disks-note",
+        "844: fullscreen reaches .biology-leaf-disks-scene summary",
+        "844: fullscreen reaches .generic-physics-readout",
+        "subject roundtrip preserves current observation step",
+        "AI page roundtrip preserves stage",
+        "A: independent import restores checked questions and fixed mode",
+        "A: share starts at first operation, not a stored playback position",
+        "A: active reset starts the original protocol",
+        "B: independent import restores checked questions and fixed mode",
+        "B: share starts at first operation, not a stored playback position",
+        "B: active reset starts the original protocol",
+        "A again: independent import restores checked questions and fixed mode",
+        "A again: share starts at first operation, not a stored playback position",
+        "A again: active reset starts the original protocol",
+        "equivalent encoding after AI return keeps active operation",
+        "old subject waiting route then A reimports",
+        "real refresh starts shared original protocol",
+        "favorite restores the same fixed textbook protocol",
+        "unsupported new question is rejected without replacing the existing experiment",
+        "invalid new question cannot borrow old scientific result or step",
+        "tampered share rejected: change locked parameter",
+        "tampered share rejected: wrong lamp power",
+        "tampered share rejected: extra subquestion",
+        "actual BFCache preserves active operation",
+        "separate browser imports the identical textbook experiment",
+        "separate touch browser retains unmeasured records",
+        "leaving photo restores dedicated parameters: plant cell",
+        "leaving photo restores dedicated fullscreen: plant cell",
+        "leaving photo restores dedicated parameters: braking",
+        "leaving photo restores dedicated fullscreen: braking",
+        "leaving photo restores dedicated parameters: tangent",
+        "leaving photo restores dedicated fullscreen: tangent",
+        "leaving photo restores dedicated parameters: iron reaction",
+        "leaving photo restores dedicated fullscreen: iron reaction",
+        "existing template is not captured: mendel",
+        "existing template is not captured: hclNaohNeutralization",
+        "existing template is not captured: kno3Cooling",
+        "existing template is not captured: pythagoras",
+        "existing template is not captured: unitCircle",
+        "existing template is not captured: microscope",
+        "existing template is not captured: population",
+        "actual page semantic case control",
+        "actual page semantic case review-take",
+        "actual page semantic case review-beaker",
+        "actual page semantic case material",
+        "actual page semantic case mm",
+        "actual page semantic case decimal-cm",
+        "actual page semantic case lamp-unit",
+        "actual page semantic case carbon",
+        "actual page semantic case syringe",
+        "actual page semantic case standby",
+        "actual page semantic case observation",
+        "actual page semantic case asks",
+        "actual page semantic case front-12290",
+        "actual page semantic case front-65306",
+        "actual page semantic case front-65307",
+        "actual page semantic case front-44",
+        "actual page semantic case split-operation",
+        "actual page semantic case missing-0",
+        "actual page semantic case missing-1",
+        "actual page semantic case missing-2",
+        "actual page semantic case missing-3",
+        "actual page semantic case missing-4",
+        "actual page semantic case missing-5",
+        "actual page semantic case missing-6",
+        "actual page semantic case missing-7",
+        "actual page semantic case missing-8",
+        "actual page semantic case missing-9",
+        "actual page semantic case missing-10",
+        "actual page semantic case missing-11",
+        "actual page semantic case reject-wrong-species",
+        "actual page semantic case reject-radius",
+        "actual page semantic case reject-diameter",
+        "actual page semantic case reject-total",
+        "actual page semantic case reject-per-group",
+        "actual page semantic case reject-remaining-role",
+        "actual page semantic case reject-count-role",
+        "actual page semantic case reject-wrong-order",
+        "actual page semantic case reject-no-degas",
+        "actual page semantic case reject-wrong-standby",
+        "actual page semantic case reject-wrong-carbon",
+        "actual page semantic case reject-wrong-power",
+        "actual page semantic case reject-different-time",
+        "actual page semantic case reject-observed-data",
+        "actual page semantic case reject-extra-ask",
+        "actual page semantic case late-0",
+        "actual page semantic case late-1",
+        "actual page semantic case late-2",
+        "actual page semantic case late-3",
+        "actual page semantic case late-4",
+        "actual mocked tutor request preserves original protocol and current carbon-preparation step",
+        "actual invalid-question tutor request does not send old result or old step",
+        "no page or console errors: ",
+        "no unexpected AI attempts; only explicit local tutor fixtures"
+      ],
+      "layouts": [
+        {
+          "name": "leaf-step2-1366",
+          "width": 1366,
+          "pageWidth": 1366,
+          "bad": [],
+          "labels": [
+            {
+              "text": "先排尽残留空气",
+              "inside": true
+            },
+            {
+              "text": "吸入清水，排残余空气",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.34375,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "leaf-disks-1366",
+          "width": 1366,
+          "pageWidth": 1366,
+          "bad": [],
+          "labels": [
+            {
+              "text": "单片上浮机理示意",
+              "inside": true
+            },
+            {
+              "text": "不是任一组数据，不表示真实速度",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.34375,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            },
+            {
+              "w": 137.328125,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "leaf-fullscreen-1366",
+          "width": 1366,
+          "pageWidth": 1366,
+          "bad": [],
+          "labels": [
+            {
+              "text": "单片上浮机理示意",
+              "inside": true
+            },
+            {
+              "text": "不是任一组数据，不表示真实速度",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            },
+            {
+              "w": 207,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "leaf-step2-820",
+          "width": 820,
+          "pageWidth": 820,
+          "bad": [],
+          "labels": [
+            {
+              "text": "先排尽残留空气",
+              "inside": true
+            },
+            {
+              "text": "吸入清水，排残余空气",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "leaf-disks-820",
+          "width": 820,
+          "pageWidth": 820,
+          "bad": [],
+          "labels": [
+            {
+              "text": "单片上浮机理示意",
+              "inside": true
+            },
+            {
+              "text": "不是任一组数据，不表示真实速度",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            },
+            {
+              "w": 236,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "leaf-fullscreen-820",
+          "width": 820,
+          "pageWidth": 820,
+          "bad": [],
+          "labels": [
+            {
+              "text": "单片上浮机理示意",
+              "inside": true
+            },
+            {
+              "text": "不是任一组数据，不表示真实速度",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            },
+            {
+              "w": 238,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "leaf-step1-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step2-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step3-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step4-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step5-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step6-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-disks-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-fullscreen-390",
+          "width": 390,
+          "pageWidth": 390,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 117.328125,
+              "h": 68.75
+            },
+            {
+              "w": 117.328125,
+              "h": 68.75
+            },
+            {
+              "w": 117.34375,
+              "h": 68.75
+            },
+            {
+              "w": 117.328125,
+              "h": 68.75
+            },
+            {
+              "w": 117.328125,
+              "h": 68.75
+            },
+            {
+              "w": 117.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step1-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step2-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step3-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step4-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step5-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step6-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-disks-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.328125,
+              "h": 68.75
+            },
+            {
+              "w": 97.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-fullscreen-360",
+          "width": 360,
+          "pageWidth": 360,
+          "bad": [],
+          "labels": [],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 14,
+          "stepButtons": [
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.328125,
+              "h": 68.75
+            },
+            {
+              "w": 107.34375,
+              "h": 68.75
+            }
+          ]
+        },
+        {
+          "name": "leaf-step2-844",
+          "width": 844,
+          "pageWidth": 844,
+          "bad": [],
+          "labels": [
+            {
+              "text": "先排尽残留空气",
+              "inside": true
+            },
+            {
+              "text": "吸入清水，排残余空气",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "leaf-disks-844",
+          "width": 844,
+          "pageWidth": 844,
+          "bad": [],
+          "labels": [
+            {
+              "text": "单片上浮机理示意",
+              "inside": true
+            },
+            {
+              "text": "不是任一组数据，不表示真实速度",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            },
+            {
+              "w": 244,
+              "h": 67
+            }
+          ]
+        },
+        {
+          "name": "leaf-fullscreen-844",
+          "width": 844,
+          "pageWidth": 844,
+          "bad": [],
+          "labels": [
+            {
+              "text": "单片上浮机理示意",
+              "inside": true
+            },
+            {
+              "text": "不是任一组数据，不表示真实速度",
+              "inside": true
+            }
+          ],
+          "parametersVisible": false,
+          "players": 1,
+          "fullscreen": 1,
+          "captionFont": 13,
+          "stepButtons": [
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            },
+            {
+              "w": 159.0625,
+              "h": 67
+            }
+          ]
+        }
+      ],
+      "noErrors": [],
+      "unexpectedApi": []
+    }
+  }
+}
