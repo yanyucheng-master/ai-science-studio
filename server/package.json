@@ -30,6 +30,7 @@
     "eval:hard": "node scripts/run-hard-eval.js",
     "test:share": "node scripts/verify-share-browser.js",
     "test:photosynthesis": "node --test test/biology-photosynthesis.test.js",
-    "test:photosynthesis:browser": "node scripts/verify-photosynthesis-browser.js"
+    "test:photosynthesis:browser": "node scripts/verify-photosynthesis-browser.js",
+    "test:photosynthesis:review": "node scripts/verify-photosynthesis-review-browser.js"
   }
 }

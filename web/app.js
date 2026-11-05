@@ -3447,12 +3447,14 @@ function renderDiagramVisual(content) {
 }
 
 elements.genericPhysicsVisual?.addEventListener("click", event => {
-  const step = event.target.closest("[data-photosynthesis-step]");
-  if (!step || !state.hasGenerated || activeGenericId() !== "photosynthesis") return;
-  const index = Number(step.dataset.photosynthesisStep);
+  const id = activeGenericId();
+  const selector = id === "photosynthesis" ? "[data-photosynthesis-step]" : id === "leafDisks" ? "[data-leaf-step]" : "";
+  const step = selector && event.target.closest?.(selector);
+  if (!state.hasGenerated || !step) return;
+  const index = Number(id === "photosynthesis" ? step.dataset.photosynthesisStep : step.dataset.leafStep);
   if (!Number.isInteger(index) || index < 0 || index > 5) return;
   pauseExperiment();
-  state.time = (index === 5 ? 1 : index / 6) * duration();
+  state.time = index / 6 * duration();
   updateScene();
 });
 
@@ -4583,8 +4585,11 @@ function planLocalExperiment(question, context = {}) {
   const templateContext = context.physicsTemplate ?? state.physicsTemplate;
   const presetQuestion = context.presetQuestion ?? SUBJECTS[subjectContext]?.question;
   const strictSubject = presetQuestion && question === presetQuestion ? subjectContext : detectSubjectStrict(question);
-  const detected = strictSubject || subjectContext;
-  const failures = [];
+  // A complete protocol can omit its book title and be opened from another subject.
+  // Recognition still requires every condition/ask; topical failure stays local until a tutor is requested.
+  const protocolTopic = genericTemplatesOf("生物").some(template => template.localOnly && template.keywords?.test(normalizeQuestionText(question)));
+  const detected = protocolTopic ? "生物" : strictSubject || subjectContext;
+  const failures = [], protocolFailures = [];
   const attempt = (kind, parse, extra = {}) => {
     if (parse?.ok) return { ok: true, subject: detected, kind, parse, ...extra };
     failures.push(parse || { ok: false });
@@ -4654,11 +4659,19 @@ function planLocalExperiment(question, context = {}) {
   if (detected === "生物") {
     for (const template of genericTemplatesOf("生物")) {
       if (!template.keywords?.test(normalizeQuestionText(question))) continue;
-      const generic = attempt("extra", parseGenericQuestion(question, template.id, { subject: "生物", gradeLevel }), { templateId: template.id });
+      const parsed = parseGenericQuestion(question, template.id, { subject: "生物", gradeLevel });
+      const generic = attempt("extra", parsed, { templateId: template.id });
       if (generic) return generic;
+      if (template.localOnly) protocolFailures.push({ template, parse: parsed, score: template.diagnosticPriority?.(question) || 0 });
     }
     const plan = attempt("biology", parseBiologyCellQuestion(question, { gradeLevel }));
     if (plan) return plan;
+  }
+  if (protocolFailures.length) {
+    const ranked = protocolFailures.sort((a,b)=>b.score-a.score || a.template.id.localeCompare(b.template.id));
+    const best = ranked[0], tied = ranked.length > 1 && ranked[1].score === best.score;
+    const parse = best.score > 0 && !tied ? best.parse : { ok:false, message:"当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。" };
+    return { ok:false, subject:detected, localOnly:true, diagnosticTemplateId:best.score > 0 && !tied ? best.template.id : "", parse };
   }
   const generic = { ok: false, message: "当前题目没有匹配到本地实验模板。" };
   return { ok: false, subject: detected, parse: strictSubject ? failures[0] || generic : generic };
@@ -6276,37 +6289,37 @@ function formatParam(param, value) {
   return `${param.prefix || ""}${Number(value).toFixed(decimals)}`;
 }
 
+// Recognition strings can quote student text or service messages. Never parse them as HTML.
+function renderRecognitionText(label, message, formula = false) {
+  if (!elements.parseFeedback) return;
+  const heading = document.createElement("span"), detail = document.createElement("strong");
+  heading.textContent = label;
+  // Keep text-like punctuation verbatim; optional math enhancement also creates nodes only.
+  if (formula && window.ScienceFormula?.appendText && !/[<>&"']/u.test(String(message ?? ""))) window.ScienceFormula.appendText(detail, String(message ?? ""));
+  else { detail.dataset.noFormula = ""; detail.textContent = String(message ?? ""); }
+  elements.parseFeedback.replaceChildren(heading, detail);
+}
 function setRecognitionFeedback(result, isError = false) {
   if (!elements.parseFeedback) return;
   elements.parseFeedback.classList.add("show");
   elements.parseFeedback.classList.toggle("error", isError);
   elements.parseFeedback.classList.remove("pending");
-  if (isError) {
-    elements.parseFeedback.innerHTML = `<span>识别提示</span><strong>${result.message}</strong>`;
-    return;
-  }
+  if (isError) { renderRecognitionText("识别提示", result.message); return; }
   let recognitionText = result.recognitionText;
-  if (!recognitionText && result.type === "braking_distance") {
-    recognitionText = buildPhysicsBrakeContent(result.v0, result.aAbs).recognitionText;
-  }
-  if (!recognitionText && state.subject === "化学") {
-    recognitionText = buildChemistryFeCuSO4Content().recognitionText;
-  }
-  if (!recognitionText) recognitionText = result.message || "已识别典型题型模板";
-  elements.parseFeedback.innerHTML = `<span>识别结果</span><strong>${verticalizeFormulaHtml(recognitionText)}</strong>`;
+  if (!recognitionText && result.type === "braking_distance") recognitionText = buildPhysicsBrakeContent(result.v0, result.aAbs).recognitionText;
+  if (!recognitionText && state.subject === "化学") recognitionText = buildChemistryFeCuSO4Content().recognitionText;
+  renderRecognitionText("识别结果", recognitionText || result.message || "已识别典型题型模板", true);
 }
-
 function setRecognitionPending(message = "题目已修改，点击“生成实验”重新识别。") {
   if (!elements.parseFeedback) return;
   elements.parseFeedback.classList.add("show", "pending");
   elements.parseFeedback.classList.remove("error");
-  elements.parseFeedback.innerHTML = `<span>待重新识别</span><strong>${message}</strong>`;
+  renderRecognitionText("待重新识别", message);
 }
-
 function clearRecognitionFeedback() {
   if (!elements.parseFeedback) return;
   elements.parseFeedback.classList.remove("show", "error", "pending");
-  elements.parseFeedback.innerHTML = "";
+  elements.parseFeedback.replaceChildren();
 }
 
 function syncPhysicsQuestionFromState() {
@@ -7051,6 +7064,8 @@ function playExperiment() {
   state.playing = true;
   animationClock.reconcile();
   elements.playButton.classList.add("playing");
+  elements.playButton.setAttribute("aria-label", "暂停实验");
+  elements.playButton.setAttribute("aria-pressed", "true");
   if (document.body.classList.contains("demo-mode")) setDemoStep(4, "看见速度如何归零");
   animationClock.reconcile();
 }
@@ -7058,6 +7073,8 @@ function playExperiment() {
 function pauseExperiment() {
   state.playing = false;
   elements.playButton.classList.remove("playing");
+  elements.playButton.setAttribute("aria-label", "播放实验");
+  elements.playButton.setAttribute("aria-pressed", "false");
   elements.car.classList.remove("moving");
   animationClock.reconcile();
 }
@@ -8182,7 +8199,8 @@ async function generateExperiment(options = {}) {
   const detected = plan.subject;
   if (!plan.ok) {
     const inputAtHandoff = $("#questionInput").value;
-    const remote = await handOffUnmatchedQuestion(plan.parse, displayQuestion, detected, allowAiFallback);
+    const localReason = plan.localOnly ? { ...plan.parse, message: plan.parse.message + " 如需讲解，请主动打开 AI 导师提问。" } : plan.parse;
+    const remote = await handOffUnmatchedQuestion(localReason, displayQuestion, detected, allowAiFallback && !plan.localOnly);
     // The student edited the question during the analysis: never overwrite the new text
     // with the old question or open the old question's experiment.
     if ($("#questionInput").value !== inputAtHandoff) {

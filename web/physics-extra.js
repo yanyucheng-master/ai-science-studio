@@ -307,7 +307,7 @@
     const full = fixedWithDefaults(template, fixed);
     if (template.strict.sameConditions) {
       // 原题没写学段线索时，按实验当前的讲法核对（双学段模板的讲法跟随全局学段）
-      const original = template.strict.values(source, G.extractQuantities(source), { gradeLevel: full.level });
+      const original = template.strict.values(template.strict.originalText ? text : source, G.extractQuantities(source), { gradeLevel: full.level });
       if (!original?.ok || !G.approx(original.p1, p1) || !G.approx(original.p2, p2)
         || Object.entries(original.fixed || {}).some(([key, value]) => typeof value === "number"
           ? !G.approx(value, full[key]) : value !== full[key])) {
@@ -331,7 +331,8 @@
     const source = G.normalize(text);
     const intent = intentProblem(template, source);
     if (intent) return miss(intent);
-    const values = template.strict.values(source, G.extractQuantities(source), context);
+    // Protocol diagnostics need original spelling/punctuation; all other templates keep normalized input.
+    const values = template.strict.values(template.strict.originalText ? text : source, G.extractQuantities(source), context);
     if (!values?.ok) return miss(values?.message || template.failMessage);
     const p1 = G.tidy(values.p1);
     const p2 = G.tidy(values.p2);
@@ -340,7 +341,7 @@
     if (range) return miss(range);
     const fixedProblem = template.strict.checkFixed?.(fixed, p1, p2);
     if (fixedProblem) return miss(fixedProblem);
-    const check = checkQuestion(template, source, p1, p2, fixed, { skipIntent: true });
+    const check = checkQuestion(template, template.strict.originalText ? text : source, p1, p2, fixed, { skipIntent: true });
     if (!check.ok) return miss(check.message);
     const model = template.model(p1, p2, fixed);
     return {

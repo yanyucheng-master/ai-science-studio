@@ -340,6 +340,7 @@
     const label = document.createElement("span");
     label.textContent = "分享提示";
     const reason = document.createElement("strong");
+    reason.dataset.noFormula = "";
     reason.textContent = message;
     elements.parseFeedback.replaceChildren(label, reason);
     elements.parseFeedback.classList.add("show", "error");

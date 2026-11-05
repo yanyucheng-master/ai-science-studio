@@ -7,6 +7,7 @@ import { readFile } from 'node:fs/promises';
 
 const web = path => readFile(new URL(`../../web/${path}`, import.meta.url), 'utf8');
 const physicsSource = await web('physics-extra.js');
+const protocolSource = await web('biology-protocol-questions.js');
 const mathSource = await web('math-extra.js');
 const mathExperimentsSource = await web('math-experiments.js');
 const unitCircleSource = await web('unit-circle.js');
@@ -26,6 +27,7 @@ function load() {
   const sandbox = { ScienceMotion: { circuitMarkup: () => '' }, console: { log() {}, warn() {}, error: (...args) => errors.push(args.join(' ')) } };
   sandbox.window = sandbox;
   vm.runInNewContext(physicsSource, sandbox);
+  vm.runInNewContext(protocolSource, sandbox);
   vm.runInNewContext(mathSource, sandbox);
   vm.runInNewContext(mathExperimentsSource, sandbox);
   vm.runInNewContext(unitCircleSource, sandbox);
