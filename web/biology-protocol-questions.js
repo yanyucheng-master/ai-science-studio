@@ -8,17 +8,33 @@
       const normalized = units[m[0]] || m[0].normalize('NFKC');
       for (const c of normalized) { chars.push(c); spans.push([m.index, m.index + m[0].length]); }
     }
-    let text = ''; const map = [];
+    let text = ''; const map = [], protectedSeparators = new Set();
+    const gap = c => /[\s,，。;；:：!?！？、.]/u.test(c || '');
+    const number = c => /[0-9零一二三四五六七八九十百两]/u.test(c || '');
+    const latin = c => /[a-zA-Z]/u.test(c || '');
+    const unitStart = c => /[a-zA-Z片组厘毫瓦昼小]/u.test(c || '');
+    const left = [], right = []; let nearest = -1;
+    for (let i=0;i<chars.length;i++) { left[i]=nearest; if (!gap(chars[i])) nearest=i; }
+    nearest=-1;
+    for (let i=chars.length-1;i>=0;i--) { right[i]=nearest; if (!gap(chars[i])) nearest=i; }
     for (let i = 0; i < chars.length; i++) {
       const c = chars[i];
-      if (/\s|[,，。;；:：!?！？、]/u.test(c)) continue;
-      if (c === '.' && (!/\d/.test(chars[i-1] || '') || !/\d/.test(chars[i+1] || ''))) continue;
+      if (gap(c)) {
+        const l=chars[left[i]],r=chars[right[i]],space=/\s/u.test(c);
+        // Separators inside a number must never turn 3,0 / 3 0 into 30.
+        // Spaces between a complete value and its unit remain legitimate.
+        const numericBoundary=number(l)&&number(r);
+        const tokenBoundary=!space&&(number(l)&&unitStart(r)||latin(l)&&latin(r));
+        if (!numericBoundary&&!tokenBoundary) continue;
+        protectedSeparators.add(spans[i][0]);
+      }
       for (let n = 0; n < c.length; n++) { text += c[n]; map.push(spans[i]); }
     }
     const excerpt = offset => {
       const start = map[offset]?.[0] ?? source.length;
-      const tail = source.slice(start), stop = tail.search(/[，,。；;！？?\n]/u);
-      const part = stop < 0 ? tail : tail.slice(0, stop);
+      const tail = source.slice(start);
+      const delimiter = [...tail.matchAll(/[，,。；;！？?\n]/gu)].find(m=>!protectedSeparators.has(start+m.index));
+      const part = delimiter ? tail.slice(0, delimiter.index) : tail;
       const points = Array.from(part || tail);
       return points.slice(0, 72).join('') + (points.length > 72 ? '…' : '');
     };
