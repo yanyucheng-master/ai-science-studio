@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="math-experiments.css?v=20261030-math-1">
   <link rel="stylesheet" href="chemistry-equilibria.css?v=20261030-chemistry-v2-1">
   <link rel="stylesheet" href="biology-mendel.css?v=20261031-mendel-1">
+  <link rel="stylesheet" href="biology-photosynthesis.css?v=20261101-photo-2">
   <link rel="stylesheet" href="biology-microscope.css?v=20261031-microscope-1">
   <link rel="stylesheet" href="biology-population.css?v=20261101-population-2">
   <link rel="stylesheet" href="instant-experiment.css?v=20261018-instant-1">
@@ -228,6 +229,10 @@
               <span>硝酸钾冷却结晶</span>
               <small>五点溶解度 · 析晶 · 质量守恒</small>
             </button>
+            <button class="preset-option" type="button" data-preset="photosynthesis" data-subject="生物" data-level="junior" data-block="植物生理">
+              <span>绿叶在光下制造有机物</span>
+              <small>教材六步 · 双面遮光 · 碘液检验</small>
+            </button>
             <button class="preset-option" type="button" data-preset="mendel" data-subject="生物" data-level="both" data-block="遗传">
               <span>孟德尔分离定律</span>
               <small>配子组合 · 理论概率 · 可复现抽样</small>
@@ -306,7 +311,7 @@
           </div>
 
           <div class="transport">
-            <button class="play-button" id="playButton" aria-label="播放实验">
+            <button class="play-button" id="playButton" aria-label="播放实验" aria-pressed="false">
               <svg class="play-icon" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></svg>
               <svg class="pause-icon" viewBox="0 0 24 24"><path d="M8 5v14m8-14v14"/></svg>
             </button>
@@ -1060,7 +1065,8 @@
 
   <script src="science-formulas.js?v=20261015-formulas-1"></script>
   <script src="science-motion.js?v=20260922-motion-1"></script>
-  <script src="physics-extra.js?v=20261031-declutter-2"></script>
+  <script src="biology-protocol-questions.js?v=20261106-separators-1"></script>
+  <script src="physics-extra.js?v=20261105-protocol-1"></script>
   <script src="question-conditions.js?v=20261021-question-conditions-1"></script>
   <script src="math-extra.js?v=20261031-declutter-2"></script>
   <script src="math-experiments.js?v=20261030-acceptance-1"></script>
@@ -1072,6 +1078,8 @@
   <script src="chemistry-equilibria-experiments.js?v=20261030-acceptance-1"></script>
   <script src="biology-mendel-core.js?v=20261031-mendel-1"></script>
   <script src="biology-mendel.js?v=20261031-mendel-1"></script>
+  <script src="biology-photosynthesis-core.js?v=20261101-photo-1"></script>
+  <script src="biology-photosynthesis.js?v=20261106-separators-1"></script>
   <script src="biology-microscope-core.js?v=20261031-microscope-1"></script>
   <script src="biology-microscope-questions.js?v=20261031-microscope-1"></script>
   <script src="biology-microscope.js?v=20261031-microscope-1"></script>
@@ -1081,8 +1089,8 @@
   <script src="instant-scene.js?v=20261020-incline-data-1"></script>
   <script src="incline-presets.js?v=20261020-incline-competition-1"></script>
   <script src="incline-diagram.js?v=20261020-incline-data-1"></script>
-  <script src="app.js?v=20261101-population-2"></script>
-  <script src="experiment-share.js?v=20261020-share-1"></script>
+  <script src="app.js?v=20261106-separators-1"></script>
+  <script src="experiment-share.js?v=20261105-protocol-1"></script>
   <script src="vendor/katex/katex.min.js?v=0.19.0"></script>
   <script src="vendor/katex/mhchem.min.js?v=0.19.0"></script>
   <script src="tutor-checks.js?v=20261011-tutor-round-1"></script>

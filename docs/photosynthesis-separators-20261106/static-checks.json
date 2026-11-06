@@ -1,0 +1,167 @@
+{
+  "joint": {
+    "sourceSha": "6c9db9c4833f209c5f3537a0c933a976ef4ee226",
+    "changedPathsSinceReviewedHead": [
+      "docs/photosynthesis-separators.md",
+      "server/eval/photosynthesis-separator-boundaries.json",
+      "server/eval/photosynthesis-separator-cases.json",
+      "server/package.json",
+      "server/scripts/verify-photosynthesis-separators-browser.js",
+      "server/test/biology-protocol-review.test.js",
+      "server/test/biology-protocol-separators.test.js",
+      "web/announcements.json",
+      "web/app.js",
+      "web/biology-leaf-disks-questions.js",
+      "web/biology-leaf-disks.js",
+      "web/biology-photosynthesis.js",
+      "web/biology-protocol-questions.js",
+      "web/index.html"
+    ],
+    "syntaxChecks": [
+      {
+        "command": "node --check server/scripts/verify-photosynthesis-separators-browser.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check server/test/biology-protocol-review.test.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check server/test/biology-protocol-separators.test.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check web/app.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check web/biology-leaf-disks-questions.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check web/biology-leaf-disks.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check web/biology-photosynthesis.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check web/biology-protocol-questions.js",
+        "exitCode": 0,
+        "stderr": ""
+      }
+    ]
+  },
+  "junior": {
+    "sourceSha": "ef9767692e62ac640dcb537b09826214735b738e",
+    "changedPathsSinceReviewedHead": [
+      "docs/photosynthesis-separators.md",
+      "server/eval/photosynthesis-separator-boundaries.json",
+      "server/eval/photosynthesis-separator-cases.json",
+      "server/package.json",
+      "server/scripts/verify-photosynthesis-separators-browser.js",
+      "server/test/biology-protocol-review.test.js",
+      "server/test/biology-protocol-separators.test.js",
+      "web/announcements.json",
+      "web/app.js",
+      "web/biology-photosynthesis.js",
+      "web/biology-protocol-questions.js",
+      "web/index.html"
+    ],
+    "syntaxChecks": [
+      {
+        "command": "node --check server/scripts/verify-photosynthesis-separators-browser.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check server/test/biology-protocol-review.test.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check server/test/biology-protocol-separators.test.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check web/app.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check web/biology-photosynthesis.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check web/biology-protocol-questions.js",
+        "exitCode": 0,
+        "stderr": ""
+      }
+    ]
+  },
+  "senior": {
+    "sourceSha": "5bcc67bb706440c2c763899ce756854249bc90b1",
+    "changedPathsSinceReviewedHead": [
+      "docs/photosynthesis-separators.md",
+      "server/eval/photosynthesis-separator-boundaries.json",
+      "server/eval/photosynthesis-separator-cases.json",
+      "server/package.json",
+      "server/scripts/verify-photosynthesis-separators-browser.js",
+      "server/test/biology-protocol-review.test.js",
+      "server/test/biology-protocol-separators.test.js",
+      "web/announcements.json",
+      "web/app.js",
+      "web/biology-leaf-disks-questions.js",
+      "web/biology-leaf-disks.js",
+      "web/biology-protocol-questions.js",
+      "web/index.html"
+    ],
+    "syntaxChecks": [
+      {
+        "command": "node --check server/scripts/verify-photosynthesis-separators-browser.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check server/test/biology-protocol-review.test.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check server/test/biology-protocol-separators.test.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check web/app.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check web/biology-leaf-disks-questions.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check web/biology-leaf-disks.js",
+        "exitCode": 0,
+        "stderr": ""
+      },
+      {
+        "command": "node --check web/biology-protocol-questions.js",
+        "exitCode": 0,
+        "stderr": ""
+      }
+    ]
+  }
+}
