@@ -24,6 +24,6 @@ for(const row of routing)for(const [kind,id]of [['junior','photosynthesis'],['se
 }
 
 test('routing masks embedded quoted labels but keeps a wholly quoted question for validation',()=>{
- assert.equal(Q.routingSource('背景“按教材，探究”展区'),'背景展区');
+ assert.equal(Q.routingSource('背景“按教材，探究”展区'),'背景\uFFFC展区');
  assert.equal(Q.routingSource('“探究绿叶在光下制造有机物，酒精水浴脱色”'),'探究绿叶在光下制造有机物,酒精水浴脱色');
 });

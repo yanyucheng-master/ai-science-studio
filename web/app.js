@@ -4587,21 +4587,24 @@ function planLocalExperiment(question, context = {}) {
   const strictSubject = presetQuestion && question === presetQuestion ? subjectContext : detectSubjectStrict(question);
   const detected = strictSubject || subjectContext;
   const failures = [];
-  // A topic keyword is not a request for a fixed procedure. Only explicit experimental
-  // objectives or material/action pairs enter its strict parser, including cross-subject input.
-  const protocolCandidates = genericTemplatesOf("生物").filter(template => template.localOnly && template.protocolCandidate?.(question));
-  if (protocolCandidates.length) {
-    const protocolFailures = [];
-    for (const template of protocolCandidates) {
-      const parse = parseGenericQuestion(question, template.id, { subject: "生物", gradeLevel });
-      if (parse?.ok) return { ok:true, subject:"生物", kind:"extra", templateId:template.id, parse };
-      protocolFailures.push({ template, parse, score:template.diagnosticPriority?.(question) || 0 });
-    }
-    const ranked = protocolFailures.sort((a,b)=>b.score-a.score || a.template.id.localeCompare(b.template.id));
-    const best = ranked[0], tied = ranked.length > 1 && ranked[1].score === best.score;
-    const parse = best.score > 0 && !tied ? best.parse : { ok:false, message:"当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。" };
-    return { ok:false, subject:"生物", localOnly:true, diagnosticTemplateId:best.score > 0 && !tied ? best.template.id : "", parse };
-  }
+  // Full strict acceptance is authoritative, never gated by a second routing grammar.
+  // Failure ownership uses the same condition rules; a partial/uncertain procedure cannot
+  // pre-empt another existing local success, and never silently triggers AI itself.
+  const protocolPlans = genericTemplatesOf("生物").filter(template => template.localOnly && template.protocolAssessment).map(template => ({
+    template, parse:parseGenericQuestion(question, template.id, { subject:"生物", gradeLevel }), assessment:template.protocolAssessment(question)
+  }));
+  const completeProtocols = protocolPlans.filter(x=>x.parse?.ok);
+  if(completeProtocols.length===1){const {template,parse}=completeProtocols[0];return {ok:true,subject:"生物",kind:"extra",templateId:template.id,parse,protocolOwnership:"complete"};}
+  const protocolRefusal = (items, uncertain=false) => {
+    const one=items.length===1?items[0]:null;
+    const parse=one?(one.assessment.parsed.ok?one.parse:one.assessment.parsed):{ok:false,message:"题目涉及两套固定教材流程，归属不能唯一确认。请分别给出同叶遮光或叶圆片的条件和所问。"};
+    const message=uncertain?"仅确认了部分教材操作，尚不能确认完整流程。"+parse.message:parse.message;
+    return {ok:false,subject:"生物",localOnly:true,diagnosticTemplateId:one?.template.id||"",protocolOwnership:uncertain?"uncertain":"confirmed",parse:{ok:false,message}};
+  };
+  if(completeProtocols.length>1)return protocolRefusal(completeProtocols);
+  const confirmedProtocols=protocolPlans.filter(x=>["complete","confirmed"].includes(x.assessment.ownership));
+  if(confirmedProtocols.length)return protocolRefusal(confirmedProtocols);
+  const uncertainProtocols=protocolPlans.filter(x=>x.assessment.ownership==="uncertain");
   const attempt = (kind, parse, extra = {}) => {
     if (parse?.ok) return { ok: true, subject: detected, kind, parse, ...extra };
     failures.push(parse || { ok: false });
@@ -4678,6 +4681,7 @@ function planLocalExperiment(question, context = {}) {
     const plan = attempt("biology", parseBiologyCellQuestion(question, { gradeLevel }));
     if (plan) return plan;
   }
+  if(uncertainProtocols.length)return protocolRefusal(uncertainProtocols,true);
   const generic = { ok: false, message: "当前题目没有匹配到本地实验模板。" };
   return { ok: false, subject: detected, parse: strictSubject ? failures[0] || generic : generic };
 }
