@@ -7,6 +7,7 @@ import { readFile } from 'node:fs/promises';
 
 const web = path => readFile(new URL(`../../web/${path}`, import.meta.url), 'utf8');
 const physicsSource = await web('physics-extra.js');
+const protocolSource = await web('biology-protocol-questions.js');
 const mathSource = await web('math-extra.js');
 const mathExperimentsSource = await web('math-experiments.js');
 const unitCircleSource = await web('unit-circle.js');
@@ -16,6 +17,7 @@ const equilibriaSources = await Promise.all(['chemistry-equilibria.js','chemistr
 const mendelSources = await Promise.all(['biology-mendel-core.js','biology-mendel.js'].map(web));
 const microscopeSources = await Promise.all(['biology-microscope-core.js','biology-microscope-questions.js','biology-microscope.js'].map(web));
 const populationSources = await Promise.all(['biology-population-core.js','biology-population-questions.js','biology-population.js'].map(web));
+const leafSources = await Promise.all(['biology-leaf-disks-core.js','biology-leaf-disks-questions.js','biology-leaf-disks.js'].map(web));
 const html = await web('index.html');
 const app = await web('app.js');
 const bank = JSON.parse(await readFile(new URL('../eval/local-template-bank.json', import.meta.url), 'utf8'));
@@ -25,6 +27,7 @@ function load() {
   const sandbox = { ScienceMotion: { circuitMarkup: () => '' }, console: { log() {}, warn() {}, error: (...args) => errors.push(args.join(' ')) } };
   sandbox.window = sandbox;
   vm.runInNewContext(physicsSource, sandbox);
+  vm.runInNewContext(protocolSource, sandbox);
   vm.runInNewContext(mathSource, sandbox);
   vm.runInNewContext(mathExperimentsSource, sandbox);
   vm.runInNewContext(unitCircleSource, sandbox);
@@ -34,6 +37,7 @@ function load() {
   mendelSources.forEach(source=>vm.runInNewContext(source,sandbox));
   microscopeSources.forEach(source=>vm.runInNewContext(source,sandbox));
   populationSources.forEach(source=>vm.runInNewContext(source,sandbox));
+  leafSources.forEach(source=>vm.runInNewContext(source,sandbox));
   return { sandbox, errors };
 }
 const { sandbox } = load();

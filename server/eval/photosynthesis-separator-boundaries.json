@@ -1,0 +1,27 @@
+[
+  {
+    "id": "mirror-partial-background",
+    "scope": "shared",
+    "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+    "expected": "local",
+    "templateId": "planeMirror",
+    "ownership": {
+      "photosynthesis": "uncertain",
+      "leafDisks": "none"
+    }
+  },
+  {
+    "id": "partial-junior-procedure",
+    "scope": "photosynthesis",
+    "question": "酒精水浴脱色，说明操作目的。",
+    "expected": "uncertain",
+    "templateId": "photosynthesis"
+  },
+  {
+    "id": "partial-senior-material",
+    "scope": "leafDisks",
+    "question": "取生长旺盛的菠菜绿叶，说明实验步骤。",
+    "expected": "uncertain",
+    "templateId": "leafDisks"
+  }
+]

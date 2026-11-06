@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="biology-mendel.css?v=20261031-mendel-1">
   <link rel="stylesheet" href="biology-microscope.css?v=20261031-microscope-1">
   <link rel="stylesheet" href="biology-population.css?v=20261101-population-2">
+  <link rel="stylesheet" href="biology-leaf-disks.css?v=20261102-leaf-disks-1">
   <link rel="stylesheet" href="instant-experiment.css?v=20261018-instant-1">
   <link rel="stylesheet" href="tutor-focus.css?v=20261019-tutor-followups-1">
   <link rel="stylesheet" href="photo-question.css?v=20261031-photo-1">
@@ -240,6 +241,10 @@
               <span>种群数量模型</span>
               <small>倍数 · 环境容纳量 · 增长速率</small>
             </button>
+            <button class="preset-option" type="button" data-preset="leafDisks" data-subject="生物" data-level="senior" data-block="植物生理">
+              <span>光照与叶圆片上浮</span>
+              <small>教材六步 · 三组对照 · 同时段观察</small>
+            </button>
             <button class="preset-option" type="button" data-preset="cellPlant" data-subject="生物" data-level="both" data-block="细胞">
               <span>植物细胞：结构与功能</span>
               <small>细胞壁 · 叶绿体 · 液泡</small>
@@ -306,7 +311,7 @@
           </div>
 
           <div class="transport">
-            <button class="play-button" id="playButton" aria-label="播放实验">
+            <button class="play-button" id="playButton" aria-label="播放实验" aria-pressed="false">
               <svg class="play-icon" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></svg>
               <svg class="pause-icon" viewBox="0 0 24 24"><path d="M8 5v14m8-14v14"/></svg>
             </button>
@@ -1060,7 +1065,8 @@
 
   <script src="science-formulas.js?v=20261015-formulas-1"></script>
   <script src="science-motion.js?v=20260922-motion-1"></script>
-  <script src="physics-extra.js?v=20261031-declutter-2"></script>
+  <script src="biology-protocol-questions.js?v=20261106-separators-1"></script>
+  <script src="physics-extra.js?v=20261105-protocol-1"></script>
   <script src="question-conditions.js?v=20261021-question-conditions-1"></script>
   <script src="math-extra.js?v=20261031-declutter-2"></script>
   <script src="math-experiments.js?v=20261030-acceptance-1"></script>
@@ -1081,8 +1087,11 @@
   <script src="instant-scene.js?v=20261020-incline-data-1"></script>
   <script src="incline-presets.js?v=20261020-incline-competition-1"></script>
   <script src="incline-diagram.js?v=20261020-incline-data-1"></script>
-  <script src="app.js?v=20261101-population-2"></script>
-  <script src="experiment-share.js?v=20261020-share-1"></script>
+  <script src="biology-leaf-disks-core.js?v=20261102-leaf-disks-1"></script>
+  <script src="biology-leaf-disks-questions.js?v=20261106-separators-1"></script>
+  <script src="biology-leaf-disks.js?v=20261106-separators-1"></script>
+  <script src="app.js?v=20261106-separators-1"></script>
+  <script src="experiment-share.js?v=20261105-protocol-1"></script>
   <script src="vendor/katex/katex.min.js?v=0.19.0"></script>
   <script src="vendor/katex/mhchem.min.js?v=0.19.0"></script>
   <script src="tutor-checks.js?v=20261011-tutor-round-1"></script>

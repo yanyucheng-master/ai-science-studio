@@ -1,0 +1,530 @@
+{
+  "loadOrder": {
+    "sourceSha": "ad09a3807454825d6c309279d22b64ddcd562028",
+    "registryChecks": [
+      {
+        "order": [
+          "photosynthesis",
+          "leafDisks"
+        ],
+        "kind": "junior",
+        "method": "normal button",
+        "diagnostic": "photosynthesis",
+        "feedback": "无法确认条件或子问：「盆栽天竺葵先暗处理一小时」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "expectedReason": "无法确认条件或子问：「盆栽天竺葵先暗处理一小时」。请核对操作、数值角色与所问；不会自动补条件。",
+        "globalGrade": "senior",
+        "original": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，先将盆栽天竺葵放在黑暗处一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。"
+      },
+      {
+        "order": [
+          "photosynthesis",
+          "leafDisks"
+        ],
+        "kind": "senior",
+        "method": "normal button",
+        "diagnostic": "leafDisks",
+        "feedback": "无法确认条件或子问：「（观察后剩余）」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "expectedReason": "无法确认条件或子问：「（观察后剩余）」。请核对操作、数值角色与所问；不会自动补条件。",
+        "globalGrade": "junior",
+        "original": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，选择生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明实验步骤、操作目的、实验变量、观察指标、结果分析边界。"
+      },
+      {
+        "order": [
+          "leafDisks",
+          "photosynthesis"
+        ],
+        "kind": "junior",
+        "method": "normal button",
+        "diagnostic": "photosynthesis",
+        "feedback": "无法确认条件或子问：「盆栽天竺葵先暗处理一小时」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "expectedReason": "无法确认条件或子问：「盆栽天竺葵先暗处理一小时」。请核对操作、数值角色与所问；不会自动补条件。",
+        "globalGrade": "senior",
+        "original": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，先将盆栽天竺葵放在黑暗处一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。"
+      },
+      {
+        "order": [
+          "leafDisks",
+          "photosynthesis"
+        ],
+        "kind": "senior",
+        "method": "normal button",
+        "diagnostic": "leafDisks",
+        "feedback": "无法确认条件或子问：「（观察后剩余）」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "expectedReason": "无法确认条件或子问：「（观察后剩余）」。请核对操作、数值角色与所问；不会自动补条件。",
+        "globalGrade": "junior",
+        "original": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，选择生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明实验步骤、操作目的、实验变量、观察指标、结果分析边界。"
+      }
+    ],
+    "api": [],
+    "errors": []
+  },
+  "invalidShareEntries": {
+    "sourceSha": "ad09a3807454825d6c309279d22b64ddcd562028",
+    "shareRefusals": [
+      {
+        "kind": "junior",
+        "method": "real share button then independent invalid URL navigation",
+        "generated": false,
+        "feedback": "未恢复实验：题目不能在本地恢复：无法确认条件或子问：「<b data-probe=\"share\">原文 & \"引号\"</b>」。请核对操作、数值角色与所问；不会自动补条件。",
+        "injected": 0,
+        "event": 0
+      },
+      {
+        "kind": "senior",
+        "method": "real share button then independent invalid URL navigation",
+        "generated": false,
+        "feedback": "未恢复实验：题目不能在本地恢复：无法确认条件或子问：「<b data-probe=\"share\">原文 & \"引号\"</b>」。请核对操作、数值角色与所问；不会自动补条件。",
+        "injected": 0,
+        "event": 0
+      }
+    ],
+    "api": [],
+    "errors": []
+  },
+  "baselineSharedSink": {
+    "sourceSha": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+    "observationProcessExit": 0,
+    "observedUnsafeCases": 5,
+    "sinks": [
+      {
+        "mode": "error",
+        "input": "<b data-probe=\"plain\">中文 & \"双引号\" '单引号'</b>",
+        "text": "中文 & \"双引号\" '单引号'",
+        "elements": [
+          "B"
+        ],
+        "event": 0
+      },
+      {
+        "mode": "error",
+        "input": "＜b＞全角＜/b＞",
+        "text": "＜b＞全角＜/b＞",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "error",
+        "input": "<img src=x onerror=\"window.__unexpectedEvent=1\">",
+        "text": "",
+        "elements": [
+          "IMG"
+        ],
+        "event": 1
+      },
+      {
+        "mode": "error",
+        "input": "比较 a < b & c > d，普通中文",
+        "text": "比较 a < b & c > d，普通中文",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "pending",
+        "input": "<b data-probe=\"plain\">中文 & \"双引号\" '单引号'</b>",
+        "text": "中文 & \"双引号\" '单引号'",
+        "elements": [
+          "B"
+        ],
+        "event": 0
+      },
+      {
+        "mode": "pending",
+        "input": "＜b＞全角＜/b＞",
+        "text": "＜b＞全角＜/b＞",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "pending",
+        "input": "<img src=x onerror=\"window.__unexpectedEvent=1\">",
+        "text": "",
+        "elements": [
+          "IMG"
+        ],
+        "event": 1
+      },
+      {
+        "mode": "pending",
+        "input": "比较 a < b & c > d，普通中文",
+        "text": "比较 a < b & c > d，普通中文",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "success",
+        "input": "<b data-probe=\"plain\">中文 & \"双引号\" '单引号'</b>",
+        "text": "中文 & \"双引号\" '单引号'",
+        "elements": [
+          "B"
+        ],
+        "event": 0
+      },
+      {
+        "mode": "success",
+        "input": "＜b＞全角＜/b＞",
+        "text": "＜b＞全角＜/b＞",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "success",
+        "input": "<img src=x onerror=\"window.__unexpectedEvent=1\">",
+        "text": "<img src=\"x\" onerror=\"window.__unexpectedEvent=1\">",
+        "elements": [],
+        "event": 0
+      },
+      {
+        "mode": "success",
+        "input": "比较 a < b & c > d，普通中文",
+        "text": "比较 a < b & c > d，普通中文",
+        "elements": [],
+        "event": 0
+      }
+    ],
+    "scope": "Isolated local shared-function observation; not proof of public exploitation or a third-party chain."
+  },
+  "numericBeforeFix": [
+    {
+      "input": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备3,0片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false,
+      "actual": {
+        "ok": true,
+        "subject": "生物",
+        "type": "leafDisks",
+        "p1": 1,
+        "p2": 1,
+        "fixed": {
+          "curriculum": "pep2019-biology1-p105",
+          "version": 1,
+          "level": "senior",
+          "asks": "indicator,limits,purpose,steps,variables"
+        },
+        "message": "已识别：观察指标：同一时段内各组叶片浮起数量",
+        "recognitionText": "观察指标：同一时段内各组叶片浮起数量"
+      }
+    },
+    {
+      "input": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备3 0片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false,
+      "actual": {
+        "ok": true,
+        "subject": "生物",
+        "type": "leafDisks",
+        "p1": 1,
+        "p2": 1,
+        "fixed": {
+          "curriculum": "pep2019-biology1-p105",
+          "version": 1,
+          "level": "senior",
+          "asks": "indicator,limits,purpose,steps,variables"
+        },
+        "message": "已识别：观察指标：同一时段内各组叶片浮起数量",
+        "recognitionText": "观察指标：同一时段内各组叶片浮起数量"
+      }
+    },
+    {
+      "input": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备三，十片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false,
+      "actual": {
+        "ok": true,
+        "subject": "生物",
+        "type": "leafDisks",
+        "p1": 1,
+        "p2": 1,
+        "fixed": {
+          "curriculum": "pep2019-biology1-p105",
+          "version": 1,
+          "level": "senior",
+          "asks": "indicator,limits,purpose,steps,variables"
+        },
+        "message": "已识别：观察指标：同一时段内各组叶片浮起数量",
+        "recognitionText": "观察指标：同一时段内各组叶片浮起数量"
+      }
+    }
+  ],
+  "partialSupersededRuns": {
+    "joint": {
+      "sourceSha": "c4c51203aa05c5e7abd2cf9d59df72ecdf68e89a",
+      "completedGroupsBeforeInterruption": 13,
+      "fullyFinished": false,
+      "reason": "Superseded and interrupted after numeric-separator false acceptance was reproduced; not final execution evidence."
+    },
+    "junior": {
+      "sourceSha": "0adc24bd65a37a32ee393bde78c4d6b51c713ccf",
+      "completedGroupsBeforeInterruption": 10,
+      "fullyFinished": false,
+      "reason": "Superseded and interrupted after numeric-separator false acceptance was reproduced; not final execution evidence."
+    },
+    "senior": {
+      "sourceSha": "2fc345b1569d196b4151cfda90989559b797f8b2",
+      "completedGroupsBeforeInterruption": 10,
+      "fullyFinished": false,
+      "reason": "Superseded and interrupted after numeric-separator false acceptance was reproduced; not final execution evidence."
+    }
+  },
+  "preflightNotes": [
+    "An initial shared-success message test detected a typographic change to a literal hyphen despite no HTML elements; text-like punctuation now bypasses math enhancement.",
+    "One exploratory Node invocation without loopback permissions failed with EACCES; the isolated authorized environment passed and final full runs are separate.",
+    "One exploratory browser process lost its exit receipt after an intentional turn interruption; its report was not used as frozen evidence.",
+    "Numeric separators were found to join 3,0 / 3 0 / 三，十 into30; original candidates were interrupted and all final candidates rerun after the fix."
+  ],
+  "jointIntegration": {
+    "browser": "156.0.4314.58",
+    "checks": [
+      "1366: complete question selects photosynthesis",
+      "1366: own step context photosynthesis",
+      "1366: fixed challenge keeps own experiment photosynthesis",
+      "1366: unique shared controls photosynthesis",
+      "1366: complete question selects leafDisks",
+      "1366: own step context leafDisks",
+      "1366: fixed challenge keeps own experiment leafDisks",
+      "1366: unique shared controls leafDisks",
+      "1366: cross-template A-B-A preserves question/level/reset leafDisks",
+      "1366: cross-template A-B-A preserves question/level/reset photosynthesis",
+      "1366: cross-template A-B-A preserves question/level/reset leafDisks",
+      "1366: active senior AI return preserves step",
+      "1366: mixed protocols rejected, original retained, tutor answer cleared",
+      "1366: current master camera/upload controls retained",
+      "1366: local mocked OCR only fills question, never auto generates",
+      "1366: master microscope still recognized after both experiments",
+      "1366: master population still recognized after both experiments",
+      "1366: integration viewport has no horizontal overflow",
+      "360: complete question selects photosynthesis",
+      "360: own step context photosynthesis",
+      "360: fixed challenge keeps own experiment photosynthesis",
+      "360: unique shared controls photosynthesis",
+      "360: complete question selects leafDisks",
+      "360: own step context leafDisks",
+      "360: fixed challenge keeps own experiment leafDisks",
+      "360: unique shared controls leafDisks",
+      "360: cross-template A-B-A preserves question/level/reset leafDisks",
+      "360: cross-template A-B-A preserves question/level/reset photosynthesis",
+      "360: cross-template A-B-A preserves question/level/reset leafDisks",
+      "360: active senior AI return preserves step",
+      "360: mixed protocols rejected, original retained, tutor answer cleared",
+      "360: current master camera/upload controls retained",
+      "360: local mocked OCR only fills question, never auto generates",
+      "360: master microscope still recognized after both experiments",
+      "360: master population still recognized after both experiments",
+      "360: integration viewport has no horizontal overflow",
+      "four explicit mocked challenge requests retain matching protocol and step",
+      "no page or console errors",
+      "no unexpected AI attempts"
+    ],
+    "errors": [],
+    "api": [],
+    "screenshots": [],
+    "layouts": [],
+    "mockTutor": [
+      {
+        "mode": "question",
+        "subject": "生物",
+        "title": "光合作用：绿叶在光下制造有机物",
+        "originalQuestion": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先在黑暗处处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+        "templateId": "",
+        "parameters": {},
+        "deterministicResult": {
+          "resultText": "淀粉是光合作用的产物，光是绿叶制造淀粉不可缺少的条件；完成教材操作后，原见光区遇碘液变蓝，原遮光区不变蓝；暗处理减少原有淀粉干扰；同叶局部遮光作对照；酒精脱色便于观察；碘液检验淀粉；暗处理→双面局部遮光并光照→摘叶去纸→酒精水浴脱色→漂洗、滴碘→稍停、冲洗、观察。",
+          "metrics": "固定人教2024审核体系七下p29–30的完整六步流程；一昼夜暗处理、阳光下几小时、酒精水浴。内部参数1/1只是固定标识，不代表光强、产量或实际操作时长。页面播放位置是操作顺序示意，所列结论为完成全部操作后的教材预期。｜对照变量：是否见光｜原见光区：遇碘变蓝｜原遮光区：不变蓝",
+          "gradeLevel": "高中",
+          "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。",
+          "contentLevel": "初中内容"
+        },
+        "formula": "光照对照 + 碘液检验 → 由现象得出结论",
+        "currentStep": "当前教材第4步：酒精水浴脱色。将叶片放入装有酒精的小烧杯，再将小烧杯放入水浴锅中加热。当前还不能把最终显色当作已经观察到的结果。确定性结果区列的是完整教材流程完成后的预期，非实测。"
+      },
+      {
+        "mode": "question",
+        "subject": "生物",
+        "title": "高中光合作用：叶圆片与光照",
+        "originalQuestion": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，选取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明实验步骤、操作目的、实验变量、观察指标、结果分析边界。",
+        "templateId": "",
+        "parameters": {},
+        "deterministicResult": {
+          "resultText": "记录同一时间段内每组浮起的圆形小叶片数量；每组投入10片，浮起数须实测；尚无实测记录，不能给出各组浮起数或强弱排名；浮起数是间接指标，不等于总产氧量或糖的质量；排气使细胞间隙充水而沉底，暗处待用保护初态；以其他条件可比的三组观察光照影响；制备30片→注射器排气沉底→暗处清水待用→准备富CO₂清水→三杯各10片并设置强中弱光→同一时段观察记录；自变量是光照强度；以同一时段浮起叶片数作观察指标；材料、叶片数、供碳、温度与时段等保持可比。",
+          "metrics": "人教2019审定体系必修1第105页固定参考流程：0.6cm直径叶圆片30片、三组各10片、5W LED灯、富CO₂清水、其他条件可比、同一观察时段。未给出实测浮片数、照度、精确距离或观察分钟数；不得由动画补出结果。｜取材与分组：30片 → 3组 × 10片｜改变的条件：光照强度｜实测浮起数：待观察、待记录",
+          "gradeLevel": "高中",
+          "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+        },
+        "formula": "同一时段、其他条件可比 → 比较各组浮起数量",
+        "currentStep": "当前教材第4步：准备供碳液。准备3只小烧杯，分别加入富含CO₂的清水；可事先通过吹气补充CO₂。尚未提供任何一组的实际观察记录；不能从动画给出浮片数、三组实测排名或光合速率。"
+      },
+      {
+        "mode": "question",
+        "subject": "生物",
+        "title": "光合作用：绿叶在光下制造有机物",
+        "originalQuestion": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先在黑暗处处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+        "templateId": "",
+        "parameters": {},
+        "deterministicResult": {
+          "resultText": "淀粉是光合作用的产物，光是绿叶制造淀粉不可缺少的条件；完成教材操作后，原见光区遇碘液变蓝，原遮光区不变蓝；暗处理减少原有淀粉干扰；同叶局部遮光作对照；酒精脱色便于观察；碘液检验淀粉；暗处理→双面局部遮光并光照→摘叶去纸→酒精水浴脱色→漂洗、滴碘→稍停、冲洗、观察。",
+          "metrics": "固定人教2024审核体系七下p29–30的完整六步流程；一昼夜暗处理、阳光下几小时、酒精水浴。内部参数1/1只是固定标识，不代表光强、产量或实际操作时长。页面播放位置是操作顺序示意，所列结论为完成全部操作后的教材预期。｜对照变量：是否见光｜原见光区：遇碘变蓝｜原遮光区：不变蓝",
+          "gradeLevel": "高中",
+          "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。",
+          "contentLevel": "初中内容"
+        },
+        "formula": "光照对照 + 碘液检验 → 由现象得出结论",
+        "currentStep": "当前教材第4步：酒精水浴脱色。将叶片放入装有酒精的小烧杯，再将小烧杯放入水浴锅中加热。当前还不能把最终显色当作已经观察到的结果。确定性结果区列的是完整教材流程完成后的预期，非实测。"
+      },
+      {
+        "mode": "question",
+        "subject": "生物",
+        "title": "高中光合作用：叶圆片与光照",
+        "originalQuestion": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，选取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明实验步骤、操作目的、实验变量、观察指标、结果分析边界。",
+        "templateId": "",
+        "parameters": {},
+        "deterministicResult": {
+          "resultText": "记录同一时间段内每组浮起的圆形小叶片数量；每组投入10片，浮起数须实测；尚无实测记录，不能给出各组浮起数或强弱排名；浮起数是间接指标，不等于总产氧量或糖的质量；排气使细胞间隙充水而沉底，暗处待用保护初态；以其他条件可比的三组观察光照影响；制备30片→注射器排气沉底→暗处清水待用→准备富CO₂清水→三杯各10片并设置强中弱光→同一时段观察记录；自变量是光照强度；以同一时段浮起叶片数作观察指标；材料、叶片数、供碳、温度与时段等保持可比。",
+          "metrics": "人教2019审定体系必修1第105页固定参考流程：0.6cm直径叶圆片30片、三组各10片、5W LED灯、富CO₂清水、其他条件可比、同一观察时段。未给出实测浮片数、照度、精确距离或观察分钟数；不得由动画补出结果。｜取材与分组：30片 → 3组 × 10片｜改变的条件：光照强度｜实测浮起数：待观察、待记录",
+          "gradeLevel": "高中",
+          "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+        },
+        "formula": "同一时段、其他条件可比 → 比较各组浮起数量",
+        "currentStep": "当前教材第4步：准备供碳液。准备3只小烧杯，分别加入富含CO₂的清水；可事先通过吹气补充CO₂。尚未提供任何一组的实际观察记录；不能从动画给出浮片数、三组实测排名或光合速率。"
+      }
+    ]
+  },
+  "populationBackground": {
+    "joint": {
+      "checks": [
+        {
+          "mode": "discrete",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 219,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 219,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 219,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        }
+      ],
+      "errors": [],
+      "api": [],
+      "browser": "156.0.4314.58",
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at <workspace>/.handoff/photosynthesis-review-20261105/joint-source-ad09a38/server/scripts/verify-population-background-browser.js:42:69"
+    },
+    "junior": {
+      "checks": [
+        {
+          "mode": "discrete",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 217,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 217,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 217,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        }
+      ],
+      "errors": [],
+      "api": [],
+      "browser": "156.0.4314.58",
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at <workspace>/.handoff/photosynthesis-review-20261105/junior-source-d93c05b/server/scripts/verify-population-background-browser.js:42:69"
+    },
+    "senior": {
+      "checks": [
+        {
+          "mode": "discrete",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 213,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 213,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 213,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        },
+        {
+          "mode": "logistic",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 500,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 500,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 500,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        }
+      ],
+      "errors": [],
+      "api": [],
+      "browser": "156.0.4314.58"
+    },
+    "baseline": {
+      "checks": [
+        {
+          "mode": "discrete",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 217,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 217,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 217,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        }
+      ],
+      "errors": [],
+      "api": [],
+      "browser": "156.0.4314.58",
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at <workspace>/.handoff/photosynthesis-review-20261105/baseline-source-e6f43c5/server/scripts/verify-population-background-browser.js:42:69"
+    }
+  }
+}

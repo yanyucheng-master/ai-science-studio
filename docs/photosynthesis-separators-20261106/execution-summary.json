@@ -1,0 +1,3570 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-11-06",
+  "reviewUrl": "https://github.com/yanyucheng-master/ai-science-studio/issues/9#issuecomment-6677984038",
+  "sources": {
+    "joint": {
+      "sha": "6c9db9c4833f209c5f3537a0c933a976ef4ee226",
+      "tree": "67846363cd75ac8cad2396de2c6a34b25bb23d9d"
+    },
+    "junior": {
+      "sha": "ef9767692e62ac640dcb537b09826214735b738e",
+      "tree": "70a1660cd6a303ea6dbb0ff0a7dea446cd0235c7"
+    },
+    "senior": {
+      "sha": "5bcc67bb706440c2c763899ce756854249bc90b1",
+      "tree": "8ccb3679ab34ff246a31c008548d8f00b69c90c2"
+    },
+    "baseline": {
+      "sha": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+      "tree": "a1eed39c85ecc1aad9d2533009a8255ee4beca45"
+    }
+  },
+  "fullRuns": {
+    "joint": {
+      "sourceSha": "6c9db9c4833f209c5f3537a0c933a976ef4ee226",
+      "node": "v24.22.1",
+      "os": "Windows_NT 10.0.26200 x64",
+      "started": "2026-11-06T10:11:03.272Z",
+      "finished": "2026-11-06T10:52:57.425Z",
+      "totals": {
+        "passed": 42,
+        "failed": 2,
+        "timeout": 0,
+        "notExecutedGroups": 0
+      },
+      "groups": [
+        {
+          "name": "protocol-separators",
+          "command": "node scripts/verify-photosynthesis-separators-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:11:03.273Z",
+          "finished": "2026-11-06T10:14:46.039Z",
+          "counts": {
+            "failures": 0,
+            "checks": 320,
+            "cases": 320,
+            "layouts": 0,
+            "templateApi": 80,
+            "boundaries": 6,
+            "passedCases": 320,
+            "failedCases": 0
+          },
+          "stdoutSha256": "38f5b165f6f3d84a17d145bf2b22905aa559009bc4c4956aba684de7167682aa",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "protocol-routing",
+          "command": "node scripts/verify-photosynthesis-routing-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:14:46.043Z",
+          "finished": "2026-11-06T10:17:44.755Z",
+          "counts": {
+            "failures": 0,
+            "checks": 118,
+            "cases": 117,
+            "layouts": 0,
+            "passedCases": 117,
+            "failedCases": 0
+          },
+          "stdoutSha256": "9fac69b032d98082b022226b7be64c758c877280bdf0f4b036354f4daf9f60dd",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "protocol-review",
+          "command": "node scripts/verify-photosynthesis-review-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:17:44.757Z",
+          "finished": "2026-11-06T10:18:57.652Z",
+          "counts": {
+            "checks": 460,
+            "layouts": 0,
+            "normalButtonCases": 92,
+            "playback": 4
+          },
+          "stdoutSha256": "9d373418dd9dd5c6ce480efe8863b37f5fdaf1281cffe50ef3d5c5ee22266dcf",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "photosynthesis-integration",
+          "command": "node scripts/verify-photosynthesis-integration-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:18:57.655Z",
+          "finished": "2026-11-06T10:19:26.538Z",
+          "counts": {
+            "checks": 39,
+            "layouts": 0
+          },
+          "stdoutSha256": "64bf5df1c33942346657c695dd8d68e85f452ec55be88c83877b63fcd760d601",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "photosynthesis-browser",
+          "command": "node scripts/verify-photosynthesis-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:19:26.540Z",
+          "finished": "2026-11-06T10:21:14.933Z",
+          "counts": {
+            "checks": 265,
+            "layouts": 25,
+            "semanticCases": 38
+          },
+          "stdoutSha256": "b3a6573e44d6375b25e101bdb1f5efcf8ec57a6054ce68b2dd01561a3244f34a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "photosynthesis-model",
+          "command": "node --test test/biology-photosynthesis.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:21:14.934Z",
+          "finished": "2026-11-06T10:21:15.111Z",
+          "counts": {
+            "tests": 69,
+            "pass": 69,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "d01bb8814898fc09958bc270c6b814e6017120c28e3d9efd2d8dc868c44a47d4",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "leaf-disks-browser",
+          "command": "node scripts/verify-leaf-disks-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:21:15.112Z",
+          "finished": "2026-11-06T10:23:24.510Z",
+          "counts": {
+            "checks": 301,
+            "layouts": 25,
+            "semanticCases": 49
+          },
+          "stdoutSha256": "b458ae599ee082742e1a4b81b19409fe35185fbebab2d46b3738f40fbaac224d",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "leaf-disks-model",
+          "command": "node --test test/biology-leaf-disks.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:23:24.512Z",
+          "finished": "2026-11-06T10:23:24.704Z",
+          "counts": {
+            "tests": 94,
+            "pass": 94,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "7462da4206d4b30c37694cc278856892e2153e8bf8a8ba8f4014c84c17ced337",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "node",
+          "command": "node --test",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:23:24.705Z",
+          "finished": "2026-11-06T10:23:26.292Z",
+          "counts": {
+            "tests": 1276,
+            "pass": 1276,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "8d5b5a8e63be85189464a8669a8b74ab1e23738046fa59c33efd0e9c1d2bedc6",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "question-bank",
+          "command": "node scripts/verify-question-bank-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:23:26.294Z",
+          "finished": "2026-11-06T10:30:45.946Z",
+          "counts": {
+            "totalQuestions": 600,
+            "local": 276,
+            "mockRoute": 324
+          },
+          "stdoutSha256": "b97d38eadf4bfcff60929464600eb0ed72a10f64f6d612d5321b88f8cddda49b",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "week1",
+          "command": "node scripts/verify-week1-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:30:45.948Z",
+          "finished": "2026-11-06T10:32:08.836Z",
+          "counts": {
+            "layouts": 50,
+            "failures": 0
+          },
+          "stdoutSha256": "a60bdfa9bc0fee6a86a95086f90fcd7142cde725ec090818e0552a13003d25ae",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "week2",
+          "command": "node scripts/verify-week2-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:32:08.838Z",
+          "finished": "2026-11-06T10:32:53.321Z",
+          "counts": {
+            "checks": 144,
+            "failures": 0
+          },
+          "stdoutSha256": "618e8c266fcce699ffc33acea54c1fdc0aecc0c5180db8b4b47de6c49f1916ff",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "tutor",
+          "command": "node scripts/verify-tutor-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:32:53.323Z",
+          "finished": "2026-11-06T10:33:04.113Z",
+          "counts": {
+            "reportCases": 9
+          },
+          "stdoutSha256": "3e9f9583cd98a915dd046ba1d18797c10dfbb0fc331ef9053441674ab5ccdec9",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "animation",
+          "command": "node scripts/verify-animation-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:33:04.114Z",
+          "finished": "2026-11-06T10:35:53.496Z",
+          "counts": {
+            "variants": 6
+          },
+          "stdoutSha256": "15783ecab7d82dbb58a9485d93ff6b466266e853ec1a9ace5dd105e95ad2410d",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "announcements",
+          "command": "node scripts/verify-announcements-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:35:53.497Z",
+          "finished": "2026-11-06T10:36:01.138Z",
+          "counts": {
+            "cases": 8,
+            "passedCases": 8,
+            "failedCases": 0
+          },
+          "stdoutSha256": "5ac226ba00919f3dc2f569db0d0448209b23f6fe01efd2f14722c2987a1c435d",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "formula",
+          "command": "node scripts/verify-formula-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:36:01.140Z",
+          "finished": "2026-11-06T10:40:39.302Z",
+          "counts": {
+            "layouts": 69,
+            "failures": 0,
+            "ai": 5
+          },
+          "stdoutSha256": "3d8131b56a569313c2e574c4f3c697fe5d481ad30c7b5a3d9b7e06e463a6e8a4",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "ai-quality",
+          "command": "node scripts/verify-ai-quality-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:40:39.303Z",
+          "finished": "2026-11-06T10:41:07.069Z",
+          "counts": {
+            "reportCases": 17
+          },
+          "stdoutSha256": "9f9fc24f9e3a1854af998b64ee794277fc22825f0751e44a8049953c9c5d40e9",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "share",
+          "command": "node scripts/verify-share-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:41:07.070Z",
+          "finished": "2026-11-06T10:42:00.216Z",
+          "counts": {
+            "checks": 14,
+            "roundTrips": 276,
+            "adjustedTemplates": 45
+          },
+          "stdoutSha256": "4fa1c17d701340e3565db9ba7187a565f42f3dcdf085033de1d112489968c377",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instant",
+          "command": "node scripts/verify-instant-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:42:00.217Z",
+          "finished": "2026-11-06T10:42:18.689Z",
+          "counts": {},
+          "stdoutSha256": "3f19268087a437a03081e33593ebf9b930bdb22781f8902ab1b35e2e2cc8e8c7",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instant-routing",
+          "command": "node scripts/verify-instant-routing-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:42:18.690Z",
+          "finished": "2026-11-06T10:42:28.407Z",
+          "counts": {},
+          "stdoutSha256": "74b94cc47f9737695b101949d305d9178812f2910ce439233d0d11e62bb5091a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "tutor-diagram",
+          "command": "node scripts/verify-tutor-diagram-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:42:28.408Z",
+          "finished": "2026-11-06T10:42:42.866Z",
+          "counts": {
+            "cases": 19,
+            "passedCases": 19,
+            "failedCases": 0
+          },
+          "stdoutSha256": "dc1b1816df406233f5064d0c2838fc130dd4ee1cd9bbe87e4da3f949083f68a5",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "tutor-presentation",
+          "command": "node scripts/verify-tutor-presentation-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:42:42.869Z",
+          "finished": "2026-11-06T10:43:04.880Z",
+          "counts": {
+            "cases": 27,
+            "passedCases": 27,
+            "failedCases": 0
+          },
+          "stdoutSha256": "a5635e0dccffdc586a0e99e967f0f975433c989d42d74cdccf72d33c03c83fdd",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "incline-guard",
+          "command": "node scripts/verify-incline-diagram-browser.js --guard-only",
+          "code": 1,
+          "status": "failed",
+          "timeout": false,
+          "started": "2026-11-06T10:43:04.881Z",
+          "finished": "2026-11-06T10:43:10.272Z",
+          "counts": {
+            "cases": 6,
+            "passedCases": 1,
+            "failedCases": 5
+          },
+          "stdoutSha256": "fe9e81e0040b8faaf83c628ea42a86fb6e04b4f2020579572003763b2006c060",
+          "stderrSha256": "eade909559b25ac66d95937fd605c3aff45a0f466b4e7e780dcf848badfe14b2",
+          "failureEvidence": [
+            {
+              "name": "original-1366",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            },
+            {
+              "name": "original-820",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            },
+            {
+              "name": "original-390",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            },
+            {
+              "name": "personal-original",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            },
+            {
+              "name": "supported-session-and-tampering",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            }
+          ]
+        },
+        {
+          "name": "incline-core",
+          "command": "node scripts/verify-incline-diagram-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:43:10.275Z",
+          "finished": "2026-11-06T10:43:17.726Z",
+          "counts": {
+            "cases": 7,
+            "passedCases": 7,
+            "failedCases": 0
+          },
+          "stdoutSha256": "a2e91740225da931f1d0512b5ab414df80cfd8f2e1b7826949f5ddded9c4fb8a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "incline-render",
+          "command": "node scripts/verify-incline-diagram-browser.js --render",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:43:17.728Z",
+          "finished": "2026-11-06T10:43:27.099Z",
+          "counts": {
+            "cases": 11,
+            "passedCases": 11,
+            "failedCases": 0
+          },
+          "stdoutSha256": "dbb014a40a5d91ea012dd9323d8832394398582bd4bc111c1bdb653d96e1598a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "incline-competition",
+          "command": "node scripts/verify-incline-diagram-browser.js --competition",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:43:27.101Z",
+          "finished": "2026-11-06T10:43:43.187Z",
+          "counts": {
+            "cases": 19,
+            "passedCases": 19,
+            "failedCases": 0
+          },
+          "stdoutSha256": "6b7fc922fd8eac0ae91d36baf98df31dd2c8432f0ce9d67e1c99743a19253d56",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "incline-data",
+          "command": "node scripts/verify-incline-diagram-browser.js --data",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:43:43.188Z",
+          "finished": "2026-11-06T10:44:09.271Z",
+          "counts": {
+            "cases": 32,
+            "passedCases": 32,
+            "failedCases": 0
+          },
+          "stdoutSha256": "bf2396644d9b878a2dda361a586217abf2ff83a9b0514a853cb54fd389d8bc35",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "chemistry-model",
+          "command": "node --test test/chemistry-experiments.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:44:09.272Z",
+          "finished": "2026-11-06T10:44:09.449Z",
+          "counts": {
+            "tests": 20,
+            "pass": 20,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "1f59de02c4d4726fed9ac65fce638a7b2caca55ea42809496ae7488a8fe044ca",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "chemistry-browser",
+          "command": "node scripts/verify-chemistry-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:44:09.449Z",
+          "finished": "2026-11-06T10:45:46.527Z",
+          "counts": {
+            "checks": 200,
+            "layouts": 6
+          },
+          "stdoutSha256": "1b51d4805e61d002500ddb79c14abf63d14076bed30f0eaef4f8e60c67fdd804",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "math-model",
+          "command": "node --test test/math-experiments.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:45:46.528Z",
+          "finished": "2026-11-06T10:45:46.674Z",
+          "counts": {
+            "tests": 25,
+            "pass": 25,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "ffdf25e601d0767f3c6a3d6733baa82766914772253f4cde9773f12461f3e6f5",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "math-browser",
+          "command": "node scripts/verify-math-experiments-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:45:46.675Z",
+          "finished": "2026-11-06T10:46:08.773Z",
+          "counts": {
+            "checks": 203,
+            "layouts": 9
+          },
+          "stdoutSha256": "2f01230a251062dd80ec5b75469b41b7bf36c8db9efd0e7f6e1dd7678f66cf9a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "experiment-layout",
+          "command": "node scripts/verify-experiment-layout-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:46:08.775Z",
+          "finished": "2026-11-06T10:47:53.224Z",
+          "counts": {
+            "layoutsCases": 73,
+            "cases": 46,
+            "passedCases": 46,
+            "failedCases": 0
+          },
+          "stdoutSha256": "27cf8326051a574a254018ca274ff69fbb6c7956f95a7380407194973fae884b",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "unit-circle-model",
+          "command": "node --test test/unit-circle.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:47:53.225Z",
+          "finished": "2026-11-06T10:47:53.387Z",
+          "counts": {
+            "tests": 73,
+            "pass": 73,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "117d8561b5482fb61141d08cd85f6227195f4231d398977eccf81448fec5b7c5",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "unit-circle-browser",
+          "command": "node scripts/verify-unit-circle-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:47:53.388Z",
+          "finished": "2026-11-06T10:48:37.881Z",
+          "counts": {
+            "checks": 219,
+            "layouts": 15
+          },
+          "stdoutSha256": "ba1290969f9109a5baedd8e1ff24131229120e6c19e5bc9e8af2977694cf61f1",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "equilibria-model",
+          "command": "node --test test/chemistry-equilibria.test.js test/chemistry-equilibria-templates.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:48:37.883Z",
+          "finished": "2026-11-06T10:48:38.230Z",
+          "counts": {
+            "tests": 63,
+            "pass": 63,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "1da995fbe61e9ffd609dc19dfdf6354a9becba4aa0b0ffa76638bed69c3a3c22",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "equilibria-browser",
+          "command": "node scripts/verify-chemistry-equilibria-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:48:38.231Z",
+          "finished": "2026-11-06T10:49:28.251Z",
+          "counts": {
+            "checks": 134,
+            "layouts": 14
+          },
+          "stdoutSha256": "dbc77d89411b7030b59c94dedd3a362e9e6ac39325eb8175482b6e4add2729d9",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "mendel-model",
+          "command": "node --test test/biology-mendel.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:49:28.252Z",
+          "finished": "2026-11-06T10:49:28.393Z",
+          "counts": {
+            "tests": 17,
+            "pass": 17,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "803d54a71e588b9a2b6fdde893e2defeab71eebe7d411fbd48c235388c78c89d",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "mendel-browser",
+          "command": "node scripts/verify-mendel-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:49:28.394Z",
+          "finished": "2026-11-06T10:50:00.278Z",
+          "counts": {
+            "checks": 105,
+            "layouts": 7
+          },
+          "stdoutSha256": "1280820648d34abcaa0ffb9efca16d1d595c658b9edb01d10210becc6410242f",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "acceptance-fixes",
+          "command": "node scripts/verify-acceptance-fixes-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:50:00.280Z",
+          "finished": "2026-11-06T10:50:27.267Z",
+          "counts": {
+            "checks": 62,
+            "failures": 0
+          },
+          "stdoutSha256": "621a431fb5faa8a32e3737b068ba5279c3f7e91bcebf7ca237873a37bd25b530",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "microscope-model",
+          "command": "node --test test/biology-microscope.test.js test/biology-microscope-questions.test.js test/biology-microscope-templates.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:50:27.267Z",
+          "finished": "2026-11-06T10:50:27.404Z",
+          "counts": {
+            "tests": 36,
+            "pass": 36,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "69b59606efbf79899bc7e1e344fb85104b5176d87b6327a4ab21607bfba9068a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "microscope-browser",
+          "command": "node scripts/verify-microscope-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:50:27.406Z",
+          "finished": "2026-11-06T10:51:42.596Z",
+          "counts": {
+            "checks": 249,
+            "layouts": 21
+          },
+          "stdoutSha256": "461a825fd73988c494fff110bc409a0be0be4da4cfd06b7e6e0dfd83f6b0bade",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "population-model",
+          "command": "node --test test/biology-population.test.js test/biology-population-logistic.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:51:42.597Z",
+          "finished": "2026-11-06T10:51:42.743Z",
+          "counts": {
+            "tests": 65,
+            "pass": 65,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "d2212582509e4d410aea1622f41a722d00c0d2571cecba8e421bf6e63439914e",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "population-browser",
+          "command": "node scripts/verify-population-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:51:42.744Z",
+          "finished": "2026-11-06T10:52:49.727Z",
+          "counts": {
+            "checks": 215,
+            "layouts": 16
+          },
+          "stdoutSha256": "1a80df465432ad4037489dd1cf4a26961c09478171b62f5e5fe50a40be19853c",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "population-background",
+          "command": "node scripts/verify-population-background-browser.js",
+          "code": 1,
+          "status": "failed",
+          "timeout": false,
+          "started": "2026-11-06T10:52:49.728Z",
+          "finished": "2026-11-06T10:52:57.423Z",
+          "counts": {
+            "checks": 1
+          },
+          "stdoutSha256": "bf6d8aff4122022bc64baaf769790892d44fc8cd797d3be90954f56d44cdc5c0",
+          "stderrSha256": "6a656ef1e85272ad08092246d2f0142739f483c534a72e22df8d9abd6b5dcc3f",
+          "failureEvidence": [
+            "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n"
+          ]
+        }
+      ]
+    },
+    "junior": {
+      "sourceSha": "ef9767692e62ac640dcb537b09826214735b738e",
+      "node": "v24.22.1",
+      "os": "Windows_NT 10.0.26200 x64",
+      "started": "2026-11-06T10:11:01.564Z",
+      "finished": "2026-11-06T10:46:15.704Z",
+      "totals": {
+        "passed": 40,
+        "failed": 1,
+        "timeout": 0,
+        "notExecutedGroups": 0
+      },
+      "groups": [
+        {
+          "name": "protocol-separators",
+          "command": "node scripts/verify-photosynthesis-separators-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:11:01.565Z",
+          "finished": "2026-11-06T10:12:59.994Z",
+          "counts": {
+            "failures": 0,
+            "checks": 160,
+            "cases": 160,
+            "layouts": 0,
+            "templateApi": 40,
+            "boundaries": 4,
+            "passedCases": 160,
+            "failedCases": 0
+          },
+          "stdoutSha256": "039dfb6837a5cd5213d35e3ad99ed1fcb481db662711808ca887defb8430f147",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "protocol-routing",
+          "command": "node scripts/verify-photosynthesis-routing-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:12:59.995Z",
+          "finished": "2026-11-06T10:14:28.944Z",
+          "counts": {
+            "failures": 0,
+            "checks": 56,
+            "cases": 55,
+            "layouts": 0,
+            "passedCases": 55,
+            "failedCases": 0
+          },
+          "stdoutSha256": "d3a11f4d3f238279e6c86621149d2f8c1eda30207f98e6193950b897d1ed492b",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "protocol-review",
+          "command": "node scripts/verify-photosynthesis-review-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:14:28.945Z",
+          "finished": "2026-11-06T10:14:54.771Z",
+          "counts": {
+            "checks": 165,
+            "layouts": 0,
+            "normalButtonCases": 25,
+            "playback": 2
+          },
+          "stdoutSha256": "f32751364cc20f48d5fb5324b597c757e8c847d7cdc7c2b483b5fe572e2d9e72",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "photosynthesis-browser",
+          "command": "node scripts/verify-photosynthesis-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:14:54.773Z",
+          "finished": "2026-11-06T10:16:43.720Z",
+          "counts": {
+            "checks": 265,
+            "layouts": 25,
+            "semanticCases": 38
+          },
+          "stdoutSha256": "b3a6573e44d6375b25e101bdb1f5efcf8ec57a6054ce68b2dd01561a3244f34a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "photosynthesis-model",
+          "command": "node --test test/biology-photosynthesis.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:16:43.722Z",
+          "finished": "2026-11-06T10:16:43.910Z",
+          "counts": {
+            "tests": 69,
+            "pass": 69,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "64421767db7522736ac903d05c52e5bacafaeee73df949a3035f23ab7288c97c",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "node",
+          "command": "node --test",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:16:43.911Z",
+          "finished": "2026-11-06T10:16:45.484Z",
+          "counts": {
+            "tests": 1075,
+            "pass": 1075,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "208254e4cee7211310244647a6d0cfef5140e942c30018ec53291dd88a4103a7",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "question-bank",
+          "command": "node scripts/verify-question-bank-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:16:45.486Z",
+          "finished": "2026-11-06T10:23:35.597Z",
+          "counts": {
+            "totalQuestions": 574,
+            "local": 268,
+            "mockRoute": 306
+          },
+          "stdoutSha256": "8ce4974c5513f7fb6606df9615c772e5007f5ca05dcff6595553d1c3061c190e",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "week1",
+          "command": "node scripts/verify-week1-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:23:35.598Z",
+          "finished": "2026-11-06T10:24:58.041Z",
+          "counts": {
+            "layouts": 50,
+            "failures": 0
+          },
+          "stdoutSha256": "a60bdfa9bc0fee6a86a95086f90fcd7142cde725ec090818e0552a13003d25ae",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "week2",
+          "command": "node scripts/verify-week2-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:24:58.042Z",
+          "finished": "2026-11-06T10:25:42.209Z",
+          "counts": {
+            "checks": 144,
+            "failures": 0
+          },
+          "stdoutSha256": "618e8c266fcce699ffc33acea54c1fdc0aecc0c5180db8b4b47de6c49f1916ff",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "tutor",
+          "command": "node scripts/verify-tutor-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:25:42.211Z",
+          "finished": "2026-11-06T10:25:52.804Z",
+          "counts": {
+            "reportCases": 9
+          },
+          "stdoutSha256": "8031980f8ab1f37a05192965e4f16f50329225077c1fda348cee0860ab5e4440",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "animation",
+          "command": "node scripts/verify-animation-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:25:52.805Z",
+          "finished": "2026-11-06T10:28:38.989Z",
+          "counts": {
+            "variants": 6
+          },
+          "stdoutSha256": "cdb2b67cccd42e085ac15063b51ad56f6dd510832d537a9156ab17cf9418f650",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "announcements",
+          "command": "node scripts/verify-announcements-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:28:38.991Z",
+          "finished": "2026-11-06T10:28:46.414Z",
+          "counts": {
+            "cases": 8,
+            "passedCases": 8,
+            "failedCases": 0
+          },
+          "stdoutSha256": "5ac226ba00919f3dc2f569db0d0448209b23f6fe01efd2f14722c2987a1c435d",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "formula",
+          "command": "node scripts/verify-formula-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:28:46.415Z",
+          "finished": "2026-11-06T10:33:24.275Z",
+          "counts": {
+            "layouts": 69,
+            "failures": 0,
+            "ai": 5
+          },
+          "stdoutSha256": "3d8131b56a569313c2e574c4f3c697fe5d481ad30c7b5a3d9b7e06e463a6e8a4",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "ai-quality",
+          "command": "node scripts/verify-ai-quality-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:33:24.276Z",
+          "finished": "2026-11-06T10:33:53.019Z",
+          "counts": {
+            "reportCases": 17
+          },
+          "stdoutSha256": "9f9fc24f9e3a1854af998b64ee794277fc22825f0751e44a8049953c9c5d40e9",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "share",
+          "command": "node scripts/verify-share-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:33:53.020Z",
+          "finished": "2026-11-06T10:34:48.261Z",
+          "counts": {
+            "checks": 14,
+            "roundTrips": 268,
+            "adjustedTemplates": 43
+          },
+          "stdoutSha256": "0e339811941f2d6b9eaea3673611dea282afe62a879a90383ae6eff7ca623c5c",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instant",
+          "command": "node scripts/verify-instant-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:34:48.262Z",
+          "finished": "2026-11-06T10:35:07.726Z",
+          "counts": {},
+          "stdoutSha256": "3f19268087a437a03081e33593ebf9b930bdb22781f8902ab1b35e2e2cc8e8c7",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instant-routing",
+          "command": "node scripts/verify-instant-routing-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:35:07.728Z",
+          "finished": "2026-11-06T10:35:17.978Z",
+          "counts": {},
+          "stdoutSha256": "74b94cc47f9737695b101949d305d9178812f2910ce439233d0d11e62bb5091a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "tutor-diagram",
+          "command": "node scripts/verify-tutor-diagram-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:35:17.979Z",
+          "finished": "2026-11-06T10:35:34.907Z",
+          "counts": {
+            "cases": 19,
+            "passedCases": 19,
+            "failedCases": 0
+          },
+          "stdoutSha256": "dc1b1816df406233f5064d0c2838fc130dd4ee1cd9bbe87e4da3f949083f68a5",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "tutor-presentation",
+          "command": "node scripts/verify-tutor-presentation-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:35:34.909Z",
+          "finished": "2026-11-06T10:36:00.461Z",
+          "counts": {
+            "cases": 27,
+            "passedCases": 27,
+            "failedCases": 0
+          },
+          "stdoutSha256": "a5635e0dccffdc586a0e99e967f0f975433c989d42d74cdccf72d33c03c83fdd",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "incline-guard",
+          "command": "node scripts/verify-incline-diagram-browser.js --guard-only",
+          "code": 1,
+          "status": "failed",
+          "timeout": false,
+          "started": "2026-11-06T10:36:00.462Z",
+          "finished": "2026-11-06T10:36:07.017Z",
+          "counts": {
+            "cases": 6,
+            "passedCases": 1,
+            "failedCases": 5
+          },
+          "stdoutSha256": "fe9e81e0040b8faaf83c628ea42a86fb6e04b4f2020579572003763b2006c060",
+          "stderrSha256": "eade909559b25ac66d95937fd605c3aff45a0f466b4e7e780dcf848badfe14b2",
+          "failureEvidence": [
+            {
+              "name": "original-1366",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            },
+            {
+              "name": "original-820",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            },
+            {
+              "name": "original-390",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            },
+            {
+              "name": "personal-original",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            },
+            {
+              "name": "supported-session-and-tampering",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            }
+          ]
+        },
+        {
+          "name": "incline-core",
+          "command": "node scripts/verify-incline-diagram-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:36:07.019Z",
+          "finished": "2026-11-06T10:36:15.191Z",
+          "counts": {
+            "cases": 7,
+            "passedCases": 7,
+            "failedCases": 0
+          },
+          "stdoutSha256": "a2e91740225da931f1d0512b5ab414df80cfd8f2e1b7826949f5ddded9c4fb8a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "incline-render",
+          "command": "node scripts/verify-incline-diagram-browser.js --render",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:36:15.194Z",
+          "finished": "2026-11-06T10:36:24.959Z",
+          "counts": {
+            "cases": 11,
+            "passedCases": 11,
+            "failedCases": 0
+          },
+          "stdoutSha256": "dbb014a40a5d91ea012dd9323d8832394398582bd4bc111c1bdb653d96e1598a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "incline-competition",
+          "command": "node scripts/verify-incline-diagram-browser.js --competition",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:36:24.961Z",
+          "finished": "2026-11-06T10:36:41.903Z",
+          "counts": {
+            "cases": 19,
+            "passedCases": 19,
+            "failedCases": 0
+          },
+          "stdoutSha256": "6b7fc922fd8eac0ae91d36baf98df31dd2c8432f0ce9d67e1c99743a19253d56",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "incline-data",
+          "command": "node scripts/verify-incline-diagram-browser.js --data",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:36:41.905Z",
+          "finished": "2026-11-06T10:37:10.118Z",
+          "counts": {
+            "cases": 32,
+            "passedCases": 32,
+            "failedCases": 0
+          },
+          "stdoutSha256": "bf2396644d9b878a2dda361a586217abf2ff83a9b0514a853cb54fd389d8bc35",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "chemistry-model",
+          "command": "node --test test/chemistry-experiments.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:37:10.120Z",
+          "finished": "2026-11-06T10:37:10.323Z",
+          "counts": {
+            "tests": 20,
+            "pass": 20,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "e9e22bd672bad9e468e2360882cd65dad6c88f52a5c1b4929e190d59657ac038",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "chemistry-browser",
+          "command": "node scripts/verify-chemistry-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:37:10.324Z",
+          "finished": "2026-11-06T10:38:48.233Z",
+          "counts": {
+            "checks": 200,
+            "layouts": 6
+          },
+          "stdoutSha256": "1b51d4805e61d002500ddb79c14abf63d14076bed30f0eaef4f8e60c67fdd804",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "math-model",
+          "command": "node --test test/math-experiments.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:38:48.235Z",
+          "finished": "2026-11-06T10:38:48.400Z",
+          "counts": {
+            "tests": 25,
+            "pass": 25,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "23b0d356cbf7c0dcd8abea1993c800dfb9ae08e6051b70483b889245a9bc5ed1",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "math-browser",
+          "command": "node scripts/verify-math-experiments-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:38:48.401Z",
+          "finished": "2026-11-06T10:39:10.930Z",
+          "counts": {
+            "checks": 203,
+            "layouts": 9
+          },
+          "stdoutSha256": "2f01230a251062dd80ec5b75469b41b7bf36c8db9efd0e7f6e1dd7678f66cf9a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "experiment-layout",
+          "command": "node scripts/verify-experiment-layout-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:39:10.931Z",
+          "finished": "2026-11-06T10:40:57.396Z",
+          "counts": {
+            "layoutsCases": 73,
+            "cases": 46,
+            "passedCases": 46,
+            "failedCases": 0
+          },
+          "stdoutSha256": "27cf8326051a574a254018ca274ff69fbb6c7956f95a7380407194973fae884b",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "unit-circle-model",
+          "command": "node --test test/unit-circle.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:40:57.398Z",
+          "finished": "2026-11-06T10:40:57.582Z",
+          "counts": {
+            "tests": 73,
+            "pass": 73,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "cd76d6094f1d1d769a54d5fd8eaa602923432d8d1cba22dc61ec48a44c9c5afb",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "unit-circle-browser",
+          "command": "node scripts/verify-unit-circle-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:40:57.583Z",
+          "finished": "2026-11-06T10:41:44.397Z",
+          "counts": {
+            "checks": 219,
+            "layouts": 15
+          },
+          "stdoutSha256": "ba1290969f9109a5baedd8e1ff24131229120e6c19e5bc9e8af2977694cf61f1",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "equilibria-model",
+          "command": "node --test test/chemistry-equilibria.test.js test/chemistry-equilibria-templates.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:41:44.399Z",
+          "finished": "2026-11-06T10:41:44.754Z",
+          "counts": {
+            "tests": 63,
+            "pass": 63,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "e90c699f472d5d11a0d1eafbfb7bcc82e6d7d8bb3139f17e34a3fafd5fd2b5e6",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "equilibria-browser",
+          "command": "node scripts/verify-chemistry-equilibria-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:41:44.766Z",
+          "finished": "2026-11-06T10:42:36.883Z",
+          "counts": {
+            "checks": 134,
+            "layouts": 14
+          },
+          "stdoutSha256": "dbc77d89411b7030b59c94dedd3a362e9e6ac39325eb8175482b6e4add2729d9",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "mendel-model",
+          "command": "node --test test/biology-mendel.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:42:36.885Z",
+          "finished": "2026-11-06T10:42:37.044Z",
+          "counts": {
+            "tests": 17,
+            "pass": 17,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "8b63ac9aeb48d99434ff3fb3d99f33fe9ca8000a30d2125f265b062a789f0896",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "mendel-browser",
+          "command": "node scripts/verify-mendel-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:42:37.046Z",
+          "finished": "2026-11-06T10:43:11.029Z",
+          "counts": {
+            "checks": 105,
+            "layouts": 7
+          },
+          "stdoutSha256": "1280820648d34abcaa0ffb9efca16d1d595c658b9edb01d10210becc6410242f",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "acceptance-fixes",
+          "command": "node scripts/verify-acceptance-fixes-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:43:11.031Z",
+          "finished": "2026-11-06T10:43:39.859Z",
+          "counts": {
+            "checks": 62,
+            "failures": 0
+          },
+          "stdoutSha256": "621a431fb5faa8a32e3737b068ba5279c3f7e91bcebf7ca237873a37bd25b530",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "microscope-model",
+          "command": "node --test test/biology-microscope.test.js test/biology-microscope-questions.test.js test/biology-microscope-templates.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:43:39.861Z",
+          "finished": "2026-11-06T10:43:40.019Z",
+          "counts": {
+            "tests": 36,
+            "pass": 36,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "ecf9bfebfb0691c157193818d5eede1a0b3378240fc50d6fa7b1f48aff8fa264",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "microscope-browser",
+          "command": "node scripts/verify-microscope-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:43:40.021Z",
+          "finished": "2026-11-06T10:44:57.944Z",
+          "counts": {
+            "checks": 249,
+            "layouts": 21
+          },
+          "stdoutSha256": "461a825fd73988c494fff110bc409a0be0be4da4cfd06b7e6e0dfd83f6b0bade",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "population-model",
+          "command": "node --test test/biology-population.test.js test/biology-population-logistic.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:44:57.945Z",
+          "finished": "2026-11-06T10:44:58.113Z",
+          "counts": {
+            "tests": 65,
+            "pass": 65,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "1e5d50370ca356ec3d48bdc60bec4ed7579be337ae3f606f49de747cc784d67d",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "population-browser",
+          "command": "node scripts/verify-population-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:44:58.114Z",
+          "finished": "2026-11-06T10:46:07.253Z",
+          "counts": {
+            "checks": 215,
+            "layouts": 16
+          },
+          "stdoutSha256": "1a80df465432ad4037489dd1cf4a26961c09478171b62f5e5fe50a40be19853c",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "population-background",
+          "command": "node scripts/verify-population-background-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:46:07.254Z",
+          "finished": "2026-11-06T10:46:15.703Z",
+          "counts": {
+            "checks": 2
+          },
+          "stdoutSha256": "5412fe6b862a3177e0297f92d25a41ce04c0bed8934bdc24c98cf5ebe269722b",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    "senior": {
+      "sourceSha": "5bcc67bb706440c2c763899ce756854249bc90b1",
+      "node": "v24.22.1",
+      "os": "Windows_NT 10.0.26200 x64",
+      "started": "2026-11-06T10:11:03.795Z",
+      "finished": "2026-11-06T10:46:48.586Z",
+      "totals": {
+        "passed": 39,
+        "failed": 2,
+        "timeout": 0,
+        "notExecutedGroups": 0
+      },
+      "groups": [
+        {
+          "name": "protocol-separators",
+          "command": "node scripts/verify-photosynthesis-separators-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:11:03.797Z",
+          "finished": "2026-11-06T10:13:03.944Z",
+          "counts": {
+            "failures": 0,
+            "checks": 160,
+            "cases": 160,
+            "layouts": 0,
+            "templateApi": 40,
+            "boundaries": 4,
+            "passedCases": 160,
+            "failedCases": 0
+          },
+          "stdoutSha256": "afb4991c70137e35466d3844a527b63483ec6d30719ce465a287470e33adfa1e",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "protocol-routing",
+          "command": "node scripts/verify-photosynthesis-routing-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:13:03.945Z",
+          "finished": "2026-11-06T10:14:32.453Z",
+          "counts": {
+            "failures": 0,
+            "checks": 56,
+            "cases": 55,
+            "layouts": 0,
+            "passedCases": 55,
+            "failedCases": 0
+          },
+          "stdoutSha256": "3d5dcb5d2493845bfad01278d83eeaf4ffa2788763acf97fd6243133dc70fc80",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "protocol-review",
+          "command": "node scripts/verify-photosynthesis-review-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:14:32.455Z",
+          "finished": "2026-11-06T10:15:05.552Z",
+          "counts": {
+            "checks": 201,
+            "layouts": 0,
+            "normalButtonCases": 37,
+            "playback": 2
+          },
+          "stdoutSha256": "c4872d0807be97b8e2cc5236b35a73a35095902ba736dc18a8058af0e8250de0",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "leaf-disks-browser",
+          "command": "node scripts/verify-leaf-disks-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:15:05.554Z",
+          "finished": "2026-11-06T10:17:15.320Z",
+          "counts": {
+            "checks": 301,
+            "layouts": 25,
+            "semanticCases": 49
+          },
+          "stdoutSha256": "b458ae599ee082742e1a4b81b19409fe35185fbebab2d46b3738f40fbaac224d",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "leaf-disks-model",
+          "command": "node --test test/biology-leaf-disks.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:17:15.322Z",
+          "finished": "2026-11-06T10:17:15.520Z",
+          "counts": {
+            "tests": 94,
+            "pass": 94,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "876c4791676c8da9d08a238ef5df7eabd240e1ffd3cded523737f6b44593efd6",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "node",
+          "command": "node --test",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:17:15.523Z",
+          "finished": "2026-11-06T10:17:17.122Z",
+          "counts": {
+            "tests": 1111,
+            "pass": 1111,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "4b841fe0805b9b898c0291a6d0fbaa298d4c42f16f7db28f74254566093e9b19",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "question-bank",
+          "command": "node scripts/verify-question-bank-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:17:17.124Z",
+          "finished": "2026-11-06T10:24:10.029Z",
+          "counts": {
+            "totalQuestions": 586,
+            "local": 270,
+            "mockRoute": 316
+          },
+          "stdoutSha256": "3c89a9fb7308bd6ae77cf1c02f98bc16ba8ab2d6648349a66e535c595b80bc57",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "week1",
+          "command": "node scripts/verify-week1-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:24:10.030Z",
+          "finished": "2026-11-06T10:25:32.223Z",
+          "counts": {
+            "layouts": 50,
+            "failures": 0
+          },
+          "stdoutSha256": "a60bdfa9bc0fee6a86a95086f90fcd7142cde725ec090818e0552a13003d25ae",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "week2",
+          "command": "node scripts/verify-week2-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:25:32.224Z",
+          "finished": "2026-11-06T10:26:16.589Z",
+          "counts": {
+            "checks": 144,
+            "failures": 0
+          },
+          "stdoutSha256": "618e8c266fcce699ffc33acea54c1fdc0aecc0c5180db8b4b47de6c49f1916ff",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "tutor",
+          "command": "node scripts/verify-tutor-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:26:16.591Z",
+          "finished": "2026-11-06T10:26:27.596Z",
+          "counts": {
+            "reportCases": 9
+          },
+          "stdoutSha256": "8c6701d524bf35ae65a786cb9d957f43a3391b410f42245259548b5ffe3976ff",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "animation",
+          "command": "node scripts/verify-animation-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:26:27.598Z",
+          "finished": "2026-11-06T10:29:14.208Z",
+          "counts": {
+            "variants": 6
+          },
+          "stdoutSha256": "ca439c7830e1c3f39c5cca526941ac8f2a327829e3322d26555fb954f842e4d6",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "announcements",
+          "command": "node scripts/verify-announcements-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:29:14.210Z",
+          "finished": "2026-11-06T10:29:20.850Z",
+          "counts": {
+            "cases": 8,
+            "passedCases": 8,
+            "failedCases": 0
+          },
+          "stdoutSha256": "5ac226ba00919f3dc2f569db0d0448209b23f6fe01efd2f14722c2987a1c435d",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "formula",
+          "command": "node scripts/verify-formula-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:29:20.851Z",
+          "finished": "2026-11-06T10:33:58.279Z",
+          "counts": {
+            "layouts": 69,
+            "failures": 0,
+            "ai": 5
+          },
+          "stdoutSha256": "3d8131b56a569313c2e574c4f3c697fe5d481ad30c7b5a3d9b7e06e463a6e8a4",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "ai-quality",
+          "command": "node scripts/verify-ai-quality-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:33:58.281Z",
+          "finished": "2026-11-06T10:34:26.547Z",
+          "counts": {
+            "reportCases": 17
+          },
+          "stdoutSha256": "9f9fc24f9e3a1854af998b64ee794277fc22825f0751e44a8049953c9c5d40e9",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "share",
+          "command": "node scripts/verify-share-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:34:26.548Z",
+          "finished": "2026-11-06T10:35:22.685Z",
+          "counts": {
+            "checks": 14,
+            "roundTrips": 270,
+            "adjustedTemplates": 43
+          },
+          "stdoutSha256": "8453846d378700f7a71f58e519797fffd50f3ddc83e7d2b36e84fa0fd40e960d",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instant",
+          "command": "node scripts/verify-instant-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:35:22.687Z",
+          "finished": "2026-11-06T10:35:42.592Z",
+          "counts": {},
+          "stdoutSha256": "3f19268087a437a03081e33593ebf9b930bdb22781f8902ab1b35e2e2cc8e8c7",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instant-routing",
+          "command": "node scripts/verify-instant-routing-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:35:42.594Z",
+          "finished": "2026-11-06T10:35:53.201Z",
+          "counts": {},
+          "stdoutSha256": "74b94cc47f9737695b101949d305d9178812f2910ce439233d0d11e62bb5091a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "tutor-diagram",
+          "command": "node scripts/verify-tutor-diagram-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:35:53.203Z",
+          "finished": "2026-11-06T10:36:11.561Z",
+          "counts": {
+            "cases": 19,
+            "passedCases": 19,
+            "failedCases": 0
+          },
+          "stdoutSha256": "dc1b1816df406233f5064d0c2838fc130dd4ee1cd9bbe87e4da3f949083f68a5",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "tutor-presentation",
+          "command": "node scripts/verify-tutor-presentation-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:36:11.564Z",
+          "finished": "2026-11-06T10:36:35.489Z",
+          "counts": {
+            "cases": 27,
+            "passedCases": 27,
+            "failedCases": 0
+          },
+          "stdoutSha256": "a5635e0dccffdc586a0e99e967f0f975433c989d42d74cdccf72d33c03c83fdd",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "incline-guard",
+          "command": "node scripts/verify-incline-diagram-browser.js --guard-only",
+          "code": 1,
+          "status": "failed",
+          "timeout": false,
+          "started": "2026-11-06T10:36:35.490Z",
+          "finished": "2026-11-06T10:36:41.195Z",
+          "counts": {
+            "cases": 6,
+            "passedCases": 1,
+            "failedCases": 5
+          },
+          "stdoutSha256": "fe9e81e0040b8faaf83c628ea42a86fb6e04b4f2020579572003763b2006c060",
+          "stderrSha256": "eade909559b25ac66d95937fd605c3aff45a0f466b4e7e780dcf848badfe14b2",
+          "failureEvidence": [
+            {
+              "name": "original-1366",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            },
+            {
+              "name": "original-820",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            },
+            {
+              "name": "original-390",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            },
+            {
+              "name": "personal-original",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            },
+            {
+              "name": "supported-session-and-tampering",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            }
+          ]
+        },
+        {
+          "name": "incline-core",
+          "command": "node scripts/verify-incline-diagram-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:36:41.197Z",
+          "finished": "2026-11-06T10:36:49.297Z",
+          "counts": {
+            "cases": 7,
+            "passedCases": 7,
+            "failedCases": 0
+          },
+          "stdoutSha256": "a2e91740225da931f1d0512b5ab414df80cfd8f2e1b7826949f5ddded9c4fb8a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "incline-render",
+          "command": "node scripts/verify-incline-diagram-browser.js --render",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:36:49.299Z",
+          "finished": "2026-11-06T10:36:59.506Z",
+          "counts": {
+            "cases": 11,
+            "passedCases": 11,
+            "failedCases": 0
+          },
+          "stdoutSha256": "dbb014a40a5d91ea012dd9323d8832394398582bd4bc111c1bdb653d96e1598a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "incline-competition",
+          "command": "node scripts/verify-incline-diagram-browser.js --competition",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:36:59.507Z",
+          "finished": "2026-11-06T10:37:16.561Z",
+          "counts": {
+            "cases": 19,
+            "passedCases": 19,
+            "failedCases": 0
+          },
+          "stdoutSha256": "6b7fc922fd8eac0ae91d36baf98df31dd2c8432f0ce9d67e1c99743a19253d56",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "incline-data",
+          "command": "node scripts/verify-incline-diagram-browser.js --data",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:37:16.562Z",
+          "finished": "2026-11-06T10:37:43.163Z",
+          "counts": {
+            "cases": 32,
+            "passedCases": 32,
+            "failedCases": 0
+          },
+          "stdoutSha256": "bf2396644d9b878a2dda361a586217abf2ff83a9b0514a853cb54fd389d8bc35",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "chemistry-model",
+          "command": "node --test test/chemistry-experiments.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:37:43.165Z",
+          "finished": "2026-11-06T10:37:43.354Z",
+          "counts": {
+            "tests": 20,
+            "pass": 20,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "5478e165258cf958545d5ca6f1d948f4255d6573c99514945a461a7246488f8a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "chemistry-browser",
+          "command": "node scripts/verify-chemistry-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:37:43.356Z",
+          "finished": "2026-11-06T10:39:20.110Z",
+          "counts": {
+            "checks": 200,
+            "layouts": 6
+          },
+          "stdoutSha256": "1b51d4805e61d002500ddb79c14abf63d14076bed30f0eaef4f8e60c67fdd804",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "math-model",
+          "command": "node --test test/math-experiments.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:39:20.112Z",
+          "finished": "2026-11-06T10:39:20.274Z",
+          "counts": {
+            "tests": 25,
+            "pass": 25,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "c02e33054e278f9bfea95ca356806e5bda6193513f2a7eba51405228c39f6c98",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "math-browser",
+          "command": "node scripts/verify-math-experiments-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:39:20.276Z",
+          "finished": "2026-11-06T10:39:42.395Z",
+          "counts": {
+            "checks": 203,
+            "layouts": 9
+          },
+          "stdoutSha256": "2f01230a251062dd80ec5b75469b41b7bf36c8db9efd0e7f6e1dd7678f66cf9a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "experiment-layout",
+          "command": "node scripts/verify-experiment-layout-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:39:42.397Z",
+          "finished": "2026-11-06T10:41:30.456Z",
+          "counts": {
+            "layoutsCases": 73,
+            "cases": 46,
+            "passedCases": 46,
+            "failedCases": 0
+          },
+          "stdoutSha256": "27cf8326051a574a254018ca274ff69fbb6c7956f95a7380407194973fae884b",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "unit-circle-model",
+          "command": "node --test test/unit-circle.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:41:30.458Z",
+          "finished": "2026-11-06T10:41:30.650Z",
+          "counts": {
+            "tests": 73,
+            "pass": 73,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "da541876bf8dbdcebf543781aa83dc159e1d4a0706174434b92c27296cbcc75e",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "unit-circle-browser",
+          "command": "node scripts/verify-unit-circle-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:41:30.651Z",
+          "finished": "2026-11-06T10:42:16.824Z",
+          "counts": {
+            "checks": 219,
+            "layouts": 15
+          },
+          "stdoutSha256": "ba1290969f9109a5baedd8e1ff24131229120e6c19e5bc9e8af2977694cf61f1",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "equilibria-model",
+          "command": "node --test test/chemistry-equilibria.test.js test/chemistry-equilibria-templates.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:42:16.825Z",
+          "finished": "2026-11-06T10:42:17.194Z",
+          "counts": {
+            "tests": 63,
+            "pass": 63,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "d2d67068d6c8cfad03f76260657e381a8a61ff9e72e6980246b36483527558ef",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "equilibria-browser",
+          "command": "node scripts/verify-chemistry-equilibria-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:42:17.197Z",
+          "finished": "2026-11-06T10:43:09.726Z",
+          "counts": {
+            "checks": 134,
+            "layouts": 14
+          },
+          "stdoutSha256": "dbc77d89411b7030b59c94dedd3a362e9e6ac39325eb8175482b6e4add2729d9",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "mendel-model",
+          "command": "node --test test/biology-mendel.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:43:09.728Z",
+          "finished": "2026-11-06T10:43:09.924Z",
+          "counts": {
+            "tests": 17,
+            "pass": 17,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "434c063e8f7a44c1c0c57565aa23f6a93f78bf8032d06243dc485b53b66ab750",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "mendel-browser",
+          "command": "node scripts/verify-mendel-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:43:09.926Z",
+          "finished": "2026-11-06T10:43:44.540Z",
+          "counts": {
+            "checks": 105,
+            "layouts": 7
+          },
+          "stdoutSha256": "1280820648d34abcaa0ffb9efca16d1d595c658b9edb01d10210becc6410242f",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "acceptance-fixes",
+          "command": "node scripts/verify-acceptance-fixes-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:43:44.541Z",
+          "finished": "2026-11-06T10:44:13.110Z",
+          "counts": {
+            "checks": 62,
+            "failures": 0
+          },
+          "stdoutSha256": "621a431fb5faa8a32e3737b068ba5279c3f7e91bcebf7ca237873a37bd25b530",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "microscope-model",
+          "command": "node --test test/biology-microscope.test.js test/biology-microscope-questions.test.js test/biology-microscope-templates.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:44:13.112Z",
+          "finished": "2026-11-06T10:44:13.279Z",
+          "counts": {
+            "tests": 36,
+            "pass": 36,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "f0db1f24aed1b9f875a3826df09f9578537383aca80043e29bae38cc863fd2fe",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "microscope-browser",
+          "command": "node scripts/verify-microscope-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:44:13.282Z",
+          "finished": "2026-11-06T10:45:31.405Z",
+          "counts": {
+            "checks": 249,
+            "layouts": 21
+          },
+          "stdoutSha256": "461a825fd73988c494fff110bc409a0be0be4da4cfd06b7e6e0dfd83f6b0bade",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "population-model",
+          "command": "node --test test/biology-population.test.js test/biology-population-logistic.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:45:31.406Z",
+          "finished": "2026-11-06T10:45:31.560Z",
+          "counts": {
+            "tests": 65,
+            "pass": 65,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "3ed6d8c80a3517c315a25d85ddf305383b0216f33f2df097a58ec5c21e2002ca",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "population-browser",
+          "command": "node scripts/verify-population-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:45:31.561Z",
+          "finished": "2026-11-06T10:46:40.758Z",
+          "counts": {
+            "checks": 215,
+            "layouts": 16
+          },
+          "stdoutSha256": "1a80df465432ad4037489dd1cf4a26961c09478171b62f5e5fe50a40be19853c",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "population-background",
+          "command": "node scripts/verify-population-background-browser.js",
+          "code": 1,
+          "status": "failed",
+          "timeout": false,
+          "started": "2026-11-06T10:46:40.763Z",
+          "finished": "2026-11-06T10:46:48.585Z",
+          "counts": {
+            "checks": 1
+          },
+          "stdoutSha256": "bf6d8aff4122022bc64baaf769790892d44fc8cd797d3be90954f56d44cdc5c0",
+          "stderrSha256": "fd2900cfc83bf8c8612ffd2162bf8c9bb4f6b86cb840e11b0c620e01fc97f078",
+          "failureEvidence": [
+            "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n"
+          ]
+        }
+      ]
+    },
+    "baseline": {
+      "sourceSha": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+      "node": "v24.22.1",
+      "os": "Windows_NT 10.0.26200 x64",
+      "started": "2026-11-06T10:10:00.866Z",
+      "finished": "2026-11-06T10:38:46.121Z",
+      "totals": {
+        "passed": 33,
+        "failed": 3,
+        "timeout": 0,
+        "notExecutedGroups": 0
+      },
+      "groups": [
+        {
+          "name": "node",
+          "command": "node --test",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:10:00.867Z",
+          "finished": "2026-11-06T10:10:02.209Z",
+          "counts": {
+            "tests": 906,
+            "pass": 906,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "f747d7c18d2a966a51c7fa04e5a61aeec4f0361a2fe48809f73b952e64c4eb12",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "question-bank",
+          "command": "node scripts/verify-question-bank-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:10:02.210Z",
+          "finished": "2026-11-06T10:16:35.097Z",
+          "counts": {
+            "totalQuestions": 560,
+            "local": 262,
+            "mockRoute": 298
+          },
+          "stdoutSha256": "bf33be6896eade02c16cfb1d9000d314d3bc43be3f6fe5ed33b8934f11b7edaa",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "week1",
+          "command": "node scripts/verify-week1-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:16:35.099Z",
+          "finished": "2026-11-06T10:17:57.576Z",
+          "counts": {
+            "layouts": 50,
+            "failures": 0
+          },
+          "stdoutSha256": "a60bdfa9bc0fee6a86a95086f90fcd7142cde725ec090818e0552a13003d25ae",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "week2",
+          "command": "node scripts/verify-week2-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:17:57.578Z",
+          "finished": "2026-11-06T10:18:41.620Z",
+          "counts": {
+            "checks": 144,
+            "failures": 0
+          },
+          "stdoutSha256": "618e8c266fcce699ffc33acea54c1fdc0aecc0c5180db8b4b47de6c49f1916ff",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "tutor",
+          "command": "node scripts/verify-tutor-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:18:41.622Z",
+          "finished": "2026-11-06T10:18:52.350Z",
+          "counts": {
+            "reportCases": 9
+          },
+          "stdoutSha256": "2fb63338420a969bf190f049802e833fc82cf22490543e0a071443fd5a08c488",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "animation",
+          "command": "node scripts/verify-animation-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:18:52.352Z",
+          "finished": "2026-11-06T10:21:30.659Z",
+          "counts": {
+            "variants": 6
+          },
+          "stdoutSha256": "ea1032f1ae9e2620407e18bf96ead96b4ed34b4eb30d2fb7933a94a8b8ea3255",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "announcements",
+          "command": "node scripts/verify-announcements-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:21:30.661Z",
+          "finished": "2026-11-06T10:21:36.253Z",
+          "counts": {
+            "cases": 8,
+            "passedCases": 8,
+            "failedCases": 0
+          },
+          "stdoutSha256": "5ac226ba00919f3dc2f569db0d0448209b23f6fe01efd2f14722c2987a1c435d",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "formula",
+          "command": "node scripts/verify-formula-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:21:36.255Z",
+          "finished": "2026-11-06T10:26:12.687Z",
+          "counts": {
+            "layouts": 69,
+            "failures": 0,
+            "ai": 5
+          },
+          "stdoutSha256": "3d8131b56a569313c2e574c4f3c697fe5d481ad30c7b5a3d9b7e06e463a6e8a4",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "ai-quality",
+          "command": "node scripts/verify-ai-quality-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:26:12.689Z",
+          "finished": "2026-11-06T10:26:41.648Z",
+          "counts": {
+            "reportCases": 17
+          },
+          "stdoutSha256": "9f9fc24f9e3a1854af998b64ee794277fc22825f0751e44a8049953c9c5d40e9",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "share",
+          "command": "node scripts/verify-share-browser.js",
+          "code": 1,
+          "status": "failed",
+          "timeout": false,
+          "started": "2026-11-06T10:26:41.649Z",
+          "finished": "2026-11-06T10:27:13.418Z",
+          "counts": {
+            "checks": 0,
+            "roundTrips": 0
+          },
+          "stdoutSha256": "b69a39eee5e460bf7e8f2be334b0f11205990a1d20b8d0974cb5f4afa9abb10a",
+          "stderrSha256": "1980914c1f4a60fb0b887e8be85b003267e15601c56ef7930f813b52fe78ef54",
+          "failureEvidence": [
+            "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#shareButton')\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"shareButton\" aria-label=\"分享实验\" class=\"square-button\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    58 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+          ]
+        },
+        {
+          "name": "instant",
+          "command": "node scripts/verify-instant-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:27:13.420Z",
+          "finished": "2026-11-06T10:27:31.584Z",
+          "counts": {},
+          "stdoutSha256": "3f19268087a437a03081e33593ebf9b930bdb22781f8902ab1b35e2e2cc8e8c7",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instant-routing",
+          "command": "node scripts/verify-instant-routing-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:27:31.585Z",
+          "finished": "2026-11-06T10:27:41.942Z",
+          "counts": {},
+          "stdoutSha256": "74b94cc47f9737695b101949d305d9178812f2910ce439233d0d11e62bb5091a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "tutor-diagram",
+          "command": "node scripts/verify-tutor-diagram-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:27:41.944Z",
+          "finished": "2026-11-06T10:27:58.025Z",
+          "counts": {
+            "cases": 19,
+            "passedCases": 19,
+            "failedCases": 0
+          },
+          "stdoutSha256": "dc1b1816df406233f5064d0c2838fc130dd4ee1cd9bbe87e4da3f949083f68a5",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "tutor-presentation",
+          "command": "node scripts/verify-tutor-presentation-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:27:58.027Z",
+          "finished": "2026-11-06T10:28:22.027Z",
+          "counts": {
+            "cases": 27,
+            "passedCases": 27,
+            "failedCases": 0
+          },
+          "stdoutSha256": "a5635e0dccffdc586a0e99e967f0f975433c989d42d74cdccf72d33c03c83fdd",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "incline-guard",
+          "command": "node scripts/verify-incline-diagram-browser.js --guard-only",
+          "code": 1,
+          "status": "failed",
+          "timeout": false,
+          "started": "2026-11-06T10:28:22.029Z",
+          "finished": "2026-11-06T10:28:27.835Z",
+          "counts": {
+            "cases": 6,
+            "passedCases": 1,
+            "failedCases": 5
+          },
+          "stdoutSha256": "fe9e81e0040b8faaf83c628ea42a86fb6e04b4f2020579572003763b2006c060",
+          "stderrSha256": "eade909559b25ac66d95937fd605c3aff45a0f466b4e7e780dcf848badfe14b2",
+          "failureEvidence": [
+            {
+              "name": "original-1366",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            },
+            {
+              "name": "original-820",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            },
+            {
+              "name": "original-390",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            },
+            {
+              "name": "personal-original",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            },
+            {
+              "name": "supported-session-and-tampering",
+              "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+              "coordinateRequests": 0
+            }
+          ]
+        },
+        {
+          "name": "incline-core",
+          "command": "node scripts/verify-incline-diagram-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:28:27.836Z",
+          "finished": "2026-11-06T10:28:36.106Z",
+          "counts": {
+            "cases": 7,
+            "passedCases": 7,
+            "failedCases": 0
+          },
+          "stdoutSha256": "a2e91740225da931f1d0512b5ab414df80cfd8f2e1b7826949f5ddded9c4fb8a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "incline-render",
+          "command": "node scripts/verify-incline-diagram-browser.js --render",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:28:36.108Z",
+          "finished": "2026-11-06T10:28:47.403Z",
+          "counts": {
+            "cases": 11,
+            "passedCases": 11,
+            "failedCases": 0
+          },
+          "stdoutSha256": "dbb014a40a5d91ea012dd9323d8832394398582bd4bc111c1bdb653d96e1598a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "incline-competition",
+          "command": "node scripts/verify-incline-diagram-browser.js --competition",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:28:47.406Z",
+          "finished": "2026-11-06T10:29:04.270Z",
+          "counts": {
+            "cases": 19,
+            "passedCases": 19,
+            "failedCases": 0
+          },
+          "stdoutSha256": "6b7fc922fd8eac0ae91d36baf98df31dd2c8432f0ce9d67e1c99743a19253d56",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "incline-data",
+          "command": "node scripts/verify-incline-diagram-browser.js --data",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:29:04.271Z",
+          "finished": "2026-11-06T10:29:30.117Z",
+          "counts": {
+            "cases": 32,
+            "passedCases": 32,
+            "failedCases": 0
+          },
+          "stdoutSha256": "bf2396644d9b878a2dda361a586217abf2ff83a9b0514a853cb54fd389d8bc35",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "chemistry-model",
+          "command": "node --test test/chemistry-experiments.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:29:30.119Z",
+          "finished": "2026-11-06T10:29:30.308Z",
+          "counts": {
+            "tests": 20,
+            "pass": 20,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "82c56c06dcfd02dfd312d72fef868d51d2e49ed5df05c92027d3ccc5a1ad9574",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "chemistry-browser",
+          "command": "node scripts/verify-chemistry-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:29:30.309Z",
+          "finished": "2026-11-06T10:31:07.812Z",
+          "counts": {
+            "checks": 200,
+            "layouts": 6
+          },
+          "stdoutSha256": "1b51d4805e61d002500ddb79c14abf63d14076bed30f0eaef4f8e60c67fdd804",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "math-model",
+          "command": "node --test test/math-experiments.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:31:07.814Z",
+          "finished": "2026-11-06T10:31:07.993Z",
+          "counts": {
+            "tests": 25,
+            "pass": 25,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "77456a67937ba6c6fdfc87304132765420239b3c00b20d23e72b34cfb7e04bfe",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "math-browser",
+          "command": "node scripts/verify-math-experiments-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:31:07.995Z",
+          "finished": "2026-11-06T10:31:30.830Z",
+          "counts": {
+            "checks": 203,
+            "layouts": 9
+          },
+          "stdoutSha256": "2f01230a251062dd80ec5b75469b41b7bf36c8db9efd0e7f6e1dd7678f66cf9a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "experiment-layout",
+          "command": "node scripts/verify-experiment-layout-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:31:30.831Z",
+          "finished": "2026-11-06T10:33:18.695Z",
+          "counts": {
+            "layoutsCases": 73,
+            "cases": 46,
+            "passedCases": 46,
+            "failedCases": 0
+          },
+          "stdoutSha256": "27cf8326051a574a254018ca274ff69fbb6c7956f95a7380407194973fae884b",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "unit-circle-model",
+          "command": "node --test test/unit-circle.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:33:18.697Z",
+          "finished": "2026-11-06T10:33:18.879Z",
+          "counts": {
+            "tests": 73,
+            "pass": 73,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "bdcafdc4daa2974881e1ebcfc7fba6e1a3964c6e0a3cac29335a1b0991815e46",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "unit-circle-browser",
+          "command": "node scripts/verify-unit-circle-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:33:18.881Z",
+          "finished": "2026-11-06T10:34:07.099Z",
+          "counts": {
+            "checks": 219,
+            "layouts": 15
+          },
+          "stdoutSha256": "ba1290969f9109a5baedd8e1ff24131229120e6c19e5bc9e8af2977694cf61f1",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "equilibria-model",
+          "command": "node --test test/chemistry-equilibria.test.js test/chemistry-equilibria-templates.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:34:07.101Z",
+          "finished": "2026-11-06T10:34:07.495Z",
+          "counts": {
+            "tests": 63,
+            "pass": 63,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "ac15f63961bc7e5fe9b3dc0de05ee2d97da54fc84fe682c4826a2fc85c691b1a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "equilibria-browser",
+          "command": "node scripts/verify-chemistry-equilibria-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:34:07.496Z",
+          "finished": "2026-11-06T10:35:01.386Z",
+          "counts": {
+            "checks": 134,
+            "layouts": 14
+          },
+          "stdoutSha256": "dbc77d89411b7030b59c94dedd3a362e9e6ac39325eb8175482b6e4add2729d9",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "mendel-model",
+          "command": "node --test test/biology-mendel.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:35:01.388Z",
+          "finished": "2026-11-06T10:35:01.572Z",
+          "counts": {
+            "tests": 17,
+            "pass": 17,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "54d3c20e1e363793f01286ea0b009029da1e22dbf46be3cc59999a34b6571b79",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "mendel-browser",
+          "command": "node scripts/verify-mendel-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:35:01.574Z",
+          "finished": "2026-11-06T10:35:37.718Z",
+          "counts": {
+            "checks": 105,
+            "layouts": 7
+          },
+          "stdoutSha256": "1280820648d34abcaa0ffb9efca16d1d595c658b9edb01d10210becc6410242f",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "acceptance-fixes",
+          "command": "node scripts/verify-acceptance-fixes-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:35:37.720Z",
+          "finished": "2026-11-06T10:36:08.035Z",
+          "counts": {
+            "checks": 62,
+            "failures": 0
+          },
+          "stdoutSha256": "621a431fb5faa8a32e3737b068ba5279c3f7e91bcebf7ca237873a37bd25b530",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "microscope-model",
+          "command": "node --test test/biology-microscope.test.js test/biology-microscope-questions.test.js test/biology-microscope-templates.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:36:08.037Z",
+          "finished": "2026-11-06T10:36:08.268Z",
+          "counts": {
+            "tests": 36,
+            "pass": 36,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "584a8390e48f0265fcbeb7965f323f6f2acefd34f8d69fe5c9d397b32a2e4f54",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "microscope-browser",
+          "command": "node scripts/verify-microscope-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:36:08.270Z",
+          "finished": "2026-11-06T10:37:28.705Z",
+          "counts": {
+            "checks": 249,
+            "layouts": 21
+          },
+          "stdoutSha256": "461a825fd73988c494fff110bc409a0be0be4da4cfd06b7e6e0dfd83f6b0bade",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "population-model",
+          "command": "node --test test/biology-population.test.js test/biology-population-logistic.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:37:28.707Z",
+          "finished": "2026-11-06T10:37:28.880Z",
+          "counts": {
+            "tests": 65,
+            "pass": 65,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "fbae4138afd47310770d79f15902dfbaf6d3e2c4e64ff03ed9eafd2f84caff3f",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "population-browser",
+          "command": "node scripts/verify-population-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:37:28.882Z",
+          "finished": "2026-11-06T10:38:38.111Z",
+          "counts": {
+            "checks": 215,
+            "layouts": 16
+          },
+          "stdoutSha256": "1a80df465432ad4037489dd1cf4a26961c09478171b62f5e5fe50a40be19853c",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "population-background",
+          "command": "node scripts/verify-population-background-browser.js",
+          "code": 1,
+          "status": "failed",
+          "timeout": false,
+          "started": "2026-11-06T10:38:38.113Z",
+          "finished": "2026-11-06T10:38:46.120Z",
+          "counts": {
+            "checks": 1
+          },
+          "stdoutSha256": "bf6d8aff4122022bc64baaf769790892d44fc8cd797d3be90954f56d44cdc5c0",
+          "stderrSha256": "59166debe68c965f54c89bf58b918fbc5c7b6e6bd7ab8045176a5f52b64bc7a5",
+          "failureEvidence": [
+            "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n"
+          ]
+        }
+      ]
+    }
+  },
+  "secondaryBrowserSpecialties": {
+    "joint": {
+      "sourceSha": "6c9db9c4833f209c5f3537a0c933a976ef4ee226",
+      "node": "v24.22.1",
+      "os": "Windows_NT 10.0.26200 x64",
+      "started": "2026-11-06T10:38:55.170Z",
+      "finished": "2026-11-06T10:47:17.384Z",
+      "totals": {
+        "passed": 4,
+        "failed": 0,
+        "timeout": 0,
+        "notExecutedGroups": 0
+      },
+      "groups": [
+        {
+          "name": "protocol-separators",
+          "command": "node scripts/verify-photosynthesis-separators-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:38:55.172Z",
+          "finished": "2026-11-06T10:42:38.348Z",
+          "counts": {
+            "failures": 0,
+            "checks": 320,
+            "cases": 320,
+            "layouts": 0,
+            "templateApi": 80,
+            "boundaries": 6,
+            "passedCases": 320,
+            "failedCases": 0
+          },
+          "stdoutSha256": "38f5b165f6f3d84a17d145bf2b22905aa559009bc4c4956aba684de7167682aa",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "protocol-routing",
+          "command": "node scripts/verify-photosynthesis-routing-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:42:38.350Z",
+          "finished": "2026-11-06T10:45:37.978Z",
+          "counts": {
+            "failures": 0,
+            "checks": 118,
+            "cases": 117,
+            "layouts": 0,
+            "passedCases": 117,
+            "failedCases": 0
+          },
+          "stdoutSha256": "9fac69b032d98082b022226b7be64c758c877280bdf0f4b036354f4daf9f60dd",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "protocol-review",
+          "command": "node scripts/verify-photosynthesis-review-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:45:37.980Z",
+          "finished": "2026-11-06T10:46:50.091Z",
+          "counts": {
+            "checks": 460,
+            "layouts": 0,
+            "normalButtonCases": 92,
+            "playback": 4
+          },
+          "stdoutSha256": "9d373418dd9dd5c6ce480efe8863b37f5fdaf1281cffe50ef3d5c5ee22266dcf",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "photosynthesis-integration",
+          "command": "node scripts/verify-photosynthesis-integration-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:46:50.092Z",
+          "finished": "2026-11-06T10:47:17.383Z",
+          "counts": {
+            "checks": 39,
+            "layouts": 0
+          },
+          "stdoutSha256": "64bf5df1c33942346657c695dd8d68e85f452ec55be88c83877b63fcd760d601",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    "junior": {
+      "sourceSha": "ef9767692e62ac640dcb537b09826214735b738e",
+      "node": "v24.22.1",
+      "os": "Windows_NT 10.0.26200 x64",
+      "started": "2026-11-06T10:26:42.981Z",
+      "finished": "2026-11-06T10:32:33.066Z",
+      "totals": {
+        "passed": 5,
+        "failed": 0,
+        "timeout": 0,
+        "notExecutedGroups": 0
+      },
+      "groups": [
+        {
+          "name": "protocol-separators",
+          "command": "node scripts/verify-photosynthesis-separators-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:26:42.983Z",
+          "finished": "2026-11-06T10:28:47.159Z",
+          "counts": {
+            "failures": 0,
+            "checks": 160,
+            "cases": 160,
+            "layouts": 0,
+            "templateApi": 40,
+            "boundaries": 4,
+            "passedCases": 160,
+            "failedCases": 0
+          },
+          "stdoutSha256": "039dfb6837a5cd5213d35e3ad99ed1fcb481db662711808ca887defb8430f147",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "protocol-routing",
+          "command": "node scripts/verify-photosynthesis-routing-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:28:47.162Z",
+          "finished": "2026-11-06T10:30:17.997Z",
+          "counts": {
+            "failures": 0,
+            "checks": 56,
+            "cases": 55,
+            "layouts": 0,
+            "passedCases": 55,
+            "failedCases": 0
+          },
+          "stdoutSha256": "d3a11f4d3f238279e6c86621149d2f8c1eda30207f98e6193950b897d1ed492b",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "protocol-review",
+          "command": "node scripts/verify-photosynthesis-review-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:30:17.998Z",
+          "finished": "2026-11-06T10:30:44.313Z",
+          "counts": {
+            "checks": 165,
+            "layouts": 0,
+            "normalButtonCases": 25,
+            "playback": 2
+          },
+          "stdoutSha256": "f32751364cc20f48d5fb5324b597c757e8c847d7cdc7c2b483b5fe572e2d9e72",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "photosynthesis-browser",
+          "command": "node scripts/verify-photosynthesis-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:30:44.315Z",
+          "finished": "2026-11-06T10:32:32.904Z",
+          "counts": {
+            "checks": 265,
+            "layouts": 25,
+            "semanticCases": 38
+          },
+          "stdoutSha256": "b3a6573e44d6375b25e101bdb1f5efcf8ec57a6054ce68b2dd01561a3244f34a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "photosynthesis-model",
+          "command": "node --test test/biology-photosynthesis.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:32:32.905Z",
+          "finished": "2026-11-06T10:32:33.066Z",
+          "counts": {
+            "tests": 69,
+            "pass": 69,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "18afded188fee43d2fdcdde8823652013dbc1302986193fe46af164177e4e1f3",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    "senior": {
+      "sourceSha": "5bcc67bb706440c2c763899ce756854249bc90b1",
+      "node": "v24.22.1",
+      "os": "Windows_NT 10.0.26200 x64",
+      "started": "2026-11-06T10:32:33.123Z",
+      "finished": "2026-11-06T10:38:55.111Z",
+      "totals": {
+        "passed": 5,
+        "failed": 0,
+        "timeout": 0,
+        "notExecutedGroups": 0
+      },
+      "groups": [
+        {
+          "name": "protocol-separators",
+          "command": "node scripts/verify-photosynthesis-separators-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:32:33.124Z",
+          "finished": "2026-11-06T10:34:35.603Z",
+          "counts": {
+            "failures": 0,
+            "checks": 160,
+            "cases": 160,
+            "layouts": 0,
+            "templateApi": 40,
+            "boundaries": 4,
+            "passedCases": 160,
+            "failedCases": 0
+          },
+          "stdoutSha256": "afb4991c70137e35466d3844a527b63483ec6d30719ce465a287470e33adfa1e",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "protocol-routing",
+          "command": "node scripts/verify-photosynthesis-routing-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:34:35.606Z",
+          "finished": "2026-11-06T10:36:07.660Z",
+          "counts": {
+            "failures": 0,
+            "checks": 56,
+            "cases": 55,
+            "layouts": 0,
+            "passedCases": 55,
+            "failedCases": 0
+          },
+          "stdoutSha256": "3d5dcb5d2493845bfad01278d83eeaf4ffa2788763acf97fd6243133dc70fc80",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "protocol-review",
+          "command": "node scripts/verify-photosynthesis-review-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:36:07.662Z",
+          "finished": "2026-11-06T10:36:42.721Z",
+          "counts": {
+            "checks": 201,
+            "layouts": 0,
+            "normalButtonCases": 37,
+            "playback": 2
+          },
+          "stdoutSha256": "c4872d0807be97b8e2cc5236b35a73a35095902ba736dc18a8058af0e8250de0",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "leaf-disks-browser",
+          "command": "node scripts/verify-leaf-disks-browser.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:36:42.724Z",
+          "finished": "2026-11-06T10:38:54.919Z",
+          "counts": {
+            "checks": 301,
+            "layouts": 25,
+            "semanticCases": 49
+          },
+          "stdoutSha256": "b458ae599ee082742e1a4b81b19409fe35185fbebab2d46b3738f40fbaac224d",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "leaf-disks-model",
+          "command": "node --test test/biology-leaf-disks.test.js",
+          "code": 0,
+          "status": "passed",
+          "timeout": false,
+          "started": "2026-11-06T10:38:54.921Z",
+          "finished": "2026-11-06T10:38:55.110Z",
+          "counts": {
+            "tests": 94,
+            "pass": 94,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "stdoutSha256": "b9087cae23660aa6e256130041458df13dda2b55d6ed52edbabf3106a466fc96",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  },
+  "baselineExplicitShareFixture": {
+    "sourceSha": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+    "node": "v24.22.1",
+    "os": "Windows_NT 10.0.26200 x64",
+    "started": "2026-11-06T10:17:45.261Z",
+    "finished": "2026-11-06T10:18:35.924Z",
+    "totals": {
+      "passed": 1,
+      "failed": 0,
+      "timeout": 0,
+      "notExecutedGroups": 0
+    },
+    "groups": [
+      {
+        "name": "share",
+        "command": "node scripts/verify-share-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-06T10:17:45.264Z",
+        "finished": "2026-11-06T10:18:35.924Z",
+        "counts": {
+          "checks": 14,
+          "roundTrips": 262,
+          "adjustedTemplates": 41
+        },
+        "stdoutSha256": "b456509e8a0d78eae5fda2b35b8232dfce1f5ffa6ffd7ff8a873570179c0e88a",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "waitingFixture": {
+    "sourceSha": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+    "modifiedPaths": [
+      "server/scripts/verify-share-browser.js"
+    ],
+    "beforeSha256": "d6fab6dbb1a98a05c309d32477cddda71ed36a45119d02592a9c59a540db4046",
+    "afterSha256": "607bb32ac43b9e0cdd8e6b9788d46be06d50efc8dc9643db14a77c34ea527b2e",
+    "reason": "Only waiting-page fixture hides button and exercises public refusal; all later assertions retained. Clean baseline root remains untouched."
+  },
+  "frozenVerification": {
+    "joint": {
+      "sourceSha": "6c9db9c4833f209c5f3537a0c933a976ef4ee226",
+      "tree": "67846363cd75ac8cad2396de2c6a34b25bb23d9d",
+      "trackedFilesCompared": 345,
+      "changedTrackedPaths": [],
+      "archiveSha256": "54e5f8bf0c980869ff71ca10d9238d65eeeaa6044faa2ec6d450ab8b25918f59"
+    },
+    "junior": {
+      "sourceSha": "ef9767692e62ac640dcb537b09826214735b738e",
+      "tree": "70a1660cd6a303ea6dbb0ff0a7dea446cd0235c7",
+      "trackedFilesCompared": 323,
+      "changedTrackedPaths": [],
+      "archiveSha256": "f428cfe9f48db5bea00556b939e91c88074ffdb4c718a1a0684cd73d817f2bc8"
+    },
+    "senior": {
+      "sourceSha": "5bcc67bb706440c2c763899ce756854249bc90b1",
+      "tree": "8ccb3679ab34ff246a31c008548d8f00b69c90c2",
+      "trackedFilesCompared": 325,
+      "changedTrackedPaths": [],
+      "archiveSha256": "1462a02680953d3406229358aeeb51f2a1182fd86ea6dd3f2e665291b121450c"
+    },
+    "baseline": {
+      "sourceSha": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+      "tree": "a1eed39c85ecc1aad9d2533009a8255ee4beca45",
+      "trackedFilesCompared": 250,
+      "changedTrackedPaths": [],
+      "archiveSha256": "c0e19041061b4ce3a1162061c253964c123392e68dc847bbe0f17f18714266f9"
+    }
+  },
+  "sourcePreservation": {
+    "joint": {
+      "sourceSha": "6c9db9c4833f209c5f3537a0c933a976ef4ee226",
+      "masterRows": 560,
+      "masterRowsUnchangedInOrder": true,
+      "bankTotal": 600,
+      "unchangedMasterFiles": [
+        {
+          "path": "web/photo-question.js",
+          "sha256": "eb26a905185f6f3087682dc4485251b44b3b00da0e9756991f97bd695182d686"
+        },
+        {
+          "path": "web/photo-question.css",
+          "sha256": "96f4aa5d151c0fbb1e1597ea492d14a41e4a18316c748f47fdcfba1c9dd798b6"
+        },
+        {
+          "path": "web/mobile.css",
+          "sha256": "f15d692104a6d868bcab000568853241440c7ec198b8c81b668e47d9c98a728b"
+        },
+        {
+          "path": "web/styles.css",
+          "sha256": "b6dc539104cbe3661feba3bafbe06c828f74ff8d22d9cb3ced50c3a4b9298591"
+        },
+        {
+          "path": "web/biology-microscope-core.js",
+          "sha256": "7895702e824f60e4c3f0ce4685d4c1a8048a82bb2306c40877c9c6b0d4ba6c3f"
+        },
+        {
+          "path": "web/biology-microscope-questions.js",
+          "sha256": "94265638413ae5f4f72445b347425ccca04523471c1ae4435896ed8c5cb01d6c"
+        },
+        {
+          "path": "web/biology-microscope.js",
+          "sha256": "960929b59f920cdbf4c3ee6173bbf06913287527d6cd05195a40524ae7683bc8"
+        },
+        {
+          "path": "web/biology-microscope.css",
+          "sha256": "c848184e55a9f331142e2eba953e7d3d5f6098a942246d11b67151a5227ce362"
+        },
+        {
+          "path": "web/biology-population-core.js",
+          "sha256": "95d895fabcc0c81aef0c4f9795554efe7bbe2203c07838a3b9c351a7ae33aaf8"
+        },
+        {
+          "path": "web/biology-population-questions.js",
+          "sha256": "85557a1a592f94d742f2cabdaa68168f9c0ebf6750a2dab17993dd6b159ce9bd"
+        },
+        {
+          "path": "web/biology-population.js",
+          "sha256": "b83801366fb5bb4fc4ec112c563950216a1479f999dc709a89bebb6a3575f4ae"
+        },
+        {
+          "path": "web/biology-population.css",
+          "sha256": "bcbdf4ba1b7e0f14a44a0d09c85c38d1d7a924bdaadb3c905332dd65b6d069f5"
+        }
+      ],
+      "existingMasterAnnouncementsUnchanged": 48,
+      "unchangedScientificSceneAndModel": [
+        {
+          "path": "web/biology-photosynthesis-core.js",
+          "previousHead": "9bf399c10e98633f022f41b1e9e6a3cde9eb3aa2",
+          "unchangedGitBlob": "2726c11f81f547bb5962a171297a23e662741599",
+          "blobSha256": "c78ed23f9cdda78c80c207efde62e0eb43aafe89facc7784e6d1ec3d75b1567f",
+          "archiveSha256": "b9425dedffad8fd106ac35ceb4c0bdf762978e79b448b0012e12ff185aefb51c",
+          "lineEndingNote": "Git archive may export CRLF; unchanged Git blob is compared independently."
+        },
+        {
+          "path": "web/biology-photosynthesis.css",
+          "previousHead": "9bf399c10e98633f022f41b1e9e6a3cde9eb3aa2",
+          "unchangedGitBlob": "15a86db809e6b084c19a2e48bcce0f88bbe2dafe",
+          "blobSha256": "f54193e2ffe28f727e38a9918116bf7e07572b6a7f1d4ce877ee9b29e12a6dd1",
+          "archiveSha256": "ebdd8471349a0183cd98d99a6dd465248428a05ea8c4a6c8d197338dd29dc5af",
+          "lineEndingNote": "Git archive may export CRLF; unchanged Git blob is compared independently."
+        },
+        {
+          "path": "web/biology-leaf-disks-core.js",
+          "previousHead": "9bf399c10e98633f022f41b1e9e6a3cde9eb3aa2",
+          "unchangedGitBlob": "80c732b8b3ee85fc84f1b49c33c234711009736f",
+          "blobSha256": "e40d00595cf87c91d0d2ae54e6ee02c79554e4b33c3edda81d3417e350526fec",
+          "archiveSha256": "be1232c457664aec2fa4840af0b127f63707a0c1cd87f5334a2febfb49adb058",
+          "lineEndingNote": "Git archive may export CRLF; unchanged Git blob is compared independently."
+        },
+        {
+          "path": "web/biology-leaf-disks.css",
+          "previousHead": "9bf399c10e98633f022f41b1e9e6a3cde9eb3aa2",
+          "unchangedGitBlob": "df1a0dca219c8a1da4ba4d1c788285c0c14f1259",
+          "blobSha256": "8e2c43729da5db49aae71d14244797c63790a37b3c4d0cb79ae1ecb7a8c9513d",
+          "archiveSha256": "dfef9b62fe9035286c6d20b7be67398236e386a3c2b956de66513d244584717f",
+          "lineEndingNote": "Git archive may export CRLF; unchanged Git blob is compared independently."
+        }
+      ]
+    },
+    "junior": {
+      "sourceSha": "ef9767692e62ac640dcb537b09826214735b738e",
+      "masterRows": 560,
+      "masterRowsUnchangedInOrder": true,
+      "bankTotal": 574,
+      "unchangedMasterFiles": [
+        {
+          "path": "web/photo-question.js",
+          "sha256": "eb26a905185f6f3087682dc4485251b44b3b00da0e9756991f97bd695182d686"
+        },
+        {
+          "path": "web/photo-question.css",
+          "sha256": "96f4aa5d151c0fbb1e1597ea492d14a41e4a18316c748f47fdcfba1c9dd798b6"
+        },
+        {
+          "path": "web/mobile.css",
+          "sha256": "f15d692104a6d868bcab000568853241440c7ec198b8c81b668e47d9c98a728b"
+        },
+        {
+          "path": "web/styles.css",
+          "sha256": "b6dc539104cbe3661feba3bafbe06c828f74ff8d22d9cb3ced50c3a4b9298591"
+        },
+        {
+          "path": "web/biology-microscope-core.js",
+          "sha256": "7895702e824f60e4c3f0ce4685d4c1a8048a82bb2306c40877c9c6b0d4ba6c3f"
+        },
+        {
+          "path": "web/biology-microscope-questions.js",
+          "sha256": "94265638413ae5f4f72445b347425ccca04523471c1ae4435896ed8c5cb01d6c"
+        },
+        {
+          "path": "web/biology-microscope.js",
+          "sha256": "960929b59f920cdbf4c3ee6173bbf06913287527d6cd05195a40524ae7683bc8"
+        },
+        {
+          "path": "web/biology-microscope.css",
+          "sha256": "c848184e55a9f331142e2eba953e7d3d5f6098a942246d11b67151a5227ce362"
+        },
+        {
+          "path": "web/biology-population-core.js",
+          "sha256": "95d895fabcc0c81aef0c4f9795554efe7bbe2203c07838a3b9c351a7ae33aaf8"
+        },
+        {
+          "path": "web/biology-population-questions.js",
+          "sha256": "85557a1a592f94d742f2cabdaa68168f9c0ebf6750a2dab17993dd6b159ce9bd"
+        },
+        {
+          "path": "web/biology-population.js",
+          "sha256": "b83801366fb5bb4fc4ec112c563950216a1479f999dc709a89bebb6a3575f4ae"
+        },
+        {
+          "path": "web/biology-population.css",
+          "sha256": "bcbdf4ba1b7e0f14a44a0d09c85c38d1d7a924bdaadb3c905332dd65b6d069f5"
+        }
+      ],
+      "existingMasterAnnouncementsUnchanged": 48,
+      "unchangedScientificSceneAndModel": [
+        {
+          "path": "web/biology-photosynthesis-core.js",
+          "previousHead": "fe5ca6a6b2ca09347a14d39561ed1cd0f80fd5b6",
+          "unchangedGitBlob": "2726c11f81f547bb5962a171297a23e662741599",
+          "blobSha256": "c78ed23f9cdda78c80c207efde62e0eb43aafe89facc7784e6d1ec3d75b1567f",
+          "archiveSha256": "b9425dedffad8fd106ac35ceb4c0bdf762978e79b448b0012e12ff185aefb51c",
+          "lineEndingNote": "Git archive may export CRLF; unchanged Git blob is compared independently."
+        },
+        {
+          "path": "web/biology-photosynthesis.css",
+          "previousHead": "fe5ca6a6b2ca09347a14d39561ed1cd0f80fd5b6",
+          "unchangedGitBlob": "15a86db809e6b084c19a2e48bcce0f88bbe2dafe",
+          "blobSha256": "f54193e2ffe28f727e38a9918116bf7e07572b6a7f1d4ce877ee9b29e12a6dd1",
+          "archiveSha256": "ebdd8471349a0183cd98d99a6dd465248428a05ea8c4a6c8d197338dd29dc5af",
+          "lineEndingNote": "Git archive may export CRLF; unchanged Git blob is compared independently."
+        }
+      ]
+    },
+    "senior": {
+      "sourceSha": "5bcc67bb706440c2c763899ce756854249bc90b1",
+      "masterRows": 560,
+      "masterRowsUnchangedInOrder": true,
+      "bankTotal": 586,
+      "unchangedMasterFiles": [
+        {
+          "path": "web/photo-question.js",
+          "sha256": "eb26a905185f6f3087682dc4485251b44b3b00da0e9756991f97bd695182d686"
+        },
+        {
+          "path": "web/photo-question.css",
+          "sha256": "96f4aa5d151c0fbb1e1597ea492d14a41e4a18316c748f47fdcfba1c9dd798b6"
+        },
+        {
+          "path": "web/mobile.css",
+          "sha256": "f15d692104a6d868bcab000568853241440c7ec198b8c81b668e47d9c98a728b"
+        },
+        {
+          "path": "web/styles.css",
+          "sha256": "b6dc539104cbe3661feba3bafbe06c828f74ff8d22d9cb3ced50c3a4b9298591"
+        },
+        {
+          "path": "web/biology-microscope-core.js",
+          "sha256": "7895702e824f60e4c3f0ce4685d4c1a8048a82bb2306c40877c9c6b0d4ba6c3f"
+        },
+        {
+          "path": "web/biology-microscope-questions.js",
+          "sha256": "94265638413ae5f4f72445b347425ccca04523471c1ae4435896ed8c5cb01d6c"
+        },
+        {
+          "path": "web/biology-microscope.js",
+          "sha256": "960929b59f920cdbf4c3ee6173bbf06913287527d6cd05195a40524ae7683bc8"
+        },
+        {
+          "path": "web/biology-microscope.css",
+          "sha256": "c848184e55a9f331142e2eba953e7d3d5f6098a942246d11b67151a5227ce362"
+        },
+        {
+          "path": "web/biology-population-core.js",
+          "sha256": "95d895fabcc0c81aef0c4f9795554efe7bbe2203c07838a3b9c351a7ae33aaf8"
+        },
+        {
+          "path": "web/biology-population-questions.js",
+          "sha256": "85557a1a592f94d742f2cabdaa68168f9c0ebf6750a2dab17993dd6b159ce9bd"
+        },
+        {
+          "path": "web/biology-population.js",
+          "sha256": "b83801366fb5bb4fc4ec112c563950216a1479f999dc709a89bebb6a3575f4ae"
+        },
+        {
+          "path": "web/biology-population.css",
+          "sha256": "bcbdf4ba1b7e0f14a44a0d09c85c38d1d7a924bdaadb3c905332dd65b6d069f5"
+        }
+      ],
+      "existingMasterAnnouncementsUnchanged": 48,
+      "unchangedScientificSceneAndModel": [
+        {
+          "path": "web/biology-leaf-disks-core.js",
+          "previousHead": "a3f5c42b6b4cbfaf1f2abe9ad37d3ac6cc4f59ec",
+          "unchangedGitBlob": "80c732b8b3ee85fc84f1b49c33c234711009736f",
+          "blobSha256": "e40d00595cf87c91d0d2ae54e6ee02c79554e4b33c3edda81d3417e350526fec",
+          "archiveSha256": "be1232c457664aec2fa4840af0b127f63707a0c1cd87f5334a2febfb49adb058",
+          "lineEndingNote": "Git archive may export CRLF; unchanged Git blob is compared independently."
+        },
+        {
+          "path": "web/biology-leaf-disks.css",
+          "previousHead": "a3f5c42b6b4cbfaf1f2abe9ad37d3ac6cc4f59ec",
+          "unchangedGitBlob": "df1a0dca219c8a1da4ba4d1c788285c0c14f1259",
+          "blobSha256": "8e2c43729da5db49aae71d14244797c63790a37b3c4d0cb79ae1ecb7a8c9513d",
+          "archiveSha256": "dfef9b62fe9035286c6d20b7be67398236e386a3c2b956de66513d244584717f",
+          "lineEndingNote": "Git archive may export CRLF; unchanged Git blob is compared independently."
+        }
+      ]
+    }
+  },
+  "separatorCounts": {
+    "junior": {
+      "edge": {
+        "templateApi": 40,
+        "normalButtons": 160,
+        "passed": 160,
+        "failed": 0,
+        "boundaryButtons": 4,
+        "fixedProcessRequests": 0
+      },
+      "chromium": {
+        "templateApi": 40,
+        "normalButtons": 160,
+        "passed": 160,
+        "failed": 0,
+        "boundaryButtons": 4,
+        "fixedProcessRequests": 0
+      }
+    },
+    "senior": {
+      "edge": {
+        "templateApi": 40,
+        "normalButtons": 160,
+        "passed": 160,
+        "failed": 0,
+        "boundaryButtons": 4,
+        "fixedProcessRequests": 0
+      },
+      "chromium": {
+        "templateApi": 40,
+        "normalButtons": 160,
+        "passed": 160,
+        "failed": 0,
+        "boundaryButtons": 4,
+        "fixedProcessRequests": 0
+      }
+    },
+    "joint": {
+      "edge": {
+        "templateApi": 80,
+        "normalButtons": 320,
+        "passed": 320,
+        "failed": 0,
+        "boundaryButtons": 6,
+        "fixedProcessRequests": 0
+      },
+      "chromium": {
+        "templateApi": 80,
+        "normalButtons": 320,
+        "passed": 320,
+        "failed": 0,
+        "boundaryButtons": 6,
+        "fixedProcessRequests": 0
+      }
+    }
+  },
+  "routingCounts": {
+    "junior": {
+      "edge": {
+        "cases": 55,
+        "passed": 55,
+        "failed": 0,
+        "localRequests": 0,
+        "refusalRequests": 0,
+        "ordinaryFallbackRequests": 10
+      },
+      "chromium": {
+        "cases": 55,
+        "passed": 55,
+        "failed": 0,
+        "localRequests": 0,
+        "refusalRequests": 0,
+        "ordinaryFallbackRequests": 10
+      }
+    },
+    "senior": {
+      "edge": {
+        "cases": 55,
+        "passed": 55,
+        "failed": 0,
+        "localRequests": 0,
+        "refusalRequests": 0,
+        "ordinaryFallbackRequests": 10
+      },
+      "chromium": {
+        "cases": 55,
+        "passed": 55,
+        "failed": 0,
+        "localRequests": 0,
+        "refusalRequests": 0,
+        "ordinaryFallbackRequests": 10
+      }
+    },
+    "joint": {
+      "edge": {
+        "cases": 117,
+        "passed": 117,
+        "failed": 0,
+        "localRequests": 0,
+        "refusalRequests": 0,
+        "ordinaryFallbackRequests": 14
+      },
+      "chromium": {
+        "cases": 117,
+        "passed": 117,
+        "failed": 0,
+        "localRequests": 0,
+        "refusalRequests": 0,
+        "ordinaryFallbackRequests": 14
+      }
+    }
+  },
+  "unexecuted": [
+    "Firefox",
+    "Safari",
+    "physical devices",
+    "real camera/OCR accuracy",
+    "realAI/live",
+    "deployment",
+    "full legacy suite with Chromium as primary"
+  ],
+  "environmentPolicy": "Loopback servers, isolated temporary profiles and mock responses. No real keys, AI endpoints or personal browser data. UTC execution timestamps.",
+  "ciBoundary": "Local results do not imply GitHub Actions/check-runs/statuses, scanning or signing success. Remote records reported separately.",
+  "scope": "J02/H11 partial fixed textbook samples. Prediction/student records/comparison/explanation controls NOT implemented; lifecycle/refresh/reset/favorites/share pending product coordination. P0/20 families not completed."
+}

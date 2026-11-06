@@ -1,0 +1,146 @@
+{
+  "populationBackground": {
+    "joint": {
+      "checks": [
+        {
+          "mode": "discrete",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 188,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 188,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 188,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        }
+      ],
+      "errors": [],
+      "api": [],
+      "browser": "156.0.4314.58",
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at <workspace>/.handoff/photosynthesis-separators-20261106/joint-source-6c9db9c/server/scripts/verify-population-background-browser.js:42:69"
+    },
+    "junior": {
+      "checks": [
+        {
+          "mode": "discrete",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 187,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 187,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 187,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        },
+        {
+          "mode": "logistic",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 436,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 436,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 436,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        }
+      ],
+      "errors": [],
+      "api": [],
+      "browser": "156.0.4314.58"
+    },
+    "senior": {
+      "checks": [
+        {
+          "mode": "discrete",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 185,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 185,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 185,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        }
+      ],
+      "errors": [],
+      "api": [],
+      "browser": "156.0.4314.58",
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at <workspace>/.handoff/photosynthesis-separators-20261106/senior-source-5bcc67b/server/scripts/verify-population-background-browser.js:42:69"
+    },
+    "baseline": {
+      "checks": [
+        {
+          "mode": "discrete",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 185,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 185,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 185,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        }
+      ],
+      "errors": [],
+      "api": [],
+      "browser": "156.0.4314.58",
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at <workspace>/.handoff/photosynthesis-review-20261105/baseline-source-e6f43c5/server/scripts/verify-population-background-browser.js:42:69"
+    }
+  },
+  "interpretation": "Same failure signature does not prove root cause. See README for assertions not reached; no failed group is counted passed."
+}
