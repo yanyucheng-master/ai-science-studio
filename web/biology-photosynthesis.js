@@ -38,7 +38,7 @@
   // Route only an active fixed-experiment objective or a material/action pair.
   // Bare topic/material words and quoted background titles are not procedure requests.
   function protocolCandidate(text){
-    const source=String(text).normalize('NFKC').replace(/\r\n?|\n/gu,'；').replace(/\s+/gu,'');
+    const source=Q.routingSource(text);
     const start='(?:^|[，,。；;:：!?！？])(?:请)?',clause='[^，,。；;:：!?！？]';
     const objective=new RegExp(start+'(?:探究|研究)绿叶在光下(?:制造|产生)有机物','u').test(source);
     const textbook=/(?:人教版|人民教育出版社)(?:生物学)?七年级下册教材/u.test(source);
