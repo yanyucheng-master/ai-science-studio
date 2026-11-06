@@ -35,6 +35,18 @@
   const ASK_RULES={conclusion:/^(?:本实验的)?(?:实验结论|所得结论)/u,phenomenon:/^(?:本实验的)?(?:实验现象|观察现象|观察到的现象|预期现象)/u,purpose:/^(?:本实验的)?(?:操作目的|各步骤的目的|各步操作的目的)/u,steps:/^(?:本实验的)?(?:实验步骤|操作步骤|实验操作顺序|操作流程)/u};
   const parse=text=>Q.parse(text,{rules:RULES,askRules:ASK_RULES,askNames,defaults});
   const diagnosticPriority=text=>[ [/天竺葵/u,8], [/黑纸|遮光/u,6], [/碘液/u,5], [/酒精/u,4], [/淀粉/u,2], [/绿叶在光下(?:制造|产生)有机物/u,3], [/七年级|初中/u,1] ].reduce((n,[re,w])=>n+(re.test(text)?w:0),0);
+  // Route only an active fixed-experiment objective or a material/action pair.
+  // Bare topic/material words and quoted background titles are not procedure requests.
+  function protocolCandidate(text){
+    const source=String(text).normalize('NFKC').replace(/\r\n?|\n/gu,'；').replace(/\s+/gu,'');
+    const start='(?:^|[，,。；;:：!?！？])(?:请)?',clause='[^，,。；;:：!?！？]';
+    const objective=new RegExp(start+'(?:探究|研究)绿叶在光下(?:制造|产生)有机物','u').test(source);
+    const textbook=/(?:人教版|人民教育出版社)(?:生物学)?七年级下册教材/u.test(source);
+    const operation=/(?:酒精(?:进行)?(?:水浴|隔水加热)|(?:滴加|滴上|滴入)碘液)/u.test(source);
+    return objective&&(textbook||operation)
+      || new RegExp(start+'(?:先)?(?:将|把)?(?:盆栽)?天竺葵(?:先)?(?:暗处理|在黑暗处处理|放在黑暗处|置于黑暗处)','u').test(source)
+      || new RegExp(start+'(?:同一(?:片)?(?:叶片|叶子)'+clause+'{0,16}(?:遮光|遮住)|(?:用|使用)黑纸(?:片)?(?:将|把)?同一(?:片)?(?:叶片|叶子)'+clause+'{0,12}(?:遮光|遮住))','u').test(source);
+  }
   function question(p1=1,p2=1,f=defaults){
     const problem=issue(f,p1,p2);if(problem)throw new RangeError(problem);
     return clauses.join('，')+'，说明'+f.asks.split(',').map(k=>askNames[k]).join('、')+'。';
@@ -76,7 +88,7 @@
     el.querySelector('[data-photo-observation]').textContent=f.observationReady?'教材预期：同一叶片的原见光区呈蓝色，原遮光区不变蓝。':'当前步骤尚未完成最终显色观察；不能把绿色、脱色或碘液本身的颜色当作淀粉检验结果。';
     el.querySelectorAll('[data-photosynthesis-step]').forEach((b,i)=>{b.classList.toggle('active',i===f.step);b.setAttribute('aria-current',i===f.step?'step':'false');});
   }
-  kit.register({photosynthesis:{id:'photosynthesis',subject:'生物',level:'junior',block:'植物生理',stage:'光合作用',title:'光合作用：绿叶在光下制造有机物',menuTitle:'绿叶在光下制造有机物',menuMeta:'同叶遮光 · 酒精水浴 · 碘液检验',defaults:[1,1],resetToQuestion:true,localOnly:true,diagnosticPriority,motion:{duration:12},formatMetric:String,keywords:/光合作用|绿叶.*有机物|天竺葵/,
+  kit.register({photosynthesis:{id:'photosynthesis',subject:'生物',level:'junior',block:'植物生理',stage:'光合作用',title:'光合作用：绿叶在光下制造有机物',menuTitle:'绿叶在光下制造有机物',menuMeta:'同叶遮光 · 酒精水浴 · 碘液检验',defaults:[1,1],resetToQuestion:true,localOnly:true,protocolCandidate,diagnosticPriority,motion:{duration:12},formatMetric:String,keywords:/光合作用|绿叶.*有机物|天竺葵/,
     params:[{label:'教材固定流程',desc:'按人教七下六步操作',unit:'',min:1,max:1,step:1,value:1},{label:'同叶遮光对照',desc:'上下两面局部遮光',unit:'',min:1,max:1,step:1,value:1}],parameter:param=>({...param,locked:true,lockText:'教材固定设置'}),
     strict:{originalText:true,sameConditions:true,caps:[[1,1],[1,1]],fixedDefaults:defaults,intent:{require:[/绿叶/,/有机物/]},values:parse,checkFixed:issue,used:()=>[{cls:"time",value:86400}],asks:{supported:/实验步骤|操作步骤|实验操作顺序|操作流程|实验现象|观察现象|预期现象|实验结论|所得结论|操作目的|各步骤的目的|各步操作的目的/,unsupported:/速率|产量|体积|质量|氧气|二氧化碳|光强|温度/}},
     question,model,visual,renderFrame,presetFor:()=>({p1:1,p2:1,fixed:{...defaults}}),recognition:m=>m.readout,

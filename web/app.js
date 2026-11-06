@@ -4585,11 +4585,23 @@ function planLocalExperiment(question, context = {}) {
   const templateContext = context.physicsTemplate ?? state.physicsTemplate;
   const presetQuestion = context.presetQuestion ?? SUBJECTS[subjectContext]?.question;
   const strictSubject = presetQuestion && question === presetQuestion ? subjectContext : detectSubjectStrict(question);
-  // A complete protocol can omit its book title and be opened from another subject.
-  // Recognition still requires every condition/ask; topical failure stays local until a tutor is requested.
-  const protocolTopic = genericTemplatesOf("生物").some(template => template.localOnly && template.keywords?.test(normalizeQuestionText(question)));
-  const detected = protocolTopic ? "生物" : strictSubject || subjectContext;
-  const failures = [], protocolFailures = [];
+  const detected = strictSubject || subjectContext;
+  const failures = [];
+  // A topic keyword is not a request for a fixed procedure. Only explicit experimental
+  // objectives or material/action pairs enter its strict parser, including cross-subject input.
+  const protocolCandidates = genericTemplatesOf("生物").filter(template => template.localOnly && template.protocolCandidate?.(question));
+  if (protocolCandidates.length) {
+    const protocolFailures = [];
+    for (const template of protocolCandidates) {
+      const parse = parseGenericQuestion(question, template.id, { subject: "生物", gradeLevel });
+      if (parse?.ok) return { ok:true, subject:"生物", kind:"extra", templateId:template.id, parse };
+      protocolFailures.push({ template, parse, score:template.diagnosticPriority?.(question) || 0 });
+    }
+    const ranked = protocolFailures.sort((a,b)=>b.score-a.score || a.template.id.localeCompare(b.template.id));
+    const best = ranked[0], tied = ranked.length > 1 && ranked[1].score === best.score;
+    const parse = best.score > 0 && !tied ? best.parse : { ok:false, message:"当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。" };
+    return { ok:false, subject:"生物", localOnly:true, diagnosticTemplateId:best.score > 0 && !tied ? best.template.id : "", parse };
+  }
   const attempt = (kind, parse, extra = {}) => {
     if (parse?.ok) return { ok: true, subject: detected, kind, parse, ...extra };
     failures.push(parse || { ok: false });
@@ -4658,20 +4670,13 @@ function planLocalExperiment(question, context = {}) {
   }
   if (detected === "生物") {
     for (const template of genericTemplatesOf("生物")) {
-      if (!template.keywords?.test(normalizeQuestionText(question))) continue;
+      if (template.localOnly || !template.keywords?.test(normalizeQuestionText(question))) continue;
       const parsed = parseGenericQuestion(question, template.id, { subject: "生物", gradeLevel });
       const generic = attempt("extra", parsed, { templateId: template.id });
       if (generic) return generic;
-      if (template.localOnly) protocolFailures.push({ template, parse: parsed, score: template.diagnosticPriority?.(question) || 0 });
     }
     const plan = attempt("biology", parseBiologyCellQuestion(question, { gradeLevel }));
     if (plan) return plan;
-  }
-  if (protocolFailures.length) {
-    const ranked = protocolFailures.sort((a,b)=>b.score-a.score || a.template.id.localeCompare(b.template.id));
-    const best = ranked[0], tied = ranked.length > 1 && ranked[1].score === best.score;
-    const parse = best.score > 0 && !tied ? best.parse : { ok:false, message:"当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。" };
-    return { ok:false, subject:detected, localOnly:true, diagnosticTemplateId:best.score > 0 && !tied ? best.template.id : "", parse };
   }
   const generic = { ok: false, message: "当前题目没有匹配到本地实验模板。" };
   return { ok: false, subject: detected, parse: strictSubject ? failures[0] || generic : generic };
