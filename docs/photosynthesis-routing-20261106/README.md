@@ -1,3 +1,5 @@
+> 此页为前一轮路由隔离记录；最新分隔符/严格解析一致性修复见[当前报告](../photosynthesis-separators-20261106/README.md)。
+
 # 光合作用路由退回修复证据（2026-11-06）
 
 回应[本轮实际审查](https://github.com/yanyucheng-master/ai-science-studio/issues/9#issuecomment-6663761843)。本轮只修复既有J02/H11固定样例与其他题目路由的隔离，并完成开发侧自测。预测、学生记录、比较和解释控件仍未实现，继续保留[待审互动方案](../photosynthesis-interaction-proposal.md)。没有把两个样例、P0矩阵或20族专题申报完成，也未合并/部署。
