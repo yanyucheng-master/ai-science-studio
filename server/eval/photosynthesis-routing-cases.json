@@ -1,0 +1,215 @@
+[
+  {
+    "id": "mirror-control",
+    "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+    "expected": "local",
+    "templateId": "planeMirror",
+    "scope": "shared"
+  },
+  {
+    "id": "mirror-light",
+    "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+    "expected": "local",
+    "templateId": "planeMirror",
+    "scope": "shared"
+  },
+  {
+    "id": "mirror-zone",
+    "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。",
+    "expected": "local",
+    "templateId": "planeMirror",
+    "scope": "shared"
+  },
+  {
+    "id": "mirror-nouns",
+    "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。背景板上写着天竺葵、黑纸、碘液和酒精。",
+    "expected": "local",
+    "templateId": "planeMirror",
+    "scope": "shared"
+  },
+  {
+    "id": "mirror-quoted-title",
+    "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于“探究绿叶在光下制造有机物”展区。",
+    "expected": "local",
+    "templateId": "planeMirror",
+    "scope": "shared"
+  },
+  {
+    "id": "general-photosynthesis",
+    "question": "光合作用的原料和产物是什么？",
+    "expected": "fallback",
+    "subject": "生物",
+    "scope": "shared"
+  },
+  {
+    "id": "general-light",
+    "question": "灯光的光照强度与距离有什么关系？",
+    "expected": "fallback",
+    "subject": "物理",
+    "scope": "shared"
+  },
+  {
+    "id": "general-leaf",
+    "question": "叶圆片是什么？",
+    "expected": "fallback",
+    "subject": "生物",
+    "scope": "shared"
+  },
+  {
+    "id": "general-plant",
+    "question": "天竺葵为什么适合盆栽？",
+    "expected": "fallback",
+    "subject": "生物",
+    "scope": "shared"
+  },
+  {
+    "id": "general-starch",
+    "question": "淀粉和酒精各有什么性质？",
+    "expected": "fallback",
+    "subject": "化学",
+    "scope": "shared"
+  },
+  {
+    "id": "fallback-math",
+    "question": "求集合A={1,2}和B={2,3}的并集。",
+    "expected": "fallback",
+    "subject": "数学",
+    "scope": "shared"
+  },
+  {
+    "id": "math-control",
+    "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+    "expected": "local",
+    "templateId": "quadratic",
+    "subject": "数学",
+    "scope": "shared"
+  },
+  {
+    "id": "chemistry-control",
+    "question": "配制100g10%的氯化钠溶液，求所需盐和水的质量。",
+    "expected": "local",
+    "templateId": "naclSolution",
+    "subject": "化学",
+    "scope": "shared"
+  },
+  {
+    "id": "biology-control",
+    "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+    "expected": "local",
+    "templateId": "cell",
+    "subject": "生物",
+    "scope": "shared"
+  },
+  {
+    "id": "junior-without-book",
+    "question": "探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+    "expected": "local",
+    "templateId": "photosynthesis",
+    "scope": "junior"
+  },
+  {
+    "id": "junior-unsupported-extra",
+    "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。求总产氧量。",
+    "expected": "protocol-refusal",
+    "templateId": "photosynthesis",
+    "scope": "junior"
+  },
+  {
+    "id": "junior-bad-order",
+    "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，滴加碘液后清水漂洗，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+    "expected": "protocol-refusal",
+    "templateId": "photosynthesis",
+    "scope": "junior"
+  },
+  {
+    "id": "junior-bad-side",
+    "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+    "expected": "protocol-refusal",
+    "templateId": "photosynthesis",
+    "scope": "junior"
+  },
+  {
+    "id": "junior-bad-time",
+    "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一小时，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+    "expected": "protocol-refusal",
+    "templateId": "photosynthesis",
+    "scope": "junior"
+  },
+  {
+    "id": "junior-missing-intent",
+    "question": "盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+    "expected": "protocol-refusal",
+    "templateId": "photosynthesis",
+    "scope": "junior"
+  },
+  {
+    "id": "junior-mixed-request",
+    "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+    "expected": "protocol-refusal",
+    "templateId": "photosynthesis",
+    "scope": "junior"
+  },
+  {
+    "id": "senior-without-book",
+    "question": "探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明实验步骤、操作目的、实验变量、观察指标、结果分析边界。",
+    "expected": "local",
+    "templateId": "leafDisks",
+    "scope": "senior"
+  },
+  {
+    "id": "senior-unsupported-extra",
+    "question": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明实验步骤、操作目的、实验变量、观察指标、结果分析边界。求总产氧量。",
+    "expected": "protocol-refusal",
+    "templateId": "leafDisks",
+    "scope": "senior"
+  },
+  {
+    "id": "senior-bad-steps",
+    "question": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并堵住前孔后排尽残留空气缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明实验步骤、操作目的、实验变量、观察指标、结果分析边界。",
+    "expected": "protocol-refusal",
+    "templateId": "leafDisks",
+    "scope": "senior"
+  },
+  {
+    "id": "senior-bad-diameter",
+    "question": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶，用直径0.7cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明实验步骤、操作目的、实验变量、观察指标、结果分析边界。",
+    "expected": "protocol-refusal",
+    "templateId": "leafDisks",
+    "scope": "senior"
+  },
+  {
+    "id": "senior-bad-role",
+    "question": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片（观察后剩余），以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明实验步骤、操作目的、实验变量、观察指标、结果分析边界。",
+    "expected": "protocol-refusal",
+    "templateId": "leafDisks",
+    "scope": "senior"
+  },
+  {
+    "id": "senior-missing-intent",
+    "question": "取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明实验步骤、操作目的、实验变量、观察指标、结果分析边界。",
+    "expected": "protocol-refusal",
+    "templateId": "leafDisks",
+    "scope": "senior"
+  },
+  {
+    "id": "senior-mixed-request",
+    "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明实验步骤、操作目的、实验变量、观察指标、结果分析边界。",
+    "expected": "protocol-refusal",
+    "templateId": "leafDisks",
+    "scope": "senior"
+  },
+  {
+    "id": "objective-concept-junior",
+    "question": "研究绿叶在光下制造有机物有什么意义？",
+    "expected": "fallback",
+    "subject": "生物",
+    "scope": "shared"
+  },
+  {
+    "id": "objective-concept-senior",
+    "question": "探究光照强度对光合作用强度的影响有什么意义？",
+    "expected": "fallback",
+    "subject": "生物",
+    "scope": "shared"
+  }
+]
