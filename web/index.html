@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;600;700;800&amp;display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;600;700;800&amp;display=swap"></noscript>
   <link rel="stylesheet" href="vendor/katex/katex.min.css?v=0.19.0">
-  <link rel="stylesheet" href="styles.css?v=20261031-declutter-2">
+  <link rel="stylesheet" href="styles.css?v=20261106-personal-model-1">
   <link rel="stylesheet" href="math-experiments.css?v=20261030-math-1">
   <link rel="stylesheet" href="chemistry-equilibria.css?v=20261030-chemistry-v2-1">
   <link rel="stylesheet" href="biology-mendel.css?v=20261031-mendel-1">
@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="tutor-focus.css?v=20261019-tutor-followups-1">
   <link rel="stylesheet" href="photo-question.css?v=20261031-photo-1">
   <link rel="stylesheet" href="mobile.css?v=20261102-photo-1">
+  <link rel="stylesheet" href="ui-motion.css?v=20261106-ui-motion-1">
 </head>
 <body class="awaiting-generation">
   <script src="brand-motion.js?v=20261020-splash-1"></script>
@@ -785,7 +786,7 @@
 
           <section class="mentor-card card">
             <div class="mentor-head">
-              <div class="mentor-mark mentor-mark-compact mentor-mark-orbit" role="img" aria-label="大师实验室 AI 导师标志，右键可配置 API 密钥" title="右键配置 DeepSeek API 密钥" tabindex="0">
+              <div class="mentor-mark mentor-mark-compact mentor-mark-orbit" role="img" aria-label="大师实验室 AI 导师标志，右键可配置 API 密钥" title="右键配置个人 API 密钥" tabindex="0">
                 <span class="mentor-mark-aura" aria-hidden="true"></span>
                 <svg class="mentor-mark-glyph mentor-orbit-glyph" viewBox="0 0 64 64" width="48" height="48" aria-hidden="true">
                   <defs>
@@ -856,7 +857,7 @@
           <header class="ai-tutor-header">
             <button class="ai-tutor-drag" id="aiTutorDragHandle" type="button" aria-label="移动 AI 小窗：拖动或使用方向键，Shift 加方向键快速移动" title="拖动小窗 · 方向键也可移动" hidden>⠿</button>
             <div class="ai-tutor-identity">
-              <div class="mentor-mark mentor-mark-large ai-tutor-avatar mentor-mark-orbit" role="img" aria-label="大师实验室 AI 导师标志，右键可配置 API 密钥" title="右键配置 DeepSeek API 密钥" tabindex="0">
+              <div class="mentor-mark mentor-mark-large ai-tutor-avatar mentor-mark-orbit" role="img" aria-label="大师实验室 AI 导师标志，右键可配置 API 密钥" title="右键配置个人 API 密钥" tabindex="0">
                 <span class="mentor-mark-aura" aria-hidden="true"></span>
                 <svg class="mentor-mark-glyph mentor-orbit-glyph" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
                   <defs>
@@ -922,7 +923,7 @@
           <div class="ai-tutor-context" id="aiTutorContext" hidden>
             <span>当前上下文</span>
             <strong id="aiTutorContextTitle">等待选择题目</strong>
-            <p id="aiTutorContextText">生成实验后，可结合题目、参数、公式和当前解题步骤讨论，也可选择实验文字引用追问。</p>
+            <p id="aiTutorContextText">生成实验后，可结合题目、参数、公式和当前解题步骤讨论，也可选中对话里的文字引用追问。</p>
             <div class="ai-context-controls"><small id="aiTutorContextMode">跟随当前实验</small><button id="aiTutorAttachContext" type="button" hidden>关联当前题目</button></div>
           </div>
 
@@ -1021,14 +1022,19 @@
       <button class="modal-close" id="apiKeyModalClose" type="button" aria-label="关闭">
         <svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
       </button>
-      <span class="section-kicker">SECURE LOCAL KEY</span>
-      <h2 id="apiKeyModalTitle">配置 DeepSeek 密钥</h2>
-      <p class="api-key-hint">密钥只保存在本机浏览器，不会写入网站代码或公开仓库。<br>DeepSeek 最新模型为 <strong>DeepSeek V4.1 Flash</strong>（2026-10-17 更新），支持思考与非思考模式。<br><span id="apiKeyModelInfo">正在读取本页模型配置…</span></p>
-      <label class="api-key-label" for="apiKeyInput">API Key</label>
-      <input id="apiKeyInput" class="api-key-input" type="password" autocomplete="off" spellcheck="false" placeholder="sk-…" maxlength="200">
-      <p class="api-key-status" id="apiKeyStatus">尚未配置密钥</p>
+      <h2 id="apiKeyModalTitle">个人密钥 <span>可选</span></h2>
+      <p class="api-key-hint">默认使用公益 AI · DeepSeek</p>
+      <label class="api-key-label" for="apiKeyModelSelect">个人模型</label>
+      <select id="apiKeyModelSelect" class="api-key-select">
+        <option value="deepseek-flash">DeepSeek V4.1 Flash</option>
+        <option value="kimi-k3.1-pro">Kimi K3.1 Pro</option>
+      </select>
+      <label class="api-key-label" id="apiKeyInputLabel" for="apiKeyInput">DeepSeek API Key</label>
+      <input id="apiKeyInput" class="api-key-input" type="password" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="粘贴 DeepSeek 密钥" maxlength="512" aria-describedby="apiKeyPrivacy apiKeyStatus">
+      <p class="api-key-privacy" id="apiKeyPrivacy">密钥仅保存在此浏览器，直连所选平台。个人请求失败时自动转用公益 AI。</p>
+      <p class="api-key-status" id="apiKeyStatus" role="status">当前：公益 AI · DeepSeek</p>
       <div class="api-key-actions">
-        <button type="button" id="apiKeyClearButton">清除</button>
+        <button type="button" id="apiKeyClearButton" title="清除本机保存的两种模型密钥，恢复公益 AI">清除全部密钥</button>
         <button type="button" class="modal-primary" id="apiKeySaveButton">保存并启用</button>
       </div>
     </div>
@@ -1058,7 +1064,7 @@
     <p class="announcements-storage-note" id="announcementsStorageNote" hidden>浏览器未允许保存已读状态，本次浏览仍可正常阅读。</p>
   </dialog>
 
-  <script src="science-formulas.js?v=20261015-formulas-1"></script>
+  <script src="science-formulas.js?v=20261106-ui-motion-1"></script>
   <script src="science-motion.js?v=20260922-motion-1"></script>
   <script src="physics-extra.js?v=20261031-declutter-2"></script>
   <script src="question-conditions.js?v=20261021-question-conditions-1"></script>
@@ -1081,16 +1087,17 @@
   <script src="instant-scene.js?v=20261020-incline-data-1"></script>
   <script src="incline-presets.js?v=20261020-incline-competition-1"></script>
   <script src="incline-diagram.js?v=20261020-incline-data-1"></script>
-  <script src="app.js?v=20261101-population-2"></script>
+  <script src="app.js?v=20261106-ui-motion-1"></script>
   <script src="experiment-share.js?v=20261020-share-1"></script>
   <script src="vendor/katex/katex.min.js?v=0.19.0"></script>
   <script src="vendor/katex/mhchem.min.js?v=0.19.0"></script>
   <script src="tutor-checks.js?v=20261011-tutor-round-1"></script>
-  <script src="ai-tutor.js?v=20261021-deepseek-flash-1017-1"></script>
+  <script src="ai-tutor.js?v=20261106-personal-model-2"></script>
   <script src="instant-scene-renderer.js?v=20261020-incline-data-1"></script>
   <script src="instant-experiment.js?v=20261020-incline-competition-1"></script>
   <script src="announcements.js?v=20261008-announcements-2"></script>
   <script src="photo-question.js?v=20261102-photo-2"></script>
   <script src="mobile-shell.js?v=20261030-mobile-4"></script>
+  <script src="ui-motion.js?v=20261106-ui-motion-1"></script>
 </body>
 </html>

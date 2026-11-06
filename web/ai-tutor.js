@@ -7,9 +7,18 @@
     (LOCAL_HOSTS.has(window.location.hostname) ? "http://127.0.0.1:10000" : DEFAULT_REMOTE_API)).replace(/\/$/, "");
   const DEEPSEEK_BASE_URL = "https://api.deepseek.com";
   const DEEPSEEK_MODEL = "deepseek-flash";
-  const DEEPSEEK_MODEL_VERSION = "DeepSeek-V4.1-Flash-1017";
   const DEEPSEEK_MODEL_LABEL = "DeepSeek V4.1 Flash";
-  const API_KEY_STORAGE = "masterLab.deepseekApiKey";
+  const PERSONAL_MODEL_STORAGE = "masterLab.personalAiModel";
+  const PERSONAL_MODELS = Object.freeze({
+    [DEEPSEEK_MODEL]: Object.freeze({
+      id: DEEPSEEK_MODEL, label: DEEPSEEK_MODEL_LABEL, provider: "DeepSeek",
+      baseUrl: DEEPSEEK_BASE_URL, keyStorage: "masterLab.deepseekApiKey", source: "deepseek-browser"
+    }),
+    "kimi-k3.1-pro": Object.freeze({
+      id: "kimi-k3.1-pro", label: "Kimi K3.1 Pro", provider: "Kimi",
+      baseUrl: "https://api.moonshot.cn/v1", keyStorage: "masterLab.kimiApiKey", source: "kimi-browser"
+    })
+  });
   const CHAT_TIMEOUT_MS = 130000;
   // Free gateway instances can take about a minute to wake after idling.
   const GENERATE_TIMEOUT_MS = 90000;
@@ -22,7 +31,6 @@
   const MAX_SAVED_SESSIONS = 6;
   const MAX_SAVED_MESSAGES = 60;
   const MAX_STORAGE_CHARS = 1500000;
-  const EXTERNAL_QUOTE_SELECTOR = "#problemText, .reasoning-steps .reason-step:not(.pending-placeholder), .formula-spotlight, #sceneTip, #mentorMessage, .metric-panel";
   const PARAMETER_NAMES = { initialSpeed: "初速度", deceleration: "减速度", initialVelocity: "初速度",
     boardLength: "木板长度", blockMass: "滑块质量", boardMass: "木板质量", frictionCoefficient: "摩擦因数",
     gravity: "重力加速度", horizontalSpeed: "水平初速度", height: "高度", voltage: "电压", current: "电流",
@@ -169,7 +177,8 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     appShell: document.querySelector(".app-shell"),
     apiKeyModal: document.querySelector("#apiKeyModal"),
     apiKeyInput: document.querySelector("#apiKeyInput"),
-    apiKeyModelInfo: document.querySelector("#apiKeyModelInfo"),
+    apiKeyModelSelect: document.querySelector("#apiKeyModelSelect"),
+    apiKeyInputLabel: document.querySelector("#apiKeyInputLabel"),
     apiKeyStatus: document.querySelector("#apiKeyStatus"),
     apiKeySave: document.querySelector("#apiKeySaveButton"),
     apiKeyClear: document.querySelector("#apiKeyClearButton"),
@@ -555,8 +564,8 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
   function errorMessage(error) {
     const code = error?.code || error?.message;
     const messages = {
-      AI_NOT_CONFIGURED: "尚未配置 DeepSeek 密钥。请右键点击烧瓶图标，粘贴 API 密钥后重试。",
-      AI_AUTH_FAILED: "API 密钥无效或已失效，请右键烧瓶图标重新配置。",
+      AI_NOT_CONFIGURED: "公益 AI 暂不可用，可稍后重试，或在个人密钥中配置自己的 API Key。",
+      AI_AUTH_FAILED: "AI 密钥无效或无权使用模型；如已配置个人密钥，请核对模型与对应平台的密钥。",
       AI_RATE_LIMITED: "AI 请求较多，请稍后再试。",
       RATE_LIMITED: "AI 请求较多，请稍后再试。",
       BODY_TOO_LARGE: "题目或对话内容过长，请精简本次提问或清空对话后重试。",
@@ -570,28 +579,58 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       AI_BUSY: "AI 服务正忙，已自动排队重试仍未轮到，请稍后点“重试上一问”。",
       ANSWER_CHECK_FAILED: "AI 的回答没有通过题意或数值核对，已拦截显示。可以点“重试上一问”，或换个问法。",
       GATEWAY_UNREACHABLE: "暂时连不上 AI 服务（可能正在唤醒，或当前网络无法访问），题目和对话已保留，请稍后点“重试上一问”。",
-      NETWORK_ERROR: "暂时无法连接 DeepSeek，请检查网络，或确认密钥是否正确。"
+      NETWORK_ERROR: "暂时无法连接 AI 平台，请检查网络后重试。"
     };
-    return messages[code] || "AI 导师暂时没有完成回答，请稍后重试。";
+    const message = messages[code] || "AI 导师暂时没有完成回答，请稍后重试。";
+    return error?.personalFallbackNotice && code !== "ABORTED"
+      ? `${error.personalFallbackNotice} 公益 AI 也未完成请求：${message}`
+      : message;
   }
 
-  function readStoredApiKey() {
+  function personalModel(id) {
+    return Object.hasOwn(PERSONAL_MODELS, id) ? PERSONAL_MODELS[id] : PERSONAL_MODELS[DEEPSEEK_MODEL];
+  }
+
+  function readStoredModel() {
     try {
-      return String(localStorage.getItem(API_KEY_STORAGE) || "").trim();
+      return personalModel(localStorage.getItem(PERSONAL_MODEL_STORAGE));
+    } catch {
+      return personalModel(DEEPSEEK_MODEL);
+    }
+  }
+
+  function readStoredApiKey(model = readStoredModel()) {
+    try {
+      return String(localStorage.getItem(model.keyStorage) || "").trim();
     } catch {
       return "";
     }
   }
 
-  function writeStoredApiKey(value) {
-    const key = String(value || "").trim();
+  function updatePersonalSettings(entries) {
+    let previous;
     try {
-      if (!key) localStorage.removeItem(API_KEY_STORAGE);
-      else localStorage.setItem(API_KEY_STORAGE, key);
+      previous = entries.map(([name]) => [name, localStorage.getItem(name)]);
+      for (const [name, value] of entries) {
+        if (value === null) localStorage.removeItem(name);
+        else localStorage.setItem(name, value);
+      }
+      return true;
     } catch {
-      /* ignore quota / private mode */
+      // Do not claim success or leave a newly selected provider using an old key.
+      for (const [name, value] of previous || []) {
+        try {
+          if (value === null) localStorage.removeItem(name);
+          else localStorage.setItem(name, value);
+        } catch { /* storage can be unavailable altogether */ }
+      }
+      return false;
     }
-    return key;
+  }
+
+  function personalRequestConfig() {
+    const model = readStoredModel();
+    return { model, apiKey: readStoredApiKey(model) };
   }
 
   function maskApiKey(key) {
@@ -618,30 +657,47 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
   }
 
   function syncApiKeyUi() {
-    const key = readStoredApiKey();
+    const model = readStoredModel();
+    const key = readStoredApiKey(model);
     const ready = key.length > 0;
-    if (elements.apiKeyModelInfo) {
-      elements.apiKeyModelInfo.textContent = `本页当前配置：${DEEPSEEK_MODEL_LABEL}（API：${DEEPSEEK_MODEL}）。`;
-    }
     syncComposer();
     document.querySelectorAll(".mentor-card .online, .ai-tutor-identity .online").forEach((node) => {
       const label = node.childNodes[node.childNodes.length - 1];
       if (label && label.nodeType === Node.TEXT_NODE) {
-        label.textContent = ready ? " AI 导师在线" : " 待配置密钥";
+        label.textContent = ready ? " 个人 AI" : " 公益 AI";
       }
       node.title = ready
-        ? `已启用本地密钥 · ${DEEPSEEK_MODEL_LABEL}`
-        : "右键烧瓶图标配置 DeepSeek API 密钥";
+        ? `个人密钥 · ${model.label}`
+        : "公益 AI · DeepSeek；右键烧瓶图标可配置个人密钥";
     });
+    syncApiKeyForm();
+  }
+
+  function syncApiKeyForm() {
+    const active = readStoredModel();
+    const model = personalModel(elements.apiKeyModelSelect?.value || active.id);
+    const saved = readStoredApiKey(model);
+    const ready = hasBrowserApiKey();
+    if (elements.apiKeyInputLabel) elements.apiKeyInputLabel.textContent = `${model.provider} API Key`;
     if (elements.apiKeyStatus) {
       elements.apiKeyStatus.textContent = ready
-        ? `已启用本地密钥 ${maskApiKey(key)} · ${DEEPSEEK_MODEL_LABEL}（${DEEPSEEK_MODEL} / ${DEEPSEEK_MODEL_VERSION}）`
-        : "尚未配置密钥";
+        ? `当前：${active.label} · 个人密钥${active.id !== model.id ? "；保存后切换" : ""}`
+        : "当前：公益 AI · DeepSeek";
       elements.apiKeyStatus.classList.toggle("is-ready", ready);
+      elements.apiKeyStatus.classList.remove("is-error");
     }
-    if (elements.apiKeyInput && document.activeElement !== elements.apiKeyInput) {
+    if (elements.apiKeyInput) {
       elements.apiKeyInput.value = "";
-      elements.apiKeyInput.placeholder = ready ? maskApiKey(key) : "sk-…";
+      elements.apiKeyInput.placeholder = saved ? `${maskApiKey(saved)}（留空沿用）` : `粘贴 ${model.provider} 密钥`;
+      elements.apiKeyInput.removeAttribute("aria-invalid");
+    }
+  }
+
+  function showApiKeyError(message) {
+    if (elements.apiKeyStatus) {
+      elements.apiKeyStatus.textContent = message;
+      elements.apiKeyStatus.classList.remove("is-ready");
+      elements.apiKeyStatus.classList.add("is-error");
     }
   }
 
@@ -649,6 +705,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     if (!elements.apiKeyModal) return;
     state.apiKeyReturnFocus = document.activeElement;
     hideSelectionAction();
+    if (elements.apiKeyModelSelect) elements.apiKeyModelSelect.value = readStoredModel().id;
     syncApiKeyUi();
     elements.apiKeyModal.classList.add("show");
     elements.apiKeyModal.setAttribute("aria-hidden", "false");
@@ -664,30 +721,39 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
   }
 
   function saveApiKeyFromModal() {
-    const next = String(elements.apiKeyInput?.value || "").trim();
+    const model = personalModel(elements.apiKeyModelSelect?.value);
+    const input = String(elements.apiKeyInput?.value || "").trim();
+    const next = input || readStoredApiKey(model);
     if (!next) {
-      notify("请先粘贴有效的 API 密钥");
+      showApiKeyError(`请填写 ${model.provider} 平台的 API Key`);
+      elements.apiKeyInput?.setAttribute("aria-invalid", "true");
       elements.apiKeyInput?.focus();
       return;
     }
-    if (!/^sk-[A-Za-z0-9._-]{10,}$/.test(next)) {
-      notify("密钥格式看起来不正确，请检查后重试");
+    if (input && !/^sk-[A-Za-z0-9._-]{10,}$/.test(input)) {
+      showApiKeyError("密钥格式不正确，请检查是否复制完整");
+      elements.apiKeyInput?.setAttribute("aria-invalid", "true");
+      elements.apiKeyInput?.focus();
       return;
     }
-    writeStoredApiKey(next);
+    if (!updatePersonalSettings([[model.keyStorage, next], [PERSONAL_MODEL_STORAGE, model.id]])) {
+      showApiKeyError("无法保存，请允许此网站使用浏览器存储后重试");
+      return;
+    }
     syncApiKeyUi();
     closeApiKeyModal();
-    notify("密钥已保存在本机，AI 导师已启用");
+    notify(`已保存，后续问答使用 ${model.label}`);
   }
 
   function clearApiKeyFromModal() {
-    writeStoredApiKey("");
-    syncApiKeyUi();
-    if (elements.apiKeyInput) {
-      elements.apiKeyInput.value = "";
-      elements.apiKeyInput.placeholder = "sk-…";
+    const entries = Object.values(PERSONAL_MODELS).map(model => [model.keyStorage, null]);
+    if (!updatePersonalSettings([...entries, [PERSONAL_MODEL_STORAGE, null]])) {
+      showApiKeyError("未能清除密钥，请检查浏览器存储设置后重试");
+      return;
     }
-    notify("已清除本机 API 密钥");
+    if (elements.apiKeyModelSelect) elements.apiKeyModelSelect.value = DEEPSEEK_MODEL;
+    syncApiKeyUi();
+    notify("已清除个人密钥，后续问答使用公益 AI · DeepSeek");
   }
 
   function extractJsonObject(rawText) {
@@ -1030,33 +1096,43 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     }
   }
 
-  async function callDeepSeek(messages, options = {}) {
-    const apiKey = readStoredApiKey();
+  async function callPersonalModel(messages, options = {}) {
+    // Snapshot model + key together, including retries, if settings change mid-request.
+    const { model, apiKey } = options.personalConfig || personalRequestConfig();
     if (!apiKey) throw new TutorRequestError("AI_NOT_CONFIGURED");
+    const isKimi = model.id === "kimi-k3.1-pro";
     if (state.controller) state.controller.abort();
     const controller = new AbortController();
     state.controller = controller;
-    const timeoutMs = options.timeoutMs || CHAT_TIMEOUT_MS;
-    const useStream = Boolean(options.stream);
+    const timeoutMs = Math.max(options.timeoutMs || CHAT_TIMEOUT_MS, isKimi ? GENERATE_TIMEOUT_MS : 0);
+    const useStream = isKimi || Boolean(options.stream);
+    // K3.1 Pro always reasons; temperature is fixed and its token budget includes reasoning.
+    // https://platform.kimi.com/docs/guide/kimi-k3-1-pro-quickstart
+    const modelOptions = isKimi ? {
+      reasoning_effort: options.thinking ? "high" : "low",
+      max_completion_tokens: Math.max(options.maxTokens || 2200, 8192)
+    } : {
+      thinking: { type: options.thinking ? "enabled" : "disabled" },
+      max_tokens: options.maxTokens || 2200,
+      ...(options.thinking ? { reasoning_effort: "high" } : { temperature: 0.2 })
+    };
     const timeoutId = window.setTimeout(() => controller.abort("timeout"), timeoutMs);
     state.timeoutId = timeoutId;
     try {
       let response;
       try {
-        response = await fetch(`${DEEPSEEK_BASE_URL}/chat/completions`, {
+        response = await fetch(`${model.baseUrl}/chat/completions`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${apiKey}`,
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            model: DEEPSEEK_MODEL,
+            model: model.id,
             messages,
-            thinking: { type: options.thinking ? "enabled" : "disabled" },
             response_format: { type: "json_object" },
-            max_tokens: options.maxTokens || 2200,
             stream: useStream,
-            ...(options.thinking ? { reasoning_effort: "high" } : { temperature: 0.2 })
+            ...modelOptions
           }),
           signal: controller.signal
         });
@@ -1140,7 +1216,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       onContent: request.responseLevel === "hint" ? null : (value) => updatePendingPreview(value)
     };
     try {
-      const raw = await callDeepSeek(messages, requestOptions);
+      const raw = await callPersonalModel(messages, requestOptions);
       const validated = withoutReasoning(softValidateChat(raw, request.responseLevel, request));
       if (validated) return validated;
       if (!options.thinking) {
@@ -1148,7 +1224,9 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
         if (fallback) return fallback;
       }
     } catch (error) {
-      if (error?.code === "ABORTED" || error?.code === "AI_TIMEOUT" || error?.code === "AI_AUTH_FAILED" || error?.code === "AI_RATE_LIMITED") {
+      // Transport/auth failures go straight to the public fallback. Only a malformed
+      // answer can use the existing same-model format recovery first.
+      if (error?.code !== "INVALID_AI_RESPONSE") {
         throw error;
       }
       if (!options.thinking) {
@@ -1160,11 +1238,14 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     if (options.thinking) {
       updatePendingReasoning("");
       const fallback = await completeTutorChat(messages, request, {
+        ...options,
         thinking: false,
         timeoutMs: 45000,
         maxTokens: 2200
       });
-      fallback.warnings.push("深度回答未完成，已改用快速模式重新生成；请核对完整步骤与结论。");
+      fallback.warnings.push(options.personalConfig?.model.id === "kimi-k3.1-pro"
+        ? "深度回答未完成，已降低推理强度重新生成；请核对完整步骤与结论。"
+        : "深度回答未完成，已改用快速模式重新生成；请核对完整步骤与结论。");
       return fallback;
     }
     throw new TutorRequestError("INVALID_AI_RESPONSE");
@@ -1197,12 +1278,15 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     }
   }
 
-  async function browserTutorChat(request) {
+  async function browserTutorChat(request, personalConfig) {
     const useThinking = request.responseLevel === "steps" || request.responseLevel === "check";
     const history = (request.history || []).map((item) => ({ role: item.role, content: item.content }));
+    // Saved history is rendered teaching text, not the provider's original assistant
+    // messages. Give Kimi that transcript as context instead of fabricating reasoning.
+    const transcriptHistory = personalConfig.model.id === "kimi-k3.1-pro";
     const messages = [
       { role: "system", content: CHAT_SYSTEM_PROMPT },
-      ...history,
+      ...(transcriptHistory ? [] : history),
       {
         role: "user",
         content: [
@@ -1212,27 +1296,30 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
           `structuredInput: ${JSON.stringify({
             responseLevel: request.responseLevel,
             subject: request.context?.subject || "",
-            context: request.context || {}
+            context: request.context || {},
+            ...(transcriptHistory ? { conversationHistory: history } : {})
           }, null, 0)}`,
           "只返回一个 JSON 对象，不要输出 Markdown 或解释文字。"
         ].join("\n")
       }
     ];
-    return checkedTutorChat(messages, request, {
+    const payload = await checkedTutorChat(messages, request, {
+      personalConfig,
       thinking: useThinking,
       timeoutMs: useThinking ? CHAT_TIMEOUT_MS : 45000,
       maxTokens: useThinking ? 16000 : 2200
     });
+    return { ...payload, source: personalConfig.model.source, model: personalConfig.model.id };
   }
 
-  async function browserGenerate(question, preferredSubject = "") {
-    const raw = await callDeepSeek([
+  async function browserGenerate(question, preferredSubject, personalConfig) {
+    const raw = await callPersonalModel([
       { role: "system", content: GENERATE_SYSTEM_PROMPT },
       { role: "user", content: JSON.stringify({ question, preferredSubject }, null, 0) }
-    ], { thinking: false, timeoutMs: GENERATE_TIMEOUT_MS, maxTokens: 1800 });
+    ], { personalConfig, thinking: false, timeoutMs: GENERATE_TIMEOUT_MS, maxTokens: 1800 });
     const validated = softValidateGenerate(raw);
     if (!validated) throw new TutorRequestError("INVALID_AI_RESPONSE");
-    return validated;
+    return { ...validated, source: personalConfig.model.source, model: personalConfig.model.id };
   }
 
   function selectResponseLevel(message) {
@@ -1309,8 +1396,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
   function syncComposer() {
     const message = composerMessage();
     const level = selectResponseLevel(message);
-    const used = composeQuotedMessage(message, state.quotes).length +
-      (hasBrowserApiKey() ? 0 : gatewayAnswerRules(level).length);
+    const used = composeQuotedMessage(message, state.quotes).length + gatewayAnswerRules(level).length;
     const remaining = 2000 - used;
     const busy = elements.workspace.classList.contains("is-busy");
     elements.send.disabled = busy || !message || remaining < 0;
@@ -1427,33 +1513,28 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     }
     const range = selection.getRangeAt(0);
     const start = range.startContainer.nodeType === Node.ELEMENT_NODE ? range.startContainer : range.startContainer.parentElement;
-    const tutorRoot = start?.closest(".ai-message:not(.error):not(.ai-thinking-row) .ai-message-bubble, #aiTutorContext");
-    const external = !tutorRoot;
-    const root = tutorRoot || start?.closest(EXTERNAL_QUOTE_SELECTOR);
+    // 引用追问只在 AI 问答界面内可用：对话气泡和“当前题目”。实验页的题目、步骤、公式、结果等文字默认不可选中，也不会触发引用。
+    const root = start?.closest(".ai-message:not(.error):not(.ai-thinking-row) .ai-message-bubble, #aiTutorContext");
     const blocked = start?.closest("button, input, textarea, .ai-message-context, .ai-reasoning-block, .ai-suggested-questions");
     if (!root || !root.contains(range.endContainer) || (blocked && blocked !== root) ||
-      (!external && (!state.open || !elements.workspace.contains(root))) ||
-      (external && (state.route || currentHostContext().mode !== "experiment"))) {
+      !state.open || !elements.workspace.contains(root)) {
       hideSelectionAction();
       return;
     }
-    const sentQuote = !external ? start?.closest(".ai-sent-quote") : null;
+    const sentQuote = start?.closest(".ai-sent-quote");
     const quoteOrigin = sentQuote?.contains(range.endContainer) ? sentQuote._quote : null;
     const selected = selectedPlainText(range, root);
     if (!selected) { hideSelectionAction(); return; }
     const rect = range.getBoundingClientRect();
     const bounds = root.getBoundingClientRect();
-    const scrollBounds = external || root.id === "aiTutorContext" ? bounds : elements.messages.getBoundingClientRect();
+    const scrollBounds = root.id === "aiTutorContext" ? bounds : elements.messages.getBoundingClientRect();
     if (!rect.width || rect.bottom < scrollBounds.top || rect.top > scrollBounds.bottom) { hideSelectionAction(); return; }
     const source = quoteOrigin ? quoteOrigin.source :
-      external ? (root.matches(".reason-step") ? `实验步骤 · 第 ${root.dataset.step} 步` :
-      root.matches(".formula-spotlight") ? "实验公式" : root.id === "problemText" ? "实验题目" :
-      root.id === "sceneTip" ? "实验结果" : root.id === "mentorMessage" ? "实验提示" : "实验数据") :
       root.id === "aiTutorContext" ? "当前题目" : root.closest(".ai-message.user") ? "我的提问" : "AI 回答";
-    const messageRow = external ? null : root.closest(".ai-message");
-    state.selection = { text: selected, source, external,
+    const messageRow = root.closest(".ai-message");
+    state.selection = { text: selected, source,
       origin: quoteOrigin ? quoteOrigin.origin : messageRow?.dataset.messageId,
-      context: contextSnapshot(quoteOrigin?.context || (external ? currentHostContext() : messageRow?._tutorContext || state.context)) };
+      context: contextSnapshot(quoteOrigin?.context || messageRow?._tutorContext || state.context) };
     const button = elements.quoteSelection;
     button.hidden = false;
     const viewport = viewportBounds();
@@ -1466,11 +1547,6 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     const quote = state.selection;
     if (!quote) return;
     if (quote.text.length > MAX_QUOTE_LENGTH) { notify(`单段引用最多 ${MAX_QUOTE_LENGTH} 字，请缩小选区`); return; }
-    if (quote.external) {
-      state.followHost = true;
-      adoptContext(quote.context);
-      if (!state.open) { state.floating = true; updateRoute(); openWorkspace(false); }
-    }
     if (state.quotes.length >= MAX_QUOTES) { notify(`一次最多引用 ${MAX_QUOTES} 段，可先移除不需要的引用`); return; }
     if (!state.quotes.some(item => item.text === quote.text && item.source === quote.source && contextScope(item.context) === contextScope(quote.context))) {
       state.quotes.push({ text: quote.text, source: quote.source, context: quote.context,
@@ -1487,7 +1563,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     if (draft.includes(question)) { elements.input.focus({ preventScroll: true }); return; }
     const next = draft ? `${draft}\n${question}` : question;
     const used = composeQuotedMessage(next, state.quotes).length +
-      (hasBrowserApiKey() ? 0 : gatewayAnswerRules(selectResponseLevel(next)).length);
+      gatewayAnswerRules(selectResponseLevel(next)).length;
     if (used > 2000) { notify("草稿和引用已接近长度上限，请先精简后再添加追问"); return; }
     elements.input.value = next;
     syncComposer();
@@ -1515,11 +1591,11 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       parameterPatch: raw.parameterPatch || null };
   }
 
-  async function apiRequest(path, body, timeoutMs) {
-    if (hasBrowserApiKey()) {
-      if (path === "/api/v1/tutor/chat") return browserTutorChat(body);
+  async function apiRequest(path, body, timeoutMs, personalConfig) {
+    if (personalConfig.apiKey) {
+      if (path === "/api/v1/tutor/chat") return browserTutorChat(body, personalConfig);
       if (path === "/api/v1/experiment/generate") {
-        return browserGenerate(body.question, body.preferredSubject || "");
+        return browserGenerate(body.question, body.preferredSubject || "", personalConfig);
       }
     }
     if (path === "/api/v1/tutor/chat") body = gatewayChatRequest(body);
@@ -1541,7 +1617,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
         if (controller.signal.aborted) {
           throw new TutorRequestError(controller.signal.reason === "timeout" ? "AI_TIMEOUT" : "ABORTED");
         }
-        throw new TutorRequestError(hasBrowserApiKey() ? "NETWORK_ERROR" : "GATEWAY_UNREACHABLE");
+        throw new TutorRequestError("GATEWAY_UNREACHABLE");
       }
       let payload = {};
       try {
@@ -2769,16 +2845,62 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     }).finally(() => { if (state.controller === controller) state.controller = null; });
   }
 
-  // The public service answers two questions at a time and rejects the rest with
-  // AI_BUSY. Wait and resubmit a few times instead of showing an error at once.
+  function personalFallbackNotice(error, model) {
+    const reason = {
+      AI_AUTH_FAILED: "密钥无效或无模型权限",
+      AI_RATE_LIMITED: "请求受限",
+      RATE_LIMITED: "请求受限",
+      AI_TIMEOUT: "请求超时",
+      NETWORK_ERROR: "连接失败",
+      INVALID_AI_RESPONSE: "返回内容无法使用",
+      ANSWER_CHECK_FAILED: "回答未通过核对"
+    }[error?.code] || "请求失败";
+    return `个人 ${model.label} ${reason}，已自动转用公益 AI（DeepSeek）。`;
+  }
+
+  // Keep credentials fixed within the personal attempt; fail over only once to
+  // the public gateway, without sending it the personal key or changing settings.
+  // Public AI_BUSY responses retain the existing bounded, cancellable queue.
   async function requestWithQueue(path, body, timeoutMs, onQueue) {
-    for (let attempt = 0; ; attempt += 1) {
+    let route = personalRequestConfig();
+    const requestSerial = state.requestSerial;
+    let fallbackNotice = "";
+    let attempt = 0;
+    for (;;) {
       try {
-        return await apiRequest(path, body, timeoutMs);
+        if (requestSerial !== state.requestSerial) throw new TutorRequestError("ABORTED");
+        const payload = await apiRequest(path, body, timeoutMs, route);
+        if (!fallbackNotice) return payload;
+        const notice = payload.source === "local_fallback"
+          ? `${fallbackNotice} 公益 AI 未能完成请求，当前仅提供本地提示。`
+          : fallbackNotice;
+        return { ...payload, personalFallbackNotice: notice,
+          warnings: [notice, ...(Array.isArray(payload.warnings) ? payload.warnings : [])] };
       } catch (error) {
-        if (error?.code !== "AI_BUSY" || attempt >= BUSY_RETRY_DELAYS_MS.length) throw error;
+        // A user stop, session change or replaced request must never start another AI call.
+        if (error?.code === "ABORTED" || error?.name === "AbortError" || requestSerial !== state.requestSerial) {
+          throw new TutorRequestError("ABORTED");
+        }
+        if (route.apiKey) {
+          fallbackNotice = personalFallbackNotice(error, route.model);
+          route = { model: personalModel(DEEPSEEK_MODEL), apiKey: "" };
+          clearPendingPreview();
+          updatePendingReasoning("");
+          notify(fallbackNotice);
+          if (path === "/api/v1/tutor/chat") {
+            setPendingStage(fallbackNotice);
+            elements.status.textContent = "已自动转用公益 AI · DeepSeek";
+          } else {
+            host().setMentorSummary?.(fallbackNotice);
+          }
+          continue;
+        }
+        if (error?.code !== "AI_BUSY" || attempt >= BUSY_RETRY_DELAYS_MS.length) {
+          if (fallbackNotice && error instanceof Error) error.personalFallbackNotice = fallbackNotice;
+          throw error;
+        }
         onQueue?.(attempt + 1);
-        await waitForQueue(BUSY_RETRY_DELAYS_MS[attempt]);
+        await waitForQueue(BUSY_RETRY_DELAYS_MS[attempt++]);
       }
     }
   }
@@ -2895,7 +3017,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     }
     const quotes = (replay ? replay.quotes || [] : options.quotes || []).map(quote => ({ ...quote }));
     const content = replay ? replay.request.message : composeQuotedMessage(question, quotes);
-    if (content.length + (hasBrowserApiKey() ? 0 : gatewayAnswerRules(responseLevel).length) > 2000) {
+    if (content.length + gatewayAnswerRules(responseLevel).length > 2000) {
       notify("问题和引用内容过长，请先精简；草稿已保留");
       return null;
     }
@@ -2922,7 +3044,9 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     }
     // Validate the entire request before consuming the user's draft.
     try {
-      if (!hasBrowserApiKey()) gatewayChatRequest(request);
+      // Reserve the public gateway's prompt/size budget before consuming a draft,
+      // so personal failures can switch without truncating the user's question.
+      gatewayChatRequest(request);
     } catch (error) {
       notify(errorMessage(error));
       return null;
@@ -3081,7 +3205,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       if (response.mode === "experiment") {
         const mapped = planToQuestion(response.plan, cleanQuestion);
         if (mapped && (typeof acceptPlan !== "function" || acceptPlan(mapped, response) !== false)) {
-          host().setMentorSummary?.(`AI 已识别为“${response.title || "已有实验模板"}”，将由本地计算引擎生成。`);
+          host().setMentorSummary?.(`${response.personalFallbackNotice || ""}AI 已识别为“${response.title || "已有实验模板"}”，将由本地计算引擎生成。`);
           return { mode: "experiment", ...mapped, response };
         }
       }
@@ -3287,13 +3411,14 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     });
   });
   elements.apiKeySave?.addEventListener("click", saveApiKeyFromModal);
+  elements.apiKeyModelSelect?.addEventListener("change", syncApiKeyForm);
   elements.apiKeyClear?.addEventListener("click", clearApiKeyFromModal);
   elements.apiKeyClose?.addEventListener("click", closeApiKeyModal);
   elements.apiKeyModal?.addEventListener("click", (event) => {
     if (event.target === elements.apiKeyModal) closeApiKeyModal();
   });
   elements.apiKeyInput?.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !event.isComposing) {
       event.preventDefault();
       saveApiKeyFromModal();
     }
@@ -3305,7 +3430,16 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && elements.apiKeyModal?.classList.contains("show")) {
+      event.preventDefault();
       closeApiKeyModal();
+      return;
+    }
+    if (event.key === "Tab" && elements.apiKeyModal?.classList.contains("show")) {
+      const controls = [...elements.apiKeyModal.querySelectorAll("button:not(:disabled), input, select")];
+      const first = controls[0];
+      const last = controls.at(-1);
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
       return;
     }
     if (elements.apiKeyModal?.classList.contains("show") || document.querySelector("#questionConditionsDialog[open]")) return;
@@ -3367,7 +3501,8 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
       return { mode: tutorial ? "explanation" : "unavailable", tutorial };
     },
     get sceneServiceConfig() {
-      return { gatewayBase: API_BASE_URL, browserBase: DEEPSEEK_BASE_URL, model: window.MasterLabInstantScene?.DEFAULT_MODEL || DEEPSEEK_MODEL };
+      const model = readStoredModel();
+      return { gatewayBase: API_BASE_URL, browserBase: model.baseUrl, model: model.id };
     },
     askQuickAction,
     openInline() {
@@ -3381,7 +3516,7 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     resolveUnmatchedQuestion,
     openApiKeySettings: openApiKeyModal,
     get apiBaseUrl() {
-      return hasBrowserApiKey() ? DEEPSEEK_BASE_URL : API_BASE_URL;
+      return hasBrowserApiKey() ? readStoredModel().baseUrl : API_BASE_URL;
     },
     get hasLocalApiKey() {
       return hasBrowserApiKey();
