@@ -64,7 +64,7 @@ try{
   if(ids.length===2&&order!=='single')assert.deepEqual(registry,order==='junior'?['photosynthesis','leafDisks']:['leafDisks','photosynthesis']);
   await p.locator('.grade-switch:visible [data-grade="'+grade+'"]').first().click();
   let rows=fixtures.filter(row=>row.scope==='shared'||ids.includes(row.templateId));
-  if(repro)rows=rows.filter(row=>['mirror-control','mirror-light','mirror-zone','general-photosynthesis','general-light'].includes(row.id));
+  if(repro)rows=rows.filter(row=>(process.env.ROUTING_CASE_IDS?process.env.ROUTING_CASE_IDS.split(','):['mirror-control','mirror-light','mirror-zone','general-photosynthesis','general-light']).includes(row.id));
   else if(noTutor||order==='senior'||grade==='junior')rows=rows.filter(row=>['mirror-control','mirror-light','mirror-zone','general-photosynthesis','general-light','math-control','chemistry-control','biology-control'].includes(row.id)||row.id.endsWith('-without-book')||row.id.endsWith('-unsupported-extra'));
   for(const row of rows){
    const subject=row.subject||(row.scope==='shared'?'物理':grade==='junior'?'化学':'数学');await seed(p,subject);const start=await snapshot(p),requestIndex=requests.length;
@@ -72,7 +72,7 @@ try{
    try{
     await p.locator('#questionInput').fill(row.question);await p.locator('#generateButton').click();
     await p.waitForFunction(()=>!experimentConditionsPending&&!aiHandoffPending&&!document.querySelector('#generateButton').classList.contains('loading')&&!document.querySelector('#generationOverlay').classList.contains('show'));
-    if(row.expected==='local')await p.waitForFunction(q=>state.generatedQuestion===q,row.question);
+    if(row.expected==='local')await p.waitForFunction(q=>state.generatedQuestion===q||Boolean(document.querySelector('#parseFeedback.error.show')),row.question);
     await p.waitForTimeout(120); // Existing delayed focus must finish before a subsequent action.
     // The click itself is awaited; transient generation must have settled before observing.
     const actual=await snapshot(p),sent=requests.slice(requestIndex);observation.actual=actual;observation.requests=sent;

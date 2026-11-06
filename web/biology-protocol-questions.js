@@ -72,5 +72,17 @@
   }
   // All alternatives are authored vocabulary/word-order slots, not student expressions.
   const rule = (name, source, optional = false) => Object.freeze({name,re:new RegExp('^(?:'+source+')','u'),optional});
-  window.MasterLabProtocolQuestions = Object.freeze({ sourceView, parse, rule });
+  function routingSource(value) {
+    let text=String(value).normalize('NFKC').trim();
+    // A whole quoted question is still a candidate for local validation. Embedded labels
+    // are literal background, not instructions. This view never changes parser input.
+    const pairs=[['“','”'],['「','」'],['『','』'],['"','"'],["'","'"]];
+    const request=text.match(/^(?:请)?(?:生成|演示|回答|解释|说明)(?:以下|下面)?(?:实验|题目)?[:：,，]?/u);
+    const target=request?text.slice(request[0].length).trim():text;
+    const pair=pairs.find(([a,b])=>target.startsWith(a)&&target.endsWith(b));
+    if(pair)text=target.slice(pair[0].length,-pair[1].length);
+    return text.replace(/“[^”]*”|「[^」]*」|『[^』]*』|"[^"\n]*"|'[^'\n]*'/gu,' ')
+      .replace(/\r\n?|\n/gu,'；').replace(/\s+/gu,'');
+  }
+  window.MasterLabProtocolQuestions = Object.freeze({ sourceView, parse, rule, routingSource });
 })();
