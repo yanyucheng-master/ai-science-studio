@@ -40,6 +40,13 @@
     };
     return { source, text, excerpt };
   }
+  function matchCondition(rest, rules) {
+    for (let index=0;index<rules.length;index++) {
+      const r=rules[index],m=rest.match(r.re);
+      if(m)return {r,index,m};
+    }
+    return null;
+  }
   function parse(value, { rules, askRules, askNames, defaults }) {
     if (typeof value !== 'string' || !value.trim()) return {ok:false,message:'请输入实验条件和所问。'};
     const view = sourceView(value), seen = new Set(), asks = new Set();
@@ -60,7 +67,7 @@
         continue;
       }
       if (marker) return fail('无法确认所问：'+fragment()+'。支持'+Object.values(askNames).join('、')+'。');
-      const found = rules.map((r,index)=>({r,index,m:rest.match(r.re)})).find(x=>x.m);
+      const found = matchCondition(rest, rules);
       if (!found) return fail('无法确认条件或子问：'+fragment()+'。请核对操作、数值角色与所问；不会自动补条件。');
       if (seen.has(found.index)) return fail('条件重复或可能矛盾：'+found.r.name+'；原文'+fragment()+'。');
       seen.add(found.index); pos += found.m[0].length; askMode = false;
@@ -71,7 +78,7 @@
     return {ok:true,p1:1,p2:1,fixed:{...defaults,asks:[...asks].sort().join(',')}};
   }
   // All alternatives are authored vocabulary/word-order slots, not student expressions.
-  const rule = (name, source, optional = false) => Object.freeze({name,re:new RegExp('^(?:'+source+')','u'),optional});
+  const rule = (name, source, optional = false, routingRole = 'condition') => Object.freeze({name,re:new RegExp('^(?:'+source+')','u'),optional,routingRole});
   function routingSource(value) {
     let text=String(value).normalize('NFKC').trim();
     // A whole quoted question is still a candidate for local validation. Embedded labels
@@ -81,8 +88,28 @@
     const target=request?text.slice(request[0].length).trim():text;
     const pair=pairs.find(([a,b])=>target.startsWith(a)&&target.endsWith(b));
     if(pair)text=target.slice(pair[0].length,-pair[1].length);
-    return text.replace(/“[^”]*”|「[^」]*」|『[^』]*』|"[^"\n]*"|'[^'\n]*'/gu,' ')
-      .replace(/\r\n?|\n/gu,'；').replace(/\s+/gu,'');
+    // Keep separators and numeric whitespace. sourceView, shared with parse(), decides
+    // which gaps are equivalent. An opaque marker prevents joining across quoted labels.
+    return text.replace(/“[^”]*”|「[^」]*」|『[^』]*』|"[^"\n]*"|'[^'\n]*'/gu,'\uFFFC');
   }
-  window.MasterLabProtocolQuestions = Object.freeze({ sourceView, parse, rule, routingSource });
+  function assess(value, config) {
+    const parsed=parse(value,config),text=sourceView(routingSource(value)).text;
+    const conditions=[],seen=new Set(),asks=new Set();
+    for(let pos=0;pos<text.length;) {
+      const rest=text.slice(pos),found=matchCondition(rest,config.rules);
+      if(found) {
+        if(!seen.has(found.index))conditions.push({name:found.r.name,role:found.r.routingRole,canonicalOffset:pos});
+        seen.add(found.index);pos+=found.m[0].length;continue;
+      }
+      const ask=Object.entries(config.askRules).map(([key,re])=>({key,m:rest.match(re)})).find(x=>x.m);
+      if(ask){asks.add(ask.key);pos+=ask.m[0].length;continue;}
+      pos+=text.codePointAt(pos)>0xFFFF?2:1;
+    }
+    const has=role=>conditions.some(x=>x.role===role),procedures=conditions.filter(x=>x.role==='procedure').length;
+    const confirmed=has('objective')&&(has('book')||has('material')||procedures>0)||procedures>=2;
+    const uncertain=procedures>0||(has('objective')||has('material'))&&asks.size>0;
+    const ownership=parsed.ok?'complete':confirmed?'confirmed':uncertain?'uncertain':'none';
+    return {candidate:ownership!=='none',ownership,parsed,evidence:{conditions,asks:[...asks],procedureCount:procedures}};
+  }
+  window.MasterLabProtocolQuestions = Object.freeze({ sourceView, parse, rule, routingSource, assess });
 })();

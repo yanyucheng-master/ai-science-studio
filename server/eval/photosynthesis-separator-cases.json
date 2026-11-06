@@ -1,0 +1,779 @@
+{
+  "policy": "Literal fixed textbook clauses with separator/order metamorphoses; expected acceptance/refusal set before implementation. No external blind author claimed.",
+  "families": {
+    "junior": {
+      "id": "photosynthesis",
+      "clauses": [
+        "按人教版生物学七年级下册教材",
+        "探究绿叶在光下制造有机物",
+        "盆栽天竺葵先暗处理一昼夜",
+        "同一叶片用黑纸片从上下两面局部遮光",
+        "放在阳光下几小时后摘叶并移去黑纸片",
+        "酒精水浴脱色",
+        "清水漂洗后置于培养皿滴加碘液",
+        "稍停片刻用清水冲掉碘液再观察"
+      ],
+      "asks": "说明实验结论、实验现象、操作目的、实验步骤",
+      "missing": 2,
+      "wrong": 5,
+      "replacement": "酒精直接加热脱色",
+      "conflict": "盆栽天竺葵先暗处理两小时",
+      "requiredMissing": "盆栽天竺葵暗处理一昼夜"
+    },
+    "senior": {
+      "id": "leafDisks",
+      "clauses": [
+        "按人教版高中生物学必修1教材",
+        "探究光照强度对光合作用强度的影响",
+        "取生长旺盛的菠菜绿叶",
+        "用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片",
+        "注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底",
+        "处理后的叶片在黑暗处清水中待用",
+        "三只小烧杯加入富含CO2的清水",
+        "每杯放入10片叶圆片",
+        "以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照",
+        "其他条件相同且适宜",
+        "观察并记录同一时间段内各组叶片浮起数量",
+        "未提供实际观察数据"
+      ],
+      "asks": "说明观察指标、结果分析边界、操作目的、实验步骤、实验变量",
+      "missing": 6,
+      "wrong": 4,
+      "replacement": "注射器先堵住前孔再吸入清水并排尽残留空气使叶片沉底",
+      "conflict": "每杯放入11片叶圆片",
+      "requiredMissing": "三只烧杯富CO2清水"
+    }
+  },
+  "cases": [
+    {
+      "id": "junior-comma-complete",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "comma",
+      "mutation": "complete",
+      "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": true
+    },
+    {
+      "id": "junior-comma-missing",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "comma",
+      "mutation": "missing",
+      "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": false,
+      "requiredMissing": "盆栽天竺葵暗处理一昼夜"
+    },
+    {
+      "id": "junior-comma-conflict",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "comma",
+      "mutation": "conflict",
+      "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，盆栽天竺葵先暗处理两小时，说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": false
+    },
+    {
+      "id": "junior-comma-wrong",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "comma",
+      "mutation": "wrong",
+      "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精直接加热脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": false
+    },
+    {
+      "id": "junior-comma-extra",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "comma",
+      "mutation": "extra",
+      "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验结论、实验现象、操作目的、实验步骤，求总产氧量。",
+      "expected": false
+    },
+    {
+      "id": "junior-comma-no-ask",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "comma",
+      "mutation": "no-ask",
+      "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察。",
+      "expected": false
+    },
+    {
+      "id": "junior-comma-ask-first",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "comma",
+      "mutation": "ask-first",
+      "question": "说明实验结论、实验现象、操作目的、实验步骤，按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察。",
+      "expected": true
+    },
+    {
+      "id": "junior-comma-reordered",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "comma",
+      "mutation": "reordered",
+      "question": "盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": true
+    },
+    {
+      "id": "junior-space-complete",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "space",
+      "mutation": "complete",
+      "question": "按人教版生物学七年级下册教材 探究绿叶在光下制造有机物 盆栽天竺葵先暗处理一昼夜 同一叶片用黑纸片从上下两面局部遮光 放在阳光下几小时后摘叶并移去黑纸片 酒精水浴脱色 清水漂洗后置于培养皿滴加碘液 稍停片刻用清水冲掉碘液再观察 说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": true
+    },
+    {
+      "id": "junior-space-missing",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "space",
+      "mutation": "missing",
+      "question": "按人教版生物学七年级下册教材 探究绿叶在光下制造有机物 同一叶片用黑纸片从上下两面局部遮光 放在阳光下几小时后摘叶并移去黑纸片 酒精水浴脱色 清水漂洗后置于培养皿滴加碘液 稍停片刻用清水冲掉碘液再观察 说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": false,
+      "requiredMissing": "盆栽天竺葵暗处理一昼夜"
+    },
+    {
+      "id": "junior-space-conflict",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "space",
+      "mutation": "conflict",
+      "question": "按人教版生物学七年级下册教材 探究绿叶在光下制造有机物 盆栽天竺葵先暗处理一昼夜 同一叶片用黑纸片从上下两面局部遮光 放在阳光下几小时后摘叶并移去黑纸片 酒精水浴脱色 清水漂洗后置于培养皿滴加碘液 稍停片刻用清水冲掉碘液再观察 盆栽天竺葵先暗处理两小时 说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": false
+    },
+    {
+      "id": "junior-space-wrong",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "space",
+      "mutation": "wrong",
+      "question": "按人教版生物学七年级下册教材 探究绿叶在光下制造有机物 盆栽天竺葵先暗处理一昼夜 同一叶片用黑纸片从上下两面局部遮光 放在阳光下几小时后摘叶并移去黑纸片 酒精直接加热脱色 清水漂洗后置于培养皿滴加碘液 稍停片刻用清水冲掉碘液再观察 说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": false
+    },
+    {
+      "id": "junior-space-extra",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "space",
+      "mutation": "extra",
+      "question": "按人教版生物学七年级下册教材 探究绿叶在光下制造有机物 盆栽天竺葵先暗处理一昼夜 同一叶片用黑纸片从上下两面局部遮光 放在阳光下几小时后摘叶并移去黑纸片 酒精水浴脱色 清水漂洗后置于培养皿滴加碘液 稍停片刻用清水冲掉碘液再观察 说明实验结论、实验现象、操作目的、实验步骤 求总产氧量。",
+      "expected": false
+    },
+    {
+      "id": "junior-space-no-ask",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "space",
+      "mutation": "no-ask",
+      "question": "按人教版生物学七年级下册教材 探究绿叶在光下制造有机物 盆栽天竺葵先暗处理一昼夜 同一叶片用黑纸片从上下两面局部遮光 放在阳光下几小时后摘叶并移去黑纸片 酒精水浴脱色 清水漂洗后置于培养皿滴加碘液 稍停片刻用清水冲掉碘液再观察。",
+      "expected": false
+    },
+    {
+      "id": "junior-space-ask-first",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "space",
+      "mutation": "ask-first",
+      "question": "说明实验结论、实验现象、操作目的、实验步骤 按人教版生物学七年级下册教材 探究绿叶在光下制造有机物 盆栽天竺葵先暗处理一昼夜 同一叶片用黑纸片从上下两面局部遮光 放在阳光下几小时后摘叶并移去黑纸片 酒精水浴脱色 清水漂洗后置于培养皿滴加碘液 稍停片刻用清水冲掉碘液再观察。",
+      "expected": true
+    },
+    {
+      "id": "junior-space-reordered",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "space",
+      "mutation": "reordered",
+      "question": "盆栽天竺葵先暗处理一昼夜 同一叶片用黑纸片从上下两面局部遮光 放在阳光下几小时后摘叶并移去黑纸片 酒精水浴脱色 清水漂洗后置于培养皿滴加碘液 稍停片刻用清水冲掉碘液再观察 按人教版生物学七年级下册教材 探究绿叶在光下制造有机物 说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": true
+    },
+    {
+      "id": "junior-dun-complete",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "dun",
+      "mutation": "complete",
+      "question": "按人教版生物学七年级下册教材、探究绿叶在光下制造有机物、盆栽天竺葵先暗处理一昼夜、同一叶片用黑纸片从上下两面局部遮光、放在阳光下几小时后摘叶并移去黑纸片、酒精水浴脱色、清水漂洗后置于培养皿滴加碘液、稍停片刻用清水冲掉碘液再观察、说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": true
+    },
+    {
+      "id": "junior-dun-missing",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "dun",
+      "mutation": "missing",
+      "question": "按人教版生物学七年级下册教材、探究绿叶在光下制造有机物、同一叶片用黑纸片从上下两面局部遮光、放在阳光下几小时后摘叶并移去黑纸片、酒精水浴脱色、清水漂洗后置于培养皿滴加碘液、稍停片刻用清水冲掉碘液再观察、说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": false,
+      "requiredMissing": "盆栽天竺葵暗处理一昼夜"
+    },
+    {
+      "id": "junior-dun-conflict",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "dun",
+      "mutation": "conflict",
+      "question": "按人教版生物学七年级下册教材、探究绿叶在光下制造有机物、盆栽天竺葵先暗处理一昼夜、同一叶片用黑纸片从上下两面局部遮光、放在阳光下几小时后摘叶并移去黑纸片、酒精水浴脱色、清水漂洗后置于培养皿滴加碘液、稍停片刻用清水冲掉碘液再观察、盆栽天竺葵先暗处理两小时、说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": false
+    },
+    {
+      "id": "junior-dun-wrong",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "dun",
+      "mutation": "wrong",
+      "question": "按人教版生物学七年级下册教材、探究绿叶在光下制造有机物、盆栽天竺葵先暗处理一昼夜、同一叶片用黑纸片从上下两面局部遮光、放在阳光下几小时后摘叶并移去黑纸片、酒精直接加热脱色、清水漂洗后置于培养皿滴加碘液、稍停片刻用清水冲掉碘液再观察、说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": false
+    },
+    {
+      "id": "junior-dun-extra",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "dun",
+      "mutation": "extra",
+      "question": "按人教版生物学七年级下册教材、探究绿叶在光下制造有机物、盆栽天竺葵先暗处理一昼夜、同一叶片用黑纸片从上下两面局部遮光、放在阳光下几小时后摘叶并移去黑纸片、酒精水浴脱色、清水漂洗后置于培养皿滴加碘液、稍停片刻用清水冲掉碘液再观察、说明实验结论、实验现象、操作目的、实验步骤、求总产氧量。",
+      "expected": false
+    },
+    {
+      "id": "junior-dun-no-ask",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "dun",
+      "mutation": "no-ask",
+      "question": "按人教版生物学七年级下册教材、探究绿叶在光下制造有机物、盆栽天竺葵先暗处理一昼夜、同一叶片用黑纸片从上下两面局部遮光、放在阳光下几小时后摘叶并移去黑纸片、酒精水浴脱色、清水漂洗后置于培养皿滴加碘液、稍停片刻用清水冲掉碘液再观察。",
+      "expected": false
+    },
+    {
+      "id": "junior-dun-ask-first",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "dun",
+      "mutation": "ask-first",
+      "question": "说明实验结论、实验现象、操作目的、实验步骤、按人教版生物学七年级下册教材、探究绿叶在光下制造有机物、盆栽天竺葵先暗处理一昼夜、同一叶片用黑纸片从上下两面局部遮光、放在阳光下几小时后摘叶并移去黑纸片、酒精水浴脱色、清水漂洗后置于培养皿滴加碘液、稍停片刻用清水冲掉碘液再观察。",
+      "expected": true
+    },
+    {
+      "id": "junior-dun-reordered",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "dun",
+      "mutation": "reordered",
+      "question": "盆栽天竺葵先暗处理一昼夜、同一叶片用黑纸片从上下两面局部遮光、放在阳光下几小时后摘叶并移去黑纸片、酒精水浴脱色、清水漂洗后置于培养皿滴加碘液、稍停片刻用清水冲掉碘液再观察、按人教版生物学七年级下册教材、探究绿叶在光下制造有机物、说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": true
+    },
+    {
+      "id": "junior-none-complete",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "none",
+      "mutation": "complete",
+      "question": "按人教版生物学七年级下册教材探究绿叶在光下制造有机物盆栽天竺葵先暗处理一昼夜同一叶片用黑纸片从上下两面局部遮光放在阳光下几小时后摘叶并移去黑纸片酒精水浴脱色清水漂洗后置于培养皿滴加碘液稍停片刻用清水冲掉碘液再观察说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": true
+    },
+    {
+      "id": "junior-none-missing",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "none",
+      "mutation": "missing",
+      "question": "按人教版生物学七年级下册教材探究绿叶在光下制造有机物同一叶片用黑纸片从上下两面局部遮光放在阳光下几小时后摘叶并移去黑纸片酒精水浴脱色清水漂洗后置于培养皿滴加碘液稍停片刻用清水冲掉碘液再观察说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": false,
+      "requiredMissing": "盆栽天竺葵暗处理一昼夜"
+    },
+    {
+      "id": "junior-none-conflict",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "none",
+      "mutation": "conflict",
+      "question": "按人教版生物学七年级下册教材探究绿叶在光下制造有机物盆栽天竺葵先暗处理一昼夜同一叶片用黑纸片从上下两面局部遮光放在阳光下几小时后摘叶并移去黑纸片酒精水浴脱色清水漂洗后置于培养皿滴加碘液稍停片刻用清水冲掉碘液再观察盆栽天竺葵先暗处理两小时说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": false
+    },
+    {
+      "id": "junior-none-wrong",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "none",
+      "mutation": "wrong",
+      "question": "按人教版生物学七年级下册教材探究绿叶在光下制造有机物盆栽天竺葵先暗处理一昼夜同一叶片用黑纸片从上下两面局部遮光放在阳光下几小时后摘叶并移去黑纸片酒精直接加热脱色清水漂洗后置于培养皿滴加碘液稍停片刻用清水冲掉碘液再观察说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": false
+    },
+    {
+      "id": "junior-none-extra",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "none",
+      "mutation": "extra",
+      "question": "按人教版生物学七年级下册教材探究绿叶在光下制造有机物盆栽天竺葵先暗处理一昼夜同一叶片用黑纸片从上下两面局部遮光放在阳光下几小时后摘叶并移去黑纸片酒精水浴脱色清水漂洗后置于培养皿滴加碘液稍停片刻用清水冲掉碘液再观察说明实验结论、实验现象、操作目的、实验步骤求总产氧量。",
+      "expected": false
+    },
+    {
+      "id": "junior-none-no-ask",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "none",
+      "mutation": "no-ask",
+      "question": "按人教版生物学七年级下册教材探究绿叶在光下制造有机物盆栽天竺葵先暗处理一昼夜同一叶片用黑纸片从上下两面局部遮光放在阳光下几小时后摘叶并移去黑纸片酒精水浴脱色清水漂洗后置于培养皿滴加碘液稍停片刻用清水冲掉碘液再观察。",
+      "expected": false
+    },
+    {
+      "id": "junior-none-ask-first",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "none",
+      "mutation": "ask-first",
+      "question": "说明实验结论、实验现象、操作目的、实验步骤按人教版生物学七年级下册教材探究绿叶在光下制造有机物盆栽天竺葵先暗处理一昼夜同一叶片用黑纸片从上下两面局部遮光放在阳光下几小时后摘叶并移去黑纸片酒精水浴脱色清水漂洗后置于培养皿滴加碘液稍停片刻用清水冲掉碘液再观察。",
+      "expected": true
+    },
+    {
+      "id": "junior-none-reordered",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "none",
+      "mutation": "reordered",
+      "question": "盆栽天竺葵先暗处理一昼夜同一叶片用黑纸片从上下两面局部遮光放在阳光下几小时后摘叶并移去黑纸片酒精水浴脱色清水漂洗后置于培养皿滴加碘液稍停片刻用清水冲掉碘液再观察按人教版生物学七年级下册教材探究绿叶在光下制造有机物说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": true
+    },
+    {
+      "id": "junior-mixed-complete",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "mixed",
+      "mutation": "complete",
+      "question": "按人教版生物学七年级下册教材\n探究绿叶在光下制造有机物；盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光 放在阳光下几小时后摘叶并移去黑纸片：酒精水浴脱色、清水漂洗后置于培养皿滴加碘液\n稍停片刻用清水冲掉碘液再观察；说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": true
+    },
+    {
+      "id": "junior-mixed-missing",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "mixed",
+      "mutation": "missing",
+      "question": "按人教版生物学七年级下册教材\n探究绿叶在光下制造有机物；同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片 酒精水浴脱色：清水漂洗后置于培养皿滴加碘液、稍停片刻用清水冲掉碘液再观察\n说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": false,
+      "requiredMissing": "盆栽天竺葵暗处理一昼夜"
+    },
+    {
+      "id": "junior-mixed-conflict",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "mixed",
+      "mutation": "conflict",
+      "question": "按人教版生物学七年级下册教材\n探究绿叶在光下制造有机物；盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光 放在阳光下几小时后摘叶并移去黑纸片：酒精水浴脱色、清水漂洗后置于培养皿滴加碘液\n稍停片刻用清水冲掉碘液再观察；盆栽天竺葵先暗处理两小时，说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": false
+    },
+    {
+      "id": "junior-mixed-wrong",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "mixed",
+      "mutation": "wrong",
+      "question": "按人教版生物学七年级下册教材\n探究绿叶在光下制造有机物；盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光 放在阳光下几小时后摘叶并移去黑纸片：酒精直接加热脱色、清水漂洗后置于培养皿滴加碘液\n稍停片刻用清水冲掉碘液再观察；说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": false
+    },
+    {
+      "id": "junior-mixed-extra",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "mixed",
+      "mutation": "extra",
+      "question": "按人教版生物学七年级下册教材\n探究绿叶在光下制造有机物；盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光 放在阳光下几小时后摘叶并移去黑纸片：酒精水浴脱色、清水漂洗后置于培养皿滴加碘液\n稍停片刻用清水冲掉碘液再观察；说明实验结论、实验现象、操作目的、实验步骤，求总产氧量。",
+      "expected": false
+    },
+    {
+      "id": "junior-mixed-no-ask",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "mixed",
+      "mutation": "no-ask",
+      "question": "按人教版生物学七年级下册教材\n探究绿叶在光下制造有机物；盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光 放在阳光下几小时后摘叶并移去黑纸片：酒精水浴脱色、清水漂洗后置于培养皿滴加碘液\n稍停片刻用清水冲掉碘液再观察。",
+      "expected": false
+    },
+    {
+      "id": "junior-mixed-ask-first",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "mixed",
+      "mutation": "ask-first",
+      "question": "说明实验结论、实验现象、操作目的、实验步骤\n按人教版生物学七年级下册教材；探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜 同一叶片用黑纸片从上下两面局部遮光：放在阳光下几小时后摘叶并移去黑纸片、酒精水浴脱色\n清水漂洗后置于培养皿滴加碘液；稍停片刻用清水冲掉碘液再观察。",
+      "expected": true
+    },
+    {
+      "id": "junior-mixed-reordered",
+      "kind": "junior",
+      "templateId": "photosynthesis",
+      "separator": "mixed",
+      "mutation": "reordered",
+      "question": "盆栽天竺葵先暗处理一昼夜\n同一叶片用黑纸片从上下两面局部遮光；放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色 清水漂洗后置于培养皿滴加碘液：稍停片刻用清水冲掉碘液再观察、按人教版生物学七年级下册教材\n探究绿叶在光下制造有机物；说明实验结论、实验现象、操作目的、实验步骤。",
+      "expected": true
+    },
+    {
+      "id": "senior-comma-complete",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "comma",
+      "mutation": "complete",
+      "question": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": true
+    },
+    {
+      "id": "senior-comma-missing",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "comma",
+      "mutation": "missing",
+      "question": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false,
+      "requiredMissing": "三只烧杯富CO2清水"
+    },
+    {
+      "id": "senior-comma-conflict",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "comma",
+      "mutation": "conflict",
+      "question": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，每杯放入11片叶圆片，说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false
+    },
+    {
+      "id": "senior-comma-wrong",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "comma",
+      "mutation": "wrong",
+      "question": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器先堵住前孔再吸入清水并排尽残留空气使叶片沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false
+    },
+    {
+      "id": "senior-comma-extra",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "comma",
+      "mutation": "extra",
+      "question": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，说明观察指标、结果分析边界、操作目的、实验步骤、实验变量，求总产氧量。",
+      "expected": false
+    },
+    {
+      "id": "senior-comma-no-ask",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "comma",
+      "mutation": "no-ask",
+      "question": "按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据。",
+      "expected": false
+    },
+    {
+      "id": "senior-comma-ask-first",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "comma",
+      "mutation": "ask-first",
+      "question": "说明观察指标、结果分析边界、操作目的、实验步骤、实验变量，按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据。",
+      "expected": true
+    },
+    {
+      "id": "senior-comma-reordered",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "comma",
+      "mutation": "reordered",
+      "question": "取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片，注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用，三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据，按人教版高中生物学必修1教材，探究光照强度对光合作用强度的影响，说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": true
+    },
+    {
+      "id": "senior-space-complete",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "space",
+      "mutation": "complete",
+      "question": "按人教版高中生物学必修1教材 探究光照强度对光合作用强度的影响 取生长旺盛的菠菜绿叶 用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片 注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底 处理后的叶片在黑暗处清水中待用 三只小烧杯加入富含CO2的清水 每杯放入10片叶圆片 以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照 其他条件相同且适宜 观察并记录同一时间段内各组叶片浮起数量 未提供实际观察数据 说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": true
+    },
+    {
+      "id": "senior-space-missing",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "space",
+      "mutation": "missing",
+      "question": "按人教版高中生物学必修1教材 探究光照强度对光合作用强度的影响 取生长旺盛的菠菜绿叶 用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片 注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底 处理后的叶片在黑暗处清水中待用 每杯放入10片叶圆片 以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照 其他条件相同且适宜 观察并记录同一时间段内各组叶片浮起数量 未提供实际观察数据 说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false,
+      "requiredMissing": "三只烧杯富CO2清水"
+    },
+    {
+      "id": "senior-space-conflict",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "space",
+      "mutation": "conflict",
+      "question": "按人教版高中生物学必修1教材 探究光照强度对光合作用强度的影响 取生长旺盛的菠菜绿叶 用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片 注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底 处理后的叶片在黑暗处清水中待用 三只小烧杯加入富含CO2的清水 每杯放入10片叶圆片 以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照 其他条件相同且适宜 观察并记录同一时间段内各组叶片浮起数量 未提供实际观察数据 每杯放入11片叶圆片 说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false
+    },
+    {
+      "id": "senior-space-wrong",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "space",
+      "mutation": "wrong",
+      "question": "按人教版高中生物学必修1教材 探究光照强度对光合作用强度的影响 取生长旺盛的菠菜绿叶 用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片 注射器先堵住前孔再吸入清水并排尽残留空气使叶片沉底 处理后的叶片在黑暗处清水中待用 三只小烧杯加入富含CO2的清水 每杯放入10片叶圆片 以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照 其他条件相同且适宜 观察并记录同一时间段内各组叶片浮起数量 未提供实际观察数据 说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false
+    },
+    {
+      "id": "senior-space-extra",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "space",
+      "mutation": "extra",
+      "question": "按人教版高中生物学必修1教材 探究光照强度对光合作用强度的影响 取生长旺盛的菠菜绿叶 用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片 注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底 处理后的叶片在黑暗处清水中待用 三只小烧杯加入富含CO2的清水 每杯放入10片叶圆片 以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照 其他条件相同且适宜 观察并记录同一时间段内各组叶片浮起数量 未提供实际观察数据 说明观察指标、结果分析边界、操作目的、实验步骤、实验变量 求总产氧量。",
+      "expected": false
+    },
+    {
+      "id": "senior-space-no-ask",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "space",
+      "mutation": "no-ask",
+      "question": "按人教版高中生物学必修1教材 探究光照强度对光合作用强度的影响 取生长旺盛的菠菜绿叶 用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片 注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底 处理后的叶片在黑暗处清水中待用 三只小烧杯加入富含CO2的清水 每杯放入10片叶圆片 以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照 其他条件相同且适宜 观察并记录同一时间段内各组叶片浮起数量 未提供实际观察数据。",
+      "expected": false
+    },
+    {
+      "id": "senior-space-ask-first",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "space",
+      "mutation": "ask-first",
+      "question": "说明观察指标、结果分析边界、操作目的、实验步骤、实验变量 按人教版高中生物学必修1教材 探究光照强度对光合作用强度的影响 取生长旺盛的菠菜绿叶 用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片 注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底 处理后的叶片在黑暗处清水中待用 三只小烧杯加入富含CO2的清水 每杯放入10片叶圆片 以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照 其他条件相同且适宜 观察并记录同一时间段内各组叶片浮起数量 未提供实际观察数据。",
+      "expected": true
+    },
+    {
+      "id": "senior-space-reordered",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "space",
+      "mutation": "reordered",
+      "question": "取生长旺盛的菠菜绿叶 用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片 注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底 处理后的叶片在黑暗处清水中待用 三只小烧杯加入富含CO2的清水 每杯放入10片叶圆片 以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照 其他条件相同且适宜 观察并记录同一时间段内各组叶片浮起数量 未提供实际观察数据 按人教版高中生物学必修1教材 探究光照强度对光合作用强度的影响 说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": true
+    },
+    {
+      "id": "senior-dun-complete",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "dun",
+      "mutation": "complete",
+      "question": "按人教版高中生物学必修1教材、探究光照强度对光合作用强度的影响、取生长旺盛的菠菜绿叶、用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片、注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底、处理后的叶片在黑暗处清水中待用、三只小烧杯加入富含CO2的清水、每杯放入10片叶圆片、以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照、其他条件相同且适宜、观察并记录同一时间段内各组叶片浮起数量、未提供实际观察数据、说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": true
+    },
+    {
+      "id": "senior-dun-missing",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "dun",
+      "mutation": "missing",
+      "question": "按人教版高中生物学必修1教材、探究光照强度对光合作用强度的影响、取生长旺盛的菠菜绿叶、用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片、注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底、处理后的叶片在黑暗处清水中待用、每杯放入10片叶圆片、以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照、其他条件相同且适宜、观察并记录同一时间段内各组叶片浮起数量、未提供实际观察数据、说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false,
+      "requiredMissing": "三只烧杯富CO2清水"
+    },
+    {
+      "id": "senior-dun-conflict",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "dun",
+      "mutation": "conflict",
+      "question": "按人教版高中生物学必修1教材、探究光照强度对光合作用强度的影响、取生长旺盛的菠菜绿叶、用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片、注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底、处理后的叶片在黑暗处清水中待用、三只小烧杯加入富含CO2的清水、每杯放入10片叶圆片、以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照、其他条件相同且适宜、观察并记录同一时间段内各组叶片浮起数量、未提供实际观察数据、每杯放入11片叶圆片、说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false
+    },
+    {
+      "id": "senior-dun-wrong",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "dun",
+      "mutation": "wrong",
+      "question": "按人教版高中生物学必修1教材、探究光照强度对光合作用强度的影响、取生长旺盛的菠菜绿叶、用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片、注射器先堵住前孔再吸入清水并排尽残留空气使叶片沉底、处理后的叶片在黑暗处清水中待用、三只小烧杯加入富含CO2的清水、每杯放入10片叶圆片、以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照、其他条件相同且适宜、观察并记录同一时间段内各组叶片浮起数量、未提供实际观察数据、说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false
+    },
+    {
+      "id": "senior-dun-extra",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "dun",
+      "mutation": "extra",
+      "question": "按人教版高中生物学必修1教材、探究光照强度对光合作用强度的影响、取生长旺盛的菠菜绿叶、用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片、注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底、处理后的叶片在黑暗处清水中待用、三只小烧杯加入富含CO2的清水、每杯放入10片叶圆片、以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照、其他条件相同且适宜、观察并记录同一时间段内各组叶片浮起数量、未提供实际观察数据、说明观察指标、结果分析边界、操作目的、实验步骤、实验变量、求总产氧量。",
+      "expected": false
+    },
+    {
+      "id": "senior-dun-no-ask",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "dun",
+      "mutation": "no-ask",
+      "question": "按人教版高中生物学必修1教材、探究光照强度对光合作用强度的影响、取生长旺盛的菠菜绿叶、用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片、注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底、处理后的叶片在黑暗处清水中待用、三只小烧杯加入富含CO2的清水、每杯放入10片叶圆片、以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照、其他条件相同且适宜、观察并记录同一时间段内各组叶片浮起数量、未提供实际观察数据。",
+      "expected": false
+    },
+    {
+      "id": "senior-dun-ask-first",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "dun",
+      "mutation": "ask-first",
+      "question": "说明观察指标、结果分析边界、操作目的、实验步骤、实验变量、按人教版高中生物学必修1教材、探究光照强度对光合作用强度的影响、取生长旺盛的菠菜绿叶、用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片、注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底、处理后的叶片在黑暗处清水中待用、三只小烧杯加入富含CO2的清水、每杯放入10片叶圆片、以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照、其他条件相同且适宜、观察并记录同一时间段内各组叶片浮起数量、未提供实际观察数据。",
+      "expected": true
+    },
+    {
+      "id": "senior-dun-reordered",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "dun",
+      "mutation": "reordered",
+      "question": "取生长旺盛的菠菜绿叶、用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片、注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底、处理后的叶片在黑暗处清水中待用、三只小烧杯加入富含CO2的清水、每杯放入10片叶圆片、以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照、其他条件相同且适宜、观察并记录同一时间段内各组叶片浮起数量、未提供实际观察数据、按人教版高中生物学必修1教材、探究光照强度对光合作用强度的影响、说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": true
+    },
+    {
+      "id": "senior-none-complete",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "none",
+      "mutation": "complete",
+      "question": "按人教版高中生物学必修1教材探究光照强度对光合作用强度的影响取生长旺盛的菠菜绿叶用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底处理后的叶片在黑暗处清水中待用三只小烧杯加入富含CO2的清水每杯放入10片叶圆片以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照其他条件相同且适宜观察并记录同一时间段内各组叶片浮起数量未提供实际观察数据说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": true
+    },
+    {
+      "id": "senior-none-missing",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "none",
+      "mutation": "missing",
+      "question": "按人教版高中生物学必修1教材探究光照强度对光合作用强度的影响取生长旺盛的菠菜绿叶用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底处理后的叶片在黑暗处清水中待用每杯放入10片叶圆片以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照其他条件相同且适宜观察并记录同一时间段内各组叶片浮起数量未提供实际观察数据说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false,
+      "requiredMissing": "三只烧杯富CO2清水"
+    },
+    {
+      "id": "senior-none-conflict",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "none",
+      "mutation": "conflict",
+      "question": "按人教版高中生物学必修1教材探究光照强度对光合作用强度的影响取生长旺盛的菠菜绿叶用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底处理后的叶片在黑暗处清水中待用三只小烧杯加入富含CO2的清水每杯放入10片叶圆片以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照其他条件相同且适宜观察并记录同一时间段内各组叶片浮起数量未提供实际观察数据每杯放入11片叶圆片说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false
+    },
+    {
+      "id": "senior-none-wrong",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "none",
+      "mutation": "wrong",
+      "question": "按人教版高中生物学必修1教材探究光照强度对光合作用强度的影响取生长旺盛的菠菜绿叶用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片注射器先堵住前孔再吸入清水并排尽残留空气使叶片沉底处理后的叶片在黑暗处清水中待用三只小烧杯加入富含CO2的清水每杯放入10片叶圆片以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照其他条件相同且适宜观察并记录同一时间段内各组叶片浮起数量未提供实际观察数据说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false
+    },
+    {
+      "id": "senior-none-extra",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "none",
+      "mutation": "extra",
+      "question": "按人教版高中生物学必修1教材探究光照强度对光合作用强度的影响取生长旺盛的菠菜绿叶用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底处理后的叶片在黑暗处清水中待用三只小烧杯加入富含CO2的清水每杯放入10片叶圆片以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照其他条件相同且适宜观察并记录同一时间段内各组叶片浮起数量未提供实际观察数据说明观察指标、结果分析边界、操作目的、实验步骤、实验变量求总产氧量。",
+      "expected": false
+    },
+    {
+      "id": "senior-none-no-ask",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "none",
+      "mutation": "no-ask",
+      "question": "按人教版高中生物学必修1教材探究光照强度对光合作用强度的影响取生长旺盛的菠菜绿叶用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底处理后的叶片在黑暗处清水中待用三只小烧杯加入富含CO2的清水每杯放入10片叶圆片以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照其他条件相同且适宜观察并记录同一时间段内各组叶片浮起数量未提供实际观察数据。",
+      "expected": false
+    },
+    {
+      "id": "senior-none-ask-first",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "none",
+      "mutation": "ask-first",
+      "question": "说明观察指标、结果分析边界、操作目的、实验步骤、实验变量按人教版高中生物学必修1教材探究光照强度对光合作用强度的影响取生长旺盛的菠菜绿叶用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底处理后的叶片在黑暗处清水中待用三只小烧杯加入富含CO2的清水每杯放入10片叶圆片以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照其他条件相同且适宜观察并记录同一时间段内各组叶片浮起数量未提供实际观察数据。",
+      "expected": true
+    },
+    {
+      "id": "senior-none-reordered",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "none",
+      "mutation": "reordered",
+      "question": "取生长旺盛的菠菜绿叶用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底处理后的叶片在黑暗处清水中待用三只小烧杯加入富含CO2的清水每杯放入10片叶圆片以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照其他条件相同且适宜观察并记录同一时间段内各组叶片浮起数量未提供实际观察数据按人教版高中生物学必修1教材探究光照强度对光合作用强度的影响说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": true
+    },
+    {
+      "id": "senior-mixed-complete",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "mixed",
+      "mutation": "complete",
+      "question": "按人教版高中生物学必修1教材\n探究光照强度对光合作用强度的影响；取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片 注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底：处理后的叶片在黑暗处清水中待用、三只小烧杯加入富含CO2的清水\n每杯放入10片叶圆片；以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜 观察并记录同一时间段内各组叶片浮起数量：未提供实际观察数据、说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": true
+    },
+    {
+      "id": "senior-mixed-missing",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "mixed",
+      "mutation": "missing",
+      "question": "按人教版高中生物学必修1教材\n探究光照强度对光合作用强度的影响；取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片 注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底：处理后的叶片在黑暗处清水中待用、每杯放入10片叶圆片\n以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照；其他条件相同且适宜，观察并记录同一时间段内各组叶片浮起数量 未提供实际观察数据：说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false,
+      "requiredMissing": "三只烧杯富CO2清水"
+    },
+    {
+      "id": "senior-mixed-conflict",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "mixed",
+      "mutation": "conflict",
+      "question": "按人教版高中生物学必修1教材\n探究光照强度对光合作用强度的影响；取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片 注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底：处理后的叶片在黑暗处清水中待用、三只小烧杯加入富含CO2的清水\n每杯放入10片叶圆片；以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜 观察并记录同一时间段内各组叶片浮起数量：未提供实际观察数据、每杯放入11片叶圆片\n说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false
+    },
+    {
+      "id": "senior-mixed-wrong",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "mixed",
+      "mutation": "wrong",
+      "question": "按人教版高中生物学必修1教材\n探究光照强度对光合作用强度的影响；取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片 注射器先堵住前孔再吸入清水并排尽残留空气使叶片沉底：处理后的叶片在黑暗处清水中待用、三只小烧杯加入富含CO2的清水\n每杯放入10片叶圆片；以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜 观察并记录同一时间段内各组叶片浮起数量：未提供实际观察数据、说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": false
+    },
+    {
+      "id": "senior-mixed-extra",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "mixed",
+      "mutation": "extra",
+      "question": "按人教版高中生物学必修1教材\n探究光照强度对光合作用强度的影响；取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片 注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底：处理后的叶片在黑暗处清水中待用、三只小烧杯加入富含CO2的清水\n每杯放入10片叶圆片；以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜 观察并记录同一时间段内各组叶片浮起数量：未提供实际观察数据、说明观察指标、结果分析边界、操作目的、实验步骤、实验变量\n求总产氧量。",
+      "expected": false
+    },
+    {
+      "id": "senior-mixed-no-ask",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "mixed",
+      "mutation": "no-ask",
+      "question": "按人教版高中生物学必修1教材\n探究光照强度对光合作用强度的影响；取生长旺盛的菠菜绿叶，用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片 注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底：处理后的叶片在黑暗处清水中待用、三只小烧杯加入富含CO2的清水\n每杯放入10片叶圆片；以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照，其他条件相同且适宜 观察并记录同一时间段内各组叶片浮起数量：未提供实际观察数据。",
+      "expected": false
+    },
+    {
+      "id": "senior-mixed-ask-first",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "mixed",
+      "mutation": "ask-first",
+      "question": "说明观察指标、结果分析边界、操作目的、实验步骤、实验变量\n按人教版高中生物学必修1教材；探究光照强度对光合作用强度的影响，取生长旺盛的菠菜绿叶 用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片：注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底、处理后的叶片在黑暗处清水中待用\n三只小烧杯加入富含CO2的清水；每杯放入10片叶圆片，以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照 其他条件相同且适宜：观察并记录同一时间段内各组叶片浮起数量、未提供实际观察数据。",
+      "expected": true
+    },
+    {
+      "id": "senior-mixed-reordered",
+      "kind": "senior",
+      "templateId": "leafDisks",
+      "separator": "mixed",
+      "mutation": "reordered",
+      "question": "取生长旺盛的菠菜绿叶\n用直径0.6cm的打孔器避开大叶脉制备30片圆形小叶片；注射器吸入清水并排尽残留空气后堵住前孔缓拉活塞使叶片内气体逸出并沉底，处理后的叶片在黑暗处清水中待用 三只小烧杯加入富含CO2的清水：每杯放入10片叶圆片、以5W的LED灯作光源并用米尺比较距灯远近形成强中弱三组光照\n其他条件相同且适宜；观察并记录同一时间段内各组叶片浮起数量，未提供实际观察数据 按人教版高中生物学必修1教材：探究光照强度对光合作用强度的影响、说明观察指标、结果分析边界、操作目的、实验步骤、实验变量。",
+      "expected": true
+    }
+  ]
+}
