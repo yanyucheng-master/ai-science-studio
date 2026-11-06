@@ -30,35 +30,28 @@
   const diameter='(?:0\\.6(?:0)*cm|6(?:\\.0+)?mm)';
   const tool='用直径(?:为)?'+diameter+'的打孔器',disks='(?:圆形小叶片|叶圆片)';
   const RULES=[
-    R('人教必修1教材说明','(?:按|依据)(?:人教版|人民教育出版社)高中生物学必修1教材',true),
-    R('探究光照强度对光合作用强度的影响','(?:探究|研究)光照强度对光合作用强度的影响'),
-    R('生长旺盛的菠菜绿叶','(?:选取|选择|选用|取用|取|选)生长旺盛的菠菜(?:绿叶|绿色叶片)'),
-    R('直径0.6cm避开大叶脉制备30片','(?:'+tool+'避开大叶脉|避开大叶脉'+tool+')(?:制备|打出)(?:30|三十)片'+disks),
-    R('先排尽残气再堵孔缓拉使叶片沉底','注射器(?:吸入|吸取)清水并(?:排尽|排净)残留空气后(?:堵住|封住)前孔(?:缓拉|缓慢拉动)活塞使叶片内气体(?:逸出|排出)并(?:沉底|下沉至底部)'),
-    R('处理后暗处清水待用','处理后的(?:叶片|叶圆片)(?:在|置于)黑暗处清水中(?:待用|备用)'),
-    R('三只烧杯富CO2清水','(?:三|3)(?:只|个)小?烧杯(?:中)?(?:加入|装入)富含CO2的清水'),
-    R('每杯投入10片','(?:每(?:一个|一只|个|只|一)?(?:小?烧杯|杯子|杯)|各(?:小?烧杯|杯子|杯))(?:中)?(?:各)?(?:放入|加入|投入)(?:10|十)片'+disks),
-    R('5W LED及米尺形成强中弱三组光照','(?:以|用)5(?:\\.0+)?W的?(?:LED|led)(?:台灯|灯)(?:作|作为)光源并(?:用|使用)米尺(?:比较|调节)距灯远近(?:形成|设置)强中弱三组光照'),
-    R('其他条件相同且适宜','(?:其他|其余)条件(?:相同|一致)且适宜'),
-    R('同一时段记录各组浮起数','(?:观察并记录|记录并观察)同一(?:时间段|时段)内各组叶片(?:浮起数量|浮起的数量|上浮数量)'),
-    R('没有实测数据的说明','(?:未提供|未给出|没有提供)实际观察数据',true)
+    R('人教必修1教材说明','(?:按|依据)(?:人教版|人民教育出版社)高中生物学必修1教材',true,'book'),
+    R('探究光照强度对光合作用强度的影响','(?:探究|研究)光照强度对光合作用强度的影响',false,'objective'),
+    R('生长旺盛的菠菜绿叶','(?:选取|选择|选用|取用|取|选)生长旺盛的菠菜(?:绿叶|绿色叶片)',false,'material'),
+    R('直径0.6cm避开大叶脉制备30片','(?:'+tool+'避开大叶脉|避开大叶脉'+tool+')(?:制备|打出)(?:30|三十)片'+disks,false,'procedure'),
+    R('先排尽残气再堵孔缓拉使叶片沉底','注射器(?:吸入|吸取)清水并(?:排尽|排净)残留空气后(?:堵住|封住)前孔(?:缓拉|缓慢拉动)活塞使叶片内气体(?:逸出|排出)并(?:沉底|下沉至底部)',false,'procedure'),
+    R('处理后暗处清水待用','处理后的(?:叶片|叶圆片)(?:在|置于)黑暗处清水中(?:待用|备用)',false,'procedure'),
+    R('三只烧杯富CO2清水','(?:三|3)(?:只|个)小?烧杯(?:中)?(?:加入|装入)富含CO2的清水',false,'procedure'),
+    R('每杯投入10片','(?:每(?:一个|一只|个|只|一)?(?:小?烧杯|杯子|杯)|各(?:小?烧杯|杯子|杯))(?:中)?(?:各)?(?:放入|加入|投入)(?:10|十)片'+disks,false,'procedure'),
+    R('5W LED及米尺形成强中弱三组光照','(?:以|用)5(?:\\.0+)?W的?(?:LED|led)(?:台灯|灯)(?:作|作为)光源并(?:用|使用)米尺(?:比较|调节)距灯远近(?:形成|设置)强中弱三组光照',false,'procedure'),
+    R('其他条件相同且适宜','(?:其他|其余)条件(?:相同|一致)且适宜',false,'condition'),
+    R('同一时段记录各组浮起数','(?:观察并记录|记录并观察)同一(?:时间段|时段)内各组叶片(?:浮起数量|浮起的数量|上浮数量)',false,'procedure'),
+    R('没有实测数据的说明','(?:未提供|未给出|没有提供)实际观察数据',true,'metadata')
   ];
   const ASK_RULES={steps:/^(?:本实验的)?(?:实验步骤|操作步骤|操作流程)/u,purpose:/^(?:本实验的)?(?:操作目的|各步骤的目的|各步操作的目的)/u,variables:/^(?:本实验的)?(?:实验变量|自变量与因变量)/u,indicator:/^(?:本实验的)?(?:观察指标|观测指标)/u,limits:/^(?:本实验的)?(?:结果分析边界|分析结果的限制)/u};
-  const parse=text=>Q.parse(text,{rules:RULES,askRules:ASK_RULES,askNames:ASK,defaults:DEFAULTS});
+  const CONFIG={rules:RULES,askRules:ASK_RULES,askNames:ASK,defaults:DEFAULTS};
+  const parse=text=>Q.parse(text,CONFIG);
+  const protocolAssessment=text=>Q.assess(text,CONFIG);
+  const protocolCandidate=text=>protocolAssessment(text).candidate;
   const diagnosticPriority=text=>[ [/菠菜/u,8], [/叶圆片|圆形小叶片/u,8], [/注射器/u,5], [/打孔器/u,5], [/强中弱/u,3], [/光照强度.*光合作用强度/u,3], [/高中|必修1/u,1] ].reduce((n,[re,w])=>n+(re.test(text)?w:0),0);
-  function protocolCandidate(text){
-    const source=Q.routingSource(text);
-    const start='(?:^|[，,。；;:：!?！？])(?:请)?',clause='[^，,。；;:：!?！？]';
-    const objective=new RegExp(start+'(?:探究|研究)光照强度对光合作用强度的影响','u').test(source);
-    const textbook=/(?:人教版|人民教育出版社)高中生物学必修1教材/u.test(source);
-    const preparation=/(?:取|选取|选择|选用|取用|选)生长旺盛的菠菜(?:绿叶|绿色叶片)/u.test(source);
-    return objective&&(textbook||preparation)
-      || new RegExp(start+'(?:用|使用|避开大叶脉用)'+clause+'{0,20}打孔器'+clause+'{0,20}(?:制备|打出)'+clause+'{0,10}(?:叶圆片|圆形小叶片)','u').test(source)
-      || new RegExp(start+'(?:每|各)'+clause+'{0,8}(?:杯|烧杯)'+clause+'{0,6}(?:放入|加入|投入)'+clause+'{0,8}(?:叶圆片|圆形小叶片)','u').test(source);
-  }
   function question(p1 = 1, p2 = 1, fixed = DEFAULTS) {
     const error = issue(fixed, p1, p2); if (error) throw new RangeError(error);
     return CLAUSES.join('，') + '，说明' + fixed.asks.split(',').map(key => ASK[key]).join('、') + '。';
   }
-  window.MasterLabLeafDiskQuestions = Object.freeze({ version: 1, ASK, DEFAULTS, CLAUSES, parse, question, issue, diagnosticPriority, protocolCandidate });
+  window.MasterLabLeafDiskQuestions = Object.freeze({ version: 1, ASK, DEFAULTS, CLAUSES, parse, question, issue, diagnosticPriority, protocolCandidate, protocolAssessment });
 })();
