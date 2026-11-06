@@ -31,6 +31,7 @@
     "test:share": "node scripts/verify-share-browser.js",
     "test:leaf-disks": "node --test test/biology-leaf-disks.test.js",
     "test:leaf-disks:browser": "node scripts/verify-leaf-disks-browser.js",
-    "test:photosynthesis:review": "node scripts/verify-photosynthesis-review-browser.js"
+    "test:photosynthesis:review": "node scripts/verify-photosynthesis-review-browser.js",
+    "test:photosynthesis:routing": "node scripts/verify-photosynthesis-routing-browser.js"
   }
 }

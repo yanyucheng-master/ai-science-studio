@@ -16,3 +16,9 @@ test('a clipped quote is still literal text, with codepoints kept intact',()=>{
 });
 const cases=[...JSON.parse(await readFile(new URL('../eval/photosynthesis-review-cases.json',import.meta.url),'utf8')),...JSON.parse(await readFile(new URL('../eval/photosynthesis-numeric-boundary-cases.json',import.meta.url),'utf8'))];
 for(const row of cases){const t=b.MASTER_LAB_TEMPLATES[row.kind==='junior'?'photosynthesis':'leafDisks'];if(!t)continue;test((row.id.startsWith('numeric-')?'numeric boundary regression ':'sealed independent review ')+row.kind+'/'+row.id,()=>{const p=t.parseQuestion(row.question);assert.equal(p.ok,row.expected,JSON.stringify({input:row.question,actual:p}));if(row.id==='numeric-comma-count')assert.ok(p.message.includes('3,0片'));if(p.ok&&row.kind==='senior')assert.deepEqual(Array.from(t.model(p.p1,p.p2,p.fixed).observedCounts),[null,null,null]);});}
+
+const routing=JSON.parse(await readFile(new URL('../eval/photosynthesis-routing-cases.json',import.meta.url),'utf8'));
+for(const row of routing)for(const [kind,id]of [['junior','photosynthesis'],['senior','leafDisks']]){
+ const template=b.MASTER_LAB_TEMPLATES[id];if(!template)continue;
+ test('fixed-procedure candidate '+id+'/'+row.id,()=>assert.equal(template.protocolCandidate(row.question),row.scope===kind));
+}

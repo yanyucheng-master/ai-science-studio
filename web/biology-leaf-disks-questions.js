@@ -46,9 +46,19 @@
   const ASK_RULES={steps:/^(?:本实验的)?(?:实验步骤|操作步骤|操作流程)/u,purpose:/^(?:本实验的)?(?:操作目的|各步骤的目的|各步操作的目的)/u,variables:/^(?:本实验的)?(?:实验变量|自变量与因变量)/u,indicator:/^(?:本实验的)?(?:观察指标|观测指标)/u,limits:/^(?:本实验的)?(?:结果分析边界|分析结果的限制)/u};
   const parse=text=>Q.parse(text,{rules:RULES,askRules:ASK_RULES,askNames:ASK,defaults:DEFAULTS});
   const diagnosticPriority=text=>[ [/菠菜/u,8], [/叶圆片|圆形小叶片/u,8], [/注射器/u,5], [/打孔器/u,5], [/强中弱/u,3], [/光照强度.*光合作用强度/u,3], [/高中|必修1/u,1] ].reduce((n,[re,w])=>n+(re.test(text)?w:0),0);
+  function protocolCandidate(text){
+    const source=String(text).normalize('NFKC').replace(/\r\n?|\n/gu,'；').replace(/\s+/gu,'');
+    const start='(?:^|[，,。；;:：!?！？])(?:请)?',clause='[^，,。；;:：!?！？]';
+    const objective=new RegExp(start+'(?:探究|研究)光照强度对光合作用强度的影响','u').test(source);
+    const textbook=/(?:人教版|人民教育出版社)高中生物学必修1教材/u.test(source);
+    const preparation=/(?:取|选取|选择|选用|取用|选)生长旺盛的菠菜(?:绿叶|绿色叶片)/u.test(source);
+    return objective&&(textbook||preparation)
+      || new RegExp(start+'(?:用|使用|避开大叶脉用)'+clause+'{0,20}打孔器'+clause+'{0,20}(?:制备|打出)'+clause+'{0,10}(?:叶圆片|圆形小叶片)','u').test(source)
+      || new RegExp(start+'(?:每|各)'+clause+'{0,8}(?:杯|烧杯)'+clause+'{0,6}(?:放入|加入|投入)'+clause+'{0,8}(?:叶圆片|圆形小叶片)','u').test(source);
+  }
   function question(p1 = 1, p2 = 1, fixed = DEFAULTS) {
     const error = issue(fixed, p1, p2); if (error) throw new RangeError(error);
     return CLAUSES.join('，') + '，说明' + fixed.asks.split(',').map(key => ASK[key]).join('、') + '。';
   }
-  window.MasterLabLeafDiskQuestions = Object.freeze({ version: 1, ASK, DEFAULTS, CLAUSES, parse, question, issue, diagnosticPriority });
+  window.MasterLabLeafDiskQuestions = Object.freeze({ version: 1, ASK, DEFAULTS, CLAUSES, parse, question, issue, diagnosticPriority, protocolCandidate });
 })();
