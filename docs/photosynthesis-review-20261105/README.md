@@ -1,3 +1,5 @@
+> 本页为此前日期的执行记录；最新路由修复及当前证据见[2026-11-06报告](../photosynthesis-routing-20261106/README.md)。
+
 # 光合作用第二次退回修复证据（2026-11-05）
 
 回应[本轮审查](https://github.com/yanyucheng-master/ai-science-studio/issues/9#issuecomment-6624372680)。本轮修复既有J02同叶遮光、H11叶圆片固定样例；预测/记录/比较控件仍未实现，见[互动方案和待协调边界](../photosynthesis-interaction-proposal.md)。不申报20族、P0矩阵或四批专题完成。
