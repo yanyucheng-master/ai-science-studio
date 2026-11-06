@@ -47,7 +47,7 @@
   const parse=text=>Q.parse(text,{rules:RULES,askRules:ASK_RULES,askNames:ASK,defaults:DEFAULTS});
   const diagnosticPriority=text=>[ [/菠菜/u,8], [/叶圆片|圆形小叶片/u,8], [/注射器/u,5], [/打孔器/u,5], [/强中弱/u,3], [/光照强度.*光合作用强度/u,3], [/高中|必修1/u,1] ].reduce((n,[re,w])=>n+(re.test(text)?w:0),0);
   function protocolCandidate(text){
-    const source=String(text).normalize('NFKC').replace(/\r\n?|\n/gu,'；').replace(/\s+/gu,'');
+    const source=Q.routingSource(text);
     const start='(?:^|[，,。；;:：!?！？])(?:请)?',clause='[^，,。；;:：!?！？]';
     const objective=new RegExp(start+'(?:探究|研究)光照强度对光合作用强度的影响','u').test(source);
     const textbook=/(?:人教版|人民教育出版社)高中生物学必修1教材/u.test(source);
