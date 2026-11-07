@@ -4615,9 +4615,9 @@ function planLocalExperiment(question, context = {}) {
         return subject && subject !== "生物";
       }));
     if (otherQuestion) {
-      const diagnosis = protocolRefusal(activeProtocols).parse.message;
-      return { ok: false, subject: detected, localOnly: true, protocolOwnership: "mixed",
-        parse: { ok: false, message: "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：" + diagnosis } };
+      const refusal = protocolRefusal(activeProtocols);
+      return { ...refusal, subject: detected, protocolOwnership: "mixed",
+        parse: { ok: false, message: "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：" + refusal.parse.message } };
     }
   }
   if(confirmedProtocols.length)return protocolRefusal(confirmedProtocols);
