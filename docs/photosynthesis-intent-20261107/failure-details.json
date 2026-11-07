@@ -1,0 +1,210 @@
+{
+  "junior": {
+    "groups": {
+      "incline-guard": {
+        "code": 1,
+        "status": "failed",
+        "failure": [
+          {
+            "name": "original-1366",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          },
+          {
+            "name": "original-820",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          },
+          {
+            "name": "original-390",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          },
+          {
+            "name": "personal-original",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          },
+          {
+            "name": "supported-session-and-tampering",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          }
+        ],
+        "unreached": "请求数断言失败的案例未执行后续断言，脚本继续执行其他案例。"
+      },
+      "population-background": {
+        "code": 1,
+        "status": "failed",
+        "failure": [
+          "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n"
+        ],
+        "unreached": "若报告显示在 S 型暂停处失败，后续 S 型快照、真实隐藏与返回、状态不变及末尾总检查未到达。"
+      }
+    },
+    "populationCompletedModes": [
+      "discrete"
+    ],
+    "populationFailure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n"
+  },
+  "senior": {
+    "groups": {
+      "leaf-disks-browser": {
+        "code": 1,
+        "status": "failed",
+        "failure": [
+          "page.waitForFunction: Timeout 30000ms exceeded."
+        ],
+        "unreached": "等待合法语义例生成超时，余下语义例与后续导师、范围外拒绝及结尾检查未到达。"
+      },
+      "incline-guard": {
+        "code": 1,
+        "status": "failed",
+        "failure": [
+          {
+            "name": "original-1366",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          },
+          {
+            "name": "original-820",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          },
+          {
+            "name": "original-390",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          },
+          {
+            "name": "personal-original",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          },
+          {
+            "name": "supported-session-and-tampering",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          }
+        ],
+        "unreached": "请求数断言失败的案例未执行后续断言，脚本继续执行其他案例。"
+      },
+      "population-background": {
+        "code": 1,
+        "status": "failed",
+        "failure": [
+          "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n"
+        ],
+        "unreached": "若报告显示在 S 型暂停处失败，后续 S 型快照、真实隐藏与返回、状态不变及末尾总检查未到达。"
+      }
+    },
+    "populationCompletedModes": [
+      "discrete"
+    ],
+    "populationFailure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n"
+  },
+  "joint": {
+    "groups": {
+      "incline-guard": {
+        "code": 1,
+        "status": "failed",
+        "failure": [
+          {
+            "name": "original-1366",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          },
+          {
+            "name": "original-820",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          },
+          {
+            "name": "original-390",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          },
+          {
+            "name": "personal-original",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          },
+          {
+            "name": "supported-session-and-tampering",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          }
+        ],
+        "unreached": "请求数断言失败的案例未执行后续断言，脚本继续执行其他案例。"
+      },
+      "population-background": {
+        "code": 1,
+        "status": "failed",
+        "failure": [
+          "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n"
+        ],
+        "unreached": "若报告显示在 S 型暂停处失败，后续 S 型快照、真实隐藏与返回、状态不变及末尾总检查未到达。"
+      }
+    },
+    "populationCompletedModes": [
+      "discrete"
+    ],
+    "populationFailure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n"
+  },
+  "baseline": {
+    "groups": {
+      "share": {
+        "code": 1,
+        "status": "failed",
+        "failure": [
+          "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#shareButton')\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"shareButton\" aria-label=\"分享实验\" class=\"square-button\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    58 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+        ],
+        "unreached": "等待页隐藏按钮的内部点击超时，之后断言未到达。"
+      },
+      "incline-guard": {
+        "code": 1,
+        "status": "failed",
+        "failure": [
+          {
+            "name": "original-1366",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          },
+          {
+            "name": "original-820",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          },
+          {
+            "name": "original-390",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          },
+          {
+            "name": "personal-original",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          },
+          {
+            "name": "supported-session-and-tampering",
+            "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n",
+            "coordinateRequests": 0
+          }
+        ],
+        "unreached": "请求数断言失败的案例未执行后续断言，脚本继续执行其他案例。"
+      },
+      "population-background": {
+        "code": 1,
+        "status": "failed",
+        "failure": [
+          "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n"
+        ],
+        "unreached": "若报告显示在 S 型暂停处失败，后续 S 型快照、真实隐藏与返回、状态不变及末尾总检查未到达。"
+      }
+    },
+    "populationCompletedModes": [
+      "discrete"
+    ],
+    "populationFailure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n"
+  }
+}
