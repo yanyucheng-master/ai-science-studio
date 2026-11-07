@@ -6,7 +6,7 @@
     "expected": "local",
     "templateId": "planeMirror",
     "ownership": {
-      "photosynthesis": "uncertain",
+      "photosynthesis": "none",
       "leafDisks": "none"
     }
   },
