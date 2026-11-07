@@ -4586,10 +4586,7 @@ function planLocalExperiment(question, context = {}) {
   const presetQuestion = context.presetQuestion ?? SUBJECTS[subjectContext]?.question;
   const strictSubject = presetQuestion && question === presetQuestion ? subjectContext : detectSubjectStrict(question);
   const detected = strictSubject || subjectContext;
-  const failures = [];
-  // Full strict acceptance is authoritative, never gated by a second routing grammar.
-  // Failure ownership uses the same condition rules; a partial/uncertain procedure cannot
-  // pre-empt another existing local success, and never silently triggers AI itself.
+  // The complete protocol parser still validates the original text before any routing inference.
   const protocolPlans = genericTemplatesOf("生物").filter(template => template.localOnly && template.protocolAssessment).map(template => ({
     template, parse:parseGenericQuestion(question, template.id, { subject:"生物", gradeLevel }), assessment:template.protocolAssessment(question)
   }));
@@ -4603,8 +4600,34 @@ function planLocalExperiment(question, context = {}) {
   };
   if(completeProtocols.length>1)return protocolRefusal(completeProtocols);
   const confirmedProtocols=protocolPlans.filter(x=>["complete","confirmed"].includes(x.assessment.ownership));
-  if(confirmedProtocols.length)return protocolRefusal(confirmedProtocols);
   const uncertainProtocols=protocolPlans.filter(x=>x.assessment.ownership==="uncertain");
+  const ordinary = planStandardExperiment(question, detected, strictSubject, gradeLevel, templateContext);
+  // A single exclusive request can scope out unlabelled facts only after an
+  // ordinary template accepts the full original prompt and no biology ask remains.
+  const candidates = [...confirmedProtocols, ...uncertainProtocols];
+  if (ordinary.ok && ordinary.subject !== "生物" && candidates.every(({assessment}) =>
+    assessment.evidence.singleExclusiveRequest && !assessment.evidence.requested)) return ordinary;
+  const activeProtocols = [...confirmedProtocols, ...uncertainProtocols.filter(x => x.assessment.evidence.requested)];
+  if (activeProtocols.length) {
+    const otherQuestion = ordinary.ok || activeProtocols.some(({assessment}) =>
+      assessment.evidence.questionSections.some(section => {
+        const subject = detectSubjectStrict(section);
+        return subject && subject !== "生物";
+      }));
+    if (otherQuestion) {
+      const diagnosis = protocolRefusal(activeProtocols).parse.message;
+      return { ok: false, subject: detected, localOnly: true, protocolOwnership: "mixed",
+        parse: { ok: false, message: "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：" + diagnosis } };
+    }
+  }
+  if(confirmedProtocols.length)return protocolRefusal(confirmedProtocols);
+  if(ordinary.ok && !activeProtocols.length)return ordinary;
+  if(uncertainProtocols.length)return protocolRefusal(uncertainProtocols,true);
+  return ordinary;
+}
+
+function planStandardExperiment(question, detected, strictSubject, gradeLevel, templateContext) {
+  const failures = [];
   const attempt = (kind, parse, extra = {}) => {
     if (parse?.ok) return { ok: true, subject: detected, kind, parse, ...extra };
     failures.push(parse || { ok: false });
@@ -4681,7 +4704,6 @@ function planLocalExperiment(question, context = {}) {
     const plan = attempt("biology", parseBiologyCellQuestion(question, { gradeLevel }));
     if (plan) return plan;
   }
-  if(uncertainProtocols.length)return protocolRefusal(uncertainProtocols,true);
   const generic = { ok: false, message: "当前题目没有匹配到本地实验模板。" };
   return { ok: false, subject: detected, parse: strictSubject ? failures[0] || generic : generic };
 }

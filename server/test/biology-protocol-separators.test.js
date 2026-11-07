@@ -32,3 +32,25 @@ test('routing keeps numeric separators and cannot join quoted fragments into a c
 
 const boundaries=JSON.parse(await readFile(new URL('../eval/photosynthesis-separator-boundaries.json',import.meta.url),'utf8'));
 for(const row of boundaries)for(const id of ['photosynthesis','leafDisks']){const t=b.MASTER_LAB_TEMPLATES[id];if(!t)continue;test('explicit ownership boundary '+id+'/'+row.id,()=>{assert.equal(t.protocolAssessment(row.question).ownership,row.ownership?.[id]||(row.scope===id?'uncertain':'none'));});}
+
+const intentCases = JSON.parse(await readFile(new URL('../eval/photosynthesis-intent-cases.json', import.meta.url), 'utf8'));
+for (const row of intentCases) {
+  const template = b.MASTER_LAB_TEMPLATES[row.scope === 'junior' ? 'photosynthesis' : 'leafDisks'];
+  if (!template) continue;
+  test('actual request and reported facts ' + row.id, () => {
+    const assessment = template.protocolAssessment(row.question);
+    assert.equal(assessment.parsed.ok, false, 'a combined prompt must not pass the strict protocol parser');
+    if (row.exclusiveTarget) {
+      assert.equal(assessment.evidence.singleExclusiveRequest, true);
+      assert.equal(assessment.evidence.requested, false);
+    } else if (row.expected === 'local') {
+      assert.equal(assessment.ownership, 'none');
+      assert.ok(assessment.evidence.background.length > 0, 'known reported facts remain available as context');
+    } else if (row.id.endsWith('bare-ambiguous')) {
+      assert.equal(assessment.ownership, 'confirmed');
+      assert.equal(assessment.evidence.requested, false);
+    } else {
+      assert.equal(assessment.evidence.requested, true);
+    }
+  });
+}
