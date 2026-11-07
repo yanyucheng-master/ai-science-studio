@@ -1,0 +1,152 @@
+{
+  "sealedBeforeImplementation": 18,
+  "sealedFileSha256": "21be74995682bfaf8553e9967154ad9735bcb2f5f2864c11f90f975237c3094f",
+  "sealedCases": [
+    {
+      "id": "junior-review-report",
+      "scope": "junior",
+      "question": "实验室的展示卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "local",
+      "templateId": "planeMirror"
+    },
+    {
+      "id": "senior-review-report",
+      "scope": "senior",
+      "question": "实验室的展示卡片写着三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "local",
+      "templateId": "planeMirror"
+    },
+    {
+      "id": "junior-report-after",
+      "scope": "junior",
+      "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高；墙上的实验记录提到用酒精在水浴中加热脱色、稍等片刻用清水洗去碘液后进行观察。",
+      "expected": "local",
+      "templateId": "planeMirror"
+    },
+    {
+      "id": "senior-report-inline",
+      "scope": "senior",
+      "question": "笔记上写有三只小烧杯加入富含CO2的清水、每个烧杯中加入10片叶圆片，下面只问物理：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "local",
+      "templateId": "planeMirror"
+    },
+    {
+      "id": "junior-background-label",
+      "scope": "junior",
+      "question": "背景：酒精水浴脱色，稍停片刻用清水冲掉碘液再观察\n平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "local",
+      "templateId": "planeMirror"
+    },
+    {
+      "id": "senior-background-label",
+      "scope": "senior",
+      "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。\n背景资料：三只小烧杯加入富含CO2的清水；每杯放入10片叶圆片。",
+      "expected": "local",
+      "templateId": "planeMirror"
+    },
+    {
+      "id": "junior-one-operation-after",
+      "scope": "junior",
+      "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+      "expected": "local",
+      "templateId": "planeMirror"
+    },
+    {
+      "id": "senior-one-operation-before",
+      "scope": "senior",
+      "question": "讲义提到了每杯放入10片叶圆片！平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "local",
+      "templateId": "planeMirror"
+    },
+    {
+      "id": "junior-explicit-scope",
+      "scope": "junior",
+      "question": "酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。只回答以下物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "local",
+      "templateId": "planeMirror"
+    },
+    {
+      "id": "senior-background-label-only",
+      "scope": "senior",
+      "question": "背景资料：三只小烧杯加入富含CO2的清水；每杯放入10片叶圆片。\n只问物理：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "local",
+      "templateId": "planeMirror"
+    },
+    {
+      "id": "junior-mixed-explicit",
+      "scope": "junior",
+      "question": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。请解释水浴脱色的操作目的。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "clarify"
+    },
+    {
+      "id": "senior-mixed-inline",
+      "scope": "senior",
+      "question": "讲义写着三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，并请说明这些操作的目的；平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "clarify"
+    },
+    {
+      "id": "junior-mixed-question-mark",
+      "scope": "junior",
+      "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色及稍停片刻用清水冲掉碘液再观察，这些操作为什么要这样做？",
+      "expected": "clarify"
+    },
+    {
+      "id": "senior-mixed-conflict",
+      "scope": "senior",
+      "question": "三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，但每杯也写着放入12片叶圆片。请说明实验变量。另请解答物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "clarify"
+    },
+    {
+      "id": "junior-contradictory-exclusive-scope",
+      "scope": "junior",
+      "question": "酒精水浴脱色及稍停片刻用清水冲掉碘液再观察，请解释操作目的。只回答以下物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "clarify"
+    },
+    {
+      "id": "senior-mixed-single-operation",
+      "scope": "senior",
+      "question": "每杯放入10片叶圆片，试说明实验步骤。平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "clarify"
+    },
+    {
+      "id": "junior-mixed-unsupported-target",
+      "scope": "junior",
+      "question": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。求总产氧量。平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "clarify"
+    },
+    {
+      "id": "senior-bare-ambiguous",
+      "scope": "senior",
+      "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片。",
+      "expected": "clarify"
+    }
+  ],
+  "addedDuringImplementation": [
+    {
+      "id": "junior-exclusive-target",
+      "scope": "junior",
+      "question": "酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。平面镜成像，物体距镜面20cm，物高5cm，我只求像距、物像距离及像高。",
+      "expected": "local",
+      "templateId": "planeMirror",
+      "exclusiveTarget": true
+    },
+    {
+      "id": "senior-mixed-shared-ask",
+      "scope": "senior",
+      "question": "材料记载了三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片。平面镜成像，物体距镜面20cm，物高5cm，求像距以及实验变量。",
+      "expected": "clarify"
+    },
+    {
+      "id": "junior-mixed-quoted-reference",
+      "scope": "junior",
+      "question": "展板上写着“酒精水浴脱色，稍停片刻用清水冲掉碘液再观察”。请解释这两步。平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "clarify"
+    },
+    {
+      "id": "junior-mixed-exclusive-coordination",
+      "scope": "junior",
+      "question": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。平面镜成像，物体距镜面20cm，物高5cm，只求像距和操作目的。",
+      "expected": "clarify"
+    }
+  ]
+}
