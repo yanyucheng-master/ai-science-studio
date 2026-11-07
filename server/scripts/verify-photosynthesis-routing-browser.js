@@ -44,6 +44,8 @@ async function share(page){await page.locator('#shareButton').click();return pag
 
 // No API calls replace the real button. The plan below is a labelled supplementary observation.
 const fixtures=JSON.parse(await readFile(resolve(harnessRoot,'server/eval/photosynthesis-routing-cases.json'),'utf8'));
+const intent = process.argv.includes('--intent');
+const intentFixtures = intent ? JSON.parse(await readFile(resolve(harnessRoot, 'server/eval/photosynthesis-intent-cases.json'), 'utf8')) : [];
 const repro=process.env.ROUTING_REPRO==='1';
 const snapshot=p=>p.evaluate(()=>({question:state.generatedQuestion,input:document.querySelector('#questionInput').value,subject:state.subject,grade:state.gradeLevel,template:activeGenericId(),hasGenerated:state.hasGenerated,time:state.time,playing:state.playing,feedback:document.querySelector('#parseFeedback strong')?.textContent||'',result:buildMasterLabAIContext().deterministicResult,context:buildMasterLabAIContext(),hash:location.hash}));
 const seed=async(p,subject)=>{
@@ -63,9 +65,13 @@ try{
   const registry=await p.evaluate(()=>Object.keys(MASTER_LAB_TEMPLATES).filter(id=>['photosynthesis','leafDisks'].includes(id)));report.registry.push({noTutor,grade,order,registry});
   if(ids.length===2&&order!=='single')assert.deepEqual(registry,order==='junior'?['photosynthesis','leafDisks']:['leafDisks','photosynthesis']);
   await p.locator('.grade-switch:visible [data-grade="'+grade+'"]').first().click();
-  let rows=fixtures.filter(row=>row.scope==='shared'||ids.includes(row.templateId));
+  const isLoaded = row => row.scope === 'shared' || ids.includes(row.scope === 'junior' ? 'photosynthesis' : 'leafDisks');
+  let rows = intent ? [...intentFixtures, ...fixtures.filter(row =>
+    ['mirror-control', 'general-photosynthesis', 'general-light'].includes(row.id)
+    || /-(?:without-book|unsupported-extra|bad-order|bad-time|bad-diameter|bad-count)$/.test(row.id)
+  )].filter(row => repro || isLoaded(row)) : fixtures.filter(row=>row.scope==='shared'||ids.includes(row.templateId));
   if(repro)rows=rows.filter(row=>(process.env.ROUTING_CASE_IDS?process.env.ROUTING_CASE_IDS.split(','):['mirror-control','mirror-light','mirror-zone','general-photosynthesis','general-light']).includes(row.id));
-  else if(noTutor||order==='senior'||grade==='junior')rows=rows.filter(row=>['mirror-control','mirror-light','mirror-zone','general-photosynthesis','general-light','math-control','chemistry-control','biology-control'].includes(row.id)||row.id.endsWith('-without-book')||row.id.endsWith('-unsupported-extra'));
+  else if(!intent&&(noTutor||order==='senior'||grade==='junior'))rows=rows.filter(row=>['mirror-control','mirror-light','mirror-zone','general-photosynthesis','general-light','math-control','chemistry-control','biology-control'].includes(row.id)||row.id.endsWith('-without-book')||row.id.endsWith('-unsupported-extra'));
   for(const row of rows){
    const subject=row.subject||(row.scope==='shared'?'物理':grade==='junior'?'化学':'数学');await seed(p,subject);const start=await snapshot(p),requestIndex=requests.length;
    const observation={id:row.id,question:row.question,expected:row.expected,selectedSubject:subject,selectedGrade:grade,noTutor,order,viewportWidth:width,before:start};
@@ -76,19 +82,20 @@ try{
     await p.waitForTimeout(120); // Existing delayed focus must finish before a subsequent action.
     // The click itself is awaited; transient generation must have settled before observing.
     const actual=await snapshot(p),sent=requests.slice(requestIndex);observation.actual=actual;observation.requests=sent;
-    observation.supplementaryPlan=await p.evaluate(q=>{const r=planLocalExperiment(q);return {ok:r.ok,subject:r.subject,localOnly:Boolean(r.localOnly),template:r.templateId||r.kind,diagnostic:r.diagnosticTemplateId,message:r.parse?.message};},row.question);
+    observation.supplementaryPlan=await p.evaluate(q=>{const r=planLocalExperiment(q);return {ok:r.ok,subject:r.subject,localOnly:Boolean(r.localOnly),template:r.templateId||r.kind,diagnostic:r.diagnosticTemplateId,ownership:r.protocolOwnership,message:r.parse?.message};},row.question);
     assert.equal(actual.input,row.question,'input preserved');
     if(row.expected==='local'){
      assert.equal(actual.question,row.question,'actual generation');assert.equal(actual.hasGenerated,true);assert.equal(actual.template||'cell',row.templateId);assert.equal(sent.length,0,'local success sends no request');
      if(row.templateId==='planeMirror'){assert.match(JSON.stringify(actual.result),/像距[^；]{0,25}20/);assert.match(JSON.stringify(actual.result),/物像距离[^；]{0,30}40/);assert.match(JSON.stringify(actual.result),/像高[^；]{0,25}5/);}
     }else{
      assert.equal(actual.question,start.question,'original experiment preserved');assert.equal(actual.template,start.template);assert.equal(actual.time,start.time,'paused position preserved');assert.equal(actual.playing,start.playing);assert.equal(actual.context.originalQuestion,row.question);assert.ok(!actual.context.deterministicResult.resultText&&!actual.context.currentStep,'no old answer in new question tutor');
-     if(row.expected==='protocol-refusal'){assert.equal(sent.length,0,'fixed procedure never silently sent');assert.match(actual.feedback,/请|无法|缺少|所问|条件/);assert.equal(observation.supplementaryPlan.localOnly,true);assert.equal(observation.supplementaryPlan.diagnostic,row.templateId);}
+     if(row.expected==='clarify'){assert.equal(sent.length,0);assert.match(actual.feedback,/请明确|请分开/);assert.equal(observation.supplementaryPlan.ownership,'mixed');assert.equal(observation.supplementaryPlan.localOnly,true);}
+     else if(row.expected==='protocol-refusal'){assert.equal(sent.length,0,'fixed procedure never silently sent');assert.match(actual.feedback,/请|无法|缺少|所问|条件/);assert.equal(observation.supplementaryPlan.localOnly,true);assert.equal(observation.supplementaryPlan.diagnostic,row.templateId);}
      else{assert.equal(sent.length,noTutor?0:1,'normal fallback availability preserved');if(!noTutor){assert.equal(sent[0].path,'/api/v1/experiment/generate');assert.equal(sent[0].body.question,row.question);}assert.equal(observation.supplementaryPlan.localOnly,false);assert.doesNotMatch(actual.feedback,/同叶遮光还是叶圆片|当前固定教材流程/);}
     }
     observation.passed=true;report.checks.push(row.id+'/'+noTutor+'/'+grade+'/'+order);
-    if(!noTutor&&grade==='senior'&&order!=='senior'&&['mirror-light','junior-unsupported-extra','senior-unsupported-extra'].includes(row.id)){
-     const file=row.id+'-'+width+'.png';await p.locator('.experiment-card').screenshot({path:resolve(out,file),animations:'disabled'});report.screenshots.push(file);
+    if(!noTutor&&grade==='senior'&&order!=='senior'&&(intent ? ['junior-review-report','senior-review-report','junior-mixed-explicit','senior-mixed-inline'] : ['mirror-light','junior-unsupported-extra','senior-unsupported-extra']).includes(row.id)){
+     const file=row.id+'-'+width+'.png';await p.locator(row.expected === 'clarify' ? '#parseFeedback' : '.experiment-card').screenshot({path:resolve(out,file),animations:'disabled'});report.screenshots.push(file);
     }
    }catch(e){observation.passed=false;observation.failure=e.message;observation.actual||=await snapshot(p);observation.requests||=requests.slice(requestIndex);report.failures.push({id:row.id,noTutor,grade,order,message:e.message});}
    report.cases.push(observation);console.log((observation.passed?'PASS ':'FAIL ')+row.id+'/'+noTutor+'/'+grade+'/'+order);await writeFile(resolve(out,'progress.json'),JSON.stringify({completed:report.cases.length,failures:report.failures}));
@@ -97,7 +104,42 @@ try{
  }
  if(!repro){
   report.playingRefusals=[];
-  for(const id of ids){const c=await context(),p=await c.newPage(),sent=[];await c.route('**/api/**',route=>{sent.push(new URL(route.request().url()).pathname);return route.fulfill({status:503,body:''});});await p.goto(base);await p.waitForFunction(()=>typeof planLocalExperiment==='function');await p.evaluate(()=>clearTimeout(state.autoDemoTimer));await seed(p,'物理');await p.locator('#playButton').click();await p.waitForFunction(()=>state.playing);const row=fixtures.find(x=>x.templateId===id&&x.id.endsWith('-unsupported-extra'));const beforeEdit=await snapshot(p);await p.locator('#questionInput').fill(row.question);const afterEdit=await snapshot(p);assert.equal(afterEdit.playing,false,'editing retains the existing automatic pause contract');await p.locator('#playButton').click();await p.waitForFunction(()=>state.playing);const before=await snapshot(p);assert.equal(before.playing,true);await p.locator('#generateButton').click();await p.locator('#parseFeedback.error.show').waitFor();const after=await snapshot(p);assert.equal(after.question,before.question);assert.equal(after.playing,true);assert.ok(after.time>=before.time);assert.equal(sent.length,0);assert.ok(!after.context.deterministicResult.resultText&&!after.context.currentStep);report.playingRefusals.push({template:id,beforeEdit,afterEdit,before,after,requests:sent});await p.locator('#playButton').click();await c.close();}
+  for (const id of ids) {
+   const c = await context(), p = await c.newPage(), sent = [];
+   await c.route('**/api/**', route => {
+    sent.push(new URL(route.request().url()).pathname);
+    return route.fulfill({status:503,body:''});
+   });
+   await p.goto(base);
+   await p.waitForFunction(() => typeof planLocalExperiment === 'function');
+   await p.evaluate(() => clearTimeout(state.autoDemoTimer));
+   await seed(p, '物理');
+   await p.locator('#playButton').click();
+   await p.waitForFunction(() => state.playing);
+   const row = intent
+    ? intentFixtures.find(x => x.id === (id === 'photosynthesis' ? 'junior-mixed-explicit' : 'senior-mixed-inline'))
+    : fixtures.find(x => x.templateId === id && x.id.endsWith('-unsupported-extra'));
+   const beforeEdit = await snapshot(p);
+   await p.locator('#questionInput').fill(row.question);
+   const afterEdit = await snapshot(p);
+   assert.equal(afterEdit.playing, false, 'editing retains the existing automatic pause contract');
+   await p.locator('#playButton').click();
+   await p.waitForFunction(() => state.playing);
+   const before = await snapshot(p);
+   assert.equal(before.playing, true);
+   await p.locator('#generateButton').click();
+   await p.locator('#parseFeedback.error.show').waitFor();
+   const after = await snapshot(p);
+   assert.equal(after.question, before.question);
+   assert.equal(after.playing, true);
+   assert.ok(after.time >= before.time);
+   assert.equal(sent.length, 0);
+   assert.ok(!after.context.deterministicResult.resultText && !after.context.currentStep);
+   if (intent) assert.match(after.feedback, /请明确|请分开/);
+   report.playingRefusals.push({id:row.id,template:id,beforeEdit,afterEdit,before,after,requests:sent});
+   await p.locator('#playButton').click();
+   await c.close();
+  }
   // A successful local mock transport is a separate normal-button fallback scenario.
   const c=await context(),p=await c.newPage(),sent=[];
   await c.route('**/api/**',route=>{const req=route.request(),path=new URL(req.url()).pathname;sent.push({path,body:req.postDataJSON()});const payload=path==='/api/v1/experiment/generate'?{mode:'explanation',source:'local_mock'}:path==='/api/v1/tutor/chat'?{mode:'steps',summary:'本地模拟讲解',steps:['此处仅核对普通概念问答回退路径。'],formulas:[],finalAnswer:'本地模拟回答，不代表真实AI验证。',checks:[],followUp:'',warnings:[],source:'fixture'}:{mode:'declined',code:'DECLINED',reason:'Local mock does not draw.'};return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(payload)});});

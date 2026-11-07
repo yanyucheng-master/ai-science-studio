@@ -79,7 +79,7 @@
   }
   // All alternatives are authored vocabulary/word-order slots, not student expressions.
   const rule = (name, source, optional = false, routingRole = 'condition') => Object.freeze({name,re:new RegExp('^(?:'+source+')','u'),optional,routingRole});
-  function routingSource(value) {
+  function routingSource(value, quotes = []) {
     let text=String(value).normalize('NFKC').trim();
     // A whole quoted question is still a candidate for local validation. Embedded labels
     // are literal background, not instructions. This view never changes parser input.
@@ -90,10 +90,46 @@
     if(pair)text=target.slice(pair[0].length,-pair[1].length);
     // Keep separators and numeric whitespace. sourceView, shared with parse(), decides
     // which gaps are equivalent. An opaque marker prevents joining across quoted labels.
-    return text.replace(/“[^”]*”|「[^」]*」|『[^』]*』|"[^"\n]*"|'[^'\n]*'/gu,'\uFFFC');
+    return text.replace(/“[^”]*”|「[^」]*」|『[^』]*』|"[^"\n]*"|'[^'\n]*'/gu, quote => {
+      quotes.push(quote.slice(1, -1));
+      return '\uFFFC';
+    });
   }
-  function assess(value, config) {
-    const parsed=parse(value,config),text=sourceView(routingSource(value)).text;
+  const REPORT = /^(?:背景(?:信息|资料|材料)?\s*:|[^:]{0,24}?(?:卡片|展板|海报|笔记|讲义|资料|材料|说明牌|记录|报告)(?:上|里|中)?\s*(?:写着|写有|记载|记录|提到|介绍|列出|展示|说明|显示|说)(?:了|着)?)/u;
+  const HEADING = /^(?:(?:另外|另有|还有|下面|接下来)(?:是)?\s*)?(?:请?(只|仅)(?:需)?(?:回答|解答|问|做)(?:这道|以下|下面)?|(?:另|再)?(?:请)?(?:解答|回答))?\s*(?:一道|一条)?\s*(物理|数学|化学|生物)(?:实验)?(?:题|问题)?\s*:/u;
+  const ASK = /^(?:(?:同时|另外|顺便|接着|并|另|还|再|也|又)\s*)*(?:我(?:们)?|请(?:你)?|试)?\s*(?:(只|仅)(?:需)?\s*)?(?:请问|问|求(?:出|得)?(?!助)|计算|算出|估算|判断|确定|解释|说明|比较|说出|指出|描述|列出|简述|回答|解答)\s*:?\s*/u;
+  const INTERROGATIVE = /为什么|为何|如何|怎样|是什么|有哪些|有什么|多少|是否|能否|能不能|会不会/u;
+  const PROTOCOL_TARGET = /(?:这些|上述|前述|卡片上的|材料中的)(?:实验|步骤|操作)|这两(?:步|个操作)|水浴|脱色|碘液|遮光|天竺葵|淀粉|叶圆片|浮片|叶片(?:浮起|上浮)|菠菜|富含CO2|产氧/u;
+
+  // Separate reported facts from requests for routing. A report can continue
+  // across commas and semicolons, until a question, a heading or a new sentence.
+  function routingParts(value, quotes) {
+    const tokens = routingSource(value, quotes).split(/(\r?\n|[。!?;]|(?<!\d)[,.]|[,.](?!\d)|(?=(?:并|另|还|再)?请(?:你)?(?:问|解释|说明|比较|回答|解答)))/u);
+    const parts = [];
+    let reporting = false;
+    for (let i = 0; i < tokens.length; i += 2) {
+      const text = tokens[i].trim();
+      const separator = tokens[i + 1] || '';
+      const heading = text.match(HEADING);
+      const reportStart = text.match(REPORT);
+      const ask = text.match(ASK);
+      const request = Boolean(!heading && (ask || INTERROGATIVE.test(text) || separator === '?'));
+      if (heading || request) reporting = false;
+      else if (reportStart) reporting = true;
+      if (heading?.[1] && heading[2] !== '生物' && !parts.some(part => part.request || part.subject === '生物')) {
+        // An explicit exclusive subject can scope earlier facts out. Earlier
+        // questions or a named biology task remain available for clarification.
+        for (const part of parts) part.reported = true;
+      }
+      parts.push({text, separator, reported: reporting, request, exclusive: Boolean(ask?.[1]),
+        target: ask ? text.slice(ask[0].length) : text, subject: heading?.[2]});
+      if (/[。.!?\n]/u.test(separator)) reporting = false;
+    }
+    return parts;
+  }
+
+  function scan(value, config) {
+    const text = sourceView(value).text;
     const conditions=[],seen=new Set(),asks=new Set();
     for(let pos=0;pos<text.length;) {
       const rest=text.slice(pos),found=matchCondition(rest,config.rules);
@@ -105,11 +141,45 @@
       if(ask){asks.add(ask.key);pos+=ask.m[0].length;continue;}
       pos+=text.codePointAt(pos)>0xFFFF?2:1;
     }
+    return {conditions, asks: [...asks]};
+  }
+
+  function assess(value, config) {
+    const parsed = parse(value, config);
+    const quotes = [];
+    const parts = routingParts(value, quotes);
+    const active = parts.map(part => (part.reported ? '\uFFFC' : part.text) + part.separator).join('');
+    const reported = parts.filter(part => part.reported).map(part => part.text + part.separator).join('\uFFFC');
+    const {conditions, asks} = scan(active, config);
+    const background = scan([reported, ...quotes].join('\uFFFC'), config).conditions;
+    const subjectEvidence = [...conditions, ...background].some(({role}) => ['objective','material','procedure'].includes(role));
+    const requests = parts.filter(part => !part.reported && part.request);
+    const asksAboutProtocol = ({target}) => PROTOCOL_TARGET.test(target)
+      || target.split(/以及|和|与|及|、|并且/u).some(item =>
+        Object.values(config.askRules).some(pattern => pattern.test(sourceView(item).text)));
+    const namedBiologyTask = parts.some(part => !part.reported && part.subject === '生物');
+    const requested = subjectEvidence && (namedBiologyTask || requests.some(asksAboutProtocol));
+    const singleExclusiveRequest = !namedBiologyTask && requests.length === 1 && requests[0].exclusive;
     const has=role=>conditions.some(x=>x.role===role),procedures=conditions.filter(x=>x.role==='procedure').length;
     const confirmed=has('objective')&&(has('book')||has('material')||procedures>0)||procedures>=2;
-    const uncertain=procedures>0||(has('objective')||has('material'))&&asks.size>0;
+    const uncertain=procedures>0||(has('objective')||has('material'))&&asks.length>0||requested
+      || background.length > 0 && requests.length === 0;
+    const questionSections = [];
+    let section = '', hasRequest = false;
+    for (const part of parts) {
+      if (!part.reported) {
+        section += part.text + part.separator;
+        hasRequest ||= part.request || Boolean(part.subject);
+      }
+      if (/[。.!?;\n]/u.test(part.separator)) {
+        if (hasRequest) questionSections.push(section);
+        section = '';
+        hasRequest = false;
+      }
+    }
+    if (hasRequest) questionSections.push(section);
     const ownership=parsed.ok?'complete':confirmed?'confirmed':uncertain?'uncertain':'none';
-    return {candidate:ownership!=='none',ownership,parsed,evidence:{conditions,asks:[...asks],procedureCount:procedures}};
+    return {candidate:ownership!=='none',ownership,parsed,evidence:{conditions,asks,procedureCount:procedures,background,requested,singleExclusiveRequest,questionSections}};
   }
   window.MasterLabProtocolQuestions = Object.freeze({ sourceView, parse, rule, routingSource, assess });
 })();

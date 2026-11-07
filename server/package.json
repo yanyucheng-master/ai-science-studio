@@ -33,6 +33,7 @@
     "test:leaf-disks:browser": "node scripts/verify-leaf-disks-browser.js",
     "test:photosynthesis:review": "node scripts/verify-photosynthesis-review-browser.js",
     "test:photosynthesis:routing": "node scripts/verify-photosynthesis-routing-browser.js",
-    "test:photosynthesis:separators": "node scripts/verify-photosynthesis-separators-browser.js"
+    "test:photosynthesis:separators": "node scripts/verify-photosynthesis-separators-browser.js",
+    "test:photosynthesis:intent": "node scripts/verify-photosynthesis-routing-browser.js --intent"
   }
 }
