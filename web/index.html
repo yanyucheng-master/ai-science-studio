@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;600;700;800&amp;display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;600;700;800&amp;display=swap"></noscript>
   <link rel="stylesheet" href="vendor/katex/katex.min.css?v=0.19.0">
-  <link rel="stylesheet" href="styles.css?v=20261106-personal-model-1">
+  <link rel="stylesheet" href="styles.css?v=20261107-friction-layout-1">
   <link rel="stylesheet" href="math-experiments.css?v=20261030-math-1">
   <link rel="stylesheet" href="chemistry-equilibria.css?v=20261030-chemistry-v2-1">
   <link rel="stylesheet" href="biology-mendel.css?v=20261031-mendel-1">
@@ -23,10 +23,11 @@
   <link rel="stylesheet" href="tutor-focus.css?v=20261019-tutor-followups-1">
   <link rel="stylesheet" href="photo-question.css?v=20261031-photo-1">
   <link rel="stylesheet" href="mobile.css?v=20261102-photo-1">
-  <link rel="stylesheet" href="ui-motion.css?v=20261106-ui-motion-1">
+  <link rel="stylesheet" href="ui-motion.css?v=20261107-ui-fix-1">
+  <link rel="stylesheet" href="menu-select.css?v=20261107-menu-select-1">
 </head>
 <body class="awaiting-generation">
-  <script src="brand-motion.js?v=20261020-splash-1"></script>
+  <script src="brand-motion.js?v=20261107-animation-1"></script>
   <div class="ambient ambient-one"></div>
   <div class="ambient ambient-two"></div>
 
@@ -900,7 +901,7 @@
             <div class="ai-session-toolbar">
               <button id="aiTutorContextToggle" type="button" aria-expanded="false" aria-controls="aiTutorContext">题目</button>
               <button id="aiTutorNewButton" type="button">新对话</button>
-              <div class="ai-response-controls"><button class="ai-hint-chip" id="aiTutorHintChip" type="button" hidden aria-label="提示优先中：之后的追问会继续只给提示。点击恢复自动判断" title="之后的追问会继续只给提示；点击恢复自动判断，或直接要求完整解答">提示优先中 <span aria-hidden="true">×</span></button><label class="ai-response-mode"><span class="ai-visually-hidden">回答方式</span><select id="aiTutorResponseMode"><option value="auto">自动</option><option value="hint">只给提示</option><option value="steps">完整讲解</option></select></label></div>
+              <div class="ai-response-controls"><button class="ai-hint-chip" id="aiTutorHintChip" type="button" hidden aria-label="提示优先中：之后的追问会继续只给提示。点击恢复自动判断" title="之后的追问会继续只给提示；点击恢复自动判断，或直接要求完整解答">提示优先中 <span aria-hidden="true">×</span></button><label class="ai-response-mode"><span class="ai-visually-hidden">回答方式</span><select id="aiTutorResponseMode" data-menu-select><option value="auto">自动</option><option value="hint">只给提示</option><option value="steps">完整讲解</option></select></label></div>
               <span id="aiTutorStorageStatus" role="status">会话与草稿仅保存在此浏览器</span>
             </div>
             <div class="ai-tutor-header-actions">
@@ -1025,7 +1026,7 @@
       <h2 id="apiKeyModalTitle">个人密钥 <span>可选</span></h2>
       <p class="api-key-hint">默认使用公益 AI · DeepSeek</p>
       <label class="api-key-label" for="apiKeyModelSelect">个人模型</label>
-      <select id="apiKeyModelSelect" class="api-key-select">
+      <select id="apiKeyModelSelect" class="api-key-select" data-menu-select>
         <option value="deepseek-flash">DeepSeek V4.1 Flash</option>
         <option value="kimi-k3.1-pro">Kimi K3.1 Pro</option>
       </select>
@@ -1066,7 +1067,7 @@
 
   <script src="science-formulas.js?v=20261106-ui-motion-1"></script>
   <script src="science-motion.js?v=20260922-motion-1"></script>
-  <script src="physics-extra.js?v=20261031-declutter-2"></script>
+  <script src="physics-extra.js?v=20261107-friction-layout-1"></script>
   <script src="question-conditions.js?v=20261021-question-conditions-1"></script>
   <script src="math-extra.js?v=20261031-declutter-2"></script>
   <script src="math-experiments.js?v=20261030-acceptance-1"></script>
@@ -1094,10 +1095,11 @@
   <script src="tutor-checks.js?v=20261011-tutor-round-1"></script>
   <script src="ai-tutor.js?v=20261106-personal-model-2"></script>
   <script src="instant-scene-renderer.js?v=20261020-incline-data-1"></script>
-  <script src="instant-experiment.js?v=20261020-incline-competition-1"></script>
+  <script src="instant-experiment.js?v=20261107-ui-motion-guard-1"></script>
   <script src="announcements.js?v=20261008-announcements-2"></script>
   <script src="photo-question.js?v=20261102-photo-2"></script>
   <script src="mobile-shell.js?v=20261030-mobile-4"></script>
-  <script src="ui-motion.js?v=20261106-ui-motion-1"></script>
+  <script src="ui-motion.js?v=20261107-ui-fix-1"></script>
+  <script src="menu-select.js?v=20261107-menu-select-1"></script>
 </body>
 </html>

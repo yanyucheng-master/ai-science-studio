@@ -4761,6 +4761,33 @@ body.ai-tutor-route .ai-tutor-messages { min-height: 360px; max-height: calc(100
 .edu-diagram .dg-drip { fill: none; stroke: #5d9fe0; stroke-width: 2.4; stroke-dasharray: 3 5; stroke-linecap: round; }
 .edu-diagram .dg-board-surface { fill: #e0bf8a; stroke: #8a6a3a; stroke-width: 1.4; }
 .edu-diagram .dg-block { fill: #c99b5d; stroke: #7d5d31; stroke-width: 1.6; }
+/* Friction: separate movement, apparatus and contact annotations into clear lanes. */
+.generic-physics-visual:has(.dg-friction) {
+  background: radial-gradient(ellipse at 50% 40%, #fff 0%, #f2f8ff 74%, #eaf3fc 100%);
+}
+.visual-friction .generic-visual-grid { inset: 8px; }
+.edu-diagram.dg-friction {
+  font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  stroke: none;
+}
+.edu-diagram.dg-friction text { font-weight: 500; }
+.edu-diagram.dg-friction .dg-caption { fill: #243e60; font-size: 24px; font-weight: 700; }
+.edu-diagram.dg-friction .dg-friction-balance { fill: #2563c9; font-size: 21px; font-weight: 600; }
+.edu-diagram.dg-friction .dg-friction-divider { stroke: #dce8f4; stroke-width: 1; }
+.edu-diagram.dg-friction .dg-label { font-size: 21px; }
+.edu-diagram.dg-friction .dg-small { font-size: 19px; }
+.edu-diagram.dg-friction .dg-note { fill: #62758d; font-size: 18px; }
+.edu-diagram.dg-friction .dg-force-text { font-size: 22px; font-weight: 600; }
+.edu-diagram.dg-friction .dg-friction-block-label { fill: #654722; font-weight: 600; }
+.edu-diagram.dg-friction .dg-block { fill: #e3bd82; stroke: #af824a; }
+.edu-diagram.dg-friction .dg-board-surface { fill: #efd7af; stroke: #b79764; }
+.edu-diagram.dg-friction .dg-friction-woodgrain { fill: none; stroke: #c79b61; stroke-width: 1.2; opacity: .55; }
+.edu-diagram.dg-friction .dg-weight { fill: #a6b5c6; stroke: #6c819a; }
+.edu-diagram.dg-friction .dg-friction-leader { fill: none; stroke: #96a8bd; stroke-width: 1.2; }
+.edu-diagram.dg-friction .dg-scale-case { fill: #fff; stroke: #9bafc5; stroke-width: 1.8; }
+.edu-diagram.dg-friction .dg-scale-tick { stroke: #73869e; }
+.edu-diagram.dg-friction .dg-scale-num { fill: #536983; font-size: 16px; }
+.edu-diagram.dg-friction .dg-friction-pointer-head { fill: #d9412f; }
 /* liquid pressure */
 .edu-diagram .dg-probe { fill: #aab8c8; stroke: #56657a; stroke-width: 1.6; }
 .edu-diagram .dg-membrane { stroke: #e0703a; stroke-width: 3; }

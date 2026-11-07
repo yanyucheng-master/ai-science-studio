@@ -88,20 +88,25 @@
   const isComet = a => String(a.animationName || "").startsWith("fxComet");
   const loopsOf = el => (el.getAnimations ? el.getAnimations({ subtree: true }) : [])
     .filter(a => a.effect && a.effect.getTiming().iterations === Infinity);
-  // 平滑改变循环动画的速度（保留当前位置，不跳帧）
+  // 平滑改变循环动画的速度（保留当前位置，不跳帧）。
+  // 用短时计时器逐步改速度（约每 32ms 一次，最长 0.7 秒后结束），不另申请动画帧：页面按“同一时刻只有一个待执行的
+  // 动画帧”验收，加载器、图标悬停的变速若自己挂 rAF，会与正在播放的实验时钟同时挂起（2026-11-07 动画验收发现）。
+  // 只改 playbackRate，不涉及布局；进度按实际经过时间计算，计时器推迟时直接追到对应速度。
+  const RAMP_TICK_MS = 32;
   function rampRate(el, to, ms = 420, filter = () => true) {
     if (!el) return;
     const list = loopsOf(el).filter(filter);
     const from = list.map(a => a.playbackRate);
-    if (el._mlRamp) cancelAnimationFrame(el._mlRamp);
-    if (reducedMotion() || !list.length) { list.forEach(a => { a.playbackRate = to; }); return; }
+    if (el._mlRamp) clearTimeout(el._mlRamp);
+    el._mlRamp = 0;
+    if (reducedMotion() || !list.length || ms <= RAMP_TICK_MS) { list.forEach(a => { a.playbackRate = to; }); return; }
     const t0 = performance.now();
-    const step = now => {
-      const p = Math.min(1, (now - t0) / ms), e = 1 - (1 - p) * (1 - p);
+    const step = () => {
+      const p = Math.min(1, (performance.now() - t0) / ms), e = 1 - (1 - p) * (1 - p);
       list.forEach((a, i) => { a.playbackRate = from[i] + (to - from[i]) * e; });
-      el._mlRamp = p < 1 ? requestAnimationFrame(step) : 0;
+      el._mlRamp = p < 1 ? setTimeout(step, RAMP_TICK_MS) : 0;
     };
-    el._mlRamp = requestAnimationFrame(step);
+    el._mlRamp = setTimeout(step, RAMP_TICK_MS);
   }
   function retrigger(el, cls) {
     if (!el) return;
@@ -153,7 +158,9 @@
     mark.innerHTML = rig({ geo: "small", comet: true, brk: true, cls: "fx-think-a" });
     const svg = mark.firstElementChild;
     if (reducedMotion()) svg.classList.add("is-error");
-    else requestAnimationFrame(() => requestAnimationFrame(() => breakLink(svg)));
+    // 调用方随即把图标插入消息气泡；约两帧后先确定初始样式再进入断开状态，让断开动画从正常状态开始。
+    // 用计时器而不是两次 rAF，原因同 rampRate。
+    else setTimeout(() => { if (svg.isConnected) void svg.getBoundingClientRect(); breakLink(svg); }, 34);
     return mark;
   }
   function breakLink(svg) {
