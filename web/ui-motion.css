@@ -477,6 +477,8 @@
   pointer-events: auto;
   cursor: pointer;
 }
+/* 与时间轴滑块重叠时不接收指针，按下的是滑块（ui-motion.js coverMarks）；外观不变，键盘仍可聚焦点击 */
+.um-tl-mark.is-covered { pointer-events: none; }
 .um-tl-mark.is-reached { --um-mark-c: var(--fx-ink-blue); }
 .um-tl-mark.is-current, .um-tl-mark:hover { --um-mark-c: var(--fx-blue); }
 .um-tl-mark:focus-visible { outline: 2px solid rgba(45, 115, 246, .55); outline-offset: 1px; }
@@ -721,13 +723,14 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity var(--fx-dur-med) ease;
-    will-change: opacity;
     content: "";
   }
+  /* 只有当前亮起的卡片单独成层（光斑随指针移动时只重绘这一层）；其余卡片的光斑全透明，不绘制也不占合成层。
+     原先四张卡常驻四个合成层，每帧的分层与提交都要多处理它们（2026-11-07 性能归因） */
   :root.um-on body:not(.harmony-compat-mode) .experiment-card.um-lit::before,
   :root.um-on body:not(.harmony-compat-mode) .reasoning-card.um-lit::before,
   :root.um-on body:not(.harmony-compat-mode) .mentor-card.um-lit::before,
-  :root.um-on body:not(.harmony-compat-mode) .favorites-card.um-lit::before { opacity: 1; }
+  :root.um-on body:not(.harmony-compat-mode) .favorites-card.um-lit::before { opacity: 1; will-change: opacity; }
 
   /* 学科标签：带光泽的滑动指示块 */
   .um-has-glider:where(:root.um-on body:not(.harmony-compat-mode) .subject-tabs) { position: relative; }
@@ -919,6 +922,9 @@ svg .um-ghost-svg-label { fill: #1a56d6; font-size: 13px; font-weight: 700; curs
 :root.um-hidden body .ai-thinking-stage,
 :root.um-hidden body #timeline,
 :root.um-hidden body .ambient,
+/* 拖动滑块 / 时间轴、生成遮罩显示时背景光斑暂停漂移（每帧 0.3px 左右，停顿看不出）：
+   它的循环动画即使在合成器上运行，每帧仍要在主线程做一次样式重算，拖动时每次输入多 2–3 遍（2026-11-07 性能归因） */
+:root.um-still body .ambient,
 .prompt-input-wrap[data-um-off]::after,
 .reasoning-steps[data-um-off]::after,
 .ai-tutor-workspace[data-um-off] .ai-thinking-stage,

@@ -43,6 +43,13 @@
   const attach = (node, parent, before = null) => { if (parent && node.parentNode !== parent) parent.insertBefore(node, before); };
   const detach = node => { if (node.parentNode) node.remove(); };
   const later = (fn, ms) => setTimeout(fn, ms);
+  // 背景光斑漂移在拖动滑块 / 时间轴、生成遮罩显示期间暂停（ui-motion.css 的 :root.um-still），各原因独立计数
+  const stillReasons = new Set();
+  function setStill(reason, on) {
+    if (on) stillReasons.add(reason); else stillReasons.delete(reason);
+    const still = stillReasons.size > 0;
+    if (root.classList.contains("um-still") !== still) root.classList.toggle("um-still", still);
+  }
 
   /* ---------- 页面隐藏 / 元素离开视口：暂停循环动画 ---------- */
   const syncHidden = () => root.classList.toggle("um-hidden", doc.hidden);
@@ -158,6 +165,19 @@
     const min = Number(input.min) || 0, max = Number(input.max), value = Number(input.value);
     return max > min ? clamp((value - min) / (max - min), 0, 1) : 0;
   };
+  // B3 步骤刻度盖在时间轴上：滑块停在刻度处（生成后在 0% 的第 1 步）时，按下命中的是刻度按钮，滑块拖不动。
+  // 与滑块重叠的刻度暂时不接收指针（.is-covered），按下的就是滑块；其余刻度照常点击跳转，键盘操作不变。
+  // 尺寸在摆放刻度时记下（layoutMarks），这里随时间轴每次改值只比较数值，不读布局。
+  const MARK_HALF = 9; // .um-tl-mark 宽 18px（ui-motion.css）
+  let markCover = null; // { track, reach, items: [[button, at]] }
+  function coverMarks() {
+    if (!markCover) return;
+    const at = fraction(timeline);
+    markCover.items.forEach(([button, markAt]) => {
+      const covered = Math.abs(at - markAt) * markCover.track < markCover.reach;
+      if (button.classList.contains("is-covered") !== covered) button.classList.toggle("is-covered", covered);
+    });
+  }
   // 比例按 0.1% 量化成两个类名（见 ui-motion.css 的 um-p / um-o 类）；只在变化时替换，不写行内样式
   const levelClasses = new WeakMap();
   function setLevel(input, key, value) {
@@ -174,7 +194,7 @@
   }
   function paintRange(input) {
     setLevel(input, "p", fraction(input));
-    if (input === timeline) return;
+    if (input === timeline) { coverMarks(); return; }
     const orig = originalFor(input);
     input.classList.toggle("um-has-orig", orig !== null);
     if (orig !== null) {
@@ -230,6 +250,7 @@
     const finished = drag;
     finished.input.classList.remove("um-dragging");
     drag = null;
+    setStill("drag", false);
     bubble.classList.remove("is-on");
     clearTimeout(bubbleTimer);
     bubbleTimer = later(() => { if (!drag) detach(bubble); }, 160);
@@ -249,6 +270,7 @@
     drag = { input, param: input !== timeline, changed: false, rect: input.getBoundingClientRect(), thumb: parseFloat(getComputedStyle(input).getPropertyValue("--um-thumb")) || 16 };
     if (drag.param) snapshotReadouts(); // 拖动开始时的读数，松手时与之比较
     if (drag.param && marks.isConnected && !marks.hidden) { marks.hidden = true; drag.hidMarks = true; }
+    setStill("drag", true);
     input.classList.add("um-dragging");
     clearTimeout(bubbleTimer);
     attach(bubble, body);
@@ -742,15 +764,16 @@
     const times = stepTimes();
     const visibleNow = Boolean(times) && getComputedStyle(transport).display !== "none" && timeline.offsetWidth > 0;
     marks.hidden = !visibleNow;
-    if (!visibleNow) { marksKey = ""; detach(marks); return; }
+    if (!visibleNow) { marksKey = ""; markCover = null; detach(marks); return; }
     attach(marks, transport);
-    const key = `${times.map(t => t[1].toFixed(3)).join(",")}|${timeline.offsetLeft}|${timeline.offsetWidth}|${timeline.offsetTop}|${timeline.offsetHeight}`;
+    const key = `${state.playbackRate}|${times.map(t => t[1].toFixed(3)).join(",")}|${timeline.offsetLeft}|${timeline.offsetWidth}|${timeline.offsetTop}|${timeline.offsetHeight}`;
     if (key !== marksKey) {
       marksKey = key;
       const thumb = parseFloat(getComputedStyle(timeline).getPropertyValue("--um-thumb")) || 14;
+      const track = Math.max(0, timeline.offsetWidth - thumb);
       Object.assign(marks.style, {
         left: `${timeline.offsetLeft + thumb / 2}px`,
-        width: `${Math.max(0, timeline.offsetWidth - thumb)}px`,
+        width: `${track}px`,
         top: `${timeline.offsetTop + timeline.offsetHeight / 2}px`
       });
       marks.replaceChildren(...times.map(([step, at]) => {
@@ -764,6 +787,8 @@
         button.title = `第 ${step} 步`;
         return button;
       }));
+      markCover = { track, reach: thumb / 2 + MARK_HALF + 2, items: $$(".um-tl-mark", marks).map(button => [button, Number(button.dataset.at)]) };
+      coverMarks();
     }
     refreshMarks();
   }
@@ -811,6 +836,8 @@
     marksKey = "";
     layoutMarks();
   }
+  // 倍速按钮的点击处理在 app.js（不经过 setRate）；本文件晚于 app.js 加载，同一元素上的监听排在其后，此时倍速已更新
+  $("#playbackButton")?.addEventListener("click", () => { marksKey = ""; layoutMarks(); });
   function stepBy(delta) {
     if (!generated()) return false;
     const total = Math.max(config().steps.length, 4);
@@ -825,15 +852,19 @@
     timeline.dispatchEvent(new Event("input", { bubbles: true }));
     return true;
   }
-  const anyDialogOpen = () => Boolean($("dialog[open]")) || body.classList.contains("announcements-open");
-  const typingTarget = target => Boolean(target?.closest?.('input:not([type="range"]), textarea, select, [contenteditable]:not([contenteditable="false"]), summary'));
+  // 盖在实验前面的层（2026-11-07 盘点）：原生 dialog（命令面板、公告、示意图放大、题目条件确认）、
+  // .modal-backdrop.show（个人密钥）、拍照识题、生成遮罩、AI 问答全屏路由。快捷键、Ctrl+K、? 一览、手机手势共用这一个判断。
+  const blockingLayerOpen = () => Boolean($("dialog[open], .modal-backdrop.show, #photoCamera:not([hidden]), #generationOverlay.show"))
+    || ["announcements-open", "photo-camera-open", "ai-tutor-route"].some(name => body.classList.contains(name));
+  // 下拉菜单（menu-select.js）的触发按钮替代了原生 select，同样不触发实验快捷键
+  const typingTarget = target => Boolean(target?.closest?.('input:not([type="range"]), textarea, select, [data-menu-select-trigger], .menu-select-panel, [contenteditable]:not([contenteditable="false"]), summary'));
   doc.addEventListener("keydown", event => {
     if (event.defaultPrevented || compat() || event.isComposing) return;
     const { key } = event;
     if (key === "Escape" && !keysPanel.hidden) { toggleKeys(false); event.preventDefault(); return; }
     if (event.ctrlKey || event.metaKey || event.altKey) return;
     // 与空格快捷键相同的排除：输入框、文本域、可编辑区域、对话框、AI 问答页（Esc 由原有逻辑处理）
-    if (body.classList.contains("ai-tutor-route") || anyDialogOpen() || typingTarget(event.target)) return;
+    if (blockingLayerOpen() || typingTarget(event.target)) return;
     const onRange = Boolean(event.target?.matches?.('input[type="range"]'));
     let handled = false;
     if (key === "ArrowLeft" || key === "ArrowRight") {
@@ -1094,7 +1125,7 @@
     zoom.y = clamp(zoom.y, -maxY, maxY);
   }
   scene?.addEventListener("pointerdown", event => {
-    if (event.pointerType !== "touch" || !gestureReady() || event.target.closest(GESTURE_EXCLUDE)) return;
+    if (event.pointerType !== "touch" || !gestureReady() || blockingLayerOpen() || event.target.closest(GESTURE_EXCLUDE)) return;
     zoom.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
     if (zoom.pointers.size === 2) {
       const [a, b] = [...zoom.pointers.values()];
@@ -1136,7 +1167,8 @@
     zoom.swipe = null;
     if (event.type === "pointerup" && swipe && zoom.pointers.size === 0) {
       const dx = event.clientX - swipe.x, dy = event.clientY - swipe.y, dt = event.timeStamp - swipe.t;
-      if (zoom.scale <= 1.001 && Math.abs(dx) >= 48 && Math.abs(dx) > Math.abs(dy) * 1.6 && dt < 900) {
+      if (blockingLayerOpen()) { /* 手势期间弹出了弹层：不切换步骤 */ }
+      else if (zoom.scale <= 1.001 && Math.abs(dx) >= 48 && Math.abs(dx) > Math.abs(dy) * 1.6 && dt < 900) {
         if (stepBy(dx < 0 ? 1 : -1)) vibrate(8);
       } else if (Math.abs(dx) < 10 && Math.abs(dy) < 10 && dt < 300) {
         if (event.timeStamp - zoom.lastTap < 320 && zoom.scale > 1.001) { resetZoom(); zoom.lastTap = 0; }
@@ -1246,9 +1278,11 @@
     return items;
   }
   function runPreset(option) {
-    // 与下拉菜单的操作顺序一致：先在对应学科，再点菜单里的这一项
+    // 与下拉菜单的操作顺序一致：先切到对应学科（学科页签的点击处理是同步的），再载入这一项。
+    // 菜单只挂当前学科的选项（renderPresetMenu 用 replaceChildren），跨学科时目标选项不在菜单里，点击冒泡不到委托监听，
+    // 所以直接调用菜单点击用的同一个入口 applyPhysicsPresetChoice。
     if (option.dataset.subject && appReady() && state.subject !== option.dataset.subject) $(`.subject-tab[data-subject="${option.dataset.subject}"]`)?.click();
-    option.click();
+    if (typeof applyPhysicsPresetChoice === "function") applyPhysicsPresetChoice(option); else option.click();
     $("#generateButton")?.focus();
   }
   function renderPalette() {
@@ -1314,9 +1348,10 @@
   palette.addEventListener("click", event => { if (event.target === palette) palette.close(); });
   doc.addEventListener("keydown", event => {
     if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey || event.key.toLowerCase() !== "k" || compat()) return;
-    if (body.classList.contains("ai-tutor-route") || body.classList.contains("announcements-open")) return;
+    if (palette.open) { event.preventDefault(); palette.close(); return; }
+    if (blockingLayerOpen()) return; // 其他弹层打开时不在其上方弹出命令面板
     event.preventDefault();
-    if (palette.open) palette.close(); else openPalette();
+    openPalette();
   });
 
   /* ==================== 状态同步 ==================== */
@@ -1354,7 +1389,11 @@
   const title = $("#experimentTitle");
   if (title) new MutationObserver(() => { resetZoom(false); onStateChange(); }).observe(title, { childList: true, characterData: true, subtree: true });
   const overlay = $("#generationOverlay");
-  if (overlay) new MutationObserver(() => { if (!overlay.classList.contains("show")) onStateChange(); }).observe(overlay, { attributes: true, attributeFilter: ["class"] });
+  if (overlay) new MutationObserver(() => {
+    const showing = overlay.classList.contains("show");
+    setStill("generate", showing);
+    if (!showing) onStateChange();
+  }).observe(overlay, { attributes: true, attributeFilter: ["class"] });
   coarseQuery.addEventListener?.("change", syncGestureClass);
   dockQuery.addEventListener?.("change", () => { setDocked(false); updateDock(); });
   syncPlaying();
