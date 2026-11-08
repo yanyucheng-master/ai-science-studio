@@ -745,14 +745,17 @@
     }
   }
 
-  /* ==================== B3 时间轴步骤刻度（刹车：沿用演示模式已有的步骤—时间对应） ==================== */
+  /* ==================== B3 时间轴步骤刻度 ==================== */
   const transport = $(".experiment-card .transport");
   const marks = doc.createElement("nav");
   marks.className = "um-tl-marks";
   marks.setAttribute("aria-label", "解题步骤刻度");
   marks.hidden = true;
   function stepTimes() {
-    if (!generated() || compat() || templateKey() !== "brake") return null;
+    if (!generated() || compat()) return null;
+    const count = activeGenericTemplate()?.protocolSteps;
+    if (count) return Array.from({length:count}, (_, index) => [index+1, index/count]);
+    if (templateKey() !== "brake") return null;
     // playDemoSequence：第 1 步在起点；第 3 步在 max(1.2s, 38%)；第 4 步在 max(2.4s, 72%)（按实验时长与倍速换算）；第 2 步没有时间点
     const ms = (duration() / state.playbackRate) * 1000;
     if (!(ms > 0)) return null;
@@ -803,6 +806,10 @@
   marks.addEventListener("click", event => {
     const button = event.target.closest(".um-tl-mark");
     if (!button || !generated()) return;
+    if (activeGenericTemplate()?.protocolSteps) {
+      activateReasoningStep(Number(button.dataset.step), { manual: true });
+      return;
+    }
     timeline.value = String(Number(button.dataset.at) * 100);
     timeline.dispatchEvent(new Event("input", { bubbles: true }));
     activateReasoningStep(Number(button.dataset.step), { manual: true });
@@ -1029,7 +1036,14 @@
     if (button) setCollapsed(false, { focus: button.dataset.open });
   });
   function syncRail(steps) {
-    $$(".um-rail-dot", rail).forEach((dot, index) => {
+    const host = $(".um-rail-steps", rail);
+    while (host.children.length > steps.length) host.lastElementChild.remove();
+    while (host.children.length < steps.length) {
+      const dot = doc.createElement("i");
+      dot.className = "um-rail-dot";
+      host.append(dot);
+    }
+    [...host.children].forEach((dot, index) => {
       dot.classList.toggle("is-done", Boolean(steps[index]?.classList.contains("done")));
       dot.classList.toggle("is-active", Boolean(steps[index]?.classList.contains("active")));
     });
@@ -1374,6 +1388,7 @@
   if (playButton) new MutationObserver(() => { syncPlaying(); setTitles(); }).observe(playButton, { attributes: true, attributeFilter: ["class"] });
   if (stepsHost) {
     new MutationObserver(syncChain).observe(stepsHost, { childList: true });
+    stepsHost.addEventListener("textbookstepchange", syncChain);
     if ("ResizeObserver" in window) new ResizeObserver(() => { if (activeStep) measureChain(); }).observe(stepsHost);
   }
   if (timeline && "ResizeObserver" in window) new ResizeObserver(() => { marksKey = ""; layoutMarks(); }).observe(timeline);

@@ -1,0 +1,3325 @@
+{
+  "beforeFixNormalButtonAB": {
+    "baseline": {
+      "sourceSha": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+      "sourceTag": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+      "exitCode": 0,
+      "cases": [
+        {
+          "id": "mirror-control",
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "expected": "local",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "passed": true,
+          "requests": [],
+          "actual": {
+            "generatedQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "planeMirror",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+            "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+            "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+            "tutor": {
+              "mode": "question",
+              "subject": "物理",
+              "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+            }
+          },
+          "before": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+            "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "物理",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            }
+          },
+          "failure": null
+        },
+        {
+          "id": "mirror-light",
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+          "expected": "local",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "passed": true,
+          "requests": [],
+          "actual": {
+            "generatedQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+            "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "planeMirror",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+            "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+            "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+            "tutor": {
+              "mode": "question",
+              "subject": "物理",
+              "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+            }
+          },
+          "before": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+            "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "物理",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            }
+          },
+          "failure": null
+        },
+        {
+          "id": "mirror-zone",
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。",
+          "expected": "local",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "passed": true,
+          "requests": [],
+          "actual": {
+            "generatedQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。",
+            "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "planeMirror",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+            "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+            "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+            "tutor": {
+              "mode": "question",
+              "subject": "物理",
+              "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+            }
+          },
+          "before": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+            "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "物理",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            }
+          },
+          "failure": null
+        },
+        {
+          "id": "general-photosynthesis",
+          "question": "光合作用的原料和产物是什么？",
+          "expected": "fallback",
+          "selectedSubject": "生物",
+          "selectedGrade": "senior",
+          "passed": true,
+          "requests": [
+            {
+              "path": "/api/v1/experiment/generate",
+              "body": {
+                "question": "光合作用的原料和产物是什么？",
+                "preferredSubject": "生物"
+              },
+              "status": 503
+            }
+          ],
+          "actual": {
+            "generatedQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "input": "光合作用的原料和产物是什么？",
+            "subject": "生物",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+            "resultText": "",
+            "metrics": "",
+            "tutor": {
+              "mode": "question",
+              "subject": "生物",
+              "originalQuestion": "光合作用的原料和产物是什么？",
+              "hasResult": false,
+              "currentStep": ""
+            }
+          },
+          "before": {
+            "generatedQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "subject": "生物",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+            "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+            "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "生物",
+              "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+            }
+          },
+          "failure": null
+        },
+        {
+          "id": "general-light",
+          "question": "灯光的光照强度与距离有什么关系？",
+          "expected": "fallback",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "passed": true,
+          "requests": [
+            {
+              "path": "/api/v1/experiment/generate",
+              "body": {
+                "question": "灯光的光照强度与距离有什么关系？",
+                "preferredSubject": "物理"
+              },
+              "status": 503
+            }
+          ],
+          "actual": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "灯光的光照强度与距离有什么关系？",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+            "resultText": "",
+            "metrics": "",
+            "tutor": {
+              "mode": "question",
+              "subject": "物理",
+              "originalQuestion": "灯光的光照强度与距离有什么关系？",
+              "hasResult": false,
+              "currentStep": ""
+            }
+          },
+          "before": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+            "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "物理",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            }
+          },
+          "failure": null
+        }
+      ]
+    },
+    "junior": {
+      "sourceSha": "5d6b1a0c40ace9c862badd4ff6b6d31dc2a081b2",
+      "sourceTag": "5d6b1a0c40ace9c862badd4ff6b6d31dc2a081b2",
+      "exitCode": 1,
+      "cases": [
+        {
+          "id": "mirror-control",
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "expected": "local",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "passed": true,
+          "requests": [],
+          "actual": {
+            "generatedQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "planeMirror",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+            "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+            "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+            "tutor": {
+              "mode": "question",
+              "subject": "物理",
+              "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+            }
+          },
+          "before": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+            "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "物理",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            }
+          },
+          "failure": null
+        },
+        {
+          "id": "mirror-light",
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+          "expected": "local",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "passed": true,
+          "requests": [],
+          "actual": {
+            "generatedQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+            "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "planeMirror",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+            "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+            "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+            "tutor": {
+              "mode": "question",
+              "subject": "物理",
+              "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+            }
+          },
+          "before": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+            "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "物理",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            }
+          },
+          "failure": null
+        },
+        {
+          "id": "mirror-zone",
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。",
+          "expected": "local",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "passed": false,
+          "requests": [],
+          "actual": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。 如需讲解，请主动打开 AI 导师提问。",
+            "resultText": "",
+            "metrics": "",
+            "tutor": {
+              "mode": "question",
+              "subject": "物理",
+              "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。",
+              "hasResult": false,
+              "currentStep": ""
+            }
+          },
+          "before": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+            "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "物理",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            }
+          },
+          "failure": "actual generation\n+ actual - expected\n\n+ '一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。'\n- '平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。'\n"
+        },
+        {
+          "id": "general-photosynthesis",
+          "question": "光合作用的原料和产物是什么？",
+          "expected": "fallback",
+          "selectedSubject": "生物",
+          "selectedGrade": "senior",
+          "passed": false,
+          "requests": [],
+          "actual": {
+            "generatedQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "input": "光合作用的原料和产物是什么？",
+            "subject": "生物",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。 如需讲解，请主动打开 AI 导师提问。",
+            "resultText": "",
+            "metrics": "",
+            "tutor": {
+              "mode": "question",
+              "subject": "生物",
+              "originalQuestion": "光合作用的原料和产物是什么？",
+              "hasResult": false,
+              "currentStep": ""
+            }
+          },
+          "before": {
+            "generatedQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "subject": "生物",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+            "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+            "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "生物",
+              "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+            }
+          },
+          "failure": "normal fallback availability preserved\n\n0 !== 1\n"
+        },
+        {
+          "id": "general-light",
+          "question": "灯光的光照强度与距离有什么关系？",
+          "expected": "fallback",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "passed": true,
+          "requests": [
+            {
+              "path": "/api/v1/experiment/generate",
+              "body": {
+                "question": "灯光的光照强度与距离有什么关系？",
+                "preferredSubject": "物理"
+              },
+              "status": 503
+            }
+          ],
+          "actual": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "灯光的光照强度与距离有什么关系？",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+            "resultText": "",
+            "metrics": "",
+            "tutor": {
+              "mode": "question",
+              "subject": "物理",
+              "originalQuestion": "灯光的光照强度与距离有什么关系？",
+              "hasResult": false,
+              "currentStep": ""
+            }
+          },
+          "before": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+            "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "物理",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            }
+          },
+          "failure": null
+        }
+      ]
+    },
+    "senior": {
+      "sourceSha": "fadc0c60321bf1d9bb828fa71c3814ca964d4a84",
+      "sourceTag": "fadc0c60321bf1d9bb828fa71c3814ca964d4a84",
+      "exitCode": 1,
+      "cases": [
+        {
+          "id": "mirror-control",
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "expected": "local",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "passed": true,
+          "requests": [],
+          "actual": {
+            "generatedQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "planeMirror",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+            "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+            "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+            "tutor": {
+              "mode": "question",
+              "subject": "物理",
+              "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+            }
+          },
+          "before": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+            "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "物理",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            }
+          },
+          "failure": null
+        },
+        {
+          "id": "mirror-light",
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+          "expected": "local",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "passed": false,
+          "requests": [],
+          "actual": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。 如需讲解，请主动打开 AI 导师提问。",
+            "resultText": "",
+            "metrics": "",
+            "tutor": {
+              "mode": "question",
+              "subject": "物理",
+              "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+              "hasResult": false,
+              "currentStep": ""
+            }
+          },
+          "before": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+            "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "物理",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            }
+          },
+          "failure": "actual generation\n+ actual - expected\n\n+ '一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。'\n- '平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。'\n"
+        },
+        {
+          "id": "mirror-zone",
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。",
+          "expected": "local",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "passed": true,
+          "requests": [],
+          "actual": {
+            "generatedQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。",
+            "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "planeMirror",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+            "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+            "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+            "tutor": {
+              "mode": "question",
+              "subject": "物理",
+              "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+            }
+          },
+          "before": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+            "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "物理",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            }
+          },
+          "failure": null
+        },
+        {
+          "id": "general-photosynthesis",
+          "question": "光合作用的原料和产物是什么？",
+          "expected": "fallback",
+          "selectedSubject": "生物",
+          "selectedGrade": "senior",
+          "passed": true,
+          "requests": [
+            {
+              "path": "/api/v1/experiment/generate",
+              "body": {
+                "question": "光合作用的原料和产物是什么？",
+                "preferredSubject": "生物"
+              },
+              "status": 503
+            }
+          ],
+          "actual": {
+            "generatedQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "input": "光合作用的原料和产物是什么？",
+            "subject": "生物",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+            "resultText": "",
+            "metrics": "",
+            "tutor": {
+              "mode": "question",
+              "subject": "生物",
+              "originalQuestion": "光合作用的原料和产物是什么？",
+              "hasResult": false,
+              "currentStep": ""
+            }
+          },
+          "before": {
+            "generatedQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "subject": "生物",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+            "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+            "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "生物",
+              "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+            }
+          },
+          "failure": null
+        },
+        {
+          "id": "general-light",
+          "question": "灯光的光照强度与距离有什么关系？",
+          "expected": "fallback",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "passed": false,
+          "requests": [],
+          "actual": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "灯光的光照强度与距离有什么关系？",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。 如需讲解，请主动打开 AI 导师提问。",
+            "resultText": "",
+            "metrics": "",
+            "tutor": {
+              "mode": "question",
+              "subject": "物理",
+              "originalQuestion": "灯光的光照强度与距离有什么关系？",
+              "hasResult": false,
+              "currentStep": ""
+            }
+          },
+          "before": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+            "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "物理",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            }
+          },
+          "failure": "normal fallback availability preserved\n\n0 !== 1\n"
+        }
+      ]
+    },
+    "joint": {
+      "sourceSha": "520bc5f040fb2e5906e0984eecab1e137c40a992",
+      "sourceTag": "520bc5f040fb2e5906e0984eecab1e137c40a992",
+      "exitCode": 1,
+      "cases": [
+        {
+          "id": "mirror-control",
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "expected": "local",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "passed": true,
+          "requests": [],
+          "actual": {
+            "generatedQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "planeMirror",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+            "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+            "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+            "tutor": {
+              "mode": "question",
+              "subject": "物理",
+              "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+            }
+          },
+          "before": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+            "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "物理",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            }
+          },
+          "failure": null
+        },
+        {
+          "id": "mirror-light",
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+          "expected": "local",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "passed": false,
+          "requests": [],
+          "actual": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。 如需讲解，请主动打开 AI 导师提问。",
+            "resultText": "",
+            "metrics": "",
+            "tutor": {
+              "mode": "question",
+              "subject": "物理",
+              "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+              "hasResult": false,
+              "currentStep": ""
+            }
+          },
+          "before": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+            "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "物理",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            }
+          },
+          "failure": "actual generation\n+ actual - expected\n\n+ '一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。'\n- '平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。'\n"
+        },
+        {
+          "id": "mirror-zone",
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。",
+          "expected": "local",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "passed": false,
+          "requests": [],
+          "actual": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。 如需讲解，请主动打开 AI 导师提问。",
+            "resultText": "",
+            "metrics": "",
+            "tutor": {
+              "mode": "question",
+              "subject": "物理",
+              "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。",
+              "hasResult": false,
+              "currentStep": ""
+            }
+          },
+          "before": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+            "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "物理",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            }
+          },
+          "failure": "actual generation\n+ actual - expected\n\n+ '一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。'\n- '平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于光合作用展区。'\n"
+        },
+        {
+          "id": "general-photosynthesis",
+          "question": "光合作用的原料和产物是什么？",
+          "expected": "fallback",
+          "selectedSubject": "生物",
+          "selectedGrade": "senior",
+          "passed": false,
+          "requests": [],
+          "actual": {
+            "generatedQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "input": "光合作用的原料和产物是什么？",
+            "subject": "生物",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。 如需讲解，请主动打开 AI 导师提问。",
+            "resultText": "",
+            "metrics": "",
+            "tutor": {
+              "mode": "question",
+              "subject": "生物",
+              "originalQuestion": "光合作用的原料和产物是什么？",
+              "hasResult": false,
+              "currentStep": ""
+            }
+          },
+          "before": {
+            "generatedQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "subject": "生物",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+            "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+            "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "生物",
+              "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+            }
+          },
+          "failure": "normal fallback availability preserved\n\n0 !== 1\n"
+        },
+        {
+          "id": "general-light",
+          "question": "灯光的光照强度与距离有什么关系？",
+          "expected": "fallback",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "passed": false,
+          "requests": [],
+          "actual": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "灯光的光照强度与距离有什么关系？",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。 如需讲解，请主动打开 AI 导师提问。",
+            "resultText": "",
+            "metrics": "",
+            "tutor": {
+              "mode": "question",
+              "subject": "物理",
+              "originalQuestion": "灯光的光照强度与距离有什么关系？",
+              "hasResult": false,
+              "currentStep": ""
+            }
+          },
+          "before": {
+            "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+            "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+            "tutor": {
+              "mode": "experiment",
+              "subject": "物理",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "hasResult": true,
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            }
+          },
+          "failure": "normal fallback availability preserved\n\n0 !== 1\n"
+        }
+      ]
+    }
+  },
+  "quotedV1Reproduction": {
+    "sourceSha": "f70c0fff7851bcdbb6aa77895902c8f915156b1e",
+    "exitCode": 1,
+    "cases": [
+      {
+        "id": "mirror-curriculum-title",
+        "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于“按人教版生物学七年级下册教材，探究绿叶在光下制造有机物”展区。",
+        "expected": "local",
+        "passed": false,
+        "requests": [],
+        "actual": {
+          "generatedQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于“按人教版生物学七年级下册教材，探究绿叶在光下制造有机物”展区。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "hasGenerated": true,
+          "time": 1.24,
+          "playing": false,
+          "feedback": "无法确认条件或子问：「平面镜成像」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。实验位于“按人教版生物学七年级下册教材，探究绿叶在光下制造有机物”展区。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "failure": "page.waitForFunction: Timeout 30000ms exceeded."
+      }
+    ]
+  },
+  "supersededPartialRuns": {
+    "joint": {
+      "sourceSha": "f70c0fff7851bcdbb6aa77895902c8f915156b1e",
+      "completedGroups": 3,
+      "fullyFinished": false,
+      "reason": "Superseded and stopped after an additional quoted-curriculum background case was reproduced. Not final execution evidence."
+    },
+    "junior": {
+      "sourceSha": "ae476d8842bc7616d3f5794dad17b68ddc00b8cc",
+      "completedGroups": 5,
+      "fullyFinished": false,
+      "reason": "Superseded and stopped after an additional quoted-curriculum background case was reproduced. Not final execution evidence."
+    },
+    "senior": {
+      "sourceSha": "d4d712c52eeeebd8c27e9db2cd55e4c8a4032fb1",
+      "completedGroups": 5,
+      "fullyFinished": false,
+      "reason": "Superseded and stopped after an additional quoted-curriculum background case was reproduced. Not final execution evidence."
+    }
+  },
+  "populationBackground": {
+    "joint": {
+      "checks": [
+        {
+          "mode": "discrete",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 215,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 215,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 215,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        }
+      ],
+      "errors": [],
+      "api": [],
+      "browser": "156.0.4314.58",
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at <workspace>/.handoff/photosynthesis-routing-20261106/joint-source-72514d2/server/scripts/verify-population-background-browser.js:42:69"
+    },
+    "junior": {
+      "checks": [
+        {
+          "mode": "discrete",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 221,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 221,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 221,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        }
+      ],
+      "errors": [],
+      "api": [],
+      "browser": "156.0.4314.58",
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at <workspace>/.handoff/photosynthesis-routing-20261106/junior-source-11dabac/server/scripts/verify-population-background-browser.js:42:69"
+    },
+    "senior": {
+      "checks": [
+        {
+          "mode": "discrete",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 214,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 214,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 214,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        }
+      ],
+      "errors": [],
+      "api": [],
+      "browser": "156.0.4314.58",
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at <workspace>/.handoff/photosynthesis-routing-20261106/senior-source-85563f2/server/scripts/verify-population-background-browser.js:42:69"
+    },
+    "baseline": {
+      "checks": [
+        {
+          "mode": "discrete",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 215,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 215,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 215,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        }
+      ],
+      "errors": [],
+      "api": [],
+      "browser": "156.0.4314.58",
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at <workspace>/.handoff/photosynthesis-review-20261105/baseline-source-e6f43c5/server/scripts/verify-population-background-browser.js:42:69"
+    }
+  },
+  "preflightNotes": [
+    "Initial seed used a mutable subject preset after a mirror generation; hidden timeline caused a fixture timeout in all four exploratory runs. Fixed independent seeds; before-*-real holds actual5-case A/B.",
+    "First routing matrix recorded111/112 passes and one390px click with unchanged pending feedback despite a successful supplementary plan; now waits for the existing80ms post-generation focus before another action. The original observation is retained locally.",
+    "Second main matrix114/114 passed, then an added playing check incorrectly assumed typing does not pause. Both baseline and candidate already pause on input edits. The final test explicitly records that edit pause, resumes through the real button, then tests rejection. Product behavior was preserved.",
+    "V1 full runners were stopped after quoted-background false interception was demonstrated; all final candidates run the complete set again.",
+    "Primary full-run routing tag defaulted to working-tree, but executed archived root. The original tag is kept; an additional routing-only Edge run per branch explicitly passesSHA and supplies the detailed public matrix. Chromium and selected captures also passSHA."
+  ],
+  "primaryRoutingSourceTags": {
+    "joint": "working-tree",
+    "junior": "working-tree",
+    "senior": "working-tree"
+  },
+  "physicsConceptAB": {
+    "before": {
+      "baseline": {
+        "browser": "156.0.4314.58",
+        "checks": [
+          "general-photosynthesis/false/senior/single",
+          "general-light/false/senior/single",
+          "only expected mock503 console messages, no other page errors"
+        ],
+        "errors": [
+          "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+          "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+        ],
+        "api": [],
+        "screenshots": [],
+        "layouts": [],
+        "sourceSha": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+        "method": "normal generate button",
+        "cases": [
+          {
+            "id": "general-photosynthesis",
+            "question": "光合作用的原料和产物是什么？",
+            "expected": "fallback",
+            "selectedSubject": "物理",
+            "selectedGrade": "senior",
+            "noTutor": false,
+            "order": "single",
+            "viewportWidth": 390,
+            "before": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+              "result": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "experiment",
+                "subject": "物理",
+                "title": "刹车距离实验 · 速度如何归零",
+                "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+                "templateId": "brake",
+                "parameters": {
+                  "initialSpeed": 20,
+                  "deceleration": 5
+                },
+                "deterministicResult": {
+                  "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                  "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "v² − v₀² = 2ax",
+                "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+              },
+              "hash": ""
+            },
+            "actual": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "光合作用的原料和产物是什么？",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+              "result": {
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "question",
+                "subject": "物理",
+                "originalQuestion": "光合作用的原料和产物是什么？",
+                "templateId": "",
+                "parameters": {},
+                "deterministicResult": {
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "",
+                "currentStep": ""
+              },
+              "hash": ""
+            },
+            "requests": [
+              {
+                "path": "/api/v1/experiment/generate",
+                "body": {
+                  "question": "光合作用的原料和产物是什么？",
+                  "preferredSubject": "物理"
+                },
+                "status": 503
+              }
+            ],
+            "supplementaryPlan": {
+              "ok": false,
+              "subject": "物理",
+              "localOnly": false,
+              "message": "当前题目没有匹配到本地实验模板。"
+            },
+            "passed": true
+          },
+          {
+            "id": "general-light",
+            "question": "灯光的光照强度与距离有什么关系？",
+            "expected": "fallback",
+            "selectedSubject": "物理",
+            "selectedGrade": "senior",
+            "noTutor": false,
+            "order": "single",
+            "viewportWidth": 390,
+            "before": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+              "result": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "experiment",
+                "subject": "物理",
+                "title": "刹车距离实验 · 速度如何归零",
+                "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+                "templateId": "brake",
+                "parameters": {
+                  "initialSpeed": 20,
+                  "deceleration": 5
+                },
+                "deterministicResult": {
+                  "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                  "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "v² − v₀² = 2ax",
+                "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+              },
+              "hash": ""
+            },
+            "actual": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "灯光的光照强度与距离有什么关系？",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+              "result": {
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "question",
+                "subject": "物理",
+                "originalQuestion": "灯光的光照强度与距离有什么关系？",
+                "templateId": "",
+                "parameters": {},
+                "deterministicResult": {
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "",
+                "currentStep": ""
+              },
+              "hash": ""
+            },
+            "requests": [
+              {
+                "path": "/api/v1/experiment/generate",
+                "body": {
+                  "question": "灯光的光照强度与距离有什么关系？",
+                  "preferredSubject": "物理"
+                },
+                "status": 503
+              }
+            ],
+            "supplementaryPlan": {
+              "ok": false,
+              "subject": "物理",
+              "localOnly": false,
+              "message": "当前题目没有匹配到本地实验模板。"
+            },
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "registry": [
+          {
+            "noTutor": false,
+            "grade": "senior",
+            "order": "single",
+            "registry": []
+          }
+        ],
+        "templates": []
+      },
+      "junior": {
+        "browser": "156.0.4314.58",
+        "checks": [
+          "general-light/false/senior/single",
+          "only expected mock503 console messages, no other page errors"
+        ],
+        "errors": [
+          "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+        ],
+        "api": [],
+        "screenshots": [],
+        "layouts": [],
+        "sourceSha": "5d6b1a0c40ace9c862badd4ff6b6d31dc2a081b2",
+        "method": "normal generate button",
+        "cases": [
+          {
+            "id": "general-photosynthesis",
+            "question": "光合作用的原料和产物是什么？",
+            "expected": "fallback",
+            "selectedSubject": "物理",
+            "selectedGrade": "senior",
+            "noTutor": false,
+            "order": "single",
+            "viewportWidth": 390,
+            "before": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+              "result": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "experiment",
+                "subject": "物理",
+                "title": "刹车距离实验 · 速度如何归零",
+                "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+                "templateId": "brake",
+                "parameters": {
+                  "initialSpeed": 20,
+                  "deceleration": 5
+                },
+                "deterministicResult": {
+                  "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                  "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "v² − v₀² = 2ax",
+                "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+              },
+              "hash": ""
+            },
+            "actual": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "光合作用的原料和产物是什么？",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。 如需讲解，请主动打开 AI 导师提问。",
+              "result": {
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "question",
+                "subject": "物理",
+                "originalQuestion": "光合作用的原料和产物是什么？",
+                "templateId": "",
+                "parameters": {},
+                "deterministicResult": {
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "",
+                "currentStep": ""
+              },
+              "hash": ""
+            },
+            "requests": [],
+            "supplementaryPlan": {
+              "ok": false,
+              "subject": "生物",
+              "localOnly": true,
+              "diagnostic": "",
+              "message": "当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。"
+            },
+            "passed": false,
+            "failure": "normal fallback availability preserved\n\n0 !== 1\n"
+          },
+          {
+            "id": "general-light",
+            "question": "灯光的光照强度与距离有什么关系？",
+            "expected": "fallback",
+            "selectedSubject": "物理",
+            "selectedGrade": "senior",
+            "noTutor": false,
+            "order": "single",
+            "viewportWidth": 390,
+            "before": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+              "result": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "experiment",
+                "subject": "物理",
+                "title": "刹车距离实验 · 速度如何归零",
+                "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+                "templateId": "brake",
+                "parameters": {
+                  "initialSpeed": 20,
+                  "deceleration": 5
+                },
+                "deterministicResult": {
+                  "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                  "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "v² − v₀² = 2ax",
+                "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+              },
+              "hash": ""
+            },
+            "actual": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "灯光的光照强度与距离有什么关系？",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+              "result": {
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "question",
+                "subject": "物理",
+                "originalQuestion": "灯光的光照强度与距离有什么关系？",
+                "templateId": "",
+                "parameters": {},
+                "deterministicResult": {
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "",
+                "currentStep": ""
+              },
+              "hash": ""
+            },
+            "requests": [
+              {
+                "path": "/api/v1/experiment/generate",
+                "body": {
+                  "question": "灯光的光照强度与距离有什么关系？",
+                  "preferredSubject": "物理"
+                },
+                "status": 503
+              }
+            ],
+            "supplementaryPlan": {
+              "ok": false,
+              "subject": "物理",
+              "localOnly": false,
+              "message": "当前题目没有匹配到本地实验模板。"
+            },
+            "passed": true
+          }
+        ],
+        "failures": [
+          {
+            "id": "general-photosynthesis",
+            "noTutor": false,
+            "grade": "senior",
+            "order": "single",
+            "message": "normal fallback availability preserved\n\n0 !== 1\n"
+          }
+        ],
+        "registry": [
+          {
+            "noTutor": false,
+            "grade": "senior",
+            "order": "single",
+            "registry": [
+              "photosynthesis"
+            ]
+          }
+        ],
+        "templates": [
+          "photosynthesis"
+        ]
+      },
+      "senior": {
+        "browser": "156.0.4314.58",
+        "checks": [
+          "general-photosynthesis/false/senior/single",
+          "only expected mock503 console messages, no other page errors"
+        ],
+        "errors": [
+          "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+        ],
+        "api": [],
+        "screenshots": [],
+        "layouts": [],
+        "sourceSha": "fadc0c60321bf1d9bb828fa71c3814ca964d4a84",
+        "method": "normal generate button",
+        "cases": [
+          {
+            "id": "general-photosynthesis",
+            "question": "光合作用的原料和产物是什么？",
+            "expected": "fallback",
+            "selectedSubject": "物理",
+            "selectedGrade": "senior",
+            "noTutor": false,
+            "order": "single",
+            "viewportWidth": 390,
+            "before": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+              "result": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "experiment",
+                "subject": "物理",
+                "title": "刹车距离实验 · 速度如何归零",
+                "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+                "templateId": "brake",
+                "parameters": {
+                  "initialSpeed": 20,
+                  "deceleration": 5
+                },
+                "deterministicResult": {
+                  "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                  "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "v² − v₀² = 2ax",
+                "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+              },
+              "hash": ""
+            },
+            "actual": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "光合作用的原料和产物是什么？",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+              "result": {
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "question",
+                "subject": "物理",
+                "originalQuestion": "光合作用的原料和产物是什么？",
+                "templateId": "",
+                "parameters": {},
+                "deterministicResult": {
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "",
+                "currentStep": ""
+              },
+              "hash": ""
+            },
+            "requests": [
+              {
+                "path": "/api/v1/experiment/generate",
+                "body": {
+                  "question": "光合作用的原料和产物是什么？",
+                  "preferredSubject": "物理"
+                },
+                "status": 503
+              }
+            ],
+            "supplementaryPlan": {
+              "ok": false,
+              "subject": "物理",
+              "localOnly": false,
+              "message": "当前题目没有匹配到本地实验模板。"
+            },
+            "passed": true
+          },
+          {
+            "id": "general-light",
+            "question": "灯光的光照强度与距离有什么关系？",
+            "expected": "fallback",
+            "selectedSubject": "物理",
+            "selectedGrade": "senior",
+            "noTutor": false,
+            "order": "single",
+            "viewportWidth": 390,
+            "before": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+              "result": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "experiment",
+                "subject": "物理",
+                "title": "刹车距离实验 · 速度如何归零",
+                "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+                "templateId": "brake",
+                "parameters": {
+                  "initialSpeed": 20,
+                  "deceleration": 5
+                },
+                "deterministicResult": {
+                  "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                  "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "v² − v₀² = 2ax",
+                "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+              },
+              "hash": ""
+            },
+            "actual": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "灯光的光照强度与距离有什么关系？",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。 如需讲解，请主动打开 AI 导师提问。",
+              "result": {
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "question",
+                "subject": "物理",
+                "originalQuestion": "灯光的光照强度与距离有什么关系？",
+                "templateId": "",
+                "parameters": {},
+                "deterministicResult": {
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "",
+                "currentStep": ""
+              },
+              "hash": ""
+            },
+            "requests": [],
+            "supplementaryPlan": {
+              "ok": false,
+              "subject": "生物",
+              "localOnly": true,
+              "diagnostic": "",
+              "message": "当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。"
+            },
+            "passed": false,
+            "failure": "normal fallback availability preserved\n\n0 !== 1\n"
+          }
+        ],
+        "failures": [
+          {
+            "id": "general-light",
+            "noTutor": false,
+            "grade": "senior",
+            "order": "single",
+            "message": "normal fallback availability preserved\n\n0 !== 1\n"
+          }
+        ],
+        "registry": [
+          {
+            "noTutor": false,
+            "grade": "senior",
+            "order": "single",
+            "registry": [
+              "leafDisks"
+            ]
+          }
+        ],
+        "templates": [
+          "leafDisks"
+        ]
+      },
+      "joint": {
+        "browser": "156.0.4314.58",
+        "checks": [
+          "only expected mock503 console messages, no other page errors"
+        ],
+        "errors": [],
+        "api": [],
+        "screenshots": [],
+        "layouts": [],
+        "sourceSha": "520bc5f040fb2e5906e0984eecab1e137c40a992",
+        "method": "normal generate button",
+        "cases": [
+          {
+            "id": "general-photosynthesis",
+            "question": "光合作用的原料和产物是什么？",
+            "expected": "fallback",
+            "selectedSubject": "物理",
+            "selectedGrade": "senior",
+            "noTutor": false,
+            "order": "single",
+            "viewportWidth": 390,
+            "before": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+              "result": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "experiment",
+                "subject": "物理",
+                "title": "刹车距离实验 · 速度如何归零",
+                "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+                "templateId": "brake",
+                "parameters": {
+                  "initialSpeed": 20,
+                  "deceleration": 5
+                },
+                "deterministicResult": {
+                  "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                  "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "v² − v₀² = 2ax",
+                "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+              },
+              "hash": ""
+            },
+            "actual": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "光合作用的原料和产物是什么？",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。 如需讲解，请主动打开 AI 导师提问。",
+              "result": {
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "question",
+                "subject": "物理",
+                "originalQuestion": "光合作用的原料和产物是什么？",
+                "templateId": "",
+                "parameters": {},
+                "deterministicResult": {
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "",
+                "currentStep": ""
+              },
+              "hash": ""
+            },
+            "requests": [],
+            "supplementaryPlan": {
+              "ok": false,
+              "subject": "生物",
+              "localOnly": true,
+              "diagnostic": "",
+              "message": "当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。"
+            },
+            "passed": false,
+            "failure": "normal fallback availability preserved\n\n0 !== 1\n"
+          },
+          {
+            "id": "general-light",
+            "question": "灯光的光照强度与距离有什么关系？",
+            "expected": "fallback",
+            "selectedSubject": "物理",
+            "selectedGrade": "senior",
+            "noTutor": false,
+            "order": "single",
+            "viewportWidth": 390,
+            "before": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+              "result": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "experiment",
+                "subject": "物理",
+                "title": "刹车距离实验 · 速度如何归零",
+                "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+                "templateId": "brake",
+                "parameters": {
+                  "initialSpeed": 20,
+                  "deceleration": 5
+                },
+                "deterministicResult": {
+                  "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                  "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "v² − v₀² = 2ax",
+                "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+              },
+              "hash": ""
+            },
+            "actual": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "灯光的光照强度与距离有什么关系？",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。 如需讲解，请主动打开 AI 导师提问。",
+              "result": {
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "question",
+                "subject": "物理",
+                "originalQuestion": "灯光的光照强度与距离有什么关系？",
+                "templateId": "",
+                "parameters": {},
+                "deterministicResult": {
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "",
+                "currentStep": ""
+              },
+              "hash": ""
+            },
+            "requests": [],
+            "supplementaryPlan": {
+              "ok": false,
+              "subject": "生物",
+              "localOnly": true,
+              "diagnostic": "",
+              "message": "当前固定教材流程不能明确确认此题，请说明要探究同叶遮光还是叶圆片，分别给出完整条件和所问。"
+            },
+            "passed": false,
+            "failure": "normal fallback availability preserved\n\n0 !== 1\n"
+          }
+        ],
+        "failures": [
+          {
+            "id": "general-photosynthesis",
+            "noTutor": false,
+            "grade": "senior",
+            "order": "single",
+            "message": "normal fallback availability preserved\n\n0 !== 1\n"
+          },
+          {
+            "id": "general-light",
+            "noTutor": false,
+            "grade": "senior",
+            "order": "single",
+            "message": "normal fallback availability preserved\n\n0 !== 1\n"
+          }
+        ],
+        "registry": [
+          {
+            "noTutor": false,
+            "grade": "senior",
+            "order": "single",
+            "registry": [
+              "photosynthesis",
+              "leafDisks"
+            ]
+          }
+        ],
+        "templates": [
+          "photosynthesis",
+          "leafDisks"
+        ]
+      }
+    },
+    "after": {
+      "junior": {
+        "browser": "156.0.4314.58",
+        "checks": [
+          "general-photosynthesis/false/senior/single",
+          "general-light/false/senior/single",
+          "only expected mock503 console messages, no other page errors"
+        ],
+        "errors": [
+          "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+          "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+        ],
+        "api": [],
+        "screenshots": [],
+        "layouts": [],
+        "sourceSha": "11dabac2f2dcf37ad84893b6bf20cb9bc3aa900e",
+        "method": "normal generate button",
+        "cases": [
+          {
+            "id": "general-photosynthesis",
+            "question": "光合作用的原料和产物是什么？",
+            "expected": "fallback",
+            "selectedSubject": "物理",
+            "selectedGrade": "senior",
+            "noTutor": false,
+            "order": "single",
+            "viewportWidth": 390,
+            "before": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+              "result": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "experiment",
+                "subject": "物理",
+                "title": "刹车距离实验 · 速度如何归零",
+                "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+                "templateId": "brake",
+                "parameters": {
+                  "initialSpeed": 20,
+                  "deceleration": 5
+                },
+                "deterministicResult": {
+                  "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                  "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "v² − v₀² = 2ax",
+                "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+              },
+              "hash": ""
+            },
+            "actual": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "光合作用的原料和产物是什么？",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+              "result": {
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "question",
+                "subject": "物理",
+                "originalQuestion": "光合作用的原料和产物是什么？",
+                "templateId": "",
+                "parameters": {},
+                "deterministicResult": {
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "",
+                "currentStep": ""
+              },
+              "hash": ""
+            },
+            "requests": [
+              {
+                "path": "/api/v1/experiment/generate",
+                "body": {
+                  "question": "光合作用的原料和产物是什么？",
+                  "preferredSubject": "物理"
+                },
+                "status": 503
+              }
+            ],
+            "supplementaryPlan": {
+              "ok": false,
+              "subject": "物理",
+              "localOnly": false,
+              "message": "当前题目没有匹配到本地实验模板。"
+            },
+            "passed": true
+          },
+          {
+            "id": "general-light",
+            "question": "灯光的光照强度与距离有什么关系？",
+            "expected": "fallback",
+            "selectedSubject": "物理",
+            "selectedGrade": "senior",
+            "noTutor": false,
+            "order": "single",
+            "viewportWidth": 390,
+            "before": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+              "result": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "experiment",
+                "subject": "物理",
+                "title": "刹车距离实验 · 速度如何归零",
+                "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+                "templateId": "brake",
+                "parameters": {
+                  "initialSpeed": 20,
+                  "deceleration": 5
+                },
+                "deterministicResult": {
+                  "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                  "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "v² − v₀² = 2ax",
+                "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+              },
+              "hash": ""
+            },
+            "actual": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "灯光的光照强度与距离有什么关系？",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+              "result": {
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "question",
+                "subject": "物理",
+                "originalQuestion": "灯光的光照强度与距离有什么关系？",
+                "templateId": "",
+                "parameters": {},
+                "deterministicResult": {
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "",
+                "currentStep": ""
+              },
+              "hash": ""
+            },
+            "requests": [
+              {
+                "path": "/api/v1/experiment/generate",
+                "body": {
+                  "question": "灯光的光照强度与距离有什么关系？",
+                  "preferredSubject": "物理"
+                },
+                "status": 503
+              }
+            ],
+            "supplementaryPlan": {
+              "ok": false,
+              "subject": "物理",
+              "localOnly": false,
+              "message": "当前题目没有匹配到本地实验模板。"
+            },
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "registry": [
+          {
+            "noTutor": false,
+            "grade": "senior",
+            "order": "single",
+            "registry": [
+              "photosynthesis"
+            ]
+          }
+        ],
+        "templates": [
+          "photosynthesis"
+        ]
+      },
+      "senior": {
+        "browser": "156.0.4314.58",
+        "checks": [
+          "general-photosynthesis/false/senior/single",
+          "general-light/false/senior/single",
+          "only expected mock503 console messages, no other page errors"
+        ],
+        "errors": [
+          "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+          "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+        ],
+        "api": [],
+        "screenshots": [],
+        "layouts": [],
+        "sourceSha": "85563f2669cf47472a6080637da5889d9af0bba6",
+        "method": "normal generate button",
+        "cases": [
+          {
+            "id": "general-photosynthesis",
+            "question": "光合作用的原料和产物是什么？",
+            "expected": "fallback",
+            "selectedSubject": "物理",
+            "selectedGrade": "senior",
+            "noTutor": false,
+            "order": "single",
+            "viewportWidth": 390,
+            "before": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+              "result": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "experiment",
+                "subject": "物理",
+                "title": "刹车距离实验 · 速度如何归零",
+                "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+                "templateId": "brake",
+                "parameters": {
+                  "initialSpeed": 20,
+                  "deceleration": 5
+                },
+                "deterministicResult": {
+                  "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                  "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "v² − v₀² = 2ax",
+                "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+              },
+              "hash": ""
+            },
+            "actual": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "光合作用的原料和产物是什么？",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+              "result": {
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "question",
+                "subject": "物理",
+                "originalQuestion": "光合作用的原料和产物是什么？",
+                "templateId": "",
+                "parameters": {},
+                "deterministicResult": {
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "",
+                "currentStep": ""
+              },
+              "hash": ""
+            },
+            "requests": [
+              {
+                "path": "/api/v1/experiment/generate",
+                "body": {
+                  "question": "光合作用的原料和产物是什么？",
+                  "preferredSubject": "物理"
+                },
+                "status": 503
+              }
+            ],
+            "supplementaryPlan": {
+              "ok": false,
+              "subject": "物理",
+              "localOnly": false,
+              "message": "当前题目没有匹配到本地实验模板。"
+            },
+            "passed": true
+          },
+          {
+            "id": "general-light",
+            "question": "灯光的光照强度与距离有什么关系？",
+            "expected": "fallback",
+            "selectedSubject": "物理",
+            "selectedGrade": "senior",
+            "noTutor": false,
+            "order": "single",
+            "viewportWidth": 390,
+            "before": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+              "result": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "experiment",
+                "subject": "物理",
+                "title": "刹车距离实验 · 速度如何归零",
+                "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+                "templateId": "brake",
+                "parameters": {
+                  "initialSpeed": 20,
+                  "deceleration": 5
+                },
+                "deterministicResult": {
+                  "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                  "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "v² − v₀² = 2ax",
+                "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+              },
+              "hash": ""
+            },
+            "actual": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "灯光的光照强度与距离有什么关系？",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+              "result": {
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "question",
+                "subject": "物理",
+                "originalQuestion": "灯光的光照强度与距离有什么关系？",
+                "templateId": "",
+                "parameters": {},
+                "deterministicResult": {
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "",
+                "currentStep": ""
+              },
+              "hash": ""
+            },
+            "requests": [
+              {
+                "path": "/api/v1/experiment/generate",
+                "body": {
+                  "question": "灯光的光照强度与距离有什么关系？",
+                  "preferredSubject": "物理"
+                },
+                "status": 503
+              }
+            ],
+            "supplementaryPlan": {
+              "ok": false,
+              "subject": "物理",
+              "localOnly": false,
+              "message": "当前题目没有匹配到本地实验模板。"
+            },
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "registry": [
+          {
+            "noTutor": false,
+            "grade": "senior",
+            "order": "single",
+            "registry": [
+              "leafDisks"
+            ]
+          }
+        ],
+        "templates": [
+          "leafDisks"
+        ]
+      },
+      "joint": {
+        "browser": "156.0.4314.58",
+        "checks": [
+          "general-photosynthesis/false/senior/single",
+          "general-light/false/senior/single",
+          "only expected mock503 console messages, no other page errors"
+        ],
+        "errors": [
+          "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+          "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+        ],
+        "api": [],
+        "screenshots": [],
+        "layouts": [],
+        "sourceSha": "72514d2b21ad1f95bef4bba9b7dff4dfd6bf7bce",
+        "method": "normal generate button",
+        "cases": [
+          {
+            "id": "general-photosynthesis",
+            "question": "光合作用的原料和产物是什么？",
+            "expected": "fallback",
+            "selectedSubject": "物理",
+            "selectedGrade": "senior",
+            "noTutor": false,
+            "order": "single",
+            "viewportWidth": 390,
+            "before": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+              "result": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "experiment",
+                "subject": "物理",
+                "title": "刹车距离实验 · 速度如何归零",
+                "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+                "templateId": "brake",
+                "parameters": {
+                  "initialSpeed": 20,
+                  "deceleration": 5
+                },
+                "deterministicResult": {
+                  "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                  "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "v² − v₀² = 2ax",
+                "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+              },
+              "hash": ""
+            },
+            "actual": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "光合作用的原料和产物是什么？",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+              "result": {
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "question",
+                "subject": "物理",
+                "originalQuestion": "光合作用的原料和产物是什么？",
+                "templateId": "",
+                "parameters": {},
+                "deterministicResult": {
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "",
+                "currentStep": ""
+              },
+              "hash": ""
+            },
+            "requests": [
+              {
+                "path": "/api/v1/experiment/generate",
+                "body": {
+                  "question": "光合作用的原料和产物是什么？",
+                  "preferredSubject": "物理"
+                },
+                "status": 503
+              }
+            ],
+            "supplementaryPlan": {
+              "ok": false,
+              "subject": "物理",
+              "localOnly": false,
+              "message": "当前题目没有匹配到本地实验模板。"
+            },
+            "passed": true
+          },
+          {
+            "id": "general-light",
+            "question": "灯光的光照强度与距离有什么关系？",
+            "expected": "fallback",
+            "selectedSubject": "物理",
+            "selectedGrade": "senior",
+            "noTutor": false,
+            "order": "single",
+            "viewportWidth": 390,
+            "before": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+              "result": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "experiment",
+                "subject": "物理",
+                "title": "刹车距离实验 · 速度如何归零",
+                "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+                "templateId": "brake",
+                "parameters": {
+                  "initialSpeed": 20,
+                  "deceleration": 5
+                },
+                "deterministicResult": {
+                  "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                  "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "v² − v₀² = 2ax",
+                "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+              },
+              "hash": ""
+            },
+            "actual": {
+              "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "input": "灯光的光照强度与距离有什么关系？",
+              "subject": "物理",
+              "grade": "senior",
+              "template": "",
+              "hasGenerated": true,
+              "time": 1.24,
+              "playing": false,
+              "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+              "result": {
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "context": {
+                "mode": "question",
+                "subject": "物理",
+                "originalQuestion": "灯光的光照强度与距离有什么关系？",
+                "templateId": "",
+                "parameters": {},
+                "deterministicResult": {
+                  "gradeLevel": "高中",
+                  "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+                },
+                "formula": "",
+                "currentStep": ""
+              },
+              "hash": ""
+            },
+            "requests": [
+              {
+                "path": "/api/v1/experiment/generate",
+                "body": {
+                  "question": "灯光的光照强度与距离有什么关系？",
+                  "preferredSubject": "物理"
+                },
+                "status": 503
+              }
+            ],
+            "supplementaryPlan": {
+              "ok": false,
+              "subject": "物理",
+              "localOnly": false,
+              "message": "当前题目没有匹配到本地实验模板。"
+            },
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "registry": [
+          {
+            "noTutor": false,
+            "grade": "senior",
+            "order": "single",
+            "registry": [
+              "photosynthesis",
+              "leafDisks"
+            ]
+          }
+        ],
+        "templates": [
+          "photosynthesis",
+          "leafDisks"
+        ]
+      }
+    }
+  },
+  "physicsConceptProcessReceipts": [
+    {
+      "phase": "before",
+      "kind": "baseline",
+      "exitCode": 0,
+      "sourceSha": "e6f43c5b398fb039c80e2f02382119d3566ae1f5"
+    },
+    {
+      "phase": "before",
+      "kind": "junior",
+      "exitCode": 1,
+      "sourceSha": "5d6b1a0c40ace9c862badd4ff6b6d31dc2a081b2"
+    },
+    {
+      "phase": "before",
+      "kind": "senior",
+      "exitCode": 1,
+      "sourceSha": "fadc0c60321bf1d9bb828fa71c3814ca964d4a84"
+    },
+    {
+      "phase": "before",
+      "kind": "joint",
+      "exitCode": 1,
+      "sourceSha": "520bc5f040fb2e5906e0984eecab1e137c40a992"
+    },
+    {
+      "phase": "after",
+      "kind": "junior",
+      "exitCode": 0,
+      "sourceSha": "11dabac2f2dcf37ad84893b6bf20cb9bc3aa900e"
+    },
+    {
+      "phase": "after",
+      "kind": "senior",
+      "exitCode": 0,
+      "sourceSha": "85563f2669cf47472a6080637da5889d9af0bba6"
+    },
+    {
+      "phase": "after",
+      "kind": "joint",
+      "exitCode": 0,
+      "sourceSha": "72514d2b21ad1f95bef4bba9b7dff4dfd6bf7bce"
+    }
+  ],
+  "selectedMirrorRecaptures": {
+    "joint": {
+      "browser": "156.0.4314.58",
+      "checks": [
+        "mirror-light/false/senior/single",
+        "only expected mock503 console messages, no other page errors"
+      ],
+      "errors": [],
+      "api": [],
+      "screenshots": [
+        "mirror-light-390.png"
+      ],
+      "layouts": [],
+      "sourceSha": "72514d2b21ad1f95bef4bba9b7dff4dfd6bf7bce",
+      "method": "normal generate button",
+      "cases": [
+        {
+          "id": "mirror-light",
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+          "expected": "local",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "noTutor": false,
+          "order": "single",
+          "viewportWidth": 390,
+          "before": {
+            "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "result": {
+              "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+              "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "context": {
+              "mode": "experiment",
+              "subject": "物理",
+              "title": "刹车距离实验 · 速度如何归零",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "templateId": "brake",
+              "parameters": {
+                "initialSpeed": 20,
+                "deceleration": 5
+              },
+              "deterministicResult": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "formula": "v² − v₀² = 2ax",
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            },
+            "hash": ""
+          },
+          "actual": {
+            "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+            "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "planeMirror",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+            "result": {
+              "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+              "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。",
+              "contentLevel": "初中内容"
+            },
+            "context": {
+              "mode": "question",
+              "subject": "物理",
+              "title": "平面镜成像：物像关于镜面对称",
+              "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+              "templateId": "",
+              "parameters": {},
+              "deterministicResult": {
+                "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+                "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。",
+                "contentLevel": "初中内容"
+              },
+              "formula": "v = u；d = 2u；h′ = h",
+              "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+            },
+            "hash": ""
+          },
+          "requests": [],
+          "supplementaryPlan": {
+            "ok": true,
+            "subject": "物理",
+            "localOnly": false,
+            "template": "planeMirror",
+            "message": "已识别：平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。"
+          },
+          "passed": true
+        }
+      ],
+      "failures": [],
+      "registry": [
+        {
+          "noTutor": false,
+          "grade": "senior",
+          "order": "single",
+          "registry": [
+            "photosynthesis",
+            "leafDisks"
+          ]
+        }
+      ],
+      "templates": [
+        "photosynthesis",
+        "leafDisks"
+      ]
+    },
+    "junior": {
+      "browser": "156.0.4314.58",
+      "checks": [
+        "mirror-light/false/senior/single",
+        "only expected mock503 console messages, no other page errors"
+      ],
+      "errors": [],
+      "api": [],
+      "screenshots": [
+        "mirror-light-390.png"
+      ],
+      "layouts": [],
+      "sourceSha": "11dabac2f2dcf37ad84893b6bf20cb9bc3aa900e",
+      "method": "normal generate button",
+      "cases": [
+        {
+          "id": "mirror-light",
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+          "expected": "local",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "noTutor": false,
+          "order": "single",
+          "viewportWidth": 390,
+          "before": {
+            "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "result": {
+              "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+              "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "context": {
+              "mode": "experiment",
+              "subject": "物理",
+              "title": "刹车距离实验 · 速度如何归零",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "templateId": "brake",
+              "parameters": {
+                "initialSpeed": 20,
+                "deceleration": 5
+              },
+              "deterministicResult": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "formula": "v² − v₀² = 2ax",
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            },
+            "hash": ""
+          },
+          "actual": {
+            "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+            "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "planeMirror",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+            "result": {
+              "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+              "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。",
+              "contentLevel": "初中内容"
+            },
+            "context": {
+              "mode": "question",
+              "subject": "物理",
+              "title": "平面镜成像：物像关于镜面对称",
+              "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+              "templateId": "",
+              "parameters": {},
+              "deterministicResult": {
+                "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+                "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。",
+                "contentLevel": "初中内容"
+              },
+              "formula": "v = u；d = 2u；h′ = h",
+              "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+            },
+            "hash": ""
+          },
+          "requests": [],
+          "supplementaryPlan": {
+            "ok": true,
+            "subject": "物理",
+            "localOnly": false,
+            "template": "planeMirror",
+            "message": "已识别：平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。"
+          },
+          "passed": true
+        }
+      ],
+      "failures": [],
+      "registry": [
+        {
+          "noTutor": false,
+          "grade": "senior",
+          "order": "single",
+          "registry": [
+            "photosynthesis"
+          ]
+        }
+      ],
+      "templates": [
+        "photosynthesis"
+      ]
+    },
+    "senior": {
+      "browser": "156.0.4314.58",
+      "checks": [
+        "mirror-light/false/senior/single",
+        "only expected mock503 console messages, no other page errors"
+      ],
+      "errors": [],
+      "api": [],
+      "screenshots": [
+        "mirror-light-390.png"
+      ],
+      "layouts": [],
+      "sourceSha": "85563f2669cf47472a6080637da5889d9af0bba6",
+      "method": "normal generate button",
+      "cases": [
+        {
+          "id": "mirror-light",
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+          "expected": "local",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "noTutor": false,
+          "order": "single",
+          "viewportWidth": 390,
+          "before": {
+            "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "result": {
+              "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+              "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "context": {
+              "mode": "experiment",
+              "subject": "物理",
+              "title": "刹车距离实验 · 速度如何归零",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "templateId": "brake",
+              "parameters": {
+                "initialSpeed": 20,
+                "deceleration": 5
+              },
+              "deterministicResult": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "formula": "v² − v₀² = 2ax",
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            },
+            "hash": ""
+          },
+          "actual": {
+            "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+            "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "planeMirror",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+            "result": {
+              "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+              "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。",
+              "contentLevel": "初中内容"
+            },
+            "context": {
+              "mode": "question",
+              "subject": "物理",
+              "title": "平面镜成像：物像关于镜面对称",
+              "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+              "templateId": "",
+              "parameters": {},
+              "deterministicResult": {
+                "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+                "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。",
+                "contentLevel": "初中内容"
+              },
+              "formula": "v = u；d = 2u；h′ = h",
+              "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+            },
+            "hash": ""
+          },
+          "requests": [],
+          "supplementaryPlan": {
+            "ok": true,
+            "subject": "物理",
+            "localOnly": false,
+            "template": "planeMirror",
+            "message": "已识别：平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。"
+          },
+          "passed": true
+        }
+      ],
+      "failures": [],
+      "registry": [
+        {
+          "noTutor": false,
+          "grade": "senior",
+          "order": "single",
+          "registry": [
+            "leafDisks"
+          ]
+        }
+      ],
+      "templates": [
+        "leafDisks"
+      ]
+    },
+    "baseline": {
+      "browser": "156.0.4314.58",
+      "checks": [
+        "mirror-light/false/senior/single",
+        "only expected mock503 console messages, no other page errors"
+      ],
+      "errors": [],
+      "api": [],
+      "screenshots": [
+        "mirror-light-390.png"
+      ],
+      "layouts": [],
+      "sourceSha": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+      "method": "normal generate button",
+      "cases": [
+        {
+          "id": "mirror-light",
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+          "expected": "local",
+          "selectedSubject": "物理",
+          "selectedGrade": "senior",
+          "noTutor": false,
+          "order": "single",
+          "viewportWidth": 390,
+          "before": {
+            "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "",
+            "hasGenerated": true,
+            "time": 1.24,
+            "playing": false,
+            "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+            "result": {
+              "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+              "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "context": {
+              "mode": "experiment",
+              "subject": "物理",
+              "title": "刹车距离实验 · 速度如何归零",
+              "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+              "templateId": "brake",
+              "parameters": {
+                "initialSpeed": 20,
+                "deceleration": 5
+              },
+              "deterministicResult": {
+                "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+                "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+              },
+              "formula": "v² − v₀² = 2ax",
+              "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+            },
+            "hash": ""
+          },
+          "actual": {
+            "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+            "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+            "subject": "物理",
+            "grade": "senior",
+            "template": "planeMirror",
+            "hasGenerated": true,
+            "time": 0,
+            "playing": false,
+            "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+            "result": {
+              "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+              "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。",
+              "contentLevel": "初中内容"
+            },
+            "context": {
+              "mode": "question",
+              "subject": "物理",
+              "title": "平面镜成像：物像关于镜面对称",
+              "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。房间光照强度适宜。",
+              "templateId": "",
+              "parameters": {},
+              "deterministicResult": {
+                "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+                "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+                "gradeLevel": "高中",
+                "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。",
+                "contentLevel": "初中内容"
+              },
+              "formula": "v = u；d = 2u；h′ = h",
+              "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+            },
+            "hash": ""
+          },
+          "requests": [],
+          "supplementaryPlan": {
+            "ok": true,
+            "subject": "物理",
+            "localOnly": false,
+            "template": "planeMirror",
+            "message": "已识别：平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。"
+          },
+          "passed": true
+        }
+      ],
+      "failures": [],
+      "registry": [
+        {
+          "noTutor": false,
+          "grade": "senior",
+          "order": "single",
+          "registry": []
+        }
+      ],
+      "templates": []
+    }
+  }
+}

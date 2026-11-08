@@ -1,0 +1,48 @@
+{
+  "screenshots": [
+    {
+      "file": "joint-photosynthesis-comparison-390.png",
+      "sha256": "68835e1df99cf8e5494fa3f5ba973e343e9f283d8e94684cd99087b435c9fb35",
+      "sourceSha": "45a63af11913fe70401a2050862d9a08ecafebf9",
+      "viewportWidth": 390,
+      "width": 334,
+      "height": 321,
+      "kind": "joint",
+      "template": "photosynthesis",
+      "fixture": "人工测试输入，非实测"
+    },
+    {
+      "file": "joint-photosynthesis-reasoning-1366.png",
+      "sha256": "d6d903cbfbe75988b5b785fd8f8746306cd2f53896565d16088676a4581801d1",
+      "sourceSha": "45a63af11913fe70401a2050862d9a08ecafebf9",
+      "viewportWidth": 1366,
+      "width": 340,
+      "height": 669,
+      "kind": "joint",
+      "template": "photosynthesis",
+      "fixture": "人工测试输入，非实测"
+    },
+    {
+      "file": "joint-leafDisks-comparison-390.png",
+      "sha256": "a9dff4b0bcf2749c49875ec6b7e3e7094d6c224041bb69e50e57057adfdc514b",
+      "sourceSha": "45a63af11913fe70401a2050862d9a08ecafebf9",
+      "viewportWidth": 390,
+      "width": 334,
+      "height": 556,
+      "kind": "joint",
+      "template": "leafDisks",
+      "fixture": "人工测试输入，非实测"
+    },
+    {
+      "file": "joint-leafDisks-reasoning-1366.png",
+      "sha256": "07e8d91094006b74278fd575de8657d0a9d2379148a3f7479a80055d65b0fbdf",
+      "sourceSha": "45a63af11913fe70401a2050862d9a08ecafebf9",
+      "viewportWidth": 1366,
+      "width": 340,
+      "height": 765,
+      "kind": "joint",
+      "template": "leafDisks",
+      "fixture": "人工测试输入，非实测"
+    }
+  ]
+}

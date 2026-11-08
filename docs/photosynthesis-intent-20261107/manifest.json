@@ -1,0 +1,58 @@
+{
+  "screenshots": [
+    {
+      "file": "junior-junior-review-report-390.png",
+      "sourceSha": "4d0419f87f6866c555332c3895c95c5e252385fa",
+      "caseId": "junior-review-report",
+      "viewportWidth": 390,
+      "width": 366,
+      "height": 1191,
+      "sha256": "466a2fa0fcff8d17b747b2d01b5011614e19cd97de02fd391f7c1e616060cb48"
+    },
+    {
+      "file": "senior-senior-review-report-390.png",
+      "sourceSha": "d6ede383b36338d013b302083800d67d09e9e2f2",
+      "caseId": "senior-review-report",
+      "viewportWidth": 390,
+      "width": 366,
+      "height": 1191,
+      "sha256": "22a79a8535cc5d78fe132b53b5e9d76617ea7319732081190f841a8ef529dcd1"
+    },
+    {
+      "file": "joint-junior-review-report-390.png",
+      "sourceSha": "4a1dd68bbd59e96a0f964abccedf979bcbc181e0",
+      "caseId": "junior-review-report",
+      "viewportWidth": 390,
+      "width": 366,
+      "height": 1191,
+      "sha256": "466a2fa0fcff8d17b747b2d01b5011614e19cd97de02fd391f7c1e616060cb48"
+    },
+    {
+      "file": "joint-senior-review-report-390.png",
+      "sourceSha": "4a1dd68bbd59e96a0f964abccedf979bcbc181e0",
+      "caseId": "senior-review-report",
+      "viewportWidth": 390,
+      "width": 366,
+      "height": 1191,
+      "sha256": "22a79a8535cc5d78fe132b53b5e9d76617ea7319732081190f841a8ef529dcd1"
+    },
+    {
+      "file": "joint-junior-mixed-explicit-390.png",
+      "sourceSha": "4a1dd68bbd59e96a0f964abccedf979bcbc181e0",
+      "caseId": "junior-mixed-explicit",
+      "viewportWidth": 390,
+      "width": 336,
+      "height": 132,
+      "sha256": "563c099590c953e859e9dead1f157725cdd364e46b4b0053d0ea1e57c3a354d4"
+    },
+    {
+      "file": "joint-senior-mixed-inline-390.png",
+      "sourceSha": "4a1dd68bbd59e96a0f964abccedf979bcbc181e0",
+      "caseId": "senior-mixed-inline",
+      "viewportWidth": 390,
+      "width": 336,
+      "height": 114,
+      "sha256": "886bf0295a2e47d26762ec0e870d75086dde9cc82da04f4c95d9bc7f69a8f055"
+    }
+  ]
+}

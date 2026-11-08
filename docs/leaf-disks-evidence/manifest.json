@@ -1,0 +1,68 @@
+{
+  "selectedOnly": true,
+  "screenshots": [
+    {
+      "file": "syringe-1366.png",
+      "sourceSha": "34809407d34e077ac80640b7ab1a3a5a558492e3",
+      "sha256": "28aabffd319e5466bac0c3768767ff10006d3652579287f1bafe02e2c7b5e927",
+      "width": 930,
+      "height": 1346,
+      "caption": "先排残气再堵孔缓拉 · 1366",
+      "viewportWidth": 1366
+    },
+    {
+      "file": "lighting-820.png",
+      "sourceSha": "34809407d34e077ac80640b7ab1a3a5a558492e3",
+      "sha256": "c949df046a3e21c6c817dbe8c49bc209dc616db3ca8b8aa2b9f04b35d5a88ac2",
+      "width": 796,
+      "height": 1728,
+      "caption": "同高三杯、单光源与米尺 · 820",
+      "viewportWidth": 820
+    },
+    {
+      "file": "mechanism-390.png",
+      "sourceSha": "34809407d34e077ac80640b7ab1a3a5a558492e3",
+      "sha256": "034b830367a2b5eabaf7e1c4e5dc7640970fe5e1171f73abcd7305d495c13db9",
+      "width": 366,
+      "height": 1850,
+      "caption": "独立单片机理与待测记录 · 390",
+      "viewportWidth": 390
+    },
+    {
+      "file": "punch-390.png",
+      "sourceSha": "34809407d34e077ac80640b7ab1a3a5a558492e3",
+      "sha256": "01a60e944636c6e27f68c6a7b6e2bb50e45415d3b31ad45f67aa2045455aa452",
+      "width": 366,
+      "height": 1850,
+      "caption": "直径0.6cm避开大叶脉 · 390",
+      "viewportWidth": 390
+    },
+    {
+      "file": "leaf-disks-360.png",
+      "sourceSha": "34809407d34e077ac80640b7ab1a3a5a558492e3",
+      "sha256": "918fcf83f5e2ae251c2dca7bedb803a4f18203a7d8e5265241b5205c4215337a",
+      "width": 336,
+      "height": 1899,
+      "caption": "新增360宽机理与待测记录",
+      "viewportWidth": 360
+    },
+    {
+      "file": "baseline-microscope-1366.png",
+      "sourceSha": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+      "sha256": "996694b0eae5e2f820c9c01bf00016eaff3ee9dbb7115816aedbe59a520d68fd",
+      "width": 930,
+      "height": 1280,
+      "caption": "同一基线显微镜布局对照 · 1366",
+      "viewportWidth": 1366
+    },
+    {
+      "file": "baseline-microscope-390.png",
+      "sourceSha": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+      "sha256": "2494479d7464c7e8e5d93346c2800d25994e0e7f19be32d112f5e1c3943e2e26",
+      "width": 366,
+      "height": 2028,
+      "caption": "同一基线显微镜布局对照 · 390",
+      "viewportWidth": 390
+    }
+  ]
+}

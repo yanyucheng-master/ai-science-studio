@@ -1,0 +1,31 @@
+.scene.subject-generic-physics:has(.biology-leaf-disks-scene){height:auto;min-height:0;background:var(--surface);box-shadow:none}
+.scene.subject-generic-physics:has(.biology-leaf-disks-scene)::before{content:none}
+.generic-physics-stage:has(.biology-leaf-disks-scene){position:relative;inset:auto}
+.generic-physics-lab:has(.biology-leaf-disks-scene){position:relative;inset:auto;display:block;margin:18px;padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+.generic-physics-visual:has(.biology-leaf-disks-scene){height:auto;overflow:visible;border:0;border-radius:0;background:none;box-shadow:none}
+.experiment-card:has(.scene.subject-generic-physics .biology-leaf-disks-scene) :is(#sceneFullscreenButton,.parameters){display:none!important}
+.experiment-card:is(:fullscreen,.immersive-mode) .scene.subject-generic-physics:has(.biology-leaf-disks-scene){flex:0 0 auto}
+.biology-leaf-disks-scene{min-width:0;color:var(--ink);font-size:14px;line-height:1.75;overflow-wrap:anywhere}
+.leaf-disks-heading{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.leaf-disks-heading h3{margin:0;font-size:19px}.leaf-disks-heading>span{color:var(--muted);font-size:13px}
+.leaf-disks-steps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:18px 0}
+.leaf-disks-steps button{min-height:64px;padding:8px 4px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--muted);font:inherit;font-size:12px;cursor:pointer}
+.leaf-disks-steps button span{display:block;font-weight:700;font-size:16px}.leaf-disks-steps button.active{background:#edf5ff;border-color:var(--blue);color:var(--blue)}
+.leaf-disks-steps button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.leaf-disks-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:24px;align-items:center}
+.leaf-disks-layout figure{min-width:0;margin:0}.leaf-disks-layout svg{display:block;width:100%;height:auto;overflow:visible;fill:none;stroke:none}
+.leaf-disks-layout svg text{font-family:inherit;font-size:17px;font-weight:400;fill:var(--ink);stroke:none}
+.leaf-disks-layout figcaption{font-size:13px;color:var(--muted);margin-top:10px}
+.leaf-disks-explanation h4{font-size:17px;margin:0 0 10px}.leaf-disks-explanation p{margin:8px 0}
+.leaf-disks-purpose{padding-top:12px;border-top:1px solid var(--line);margin-top:16px}.leaf-disks-purpose strong{color:var(--blue)}
+.leaf-disks-record{margin-top:20px;padding-top:12px;border-top:1px solid var(--line)}
+.leaf-disks-record h4{font-size:16px;margin:4px 0 8px}.leaf-disks-record table{width:100%;border-collapse:collapse;table-layout:fixed}
+.leaf-disks-record caption{text-align:left;font-size:13px;color:var(--muted);padding-bottom:10px}
+.leaf-disks-record :is(th,td){padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;overflow-wrap:anywhere}
+.leaf-disks-record td:last-child{color:var(--blue)}.leaf-disks-record p,.leaf-disks-note,.leaf-disks-conditions{font-size:13px;color:var(--muted)}
+.leaf-disks-conditions summary{min-height:44px;cursor:pointer;color:var(--blue);padding:10px 0}
+.generic-physics-lab:has(.biology-leaf-disks-scene) .generic-physics-readout{min-width:0;margin-top:18px;padding:16px 0 0;border:0;border-top:1px solid var(--line);border-radius:0;background:none;box-shadow:none;overflow-wrap:anywhere}
+.generic-physics-lab:has(.biology-leaf-disks-scene) .stage-facts{grid-template-columns:minmax(0,1fr);gap:0}
+.generic-physics-lab:has(.biology-leaf-disks-scene) .stage-facts>div{grid-template-columns:110px minmax(0,1fr);padding:7px 0;border:0;border-radius:0;background:none;box-shadow:none}
+@media(max-width:900px){.leaf-disks-layout{grid-template-columns:minmax(0,1fr);gap:10px}.leaf-disks-steps{grid-template-columns:repeat(3,minmax(0,1fr))}.leaf-disks-layout svg{max-height:380px}}
+@media(max-width:600px){.generic-physics-lab:has(.biology-leaf-disks-scene){margin:12px}.leaf-disks-heading h3{font-size:18px}.leaf-disks-steps button{font-size:13px}.leaf-disks-layout svg text{display:none}.leaf-disks-layout figcaption{font-size:14px;line-height:1.7}}

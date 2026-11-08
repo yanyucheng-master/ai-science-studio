@@ -9,6 +9,9 @@ import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url), { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const phase = process.argv.includes('--data') ? 5 : process.argv.includes('--guard-only') ? 1 : process.argv.includes('--competition') ? 4 : process.argv.includes('--render') ? 3 : 2;
+// The guard-only entry point now runs against the same local renderer as the
+// other phases. Remote coordinates are only fixtures for legacy saved scenes.
+const coordinateRequests = 0;
 const output = process.env.DIAGRAM_QA_OUTPUT || resolve(root, `artifacts/incline-competition-2026-10-20/step${phase}-browser`);
 const bank = JSON.parse(await readFile(resolve(root, 'server/eval/tutor-diagram-bank.json'), 'utf8'));
 await mkdir(output, { recursive: true });
@@ -117,7 +120,7 @@ try {
   for (const width of [1366, 820, 390]) await run('original-' + width, width, false, async (page, row) => {
     await send(page, bank[0].q);
     assert.equal(await page.locator('.ai-diagram-canvas svg').count(), 1);
-    assert.equal(row.coordinateRequests, phase === 1 ? 1 : 0); assert.equal(row.chatRequests, 0);
+    assert.equal(row.coordinateRequests, coordinateRequests); assert.equal(row.chatRequests, 0);
     const geometry = await page.evaluate(() => {
       const svg = document.querySelector('.ai-diagram-canvas svg');
       const arrow = id => { const line = svg.querySelector(`[data-object-id="${id}"] line`); return { from: [+line.getAttribute('x1'), +line.getAttribute('y1')], to: [+line.getAttribute('x2'), +line.getAttribute('y2')] }; };
@@ -131,7 +134,7 @@ try {
     if (phase >= 3) row.layout = await verifyFigure(page);
     await page.locator('.ai-diagram').screenshot({ path: resolve(output, 'figure-' + width + '.png') });
     await page.reload(); await page.waitForSelector('.ai-diagram-canvas svg');
-    assert.equal(row.coordinateRequests, phase === 1 ? 1 : 0, 'restoration must not call a scene provider');
+    assert.equal(row.coordinateRequests, coordinateRequests, 'restoration must not call a scene provider');
   });
   if (phase >= 3) {
     for (const id of ['static-left','uniform-down-right','uniform-down-left']) await run('mobile-'+id,390,false,async (page,row)=>{
@@ -220,7 +223,7 @@ try {
   }
   await run('personal-original', 1366, true, async (page, row) => {
     await send(page, bank[0].q); assert.equal(await page.locator('.ai-diagram-canvas svg').count(), 1);
-    assert.equal(row.coordinateRequests, phase === 1 ? 1 : 0); assert.equal(row.chatRequests, 0);
+    assert.equal(row.coordinateRequests, coordinateRequests); assert.equal(row.chatRequests, 0);
   });
   await run('unsupported-bank-no-coordinate-requests', 820, false, async (page, row) => {
     for (const q of bank.filter(r => r.expect === 'text').map(r => r.q)) {
@@ -258,6 +261,6 @@ try {
     await page.addInitScript(data => localStorage.setItem('masterLab.tutorSessions.v1', JSON.stringify(data)), tampered);
     await page.reload(); await page.waitForFunction(() => document.querySelector('.ai-message.assistant'));
     assert.equal(await page.locator('.ai-diagram-canvas svg').count(), 0, 'tampered saved scene must become text');
-    assert.equal(row.coordinateRequests, phase === 1 ? 1 : 0);
+    assert.equal(row.coordinateRequests, coordinateRequests);
   });
 } finally { await writeFile(resolve(output, 'report.json'), JSON.stringify(report, null, 2) + '\n'); await browser.close(); server.close(); }

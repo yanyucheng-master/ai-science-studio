@@ -1,0 +1,113 @@
+{
+  "selectedOnly": true,
+  "screenshots": [
+    {
+      "file": "baseline-mirror-390.png",
+      "sourceSha": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+      "sha256": "f5cd5f85b7cb2daf164570d0652487452b7558b030ced7933329d51e4e1f1bd9",
+      "width": 366,
+      "height": 1132,
+      "viewportWidth": 390,
+      "caption": "未改主线 · 光照背景句平面镜"
+    },
+    {
+      "file": "junior-mirror-390.png",
+      "sourceSha": "11dabac2f2dcf37ad84893b6bf20cb9bc3aa900e",
+      "sha256": "f5cd5f85b7cb2daf164570d0652487452b7558b030ced7933329d51e4e1f1bd9",
+      "width": 366,
+      "height": 1132,
+      "viewportWidth": 390,
+      "caption": "junior · 光照背景句平面镜"
+    },
+    {
+      "file": "senior-mirror-390.png",
+      "sourceSha": "85563f2669cf47472a6080637da5889d9af0bba6",
+      "sha256": "f5cd5f85b7cb2daf164570d0652487452b7558b030ced7933329d51e4e1f1bd9",
+      "width": 366,
+      "height": 1132,
+      "viewportWidth": 390,
+      "caption": "senior · 光照背景句平面镜"
+    },
+    {
+      "file": "joint-mirror-390.png",
+      "sourceSha": "72514d2b21ad1f95bef4bba9b7dff4dfd6bf7bce",
+      "sha256": "f5cd5f85b7cb2daf164570d0652487452b7558b030ced7933329d51e4e1f1bd9",
+      "width": 366,
+      "height": 1132,
+      "viewportWidth": 390,
+      "caption": "joint · 光照背景句平面镜"
+    },
+    {
+      "file": "junior-1366.png",
+      "sourceSha": "11dabac2f2dcf37ad84893b6bf20cb9bc3aa900e",
+      "sha256": "c78471559e345f02d8d955ec1cf17e2e22f7cbafcd633151528668d0c78db4ec",
+      "width": 930,
+      "height": 1065,
+      "viewportWidth": 1366,
+      "caption": "junior · 教材样例1366"
+    },
+    {
+      "file": "junior-reference-820.png",
+      "sourceSha": "11dabac2f2dcf37ad84893b6bf20cb9bc3aa900e",
+      "sha256": "3b9920e4f8abb11e827509288013f152b67384ecd0f68b08622474f711095bb2",
+      "width": 796,
+      "height": 1472,
+      "viewportWidth": 820,
+      "caption": "junior · 教材操作场景"
+    },
+    {
+      "file": "junior-end-360.png",
+      "sourceSha": "11dabac2f2dcf37ad84893b6bf20cb9bc3aa900e",
+      "sha256": "61fac0954f665397ac737f8fa53ef27f38b4755ad6e239603be4bdd256e37e6c",
+      "width": 336,
+      "height": 1677,
+      "viewportWidth": 360,
+      "caption": "junior · 教材末步与记录边界"
+    },
+    {
+      "file": "junior-error-390.png",
+      "sourceSha": "11dabac2f2dcf37ad84893b6bf20cb9bc3aa900e",
+      "sha256": "e8a7ba3ae7043306731360b7aed1f0541c217678082f272f986f214f7ffe66f3",
+      "width": 336,
+      "height": 57,
+      "viewportWidth": 390,
+      "caption": "junior · 固定流程范围外子问本地拒绝"
+    },
+    {
+      "file": "senior-1366.png",
+      "sourceSha": "85563f2669cf47472a6080637da5889d9af0bba6",
+      "sha256": "e42c9718db4bf22aad6bca0882ceeb9afa64a17efef016057e90f8b8c5393055",
+      "width": 930,
+      "height": 1391,
+      "viewportWidth": 1366,
+      "caption": "senior · 教材样例1366"
+    },
+    {
+      "file": "senior-reference-820.png",
+      "sourceSha": "85563f2669cf47472a6080637da5889d9af0bba6",
+      "sha256": "f29305a66ad4bed5d9de14438c8f6fc74fa22922be05421575d63912847c1ef6",
+      "width": 796,
+      "height": 1728,
+      "viewportWidth": 820,
+      "caption": "senior · 教材操作场景"
+    },
+    {
+      "file": "senior-end-360.png",
+      "sourceSha": "85563f2669cf47472a6080637da5889d9af0bba6",
+      "sha256": "df689408efc090fdb8377440cab4cacd8de845f1dfb4da170351b929cb512950",
+      "width": 336,
+      "height": 1944,
+      "viewportWidth": 360,
+      "caption": "senior · 教材末步与记录边界"
+    },
+    {
+      "file": "senior-error-390.png",
+      "sourceSha": "85563f2669cf47472a6080637da5889d9af0bba6",
+      "sha256": "e8a7ba3ae7043306731360b7aed1f0541c217678082f272f986f214f7ffe66f3",
+      "width": 336,
+      "height": 57,
+      "viewportWidth": 390,
+      "caption": "senior · 固定流程范围外子问本地拒绝"
+    }
+  ]
+}
