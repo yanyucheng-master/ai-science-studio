@@ -3446,16 +3446,24 @@ function renderDiagramVisual(content) {
   }
 }
 
+function seekTextbookStep(index) {
+  const count = activeGenericTemplate()?.protocolSteps;
+  if (!state.hasGenerated || !count || !Number.isInteger(index) || index < 0 || index >= count) return false;
+  clearDemoTimers();
+  clearReasoningTimers();
+  pauseExperiment();
+  state.time = index / count * duration();
+  updateScene();
+  return true;
+}
+
 elements.genericPhysicsVisual?.addEventListener("click", event => {
   const id = activeGenericId();
   const selector = id === "photosynthesis" ? "[data-photosynthesis-step]" : id === "leafDisks" ? "[data-leaf-step]" : "";
   const step = selector && event.target.closest?.(selector);
   if (!state.hasGenerated || !step) return;
   const index = Number(id === "photosynthesis" ? step.dataset.photosynthesisStep : step.dataset.leafStep);
-  if (!Number.isInteger(index) || index < 0 || index > 5) return;
-  pauseExperiment();
-  state.time = index / 6 * duration();
-  updateScene();
+  seekTextbookStep(index);
 });
 
 elements.genericPhysicsVisual?.addEventListener("click", event => {
@@ -6047,6 +6055,7 @@ function updateScene() {
   elements.timeline.value = (values.timelineProgress ?? values.progress) * 100;
   elements.currentTime.textContent = formatTimelineTime(state.time);
   updateSubjectVisuals(values);
+  syncTextbookReasoning(values.progress);
 
   const completed = (values.timelineProgress ?? values.progress) >= 1;
   if (completed) {
@@ -6110,6 +6119,8 @@ function renderReasoning() {
     return;
   }
   const steps = config().steps;
+  const protocol = activeGenericTemplate()?.protocolFrame;
+  if (protocol) state.reasonStep = protocol(clamp(state.time / duration(), 0, 1)).step + 1;
   $(".reasoning-steps").innerHTML = steps.map((step, index) => {
     const number = index + 1;
     const status = number < state.reasonStep ? "done" : number === state.reasonStep ? "active" : "";
@@ -6122,7 +6133,28 @@ function renderReasoning() {
       <i><svg viewBox="0 0 24 24">${icon}</svg></i>
     </button>`;
   }).join("");
-  setReasonProgress(state.reasonStep);
+  setReasonProgress(state.reasonStep, steps.length);
+  if (protocol) $(".reason-step.active")?.setAttribute("aria-current", "step");
+}
+
+function syncTextbookReasoning(progress) {
+  const template = state.hasGenerated && activeGenericTemplate();
+  if (!template?.protocolFrame) return;
+  const next = template.protocolFrame(progress).step + 1;
+  if (state.reasonStep === next) return;
+  state.reasonStep = next;
+  $$(".reasoning-steps .reason-step").forEach(button => {
+    const step = Number(button.dataset.step);
+    const active = step === next, done = step < next;
+    button.classList.toggle("active", active);
+    button.classList.toggle("done", done);
+    if (active) button.setAttribute("aria-current", "step");
+    else button.removeAttribute("aria-current");
+    $("small", button).textContent = done ? "已完成" : active ? "当前步骤" : "待探索";
+    $("svg path", button).setAttribute("d", done ? "m5 12 4 4L19 6" : "m9 18 6-6-6-6");
+  });
+  setReasonProgress(next, template.protocolSteps);
+  $(".reasoning-steps").dispatchEvent(new Event("textbookstepchange"));
 }
 
 function setActiveSubjectTab(subject) {
@@ -6243,12 +6275,13 @@ function formulaSpotlightResult(subject, parts) {
   return "";
 }
 
-function setReasonProgress(step) {
-  const progress = Math.max(0, Math.min(4, Number(step) || 0));
+function setReasonProgress(step, total = 4) {
+  const progress = Math.max(0, Math.min(total, Number(step) || 0));
   const progressEl = $("#reasonProgress");
   if (!progressEl) return;
   progressEl.textContent = String(progress);
-  progressEl.parentElement.style.setProperty("--reason-progress", `${(progress / 4) * 100}%`);
+  $("#reasonTotal").textContent = String(total);
+  progressEl.parentElement.style.setProperty("--reason-progress", `${(progress / Math.max(1, total)) * 100}%`);
 }
 
 function updateGreeting() {
@@ -6443,6 +6476,7 @@ function renderWaitingReasoning() {
 }
 
 function applyWaitingState(subject = state.subject, options = {}) {
+  window.MasterLabPhotosynthesisLearning?.clear(elements.genericPhysicsVisual);
   window.MasterLabShare?.leaveContext();
   window.MasterLabInstant?.dismiss();
   clearDemoTimers();
@@ -7008,6 +7042,7 @@ function refreshGeneratedSubjectSurface(subject = state.subject, options = {}) {
 }
 
 function applySubject(subject, updateQuestion = true, options = {}) {
+  if (subject !== state.subject) window.MasterLabPhotosynthesisLearning?.clear(elements.genericPhysicsVisual);
   window.MasterLabShare?.leaveContext();
   clearDemoTimers();
   clearReasoningTimers();
@@ -7396,6 +7431,10 @@ function applyReasoningStepEffect(step) {
 
 function activateReasoningStep(step, options = {}) {
   if (!state.hasGenerated) return;
+  if (activeGenericTemplate()?.protocolFrame) {
+    if (options.manual) seekTextbookStep(Number(step) - 1);
+    return;
+  }
   const maxStep = Math.max(config().steps.length, 4);
   const nextStep = Math.max(1, Math.min(maxStep, Number(step) || 1));
   if (options.manual) clearReasoningTimers();
@@ -7405,7 +7444,7 @@ function activateReasoningStep(step, options = {}) {
 
 function scheduleReasoningAutoAdvance() {
   clearReasoningTimers();
-  if (!state.hasGenerated) return;
+  if (!state.hasGenerated || activeGenericTemplate()?.protocolFrame) return;
   const runId = state.reasoningAutoRun;
   const subject = state.subject;
   const question = state.generatedQuestion;
@@ -7485,6 +7524,7 @@ elements.playButton.addEventListener("click", () => {
   state.playing ? pauseExperiment() : playExperiment();
 });
 $("#resetButton").addEventListener("click", () => {
+  window.MasterLabPhotosynthesisLearning?.clear(elements.genericPhysicsVisual);
   clearDemoTimers();
   clearReasoningTimers();
   resetExperiment();
@@ -8244,6 +8284,7 @@ async function generateExperiment(options = {}) {
     }
     return;
   }
+  window.MasterLabPhotosynthesisLearning?.clear(elements.genericPhysicsVisual);
   // A prompt can switch subjects without clicking a subject tab. Save the
   // still-active experiment before assigning the new template and parameters.
   if (detected !== state.subject) saveCurrentSubjectSnapshot();
