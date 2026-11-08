@@ -51,7 +51,9 @@ async function run(name,action,{direct=false,width=1280,height=720,mode='valid'}
    return json({error:'UNEXPECTED_COORDINATE_REQUEST'},500);
   }
   if(url.origin===base&&url.pathname==='/api/v1/tutor/chat'){
-   assert.equal(req.headers().authorization,undefined);row.chat++;row.lastChatContext=req.postDataJSON().context;return json(reply);
+   assert.equal(req.headers().authorization,undefined);row.chat++;row.gateway=(row.gateway||0)+1;row.lastChatContext=req.postDataJSON().context;
+   // 截断场景下网关的回答与个人模型的截断回答区分开，便于确认页面显示的是回退后的网关回答
+   return json(mode==='truncated'?{...reply,summary:'（公益网关）'+reply.summary}:reply);
   }
   if(['fonts.googleapis.com','fonts.gstatic.com'].includes(url.hostname))return route.fulfill({status:200,body:''});
   if(url.origin!==base){row.unexpected.push(req.url());return route.abort();}
@@ -103,8 +105,10 @@ try{
  },{direct:true,mode:'math-followup'});
  await run('truncated-followup-stays-blocked',async({page,row})=>{
   await send(page,'请解释绝对值函数为什么有折点。');
-  assert.equal(row.scene,0);assert.match(await page.locator('.ai-message.assistant').last().innerText(),/不符合约定|已拦截/);
-  assert.equal(await page.locator('.ai-suggested-question').count(),0);
+  // 2026-11-06 个人模型：被截断的个人回答不显示，只回退一次到公益网关并提示（不再停在“已拦截”）
+  const shown=await page.locator('.ai-message.assistant').last().innerText();
+  assert.equal(row.scene,0);assert.equal(row.chat,2,'one truncated personal reply, one gateway fallback');assert.equal(row.gateway,1);
+  assert.match(shown,/返回内容无法使用，已自动转用公益 AI/);assert.match(shown,/（公益网关）/);
  },{direct:true,mode:'truncated'});
  await run('mobile-inline-drawing',async({page,row})=>{
   await send(page);assert.equal(row.chat,0);assert.equal(await page.locator('.ai-diagram-canvas svg').count(),1);

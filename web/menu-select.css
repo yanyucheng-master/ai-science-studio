@@ -1,0 +1,191 @@
+/* 下拉菜单统一样式（2026-11-07）
+   带 data-menu-select 的原生 select 保留为数据源（视觉隐藏），由 menu-select.js 在其后追加触发按钮与弹出列表。
+   弹出列表沿用 AI 问答“更多”菜单（styles.css .ai-tutor-more-panel）的数值；触发按钮沿用各自原 select 的外观。
+   鸿蒙兼容模式（body.harmony-compat-mode）不增强，继续显示原生 select。 */
+
+:root {
+  --menu-select-panel-border: #e2eaf5;
+  --menu-select-panel-shadow: 0 10px 30px #264b7920;
+  --menu-select-item-color: #3e5776;
+  --menu-select-item-active-bg: #edf4fd;
+  --menu-select-item-active-color: #245caa;
+}
+
+/* ---------- 原生 select：视觉隐藏（不用 display:none / hidden / visibility:hidden，保留脚本与测试的读写和可见性判断） ---------- */
+body:not(.harmony-compat-mode) select.menu-select-native {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+}
+body.harmony-compat-mode .menu-select { display: none !important; }
+
+/* ---------- 外层：弹出列表的定位容器 ---------- */
+.menu-select {
+  position: relative;
+  display: inline-flex;
+  min-width: 0;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+
+/* ---------- 触发按钮（通用骨架） ---------- */
+.menu-select-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  font: inherit;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+.menu-select-trigger:disabled { cursor: default; opacity: .6; }
+/* 所有选项文字叠在同一格里撑出宽度：与原生 select 一样按最长选项定宽，切换选项时按钮不跳动 */
+.menu-select-text { display: grid; min-width: 0; overflow: hidden; }
+.menu-select-text > span { grid-area: 1 / 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.menu-select-text > .menu-select-sizer { visibility: hidden; }
+.menu-select-arrow {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  stroke-width: 1.6;
+  opacity: .8;
+  transition: transform 120ms ease;
+}
+.menu-select-trigger[aria-expanded="true"] .menu-select-arrow { transform: rotate(180deg); }
+
+/* ---------- 回答方式：沿用 styles.css 10196 / 10941、mobile.css 557、tutor-focus.css 63 的数值 ---------- */
+.ai-response-mode .menu-select-trigger {
+  max-width: 105px;
+  min-height: 28px;
+  gap: 9px; /* 与原生 select 的箭头区宽度一致，按钮总宽不变 */
+  padding: 3px 5px 3px 6px;
+  color: #3b608f;
+  font-size: 11px;
+  border: 1px solid #cfdef4;
+  border-radius: 7px;
+  background: #fff;
+}
+.ai-response-mode .menu-select-trigger:focus-visible { outline: 2px solid #3174e8; outline-offset: 2px; }
+.ai-tutor-workspace .ai-response-mode .menu-select-trigger {
+  min-height: 34px;
+  border-color: #e2eaf5;
+  background-color: transparent;
+  font-size: 13px;
+}
+@media (max-width: 760px) {
+  .ai-tutor-workspace .ai-response-mode .menu-select-trigger { padding-left: 5px; padding-right: 5px; }
+}
+@media (max-width: 640px) {
+  :root body .ai-tutor-workspace .ai-response-mode .menu-select-trigger { min-height: 36px; font-size: 14px; }
+}
+
+/* ---------- 个人模型：沿用 styles.css 3742–3765 .api-key-select ---------- */
+.api-key-modal .menu-select { display: flex; width: 100%; margin-bottom: 18px; }
+.api-key-modal .menu-select-trigger {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  color: #1c2d4d;
+  font-size: 14px;
+  border: 1px solid #d5e0f1;
+  border-radius: 12px;
+  background: #f7f9fd;
+  outline: none;
+}
+.api-key-modal .menu-select-trigger:focus,
+.api-key-modal .menu-select-trigger[aria-expanded="true"] {
+  border-color: #7aa3f0;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(32, 87, 217, .12);
+}
+@media (max-width: 480px) {
+  .api-key-modal .menu-select-trigger { font-size: 16px; }
+}
+
+/* ---------- 弹出列表：与“更多”菜单相同的面板与选项 ---------- */
+.menu-select-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 30;
+  display: grid;
+  gap: 2px;
+  box-sizing: border-box;
+  width: max-content;
+  min-width: max(100%, 120px);
+  max-width: min(320px, calc(100vw - 16px));
+  padding: 6px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  text-align: left;
+  border: 1px solid var(--menu-select-panel-border);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: var(--menu-select-panel-shadow);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+  animation: menu-select-in-down 120ms ease-out;
+}
+.menu-select-panel[hidden] { display: none; }
+.menu-select-panel[data-placement="top"] {
+  top: auto;
+  bottom: calc(100% + 6px);
+  animation-name: menu-select-in-up;
+}
+.menu-select-option {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 38px;
+  padding: 8px 12px;
+  color: var(--menu-select-item-color);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.35;
+  text-align: left;
+  white-space: nowrap;
+  border-radius: 7px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+.menu-select-option[aria-selected="true"] { color: var(--menu-select-item-active-color); font-weight: 600; }
+.menu-select-option.is-active { color: var(--menu-select-item-active-color); background: var(--menu-select-item-active-bg); }
+.menu-select-option[aria-disabled="true"] { cursor: default; opacity: .5; }
+@media (pointer: coarse) {
+  .menu-select-option { min-height: 44px; font-size: 14px; }
+}
+
+@keyframes menu-select-in-down { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes menu-select-in-up { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-select-panel, .menu-select-panel[data-placement="top"] { animation: none; }
+  .menu-select-arrow { transition: none; }
+}
