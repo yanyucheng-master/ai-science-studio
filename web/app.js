@@ -3446,6 +3446,26 @@ function renderDiagramVisual(content) {
   }
 }
 
+function seekTextbookStep(index) {
+  const count = activeGenericTemplate()?.protocolSteps;
+  if (!state.hasGenerated || !count || !Number.isInteger(index) || index < 0 || index >= count) return false;
+  clearDemoTimers();
+  clearReasoningTimers();
+  pauseExperiment();
+  state.time = index / count * duration();
+  updateScene();
+  return true;
+}
+
+elements.genericPhysicsVisual?.addEventListener("click", event => {
+  const id = activeGenericId();
+  const selector = id === "photosynthesis" ? "[data-photosynthesis-step]" : id === "leafDisks" ? "[data-leaf-step]" : "";
+  const step = selector && event.target.closest?.(selector);
+  if (!state.hasGenerated || !step) return;
+  const index = Number(id === "photosynthesis" ? step.dataset.photosynthesisStep : step.dataset.leafStep);
+  seekTextbookStep(index);
+});
+
 elements.genericPhysicsVisual?.addEventListener("click", event => {
   if (activeGenericId() === "population") {
     const example = event.target.closest?.("[data-population-example]");
@@ -4574,6 +4594,47 @@ function planLocalExperiment(question, context = {}) {
   const presetQuestion = context.presetQuestion ?? SUBJECTS[subjectContext]?.question;
   const strictSubject = presetQuestion && question === presetQuestion ? subjectContext : detectSubjectStrict(question);
   const detected = strictSubject || subjectContext;
+  // The complete protocol parser still validates the original text before any routing inference.
+  const protocolPlans = genericTemplatesOf("生物").filter(template => template.localOnly && template.protocolAssessment).map(template => ({
+    template, parse:parseGenericQuestion(question, template.id, { subject:"生物", gradeLevel }), assessment:template.protocolAssessment(question)
+  }));
+  const completeProtocols = protocolPlans.filter(x=>x.parse?.ok);
+  if(completeProtocols.length===1){const {template,parse}=completeProtocols[0];return {ok:true,subject:"生物",kind:"extra",templateId:template.id,parse,protocolOwnership:"complete"};}
+  const protocolRefusal = (items, uncertain=false) => {
+    const one=items.length===1?items[0]:null;
+    const parse=one?(one.assessment.parsed.ok?one.parse:one.assessment.parsed):{ok:false,message:"题目涉及两套固定教材流程，归属不能唯一确认。请分别给出同叶遮光或叶圆片的条件和所问。"};
+    const message=uncertain?"仅确认了部分教材操作，尚不能确认完整流程。"+parse.message:parse.message;
+    return {ok:false,subject:"生物",localOnly:true,diagnosticTemplateId:one?.template.id||"",protocolOwnership:uncertain?"uncertain":"confirmed",parse:{ok:false,message}};
+  };
+  if(completeProtocols.length>1)return protocolRefusal(completeProtocols);
+  const confirmedProtocols=protocolPlans.filter(x=>["complete","confirmed"].includes(x.assessment.ownership));
+  const uncertainProtocols=protocolPlans.filter(x=>x.assessment.ownership==="uncertain");
+  const ordinary = planStandardExperiment(question, detected, strictSubject, gradeLevel, templateContext);
+  // A single exclusive request can scope out unlabelled facts only after an
+  // ordinary template accepts the full original prompt and no biology ask remains.
+  const candidates = [...confirmedProtocols, ...uncertainProtocols];
+  if (ordinary.ok && ordinary.subject !== "生物" && candidates.every(({assessment}) =>
+    assessment.evidence.singleExclusiveRequest && !assessment.evidence.requested)) return ordinary;
+  const activeProtocols = [...confirmedProtocols, ...uncertainProtocols.filter(x => x.assessment.evidence.requested)];
+  if (activeProtocols.length) {
+    const otherQuestion = ordinary.ok || activeProtocols.some(({assessment}) =>
+      assessment.evidence.questionSections.some(section => {
+        const subject = detectSubjectStrict(section);
+        return subject && subject !== "生物";
+      }));
+    if (otherQuestion) {
+      const refusal = protocolRefusal(activeProtocols);
+      return { ...refusal, subject: detected, protocolOwnership: "mixed",
+        parse: { ok: false, message: "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：" + refusal.parse.message } };
+    }
+  }
+  if(confirmedProtocols.length)return protocolRefusal(confirmedProtocols);
+  if(ordinary.ok && !activeProtocols.length)return ordinary;
+  if(uncertainProtocols.length)return protocolRefusal(uncertainProtocols,true);
+  return ordinary;
+}
+
+function planStandardExperiment(question, detected, strictSubject, gradeLevel, templateContext) {
   const failures = [];
   const attempt = (kind, parse, extra = {}) => {
     if (parse?.ok) return { ok: true, subject: detected, kind, parse, ...extra };
@@ -4643,8 +4704,9 @@ function planLocalExperiment(question, context = {}) {
   }
   if (detected === "生物") {
     for (const template of genericTemplatesOf("生物")) {
-      if (!template.keywords?.test(normalizeQuestionText(question))) continue;
-      const generic = attempt("extra", parseGenericQuestion(question, template.id, { subject: "生物", gradeLevel }), { templateId: template.id });
+      if (template.localOnly || !template.keywords?.test(normalizeQuestionText(question))) continue;
+      const parsed = parseGenericQuestion(question, template.id, { subject: "生物", gradeLevel });
+      const generic = attempt("extra", parsed, { templateId: template.id });
       if (generic) return generic;
     }
     const plan = attempt("biology", parseBiologyCellQuestion(question, { gradeLevel }));
@@ -5993,6 +6055,7 @@ function updateScene() {
   elements.timeline.value = (values.timelineProgress ?? values.progress) * 100;
   elements.currentTime.textContent = formatTimelineTime(state.time);
   updateSubjectVisuals(values);
+  syncTextbookReasoning(values.progress);
 
   const completed = (values.timelineProgress ?? values.progress) >= 1;
   if (completed) {
@@ -6056,6 +6119,8 @@ function renderReasoning() {
     return;
   }
   const steps = config().steps;
+  const protocol = activeGenericTemplate()?.protocolFrame;
+  if (protocol) state.reasonStep = protocol(clamp(state.time / duration(), 0, 1)).step + 1;
   $(".reasoning-steps").innerHTML = steps.map((step, index) => {
     const number = index + 1;
     const status = number < state.reasonStep ? "done" : number === state.reasonStep ? "active" : "";
@@ -6068,7 +6133,28 @@ function renderReasoning() {
       <i><svg viewBox="0 0 24 24">${icon}</svg></i>
     </button>`;
   }).join("");
-  setReasonProgress(state.reasonStep);
+  setReasonProgress(state.reasonStep, steps.length);
+  if (protocol) $(".reason-step.active")?.setAttribute("aria-current", "step");
+}
+
+function syncTextbookReasoning(progress) {
+  const template = state.hasGenerated && activeGenericTemplate();
+  if (!template?.protocolFrame) return;
+  const next = template.protocolFrame(progress).step + 1;
+  if (state.reasonStep === next) return;
+  state.reasonStep = next;
+  $$(".reasoning-steps .reason-step").forEach(button => {
+    const step = Number(button.dataset.step);
+    const active = step === next, done = step < next;
+    button.classList.toggle("active", active);
+    button.classList.toggle("done", done);
+    if (active) button.setAttribute("aria-current", "step");
+    else button.removeAttribute("aria-current");
+    $("small", button).textContent = done ? "已完成" : active ? "当前步骤" : "待探索";
+    $("svg path", button).setAttribute("d", done ? "m5 12 4 4L19 6" : "m9 18 6-6-6-6");
+  });
+  setReasonProgress(next, template.protocolSteps);
+  $(".reasoning-steps").dispatchEvent(new Event("textbookstepchange"));
 }
 
 function setActiveSubjectTab(subject) {
@@ -6189,12 +6275,13 @@ function formulaSpotlightResult(subject, parts) {
   return "";
 }
 
-function setReasonProgress(step) {
-  const progress = Math.max(0, Math.min(4, Number(step) || 0));
+function setReasonProgress(step, total = 4) {
+  const progress = Math.max(0, Math.min(total, Number(step) || 0));
   const progressEl = $("#reasonProgress");
   if (!progressEl) return;
   progressEl.textContent = String(progress);
-  progressEl.parentElement.style.setProperty("--reason-progress", `${(progress / 4) * 100}%`);
+  $("#reasonTotal").textContent = String(total);
+  progressEl.parentElement.style.setProperty("--reason-progress", `${(progress / Math.max(1, total)) * 100}%`);
 }
 
 function updateGreeting() {
@@ -6266,37 +6353,37 @@ function formatParam(param, value) {
   return `${param.prefix || ""}${Number(value).toFixed(decimals)}`;
 }
 
+// Recognition strings can quote student text or service messages. Never parse them as HTML.
+function renderRecognitionText(label, message, formula = false) {
+  if (!elements.parseFeedback) return;
+  const heading = document.createElement("span"), detail = document.createElement("strong");
+  heading.textContent = label;
+  // Keep text-like punctuation verbatim; optional math enhancement also creates nodes only.
+  if (formula && window.ScienceFormula?.appendText && !/[<>&"']/u.test(String(message ?? ""))) window.ScienceFormula.appendText(detail, String(message ?? ""));
+  else { detail.dataset.noFormula = ""; detail.textContent = String(message ?? ""); }
+  elements.parseFeedback.replaceChildren(heading, detail);
+}
 function setRecognitionFeedback(result, isError = false) {
   if (!elements.parseFeedback) return;
   elements.parseFeedback.classList.add("show");
   elements.parseFeedback.classList.toggle("error", isError);
   elements.parseFeedback.classList.remove("pending");
-  if (isError) {
-    elements.parseFeedback.innerHTML = `<span>识别提示</span><strong>${result.message}</strong>`;
-    return;
-  }
+  if (isError) { renderRecognitionText("识别提示", result.message); return; }
   let recognitionText = result.recognitionText;
-  if (!recognitionText && result.type === "braking_distance") {
-    recognitionText = buildPhysicsBrakeContent(result.v0, result.aAbs).recognitionText;
-  }
-  if (!recognitionText && state.subject === "化学") {
-    recognitionText = buildChemistryFeCuSO4Content().recognitionText;
-  }
-  if (!recognitionText) recognitionText = result.message || "已识别典型题型模板";
-  elements.parseFeedback.innerHTML = `<span>识别结果</span><strong>${verticalizeFormulaHtml(recognitionText)}</strong>`;
+  if (!recognitionText && result.type === "braking_distance") recognitionText = buildPhysicsBrakeContent(result.v0, result.aAbs).recognitionText;
+  if (!recognitionText && state.subject === "化学") recognitionText = buildChemistryFeCuSO4Content().recognitionText;
+  renderRecognitionText("识别结果", recognitionText || result.message || "已识别典型题型模板", true);
 }
-
 function setRecognitionPending(message = "题目已修改，点击“生成实验”重新识别。") {
   if (!elements.parseFeedback) return;
   elements.parseFeedback.classList.add("show", "pending");
   elements.parseFeedback.classList.remove("error");
-  elements.parseFeedback.innerHTML = `<span>待重新识别</span><strong>${message}</strong>`;
+  renderRecognitionText("待重新识别", message);
 }
-
 function clearRecognitionFeedback() {
   if (!elements.parseFeedback) return;
   elements.parseFeedback.classList.remove("show", "error", "pending");
-  elements.parseFeedback.innerHTML = "";
+  elements.parseFeedback.replaceChildren();
 }
 
 function syncPhysicsQuestionFromState() {
@@ -6389,6 +6476,7 @@ function renderWaitingReasoning() {
 }
 
 function applyWaitingState(subject = state.subject, options = {}) {
+  window.MasterLabPhotosynthesisLearning?.clear(elements.genericPhysicsVisual);
   window.MasterLabShare?.leaveContext();
   window.MasterLabInstant?.dismiss();
   clearDemoTimers();
@@ -6791,7 +6879,9 @@ function buildMasterLabAIContext() {
       ...gradeLevelContext(experimentLevelInfo()?.content)
     },
     formula: displayedSource($(".formula-spotlight strong")).trim().slice(0, 600),
-    currentStep: displayedSource(currentReasoning).replace(/\s+/g, " ").trim().slice(0, 600)
+    currentStep: (genericModel && activeGenericTemplate()?.stepContext
+      ? activeGenericTemplate().stepContext(state.time / duration())
+      : displayedSource(currentReasoning)).replace(/\s+/g, " ").trim().slice(0, 600)
   };
 }
 
@@ -6952,6 +7042,7 @@ function refreshGeneratedSubjectSurface(subject = state.subject, options = {}) {
 }
 
 function applySubject(subject, updateQuestion = true, options = {}) {
+  if (subject !== state.subject) window.MasterLabPhotosynthesisLearning?.clear(elements.genericPhysicsVisual);
   window.MasterLabShare?.leaveContext();
   clearDemoTimers();
   clearReasoningTimers();
@@ -7039,6 +7130,8 @@ function playExperiment() {
   state.playing = true;
   animationClock.reconcile();
   elements.playButton.classList.add("playing");
+  elements.playButton.setAttribute("aria-label", "暂停实验");
+  elements.playButton.setAttribute("aria-pressed", "true");
   if (document.body.classList.contains("demo-mode")) setDemoStep(4, "看见速度如何归零");
   animationClock.reconcile();
 }
@@ -7046,6 +7139,8 @@ function playExperiment() {
 function pauseExperiment() {
   state.playing = false;
   elements.playButton.classList.remove("playing");
+  elements.playButton.setAttribute("aria-label", "播放实验");
+  elements.playButton.setAttribute("aria-pressed", "false");
   elements.car.classList.remove("moving");
   animationClock.reconcile();
 }
@@ -7336,6 +7431,10 @@ function applyReasoningStepEffect(step) {
 
 function activateReasoningStep(step, options = {}) {
   if (!state.hasGenerated) return;
+  if (activeGenericTemplate()?.protocolFrame) {
+    if (options.manual) seekTextbookStep(Number(step) - 1);
+    return;
+  }
   const maxStep = Math.max(config().steps.length, 4);
   const nextStep = Math.max(1, Math.min(maxStep, Number(step) || 1));
   if (options.manual) clearReasoningTimers();
@@ -7345,7 +7444,7 @@ function activateReasoningStep(step, options = {}) {
 
 function scheduleReasoningAutoAdvance() {
   clearReasoningTimers();
-  if (!state.hasGenerated) return;
+  if (!state.hasGenerated || activeGenericTemplate()?.protocolFrame) return;
   const runId = state.reasoningAutoRun;
   const subject = state.subject;
   const question = state.generatedQuestion;
@@ -7425,6 +7524,7 @@ elements.playButton.addEventListener("click", () => {
   state.playing ? pauseExperiment() : playExperiment();
 });
 $("#resetButton").addEventListener("click", () => {
+  window.MasterLabPhotosynthesisLearning?.clear(elements.genericPhysicsVisual);
   clearDemoTimers();
   clearReasoningTimers();
   resetExperiment();
@@ -7483,7 +7583,7 @@ function currentPhysicsPresetKey() {
 /* ===== 预设菜单（各学科，按学段与板块分组，2026-10-16）=====
    菜单项写在 index.html（data-subject / data-level / data-block）。打开时按当前学科和学段重新分组：
    本学段按板块分组排在前面，另一学段折叠在底部；当前已预选的那一项隐藏。 */
-const PRESET_BLOCK_ORDER = Object.freeze(["力学", "电学", "电磁学", "光学", "热学", "声学", "化学计算", "几何", "函数", "方程（组）", "三角函数", "导数", "细胞", "遗传", "观察工具", "种群"]);
+const PRESET_BLOCK_ORDER = Object.freeze(["力学", "电学", "电磁学", "光学", "热学", "声学", "化学计算", "几何", "函数", "方程（组）", "三角函数", "导数", "细胞", "植物生理", "遗传", "观察工具", "种群"]);
 const DEDICATED_PRESET_KEYS = new Set(["brake", "solenoid", "boardSlider", "projectile", "circuit", "feCuSO4", "tangent", "cellPlant", "cellAnimal"]);
 const PRESET_OPTIONS = $$("#physicsPresetDropdown .preset-option");
 PRESET_OPTIONS.forEach(option => {
@@ -8170,7 +8270,8 @@ async function generateExperiment(options = {}) {
   const detected = plan.subject;
   if (!plan.ok) {
     const inputAtHandoff = $("#questionInput").value;
-    const remote = await handOffUnmatchedQuestion(plan.parse, displayQuestion, detected, allowAiFallback);
+    const localReason = plan.localOnly ? { ...plan.parse, message: plan.parse.message + " 如需讲解，请主动打开 AI 导师提问。" } : plan.parse;
+    const remote = await handOffUnmatchedQuestion(localReason, displayQuestion, detected, allowAiFallback && !plan.localOnly);
     // The student edited the question during the analysis: never overwrite the new text
     // with the old question or open the old question's experiment.
     if ($("#questionInput").value !== inputAtHandoff) {
@@ -8183,6 +8284,7 @@ async function generateExperiment(options = {}) {
     }
     return;
   }
+  window.MasterLabPhotosynthesisLearning?.clear(elements.genericPhysicsVisual);
   // A prompt can switch subjects without clicking a subject tab. Save the
   // still-active experiment before assigning the new template and parameters.
   if (detected !== state.subject) saveCurrentSubjectSnapshot();
@@ -8363,7 +8465,7 @@ async function generateExperiment(options = {}) {
   updateGradeTag();
   dispatchAIContextChanged();
   setDemoStep(3, "点击播放或请求 AI 导师提示");
-  if (!options.shared) showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : genericParse ? `${GENERIC_TEMPLATES[genericParse.templateId].subject}典型题模板已生成，可拖动参数观察变化` : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
+  if (!options.shared) showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : genericParse?.templateId === "photosynthesis" ? "教材光合作用实验已生成，可播放或回看六步操作": genericParse ? `${GENERIC_TEMPLATES[genericParse.templateId].subject}典型题模板已生成，可拖动参数观察变化` : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
   return true;
 }
 
@@ -8544,6 +8646,11 @@ $("#challengeButton").addEventListener("click", () => {
   if (genericTemplate) {
     const template = genericTemplate;
     const fixed = template.fixedWithDefaults(state.extraFixed?.[template.id]);
+    if (template.parameter && template.params.every((param, index) => template.parameter(param, index, fixed).locked)) {
+      elements.mentorMessage.textContent = buildGenericContent(template.id).challenge;
+      showToast("本实验条件按教材固定，请回看操作并说明各步目的");
+      return;
+    }
     const custom = template.variant?.(state.p1, state.p2, fixed);
     if (custom) {
       state.p1 = custom.p1;

@@ -1,0 +1,95 @@
+{
+  "selectedOnly": true,
+  "screenshots": [
+    {
+      "file": "junior-1366.png",
+      "sourceSha": "ef9767692e62ac640dcb537b09826214735b738e",
+      "sha256": "03b3b105d0139964e877a362fc047d748597bc53865b3d356cec919abc059483",
+      "width": 930,
+      "height": 1065,
+      "viewportWidth": 1366,
+      "caption": "junior教材场景 1366"
+    },
+    {
+      "file": "junior-820.png",
+      "sourceSha": "ef9767692e62ac640dcb537b09826214735b738e",
+      "sha256": "a3877101e4090091bf7d3bfd59f76430d7d2f990a25ff1a63bb26bcbf5725a86",
+      "width": 796,
+      "height": 1472,
+      "viewportWidth": 820,
+      "caption": "junior教材场景 820"
+    },
+    {
+      "file": "junior-360.png",
+      "sourceSha": "ef9767692e62ac640dcb537b09826214735b738e",
+      "sha256": "63bea0e01d58d90961334d0bd419cb29172d9b6da47aaf789d854f5af9a0871b",
+      "width": 336,
+      "height": 1677,
+      "viewportWidth": 360,
+      "caption": "junior教材场景 360"
+    },
+    {
+      "file": "junior-space-complete-390.png",
+      "sourceSha": "6c9db9c4833f209c5f3537a0c933a976ef4ee226",
+      "sha256": "35912926ac8b9307de0e6c5adfd223a38454d17c9c73314c97f589bb6e6516f5",
+      "width": 366,
+      "height": 1600,
+      "viewportWidth": 390,
+      "caption": "junior空格分隔 完整生成"
+    },
+    {
+      "file": "junior-space-missing-390.png",
+      "sourceSha": "6c9db9c4833f209c5f3537a0c933a976ef4ee226",
+      "sha256": "98e35ed5d021331d30715e29b499ea451cfeb093458110a36e894e96c6f3ba97",
+      "width": 336,
+      "height": 38,
+      "viewportWidth": 390,
+      "caption": "junior空格分隔 缺项本地诊断"
+    },
+    {
+      "file": "senior-1366.png",
+      "sourceSha": "5bcc67bb706440c2c763899ce756854249bc90b1",
+      "sha256": "e42c9718db4bf22aad6bca0882ceeb9afa64a17efef016057e90f8b8c5393055",
+      "width": 930,
+      "height": 1391,
+      "viewportWidth": 1366,
+      "caption": "senior教材场景 1366"
+    },
+    {
+      "file": "senior-820.png",
+      "sourceSha": "5bcc67bb706440c2c763899ce756854249bc90b1",
+      "sha256": "9bccef98defbc52fb36a10102bb7d07ac0fad69735947e735157bd007eb7d93f",
+      "width": 796,
+      "height": 1703,
+      "viewportWidth": 820,
+      "caption": "senior教材场景 820"
+    },
+    {
+      "file": "senior-360.png",
+      "sourceSha": "5bcc67bb706440c2c763899ce756854249bc90b1",
+      "sha256": "2f383451d0a2fe88d55b2e8abfd989f3b23f80ad7356f2e7d572611b5873e8dc",
+      "width": 336,
+      "height": 1944,
+      "viewportWidth": 360,
+      "caption": "senior教材场景 360"
+    },
+    {
+      "file": "senior-space-complete-390.png",
+      "sourceSha": "6c9db9c4833f209c5f3537a0c933a976ef4ee226",
+      "sha256": "a6b1445b4e124109f3d23a5d97e6f765e3b4dc4ed1ce77ea49948ba12772e1ee",
+      "width": 366,
+      "height": 1895,
+      "viewportWidth": 390,
+      "caption": "senior空格分隔 完整生成"
+    },
+    {
+      "file": "senior-space-missing-390.png",
+      "sourceSha": "6c9db9c4833f209c5f3537a0c933a976ef4ee226",
+      "sha256": "8cc2c8a27a40cdc7b97b34975b16f8b552dee55e39b66f3dfec15d8578ea4725",
+      "width": 336,
+      "height": 38,
+      "viewportWidth": 390,
+      "caption": "senior空格分隔 缺项本地诊断"
+    }
+  ]
+}

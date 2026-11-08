@@ -1,0 +1,4422 @@
+{
+  "edge": {
+    "sourceSha": "ef9767692e62ac640dcb537b09826214735b738e",
+    "method": "normal generate button",
+    "browser": "156.0.4314.58",
+    "registry": [
+      {
+        "noTutor": false,
+        "status": 503,
+        "first": "junior",
+        "grade": "junior",
+        "order": "single",
+        "registered": [
+          "photosynthesis"
+        ]
+      },
+      {
+        "noTutor": false,
+        "status": 200,
+        "first": "senior",
+        "grade": "senior",
+        "order": "single",
+        "registered": [
+          "photosynthesis"
+        ]
+      },
+      {
+        "noTutor": true,
+        "status": 503,
+        "first": "junior",
+        "grade": "senior",
+        "order": "single",
+        "registered": [
+          "photosynthesis"
+        ]
+      },
+      {
+        "noTutor": true,
+        "status": 200,
+        "first": "senior",
+        "grade": "junior",
+        "order": "single",
+        "registered": [
+          "photosynthesis"
+        ]
+      }
+    ],
+    "templateApi": [
+      {
+        "id": "junior-comma-complete",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-comma-missing",
+        "expected": false,
+        "parseOk": false,
+        "message": "缺少可核对条件：盆栽天竺葵暗处理一昼夜。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 43
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 60
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 80
+          }
+        ]
+      },
+      {
+        "id": "junior-comma-conflict",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「盆栽天竺葵先暗处理两小时」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-comma-wrong",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「酒精直接加热脱色」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-comma-extra",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「求总产氧量」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-comma-no-ask",
+        "expected": false,
+        "parseOk": false,
+        "message": "尚未明确所问。支持实验结论、实验现象、操作目的、实验步骤。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-comma-ask-first",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 18
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 32
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 44
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 56
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 73
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 90
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 96
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 110
+          }
+        ]
+      },
+      {
+        "id": "junior-comma-reordered",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 12
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 29
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 46
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 52
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-space-complete",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-space-missing",
+        "expected": false,
+        "parseOk": false,
+        "message": "缺少可核对条件：盆栽天竺葵暗处理一昼夜。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 43
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 60
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 80
+          }
+        ]
+      },
+      {
+        "id": "junior-space-conflict",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「盆栽天竺葵先暗处理两小时 说明实验结论、实验现象、操作目的、实验步骤」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-space-wrong",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「酒精直接加热脱色 清水漂洗后置于培养皿滴加碘液 稍停片刻用清水冲掉碘液再观察 说明实验结论、实验现象、操作目的、实验步骤」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-space-extra",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「求总产氧量」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-space-no-ask",
+        "expected": false,
+        "parseOk": false,
+        "message": "尚未明确所问。支持实验结论、实验现象、操作目的、实验步骤。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-space-ask-first",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 18
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 32
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 44
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 56
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 73
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 90
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 96
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 110
+          }
+        ]
+      },
+      {
+        "id": "junior-space-reordered",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 12
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 29
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 46
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 52
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-dun-complete",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-dun-missing",
+        "expected": false,
+        "parseOk": false,
+        "message": "缺少可核对条件：盆栽天竺葵暗处理一昼夜。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 43
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 60
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 80
+          }
+        ]
+      },
+      {
+        "id": "junior-dun-conflict",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「盆栽天竺葵先暗处理两小时、说明实验结论、实验现象、操作目的、实验步骤」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-dun-wrong",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「酒精直接加热脱色、清水漂洗后置于培养皿滴加碘液、稍停片刻用清水冲掉碘液再观察、说明实验结论、实验现象、操作目的、实验步骤」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-dun-extra",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「求总产氧量」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-dun-no-ask",
+        "expected": false,
+        "parseOk": false,
+        "message": "尚未明确所问。支持实验结论、实验现象、操作目的、实验步骤。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-dun-ask-first",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 18
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 32
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 44
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 56
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 73
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 90
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 96
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 110
+          }
+        ]
+      },
+      {
+        "id": "junior-dun-reordered",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 12
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 29
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 46
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 52
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-none-complete",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-none-missing",
+        "expected": false,
+        "parseOk": false,
+        "message": "缺少可核对条件：盆栽天竺葵暗处理一昼夜。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 43
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 60
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 80
+          }
+        ]
+      },
+      {
+        "id": "junior-none-conflict",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「盆栽天竺葵先暗处理两小时说明实验结论、实验现象、操作目的、实验步骤」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-none-wrong",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「酒精直接加热脱色清水漂洗后置于培养皿滴加碘液稍停片刻用清水冲掉碘液再观察说明实验结论、实验现象、操作目的、实验步骤」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-none-extra",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「求总产氧量」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-none-no-ask",
+        "expected": false,
+        "parseOk": false,
+        "message": "尚未明确所问。支持实验结论、实验现象、操作目的、实验步骤。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-none-ask-first",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 18
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 32
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 44
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 56
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 73
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 90
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 96
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 110
+          }
+        ]
+      },
+      {
+        "id": "junior-none-reordered",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 12
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 29
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 46
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 52
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-mixed-complete",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-mixed-missing",
+        "expected": false,
+        "parseOk": false,
+        "message": "缺少可核对条件：盆栽天竺葵暗处理一昼夜。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 43
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 60
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 80
+          }
+        ]
+      },
+      {
+        "id": "junior-mixed-conflict",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「盆栽天竺葵先暗处理两小时」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-mixed-wrong",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「酒精直接加热脱色、清水漂洗后置于培养皿滴加碘液」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-mixed-extra",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「求总产氧量」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-mixed-no-ask",
+        "expected": false,
+        "parseOk": false,
+        "message": "尚未明确所问。支持实验结论、实验现象、操作目的、实验步骤。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-mixed-ask-first",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 18
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 32
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 44
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 56
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 73
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 90
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 96
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 110
+          }
+        ]
+      },
+      {
+        "id": "junior-mixed-reordered",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 12
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 29
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 46
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 52
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 94
+          }
+        ]
+      }
+    ],
+    "boundaries": [
+      {
+        "id": "mirror-partial-background",
+        "noTutor": false,
+        "requests": [],
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "题目已修改，点击“生成实验”重新识别。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "actual": {
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+          "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "planeMirror",
+          "time": 0,
+          "playing": false,
+          "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+          }
+        }
+      },
+      {
+        "id": "partial-junior-procedure",
+        "noTutor": false,
+        "requests": [],
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "酒精水浴脱色，说明操作目的。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "题目已修改，点击“生成实验”重新识别。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "酒精水浴脱色，说明操作目的。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "酒精水浴脱色，说明操作目的。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "仅确认了部分教材操作，尚不能确认完整流程。缺少可核对条件：探究绿叶在光下制造有机物；盆栽天竺葵暗处理一昼夜；同一叶片黑纸双面局部遮光；阳光下几小时后摘叶去纸；先清水漂洗再培养皿滴碘；稍停后清水冲碘再观察。 如需讲解，请主动打开 AI 导师提问。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "酒精水浴脱色，说明操作目的。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        }
+      },
+      {
+        "id": "mirror-partial-background",
+        "noTutor": true,
+        "requests": [],
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "题目已修改，点击“生成实验”重新识别。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "actual": {
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+          "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "planeMirror",
+          "time": 0,
+          "playing": false,
+          "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+          }
+        }
+      },
+      {
+        "id": "partial-junior-procedure",
+        "noTutor": true,
+        "requests": [],
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "酒精水浴脱色，说明操作目的。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "题目已修改，点击“生成实验”重新识别。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "酒精水浴脱色，说明操作目的。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "酒精水浴脱色，说明操作目的。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "仅确认了部分教材操作，尚不能确认完整流程。缺少可核对条件：探究绿叶在光下制造有机物；盆栽天竺葵暗处理一昼夜；同一叶片黑纸双面局部遮光；阳光下几小时后摘叶去纸；先清水漂洗再培养皿滴碘；稍停后清水冲碘再观察。 如需讲解，请主动打开 AI 导师提问。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "酒精水浴脱色，说明操作目的。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        }
+      }
+    ],
+    "errors": [],
+    "counts": {
+      "templateApi": 40,
+      "normalButtons": 160,
+      "passed": 160,
+      "failed": 0,
+      "boundaryButtons": 4,
+      "fixedProcessRequests": 0
+    },
+    "mockBoundary": "200/503 response configuration is pairwise; fixed-flow cases must not request either service. Actual ordinary fallback exchanges are recorded separately in routing reports.",
+    "normalButtonFiles": [
+      {
+        "file": "separators-junior-edge-comma.json",
+        "format": "comma",
+        "cases": 32
+      },
+      {
+        "file": "separators-junior-edge-space.json",
+        "format": "space",
+        "cases": 32
+      },
+      {
+        "file": "separators-junior-edge-dun.json",
+        "format": "dun",
+        "cases": 32
+      },
+      {
+        "file": "separators-junior-edge-none.json",
+        "format": "none",
+        "cases": 32
+      },
+      {
+        "file": "separators-junior-edge-mixed.json",
+        "format": "mixed",
+        "cases": 32
+      }
+    ]
+  },
+  "chromium": {
+    "sourceSha": "ef9767692e62ac640dcb537b09826214735b738e",
+    "method": "normal generate button",
+    "browser": "151.0.7922.34",
+    "registry": [
+      {
+        "noTutor": false,
+        "status": 503,
+        "first": "junior",
+        "grade": "junior",
+        "order": "single",
+        "registered": [
+          "photosynthesis"
+        ]
+      },
+      {
+        "noTutor": false,
+        "status": 200,
+        "first": "senior",
+        "grade": "senior",
+        "order": "single",
+        "registered": [
+          "photosynthesis"
+        ]
+      },
+      {
+        "noTutor": true,
+        "status": 503,
+        "first": "junior",
+        "grade": "senior",
+        "order": "single",
+        "registered": [
+          "photosynthesis"
+        ]
+      },
+      {
+        "noTutor": true,
+        "status": 200,
+        "first": "senior",
+        "grade": "junior",
+        "order": "single",
+        "registered": [
+          "photosynthesis"
+        ]
+      }
+    ],
+    "templateApi": [
+      {
+        "id": "junior-comma-complete",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-comma-missing",
+        "expected": false,
+        "parseOk": false,
+        "message": "缺少可核对条件：盆栽天竺葵暗处理一昼夜。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 43
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 60
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 80
+          }
+        ]
+      },
+      {
+        "id": "junior-comma-conflict",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「盆栽天竺葵先暗处理两小时」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-comma-wrong",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「酒精直接加热脱色」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-comma-extra",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「求总产氧量」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-comma-no-ask",
+        "expected": false,
+        "parseOk": false,
+        "message": "尚未明确所问。支持实验结论、实验现象、操作目的、实验步骤。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-comma-ask-first",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 18
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 32
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 44
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 56
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 73
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 90
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 96
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 110
+          }
+        ]
+      },
+      {
+        "id": "junior-comma-reordered",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 12
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 29
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 46
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 52
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-space-complete",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-space-missing",
+        "expected": false,
+        "parseOk": false,
+        "message": "缺少可核对条件：盆栽天竺葵暗处理一昼夜。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 43
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 60
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 80
+          }
+        ]
+      },
+      {
+        "id": "junior-space-conflict",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「盆栽天竺葵先暗处理两小时 说明实验结论、实验现象、操作目的、实验步骤」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-space-wrong",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「酒精直接加热脱色 清水漂洗后置于培养皿滴加碘液 稍停片刻用清水冲掉碘液再观察 说明实验结论、实验现象、操作目的、实验步骤」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-space-extra",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「求总产氧量」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-space-no-ask",
+        "expected": false,
+        "parseOk": false,
+        "message": "尚未明确所问。支持实验结论、实验现象、操作目的、实验步骤。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-space-ask-first",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 18
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 32
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 44
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 56
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 73
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 90
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 96
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 110
+          }
+        ]
+      },
+      {
+        "id": "junior-space-reordered",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 12
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 29
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 46
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 52
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-dun-complete",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-dun-missing",
+        "expected": false,
+        "parseOk": false,
+        "message": "缺少可核对条件：盆栽天竺葵暗处理一昼夜。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 43
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 60
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 80
+          }
+        ]
+      },
+      {
+        "id": "junior-dun-conflict",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「盆栽天竺葵先暗处理两小时、说明实验结论、实验现象、操作目的、实验步骤」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-dun-wrong",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「酒精直接加热脱色、清水漂洗后置于培养皿滴加碘液、稍停片刻用清水冲掉碘液再观察、说明实验结论、实验现象、操作目的、实验步骤」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-dun-extra",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「求总产氧量」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-dun-no-ask",
+        "expected": false,
+        "parseOk": false,
+        "message": "尚未明确所问。支持实验结论、实验现象、操作目的、实验步骤。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-dun-ask-first",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 18
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 32
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 44
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 56
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 73
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 90
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 96
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 110
+          }
+        ]
+      },
+      {
+        "id": "junior-dun-reordered",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 12
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 29
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 46
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 52
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-none-complete",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-none-missing",
+        "expected": false,
+        "parseOk": false,
+        "message": "缺少可核对条件：盆栽天竺葵暗处理一昼夜。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 43
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 60
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 80
+          }
+        ]
+      },
+      {
+        "id": "junior-none-conflict",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「盆栽天竺葵先暗处理两小时说明实验结论、实验现象、操作目的、实验步骤」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-none-wrong",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「酒精直接加热脱色清水漂洗后置于培养皿滴加碘液稍停片刻用清水冲掉碘液再观察说明实验结论、实验现象、操作目的、实验步骤」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-none-extra",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「求总产氧量」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-none-no-ask",
+        "expected": false,
+        "parseOk": false,
+        "message": "尚未明确所问。支持实验结论、实验现象、操作目的、实验步骤。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-none-ask-first",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 18
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 32
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 44
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 56
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 73
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 90
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 96
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 110
+          }
+        ]
+      },
+      {
+        "id": "junior-none-reordered",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 12
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 29
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 46
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 52
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-mixed-complete",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-mixed-missing",
+        "expected": false,
+        "parseOk": false,
+        "message": "缺少可核对条件：盆栽天竺葵暗处理一昼夜。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 43
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 60
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 80
+          }
+        ]
+      },
+      {
+        "id": "junior-mixed-conflict",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「盆栽天竺葵先暗处理两小时」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-mixed-wrong",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「酒精直接加热脱色、清水漂洗后置于培养皿滴加碘液」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 94
+          }
+        ]
+      },
+      {
+        "id": "junior-mixed-extra",
+        "expected": false,
+        "parseOk": false,
+        "message": "无法确认条件或子问：「求总产氧量」。请核对操作、数值角色与所问；不会自动补条件。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-mixed-no-ask",
+        "expected": false,
+        "parseOk": false,
+        "message": "尚未明确所问。支持实验结论、实验现象、操作目的、实验步骤。",
+        "candidate": true,
+        "ownership": "confirmed",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 14
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 26
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 38
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 55
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 72
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 78
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 92
+          }
+        ]
+      },
+      {
+        "id": "junior-mixed-ask-first",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 18
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 32
+          },
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 44
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 56
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 73
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 90
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 96
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 110
+          }
+        ]
+      },
+      {
+        "id": "junior-mixed-reordered",
+        "expected": true,
+        "parseOk": true,
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝",
+        "candidate": true,
+        "ownership": "complete",
+        "conditions": [
+          {
+            "name": "盆栽天竺葵暗处理一昼夜",
+            "role": "procedure",
+            "canonicalOffset": 0
+          },
+          {
+            "name": "同一叶片黑纸双面局部遮光",
+            "role": "procedure",
+            "canonicalOffset": 12
+          },
+          {
+            "name": "阳光下几小时后摘叶去纸",
+            "role": "procedure",
+            "canonicalOffset": 29
+          },
+          {
+            "name": "酒精水浴脱色",
+            "role": "procedure",
+            "canonicalOffset": 46
+          },
+          {
+            "name": "先清水漂洗再培养皿滴碘",
+            "role": "procedure",
+            "canonicalOffset": 52
+          },
+          {
+            "name": "稍停后清水冲碘再观察",
+            "role": "procedure",
+            "canonicalOffset": 66
+          },
+          {
+            "name": "人教七下教材说明",
+            "role": "book",
+            "canonicalOffset": 80
+          },
+          {
+            "name": "探究绿叶在光下制造有机物",
+            "role": "objective",
+            "canonicalOffset": 94
+          }
+        ]
+      }
+    ],
+    "boundaries": [
+      {
+        "id": "mirror-partial-background",
+        "noTutor": false,
+        "requests": [],
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "题目已修改，点击“生成实验”重新识别。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "actual": {
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+          "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "planeMirror",
+          "time": 0,
+          "playing": false,
+          "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+          }
+        }
+      },
+      {
+        "id": "partial-junior-procedure",
+        "noTutor": false,
+        "requests": [],
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "酒精水浴脱色，说明操作目的。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "题目已修改，点击“生成实验”重新识别。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "酒精水浴脱色，说明操作目的。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "酒精水浴脱色，说明操作目的。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "仅确认了部分教材操作，尚不能确认完整流程。缺少可核对条件：探究绿叶在光下制造有机物；盆栽天竺葵暗处理一昼夜；同一叶片黑纸双面局部遮光；阳光下几小时后摘叶去纸；先清水漂洗再培养皿滴碘；稍停后清水冲碘再观察。 如需讲解，请主动打开 AI 导师提问。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "酒精水浴脱色，说明操作目的。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        }
+      },
+      {
+        "id": "mirror-partial-background",
+        "noTutor": true,
+        "requests": [],
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "题目已修改，点击“生成实验”重新识别。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "actual": {
+          "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+          "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "planeMirror",
+          "time": 0,
+          "playing": false,
+          "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+          }
+        }
+      },
+      {
+        "id": "partial-junior-procedure",
+        "noTutor": true,
+        "requests": [],
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "酒精水浴脱色，说明操作目的。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "题目已修改，点击“生成实验”重新识别。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "酒精水浴脱色，说明操作目的。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "酒精水浴脱色，说明操作目的。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "仅确认了部分教材操作，尚不能确认完整流程。缺少可核对条件：探究绿叶在光下制造有机物；盆栽天竺葵暗处理一昼夜；同一叶片黑纸双面局部遮光；阳光下几小时后摘叶去纸；先清水漂洗再培养皿滴碘；稍停后清水冲碘再观察。 如需讲解，请主动打开 AI 导师提问。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "mode": "question",
+            "subject": "物理",
+            "originalQuestion": "酒精水浴脱色，说明操作目的。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        }
+      }
+    ],
+    "errors": [],
+    "counts": {
+      "templateApi": 40,
+      "normalButtons": 160,
+      "passed": 160,
+      "failed": 0,
+      "boundaryButtons": 4,
+      "fixedProcessRequests": 0
+    },
+    "mockBoundary": "200/503 response configuration is pairwise; fixed-flow cases must not request either service. Actual ordinary fallback exchanges are recorded separately in routing reports.",
+    "normalButtonFiles": [
+      {
+        "file": "separators-junior-chromium-comma.json",
+        "format": "comma",
+        "cases": 32
+      },
+      {
+        "file": "separators-junior-chromium-space.json",
+        "format": "space",
+        "cases": 32
+      },
+      {
+        "file": "separators-junior-chromium-dun.json",
+        "format": "dun",
+        "cases": 32
+      },
+      {
+        "file": "separators-junior-chromium-none.json",
+        "format": "none",
+        "cases": 32
+      },
+      {
+        "file": "separators-junior-chromium-mixed.json",
+        "format": "mixed",
+        "cases": 32
+      }
+    ]
+  }
+}

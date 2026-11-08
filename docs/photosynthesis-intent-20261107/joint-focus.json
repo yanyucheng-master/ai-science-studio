@@ -1,0 +1,2526 @@
+{
+  "edge": {
+    "sourceSha": "4a1dd68bbd59e96a0f964abccedf979bcbc181e0",
+    "browser": "157.0.4341.42",
+    "normalButtonCases": 256,
+    "counts": {
+      "local": 112,
+      "clarify": 88,
+      "fallback": 16,
+      "protocol-refusal": 40
+    },
+    "reportRun": "initial",
+    "normalButtonFiles": [
+      {
+        "file": "joint-edge-01.json",
+        "cases": 32,
+        "noTutor": false,
+        "grade": "junior",
+        "order": "junior",
+        "registry": [
+          "photosynthesis",
+          "leafDisks"
+        ]
+      },
+      {
+        "file": "joint-edge-02.json",
+        "cases": 32,
+        "noTutor": false,
+        "grade": "senior",
+        "order": "junior",
+        "registry": [
+          "photosynthesis",
+          "leafDisks"
+        ]
+      },
+      {
+        "file": "joint-edge-03.json",
+        "cases": 32,
+        "noTutor": false,
+        "grade": "junior",
+        "order": "senior",
+        "registry": [
+          "leafDisks",
+          "photosynthesis"
+        ]
+      },
+      {
+        "file": "joint-edge-04.json",
+        "cases": 32,
+        "noTutor": false,
+        "grade": "senior",
+        "order": "senior",
+        "registry": [
+          "leafDisks",
+          "photosynthesis"
+        ]
+      },
+      {
+        "file": "joint-edge-05.json",
+        "cases": 32,
+        "noTutor": true,
+        "grade": "junior",
+        "order": "junior",
+        "registry": [
+          "photosynthesis",
+          "leafDisks"
+        ]
+      },
+      {
+        "file": "joint-edge-06.json",
+        "cases": 32,
+        "noTutor": true,
+        "grade": "senior",
+        "order": "junior",
+        "registry": [
+          "photosynthesis",
+          "leafDisks"
+        ]
+      },
+      {
+        "file": "joint-edge-07.json",
+        "cases": 32,
+        "noTutor": true,
+        "grade": "junior",
+        "order": "senior",
+        "registry": [
+          "leafDisks",
+          "photosynthesis"
+        ]
+      },
+      {
+        "file": "joint-edge-08.json",
+        "cases": 32,
+        "noTutor": true,
+        "grade": "senior",
+        "order": "senior",
+        "registry": [
+          "leafDisks",
+          "photosynthesis"
+        ]
+      }
+    ],
+    "playingRefusals": [
+      {
+        "id": "junior-mixed-explicit",
+        "template": "photosynthesis",
+        "beforeEdit": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": true,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "afterEdit": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。请解释水浴脱色的操作目的。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.2510999999999999,
+          "playing": false,
+          "feedback": "题目已修改，点击“生成实验”重新识别。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。请解释水浴脱色的操作目的。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。请解释水浴脱色的操作目的。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.2565,
+          "playing": true,
+          "feedback": "题目已修改，点击“生成实验”重新识别。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。请解释水浴脱色的操作目的。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "after": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。请解释水浴脱色的操作目的。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.3010999999999997,
+          "playing": true,
+          "feedback": "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：无法确认条件或子问：「卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。请解释水浴脱色的操作目的。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requests": []
+      },
+      {
+        "id": "senior-mixed-inline",
+        "template": "leafDisks",
+        "beforeEdit": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.2511999999999999,
+          "playing": true,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.7m/s｜位移 x 21.1m｜时间 t 1.3s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "afterEdit": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "讲义写着三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，并请说明这些操作的目的；平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.2733999999999999,
+          "playing": false,
+          "feedback": "题目已修改，点击“生成实验”重新识别。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "讲义写着三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，并请说明这些操作的目的；平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "讲义写着三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，并请说明这些操作的目的；平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.2788,
+          "playing": true,
+          "feedback": "题目已修改，点击“生成实验”重新识别。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "讲义写着三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，并请说明这些操作的目的；平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "after": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "讲义写着三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，并请说明这些操作的目的；平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.3287999999999998,
+          "playing": true,
+          "feedback": "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：无法确认条件或子问：「讲义写着三只小烧杯加入富含CO2的清水」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "讲义写着三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，并请说明这些操作的目的；平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requests": []
+      }
+    ],
+    "conceptMock503": [
+      {
+        "id": "general-photosynthesis",
+        "question": "光合作用的原料和产物是什么？",
+        "expected": "fallback",
+        "selectedSubject": "生物",
+        "selectedGrade": "junior",
+        "noTutor": false,
+        "order": "junior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "生物",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "subject": "生物",
+          "grade": "junior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+          "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+          "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+          }
+        },
+        "actual": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "光合作用的原料和产物是什么？",
+          "subject": "生物",
+          "grade": "junior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "光合作用的原料和产物是什么？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 1,
+        "requests": [
+          {
+            "path": "/api/v1/experiment/generate",
+            "mockStatus": 503
+          }
+        ],
+        "expectedMock": 503
+      },
+      {
+        "id": "general-light",
+        "question": "灯光的光照强度与距离有什么关系？",
+        "expected": "fallback",
+        "selectedSubject": "物理",
+        "selectedGrade": "junior",
+        "noTutor": false,
+        "order": "junior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "物理",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "junior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "灯光的光照强度与距离有什么关系？",
+          "subject": "物理",
+          "grade": "junior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "灯光的光照强度与距离有什么关系？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 1,
+        "requests": [
+          {
+            "path": "/api/v1/experiment/generate",
+            "mockStatus": 503
+          }
+        ],
+        "expectedMock": 503
+      },
+      {
+        "id": "general-photosynthesis",
+        "question": "光合作用的原料和产物是什么？",
+        "expected": "fallback",
+        "selectedSubject": "生物",
+        "selectedGrade": "senior",
+        "noTutor": false,
+        "order": "junior",
+        "viewportWidth": 390,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "生物",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "subject": "生物",
+          "grade": "senior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+          "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+          "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+          }
+        },
+        "actual": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "光合作用的原料和产物是什么？",
+          "subject": "生物",
+          "grade": "senior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "光合作用的原料和产物是什么？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 1,
+        "requests": [
+          {
+            "path": "/api/v1/experiment/generate",
+            "mockStatus": 503
+          }
+        ],
+        "expectedMock": 503
+      },
+      {
+        "id": "general-light",
+        "question": "灯光的光照强度与距离有什么关系？",
+        "expected": "fallback",
+        "selectedSubject": "物理",
+        "selectedGrade": "senior",
+        "noTutor": false,
+        "order": "junior",
+        "viewportWidth": 390,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "物理",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "灯光的光照强度与距离有什么关系？",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "灯光的光照强度与距离有什么关系？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 1,
+        "requests": [
+          {
+            "path": "/api/v1/experiment/generate",
+            "mockStatus": 503
+          }
+        ],
+        "expectedMock": 503
+      },
+      {
+        "id": "general-photosynthesis",
+        "question": "光合作用的原料和产物是什么？",
+        "expected": "fallback",
+        "selectedSubject": "生物",
+        "selectedGrade": "junior",
+        "noTutor": false,
+        "order": "senior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "生物",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "subject": "生物",
+          "grade": "junior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+          "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+          "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+          }
+        },
+        "actual": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "光合作用的原料和产物是什么？",
+          "subject": "生物",
+          "grade": "junior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "光合作用的原料和产物是什么？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 1,
+        "requests": [
+          {
+            "path": "/api/v1/experiment/generate",
+            "mockStatus": 503
+          }
+        ],
+        "expectedMock": 503
+      },
+      {
+        "id": "general-light",
+        "question": "灯光的光照强度与距离有什么关系？",
+        "expected": "fallback",
+        "selectedSubject": "物理",
+        "selectedGrade": "junior",
+        "noTutor": false,
+        "order": "senior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "物理",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "junior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "灯光的光照强度与距离有什么关系？",
+          "subject": "物理",
+          "grade": "junior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "灯光的光照强度与距离有什么关系？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 1,
+        "requests": [
+          {
+            "path": "/api/v1/experiment/generate",
+            "mockStatus": 503
+          }
+        ],
+        "expectedMock": 503
+      },
+      {
+        "id": "general-photosynthesis",
+        "question": "光合作用的原料和产物是什么？",
+        "expected": "fallback",
+        "selectedSubject": "生物",
+        "selectedGrade": "senior",
+        "noTutor": false,
+        "order": "senior",
+        "viewportWidth": 390,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "生物",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "subject": "生物",
+          "grade": "senior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+          "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+          "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+          }
+        },
+        "actual": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "光合作用的原料和产物是什么？",
+          "subject": "生物",
+          "grade": "senior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "光合作用的原料和产物是什么？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 1,
+        "requests": [
+          {
+            "path": "/api/v1/experiment/generate",
+            "mockStatus": 503
+          }
+        ],
+        "expectedMock": 503
+      },
+      {
+        "id": "general-light",
+        "question": "灯光的光照强度与距离有什么关系？",
+        "expected": "fallback",
+        "selectedSubject": "物理",
+        "selectedGrade": "senior",
+        "noTutor": false,
+        "order": "senior",
+        "viewportWidth": 390,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "物理",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "灯光的光照强度与距离有什么关系？",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "灯光的光照强度与距离有什么关系？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 1,
+        "requests": [
+          {
+            "path": "/api/v1/experiment/generate",
+            "mockStatus": 503
+          }
+        ],
+        "expectedMock": 503
+      }
+    ],
+    "conceptWithoutTutor": [
+      {
+        "id": "general-photosynthesis",
+        "question": "光合作用的原料和产物是什么？",
+        "expected": "fallback",
+        "selectedSubject": "生物",
+        "selectedGrade": "junior",
+        "noTutor": true,
+        "order": "junior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "生物",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "subject": "生物",
+          "grade": "junior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+          "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+          "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+          }
+        },
+        "actual": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "光合作用的原料和产物是什么？",
+          "subject": "生物",
+          "grade": "junior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "当前题目没有匹配到本地实验模板。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "光合作用的原料和产物是什么？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 0,
+        "requests": [],
+        "expectedMock": null
+      },
+      {
+        "id": "general-light",
+        "question": "灯光的光照强度与距离有什么关系？",
+        "expected": "fallback",
+        "selectedSubject": "物理",
+        "selectedGrade": "junior",
+        "noTutor": true,
+        "order": "junior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "物理",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "junior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "灯光的光照强度与距离有什么关系？",
+          "subject": "物理",
+          "grade": "junior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "当前题目没有匹配到本地实验模板。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "灯光的光照强度与距离有什么关系？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 0,
+        "requests": [],
+        "expectedMock": null
+      },
+      {
+        "id": "general-photosynthesis",
+        "question": "光合作用的原料和产物是什么？",
+        "expected": "fallback",
+        "selectedSubject": "生物",
+        "selectedGrade": "senior",
+        "noTutor": true,
+        "order": "junior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "生物",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "subject": "生物",
+          "grade": "senior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+          "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+          "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+          }
+        },
+        "actual": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "光合作用的原料和产物是什么？",
+          "subject": "生物",
+          "grade": "senior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "当前题目没有匹配到本地实验模板。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "光合作用的原料和产物是什么？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 0,
+        "requests": [],
+        "expectedMock": null
+      },
+      {
+        "id": "general-light",
+        "question": "灯光的光照强度与距离有什么关系？",
+        "expected": "fallback",
+        "selectedSubject": "物理",
+        "selectedGrade": "senior",
+        "noTutor": true,
+        "order": "junior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "物理",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "灯光的光照强度与距离有什么关系？",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "当前题目没有匹配到本地实验模板。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "灯光的光照强度与距离有什么关系？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 0,
+        "requests": [],
+        "expectedMock": null
+      },
+      {
+        "id": "general-photosynthesis",
+        "question": "光合作用的原料和产物是什么？",
+        "expected": "fallback",
+        "selectedSubject": "生物",
+        "selectedGrade": "junior",
+        "noTutor": true,
+        "order": "senior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "生物",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "subject": "生物",
+          "grade": "junior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+          "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+          "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+          }
+        },
+        "actual": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "光合作用的原料和产物是什么？",
+          "subject": "生物",
+          "grade": "junior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "当前题目没有匹配到本地实验模板。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "光合作用的原料和产物是什么？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 0,
+        "requests": [],
+        "expectedMock": null
+      },
+      {
+        "id": "general-light",
+        "question": "灯光的光照强度与距离有什么关系？",
+        "expected": "fallback",
+        "selectedSubject": "物理",
+        "selectedGrade": "junior",
+        "noTutor": true,
+        "order": "senior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "物理",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "junior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "灯光的光照强度与距离有什么关系？",
+          "subject": "物理",
+          "grade": "junior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "当前题目没有匹配到本地实验模板。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "灯光的光照强度与距离有什么关系？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 0,
+        "requests": [],
+        "expectedMock": null
+      },
+      {
+        "id": "general-photosynthesis",
+        "question": "光合作用的原料和产物是什么？",
+        "expected": "fallback",
+        "selectedSubject": "生物",
+        "selectedGrade": "senior",
+        "noTutor": true,
+        "order": "senior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "生物",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "subject": "生物",
+          "grade": "senior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+          "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+          "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+          }
+        },
+        "actual": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "光合作用的原料和产物是什么？",
+          "subject": "生物",
+          "grade": "senior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "当前题目没有匹配到本地实验模板。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "光合作用的原料和产物是什么？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 0,
+        "requests": [],
+        "expectedMock": null
+      },
+      {
+        "id": "general-light",
+        "question": "灯光的光照强度与距离有什么关系？",
+        "expected": "fallback",
+        "selectedSubject": "物理",
+        "selectedGrade": "senior",
+        "noTutor": true,
+        "order": "senior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "物理",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "灯光的光照强度与距离有什么关系？",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "当前题目没有匹配到本地实验模板。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "灯光的光照强度与距离有什么关系？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 0,
+        "requests": [],
+        "expectedMock": null
+      }
+    ],
+    "conceptMock200": {
+      "before": {
+        "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+        "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+        "subject": "生物",
+        "grade": "senior",
+        "template": "",
+        "time": 0,
+        "playing": false,
+        "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+        "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+        "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+        "tutor": {
+          "subject": "生物",
+          "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+        }
+      },
+      "after": {
+        "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+        "input": "光合作用的原料和产物是什么？",
+        "subject": "生物",
+        "grade": "senior",
+        "template": "",
+        "time": 0,
+        "playing": false,
+        "feedback": "暂不绘图：当前仅支持条件明确的单物块粗糙斜面受力图。 已保留题目并转入 AI 导师讲解。",
+        "resultText": "",
+        "metrics": "",
+        "tutor": {
+          "subject": "生物",
+          "originalQuestion": "光合作用的原料和产物是什么？",
+          "hasResult": false,
+          "currentStep": ""
+        }
+      },
+      "requests": [
+        {
+          "path": "/api/v1/experiment/generate",
+          "mockStatus": 200
+        },
+        {
+          "path": "/api/v1/tutor/chat",
+          "mockStatus": 200
+        }
+      ],
+      "assertedPageAnswer": "本地模拟回答"
+    },
+    "previousRoutingCases": 117,
+    "separatorApiCases": 80,
+    "separatorNormalButtons": 320,
+    "separatorFixedRequests": 0,
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+    ],
+    "unhandledApi": []
+  },
+  "chromium": {
+    "sourceSha": "4a1dd68bbd59e96a0f964abccedf979bcbc181e0",
+    "browser": "151.0.7922.34",
+    "normalButtonCases": 256,
+    "counts": {
+      "local": 112,
+      "clarify": 88,
+      "fallback": 16,
+      "protocol-refusal": 40
+    },
+    "reportRun": "initial",
+    "normalButtonFiles": [
+      {
+        "file": "joint-chromium-01.json",
+        "cases": 32,
+        "noTutor": false,
+        "grade": "junior",
+        "order": "junior",
+        "registry": [
+          "photosynthesis",
+          "leafDisks"
+        ]
+      },
+      {
+        "file": "joint-chromium-02.json",
+        "cases": 32,
+        "noTutor": false,
+        "grade": "senior",
+        "order": "junior",
+        "registry": [
+          "photosynthesis",
+          "leafDisks"
+        ]
+      },
+      {
+        "file": "joint-chromium-03.json",
+        "cases": 32,
+        "noTutor": false,
+        "grade": "junior",
+        "order": "senior",
+        "registry": [
+          "leafDisks",
+          "photosynthesis"
+        ]
+      },
+      {
+        "file": "joint-chromium-04.json",
+        "cases": 32,
+        "noTutor": false,
+        "grade": "senior",
+        "order": "senior",
+        "registry": [
+          "leafDisks",
+          "photosynthesis"
+        ]
+      },
+      {
+        "file": "joint-chromium-05.json",
+        "cases": 32,
+        "noTutor": true,
+        "grade": "junior",
+        "order": "junior",
+        "registry": [
+          "photosynthesis",
+          "leafDisks"
+        ]
+      },
+      {
+        "file": "joint-chromium-06.json",
+        "cases": 32,
+        "noTutor": true,
+        "grade": "senior",
+        "order": "junior",
+        "registry": [
+          "photosynthesis",
+          "leafDisks"
+        ]
+      },
+      {
+        "file": "joint-chromium-07.json",
+        "cases": 32,
+        "noTutor": true,
+        "grade": "junior",
+        "order": "senior",
+        "registry": [
+          "leafDisks",
+          "photosynthesis"
+        ]
+      },
+      {
+        "file": "joint-chromium-08.json",
+        "cases": 32,
+        "noTutor": true,
+        "grade": "senior",
+        "order": "senior",
+        "registry": [
+          "leafDisks",
+          "photosynthesis"
+        ]
+      }
+    ],
+    "playingRefusals": [
+      {
+        "id": "junior-mixed-explicit",
+        "template": "photosynthesis",
+        "beforeEdit": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": true,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "afterEdit": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。请解释水浴脱色的操作目的。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.2455,
+          "playing": false,
+          "feedback": "题目已修改，点击“生成实验”重新识别。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。请解释水浴脱色的操作目的。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。请解释水浴脱色的操作目的。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.2455,
+          "playing": true,
+          "feedback": "题目已修改，点击“生成实验”重新识别。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。请解释水浴脱色的操作目的。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "after": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。请解释水浴脱色的操作目的。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.2844,
+          "playing": true,
+          "feedback": "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：无法确认条件或子问：「卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。请解释水浴脱色的操作目的。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requests": []
+      },
+      {
+        "id": "senior-mixed-inline",
+        "template": "leafDisks",
+        "beforeEdit": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": true,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "afterEdit": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "讲义写着三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，并请说明这些操作的目的；平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.2455,
+          "playing": false,
+          "feedback": "题目已修改，点击“生成实验”重新识别。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "讲义写着三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，并请说明这些操作的目的；平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "讲义写着三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，并请说明这些操作的目的；平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.2455,
+          "playing": true,
+          "feedback": "题目已修改，点击“生成实验”重新识别。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "讲义写着三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，并请说明这些操作的目的；平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "after": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "讲义写着三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，并请说明这些操作的目的；平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.2846,
+          "playing": true,
+          "feedback": "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：无法确认条件或子问：「讲义写着三只小烧杯加入富含CO2的清水」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "讲义写着三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片，并请说明这些操作的目的；平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requests": []
+      }
+    ],
+    "conceptMock503": [
+      {
+        "id": "general-photosynthesis",
+        "question": "光合作用的原料和产物是什么？",
+        "expected": "fallback",
+        "selectedSubject": "生物",
+        "selectedGrade": "junior",
+        "noTutor": false,
+        "order": "junior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "生物",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "subject": "生物",
+          "grade": "junior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+          "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+          "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+          }
+        },
+        "actual": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "光合作用的原料和产物是什么？",
+          "subject": "生物",
+          "grade": "junior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "光合作用的原料和产物是什么？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 1,
+        "requests": [
+          {
+            "path": "/api/v1/experiment/generate",
+            "mockStatus": 503
+          }
+        ],
+        "expectedMock": 503
+      },
+      {
+        "id": "general-light",
+        "question": "灯光的光照强度与距离有什么关系？",
+        "expected": "fallback",
+        "selectedSubject": "物理",
+        "selectedGrade": "junior",
+        "noTutor": false,
+        "order": "junior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "物理",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "junior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "灯光的光照强度与距离有什么关系？",
+          "subject": "物理",
+          "grade": "junior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "灯光的光照强度与距离有什么关系？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 1,
+        "requests": [
+          {
+            "path": "/api/v1/experiment/generate",
+            "mockStatus": 503
+          }
+        ],
+        "expectedMock": 503
+      },
+      {
+        "id": "general-photosynthesis",
+        "question": "光合作用的原料和产物是什么？",
+        "expected": "fallback",
+        "selectedSubject": "生物",
+        "selectedGrade": "senior",
+        "noTutor": false,
+        "order": "junior",
+        "viewportWidth": 390,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "生物",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "subject": "生物",
+          "grade": "senior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+          "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+          "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+          }
+        },
+        "actual": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "光合作用的原料和产物是什么？",
+          "subject": "生物",
+          "grade": "senior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "光合作用的原料和产物是什么？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 1,
+        "requests": [
+          {
+            "path": "/api/v1/experiment/generate",
+            "mockStatus": 503
+          }
+        ],
+        "expectedMock": 503
+      },
+      {
+        "id": "general-light",
+        "question": "灯光的光照强度与距离有什么关系？",
+        "expected": "fallback",
+        "selectedSubject": "物理",
+        "selectedGrade": "senior",
+        "noTutor": false,
+        "order": "junior",
+        "viewportWidth": 390,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "物理",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "灯光的光照强度与距离有什么关系？",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "灯光的光照强度与距离有什么关系？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 1,
+        "requests": [
+          {
+            "path": "/api/v1/experiment/generate",
+            "mockStatus": 503
+          }
+        ],
+        "expectedMock": 503
+      },
+      {
+        "id": "general-photosynthesis",
+        "question": "光合作用的原料和产物是什么？",
+        "expected": "fallback",
+        "selectedSubject": "生物",
+        "selectedGrade": "junior",
+        "noTutor": false,
+        "order": "senior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "生物",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "subject": "生物",
+          "grade": "junior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+          "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+          "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+          }
+        },
+        "actual": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "光合作用的原料和产物是什么？",
+          "subject": "生物",
+          "grade": "junior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "光合作用的原料和产物是什么？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 1,
+        "requests": [
+          {
+            "path": "/api/v1/experiment/generate",
+            "mockStatus": 503
+          }
+        ],
+        "expectedMock": 503
+      },
+      {
+        "id": "general-light",
+        "question": "灯光的光照强度与距离有什么关系？",
+        "expected": "fallback",
+        "selectedSubject": "物理",
+        "selectedGrade": "junior",
+        "noTutor": false,
+        "order": "senior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "物理",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "junior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "灯光的光照强度与距离有什么关系？",
+          "subject": "物理",
+          "grade": "junior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "灯光的光照强度与距离有什么关系？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 1,
+        "requests": [
+          {
+            "path": "/api/v1/experiment/generate",
+            "mockStatus": 503
+          }
+        ],
+        "expectedMock": 503
+      },
+      {
+        "id": "general-photosynthesis",
+        "question": "光合作用的原料和产物是什么？",
+        "expected": "fallback",
+        "selectedSubject": "生物",
+        "selectedGrade": "senior",
+        "noTutor": false,
+        "order": "senior",
+        "viewportWidth": 390,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "生物",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "subject": "生物",
+          "grade": "senior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+          "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+          "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+          }
+        },
+        "actual": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "光合作用的原料和产物是什么？",
+          "subject": "生物",
+          "grade": "senior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "光合作用的原料和产物是什么？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 1,
+        "requests": [
+          {
+            "path": "/api/v1/experiment/generate",
+            "mockStatus": 503
+          }
+        ],
+        "expectedMock": 503
+      },
+      {
+        "id": "general-light",
+        "question": "灯光的光照强度与距离有什么关系？",
+        "expected": "fallback",
+        "selectedSubject": "物理",
+        "selectedGrade": "senior",
+        "noTutor": false,
+        "order": "senior",
+        "viewportWidth": 390,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "物理",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "灯光的光照强度与距离有什么关系？",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "灯光的光照强度与距离有什么关系？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 1,
+        "requests": [
+          {
+            "path": "/api/v1/experiment/generate",
+            "mockStatus": 503
+          }
+        ],
+        "expectedMock": 503
+      }
+    ],
+    "conceptWithoutTutor": [
+      {
+        "id": "general-photosynthesis",
+        "question": "光合作用的原料和产物是什么？",
+        "expected": "fallback",
+        "selectedSubject": "生物",
+        "selectedGrade": "junior",
+        "noTutor": true,
+        "order": "junior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "生物",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "subject": "生物",
+          "grade": "junior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+          "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+          "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+          }
+        },
+        "actual": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "光合作用的原料和产物是什么？",
+          "subject": "生物",
+          "grade": "junior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "当前题目没有匹配到本地实验模板。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "光合作用的原料和产物是什么？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 0,
+        "requests": [],
+        "expectedMock": null
+      },
+      {
+        "id": "general-light",
+        "question": "灯光的光照强度与距离有什么关系？",
+        "expected": "fallback",
+        "selectedSubject": "物理",
+        "selectedGrade": "junior",
+        "noTutor": true,
+        "order": "junior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "物理",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "junior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "灯光的光照强度与距离有什么关系？",
+          "subject": "物理",
+          "grade": "junior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "当前题目没有匹配到本地实验模板。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "灯光的光照强度与距离有什么关系？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 0,
+        "requests": [],
+        "expectedMock": null
+      },
+      {
+        "id": "general-photosynthesis",
+        "question": "光合作用的原料和产物是什么？",
+        "expected": "fallback",
+        "selectedSubject": "生物",
+        "selectedGrade": "senior",
+        "noTutor": true,
+        "order": "junior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "生物",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "subject": "生物",
+          "grade": "senior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+          "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+          "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+          }
+        },
+        "actual": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "光合作用的原料和产物是什么？",
+          "subject": "生物",
+          "grade": "senior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "当前题目没有匹配到本地实验模板。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "光合作用的原料和产物是什么？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 0,
+        "requests": [],
+        "expectedMock": null
+      },
+      {
+        "id": "general-light",
+        "question": "灯光的光照强度与距离有什么关系？",
+        "expected": "fallback",
+        "selectedSubject": "物理",
+        "selectedGrade": "senior",
+        "noTutor": true,
+        "order": "junior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "物理",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "灯光的光照强度与距离有什么关系？",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "当前题目没有匹配到本地实验模板。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "灯光的光照强度与距离有什么关系？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 0,
+        "requests": [],
+        "expectedMock": null
+      },
+      {
+        "id": "general-photosynthesis",
+        "question": "光合作用的原料和产物是什么？",
+        "expected": "fallback",
+        "selectedSubject": "生物",
+        "selectedGrade": "junior",
+        "noTutor": true,
+        "order": "senior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "生物",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "subject": "生物",
+          "grade": "junior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+          "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+          "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+          }
+        },
+        "actual": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "光合作用的原料和产物是什么？",
+          "subject": "生物",
+          "grade": "junior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "当前题目没有匹配到本地实验模板。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "光合作用的原料和产物是什么？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 0,
+        "requests": [],
+        "expectedMock": null
+      },
+      {
+        "id": "general-light",
+        "question": "灯光的光照强度与距离有什么关系？",
+        "expected": "fallback",
+        "selectedSubject": "物理",
+        "selectedGrade": "junior",
+        "noTutor": true,
+        "order": "senior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "物理",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "junior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "灯光的光照强度与距离有什么关系？",
+          "subject": "物理",
+          "grade": "junior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "当前题目没有匹配到本地实验模板。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "灯光的光照强度与距离有什么关系？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 0,
+        "requests": [],
+        "expectedMock": null
+      },
+      {
+        "id": "general-photosynthesis",
+        "question": "光合作用的原料和产物是什么？",
+        "expected": "fallback",
+        "selectedSubject": "生物",
+        "selectedGrade": "senior",
+        "noTutor": true,
+        "order": "senior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "生物",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "subject": "生物",
+          "grade": "senior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+          "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+          "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+          }
+        },
+        "actual": {
+          "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "input": "光合作用的原料和产物是什么？",
+          "subject": "生物",
+          "grade": "senior",
+          "template": "",
+          "time": 0,
+          "playing": false,
+          "feedback": "当前题目没有匹配到本地实验模板。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "生物",
+            "originalQuestion": "光合作用的原料和产物是什么？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 0,
+        "requests": [],
+        "expectedMock": null
+      },
+      {
+        "id": "general-light",
+        "question": "灯光的光照强度与距离有什么关系？",
+        "expected": "fallback",
+        "selectedSubject": "物理",
+        "selectedGrade": "senior",
+        "noTutor": true,
+        "order": "senior",
+        "viewportWidth": 1366,
+        "passed": true,
+        "supplementaryPlan": {
+          "ok": false,
+          "subject": "物理",
+          "localOnly": false,
+          "message": "当前题目没有匹配到本地实验模板。"
+        },
+        "before": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+          "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+          "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+            "hasResult": true,
+            "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+          }
+        },
+        "actual": {
+          "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "input": "灯光的光照强度与距离有什么关系？",
+          "subject": "物理",
+          "grade": "senior",
+          "template": "",
+          "time": 1.24,
+          "playing": false,
+          "feedback": "当前题目没有匹配到本地实验模板。",
+          "resultText": "",
+          "metrics": "",
+          "tutor": {
+            "subject": "物理",
+            "originalQuestion": "灯光的光照强度与距离有什么关系？",
+            "hasResult": false,
+            "currentStep": ""
+          }
+        },
+        "requestCount": 0,
+        "requests": [],
+        "expectedMock": null
+      }
+    ],
+    "conceptMock200": {
+      "before": {
+        "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+        "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+        "subject": "生物",
+        "grade": "senior",
+        "template": "",
+        "time": 0,
+        "playing": false,
+        "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+        "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+        "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+        "tutor": {
+          "subject": "生物",
+          "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+        }
+      },
+      "after": {
+        "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+        "input": "光合作用的原料和产物是什么？",
+        "subject": "生物",
+        "grade": "senior",
+        "template": "",
+        "time": 0,
+        "playing": false,
+        "feedback": "暂不绘图：当前仅支持条件明确的单物块粗糙斜面受力图。 已保留题目并转入 AI 导师讲解。",
+        "resultText": "",
+        "metrics": "",
+        "tutor": {
+          "subject": "生物",
+          "originalQuestion": "光合作用的原料和产物是什么？",
+          "hasResult": false,
+          "currentStep": ""
+        }
+      },
+      "requests": [
+        {
+          "path": "/api/v1/experiment/generate",
+          "mockStatus": 200
+        },
+        {
+          "path": "/api/v1/tutor/chat",
+          "mockStatus": 200
+        }
+      ],
+      "assertedPageAnswer": "本地模拟回答"
+    },
+    "previousRoutingCases": 117,
+    "separatorApiCases": 80,
+    "separatorNormalButtons": 320,
+    "separatorFixedRequests": 0,
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+    ],
+    "unhandledApi": []
+  }
+}

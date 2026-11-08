@@ -1,0 +1,115 @@
+{
+  "junior": {
+    "sha": "e549ca14540a83aa7f9151d223b5f805c4b0c559",
+    "code": 1,
+    "cases": [
+      {
+        "id": "junior-review-report",
+        "passed": false,
+        "feedback": "无法确认条件或子问：「实验室的展示卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "requests": 0
+      },
+      {
+        "id": "mirror-control",
+        "passed": true,
+        "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+        "requests": 0
+      }
+    ],
+    "fatal": null
+  },
+  "senior": {
+    "sha": "b86fbd8df49a3cc218bb1d097f23ee209ac2a5bf",
+    "code": 1,
+    "cases": [
+      {
+        "id": "senior-review-report",
+        "passed": false,
+        "feedback": "无法确认条件或子问：「实验室的展示卡片写着三只小烧杯加入富含CO2的清水」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "requests": 0
+      },
+      {
+        "id": "mirror-control",
+        "passed": true,
+        "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+        "requests": 0
+      }
+    ],
+    "fatal": null
+  },
+  "joint": {
+    "sha": "72d36000dd43d1ceb98d86ee9ff8405f80b2ed56",
+    "code": 1,
+    "cases": [
+      {
+        "id": "junior-review-report",
+        "passed": false,
+        "feedback": "无法确认条件或子问：「实验室的展示卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "requests": 0
+      },
+      {
+        "id": "senior-review-report",
+        "passed": false,
+        "feedback": "无法确认条件或子问：「实验室的展示卡片写着三只小烧杯加入富含CO2的清水」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "requests": 0
+      },
+      {
+        "id": "mirror-control",
+        "passed": true,
+        "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+        "requests": 0
+      }
+    ],
+    "fatal": null
+  },
+  "baseline": {
+    "sha": "e6f43c5b398fb039c80e2f02382119d3566ae1f5",
+    "code": 0,
+    "cases": [
+      {
+        "id": "junior-review-report",
+        "passed": true,
+        "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+        "requests": 0
+      },
+      {
+        "id": "senior-review-report",
+        "passed": true,
+        "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+        "requests": 0
+      },
+      {
+        "id": "mirror-control",
+        "passed": true,
+        "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+        "requests": 0
+      }
+    ],
+    "fatal": null
+  },
+  "current": {
+    "sha": "9393867e204124eb477a0e6016dff94fbadf0f7e",
+    "code": 0,
+    "cases": [
+      {
+        "id": "junior-review-report",
+        "passed": true,
+        "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+        "requests": 0
+      },
+      {
+        "id": "senior-review-report",
+        "passed": true,
+        "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+        "requests": 0
+      },
+      {
+        "id": "mirror-control",
+        "passed": true,
+        "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+        "requests": 0
+      }
+    ],
+    "fatal": null
+  }
+}

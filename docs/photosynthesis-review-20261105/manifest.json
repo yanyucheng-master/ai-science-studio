@@ -1,0 +1,95 @@
+{
+  "selectedOnly": true,
+  "screenshots": [
+    {
+      "file": "junior-start-1366.png",
+      "sourceSha": "d93c05b42c74aa578070154fec34aa74da0f72be",
+      "sha256": "2be73223efb9cff4879749112a74991d4b64a8e19bb579deb8cae8ff070e83f8",
+      "width": 930,
+      "height": 1065,
+      "viewportWidth": 1366,
+      "caption": "junior · 第6步开头 · 1366"
+    },
+    {
+      "file": "junior-reference-820.png",
+      "sourceSha": "d93c05b42c74aa578070154fec34aa74da0f72be",
+      "sha256": "7bf9513bc864ba95cedd9137a948152255898a6606df7fe907f73cd2b97a2348",
+      "width": 796,
+      "height": 1472,
+      "viewportWidth": 820,
+      "caption": "junior · 教材操作场景 · 820"
+    },
+    {
+      "file": "junior-mid-390.png",
+      "sourceSha": "d93c05b42c74aa578070154fec34aa74da0f72be",
+      "sha256": "3d73dcb6a5304734292d15e4ae6aa7368afd98c61a1182efff8884b952ffd20e",
+      "width": 366,
+      "height": 1648,
+      "viewportWidth": 390,
+      "caption": "junior · 第6步中段 · 390"
+    },
+    {
+      "file": "junior-end-360.png",
+      "sourceSha": "d93c05b42c74aa578070154fec34aa74da0f72be",
+      "sha256": "7b2b77674b7fa14516a755e48c0ee76787bc6f2380888fb36f7fa64e73fa7289",
+      "width": 336,
+      "height": 1677,
+      "viewportWidth": 360,
+      "caption": "junior · 第6步终态 · 360"
+    },
+    {
+      "file": "junior-error-390.png",
+      "sourceSha": "d93c05b42c74aa578070154fec34aa74da0f72be",
+      "sha256": "80d86567651886e43a2733588dff4ffa81fd5642ebe1f860d91cc4b5d0d0e653",
+      "width": 336,
+      "height": 76,
+      "viewportWidth": 390,
+      "caption": "junior · 拒绝提示中的原始文字 · 390"
+    },
+    {
+      "file": "senior-start-1366.png",
+      "sourceSha": "64abb1cb521a91de41a27d76223b467f5296e2c2",
+      "sha256": "2f28d304b1b94e59e22aebe8e4b7f573025028f5d66fa144217701cf4a44d096",
+      "width": 930,
+      "height": 1391,
+      "viewportWidth": 1366,
+      "caption": "senior · 第6步开头 · 1366"
+    },
+    {
+      "file": "senior-reference-820.png",
+      "sourceSha": "64abb1cb521a91de41a27d76223b467f5296e2c2",
+      "sha256": "fec4b776cf4cd30d44feb1d5e267c95f9ccd708633754ae4ec773d21e21966dd",
+      "width": 796,
+      "height": 1728,
+      "viewportWidth": 820,
+      "caption": "senior · 教材操作场景 · 820"
+    },
+    {
+      "file": "senior-mid-390.png",
+      "sourceSha": "64abb1cb521a91de41a27d76223b467f5296e2c2",
+      "sha256": "c451332e36a1d5cac8ce646ddfd2756ab388ca5e54cea8bf68942f03a259c5ad",
+      "width": 366,
+      "height": 1895,
+      "viewportWidth": 390,
+      "caption": "senior · 第6步中段 · 390"
+    },
+    {
+      "file": "senior-end-360.png",
+      "sourceSha": "64abb1cb521a91de41a27d76223b467f5296e2c2",
+      "sha256": "df689408efc090fdb8377440cab4cacd8de845f1dfb4da170351b929cb512950",
+      "width": 336,
+      "height": 1944,
+      "viewportWidth": 360,
+      "caption": "senior · 第6步终态 · 360"
+    },
+    {
+      "file": "senior-error-390.png",
+      "sourceSha": "64abb1cb521a91de41a27d76223b467f5296e2c2",
+      "sha256": "80d86567651886e43a2733588dff4ffa81fd5642ebe1f860d91cc4b5d0d0e653",
+      "width": 336,
+      "height": 76,
+      "viewportWidth": 390,
+      "caption": "senior · 拒绝提示中的原始文字 · 390"
+    }
+  ]
+}

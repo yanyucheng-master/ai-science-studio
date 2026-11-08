@@ -328,7 +328,7 @@ try{
   assert.ok(restored.time>hidden.time);assert.ok(restored.time-hidden.time<300);assert.equal(restored.pending,1);
   report.background={hidden,restored,realTabSwitch:true};console.log('real background/restore: passed');
   report.templateBackground=[];
-  const newQuestions=await page.evaluate(()=>['pythagoras','unitCircle','hclNaohNeutralization','kno3Cooling','mendel'].map(id=>{
+  const newQuestions=await page.evaluate(()=>['pythagoras','unitCircle','hclNaohNeutralization','kno3Cooling','mendel','photosynthesis'].map(id=>{
     const t=MASTER_LAB_TEMPLATES[id],p=t.presetFor('senior');return t.question(p.p1,p.p2,t.fixedWithDefaults(p.fixed));
   }));
   for(const question of ['10g纯碳酸钙与足量稀盐酸反应，求二氧化碳的质量。','20°C时，配制100g质量分数为10%的氯化钠溶液，求所需盐和水的质量。',...newQuestions]){
@@ -341,6 +341,23 @@ try{
     report.templateBackground.push({template:before.id,before,after,realTabSwitch:true});
     assert.ok(after.time>before.time);assert.ok(after.time-before.time<.3);assert.equal(after.pending,1);assert.equal(after.maxPending,1);
     await page.locator('#playButton').click();assert.equal(await page.evaluate(()=>motionAudit.pending.size),0);
+    if (['photosynthesis','leafDisks'].includes(before.id)) {
+      await page.locator('#playButton').click();
+      const selector=before.id==='photosynthesis'?'[data-photosynthesis-step="1"]':'[data-leaf-step="1"]';
+      await page.locator(selector).click();
+      assert.equal(await page.evaluate(()=>state.playing),false);
+      assert.equal(await page.locator('#playButton').getAttribute('aria-label'),'播放实验');
+      assert.equal(await page.locator('#playButton').getAttribute('aria-pressed'),'false');
+      assert.equal(await page.evaluate(()=>motionAudit.pending.size),0);
+      const paused=await page.evaluate(()=>state.time);
+      await background.bringToFront();await page.waitForFunction(()=>document.hidden,null,{polling:20});await page.waitForTimeout(150);
+      await page.bringToFront();await page.waitForFunction(()=>!document.hidden,null,{polling:20});
+      assert.equal(await page.evaluate(()=>state.time),paused);assert.equal(await page.evaluate(()=>motionAudit.pending.size),0);
+      await page.locator('#playButton').click();await page.waitForFunction(t=>state.playing&&state.time>t,paused,{polling:20});
+      assert.equal(await page.locator('#playButton').getAttribute('aria-label'),'暂停实验');
+      await page.locator('#playButton').click();
+      report.templateBackground.push({template:before.id,stepSwitchPause:true,realTabSwitch:true,pending:0,resumed:true});
+    }
   }
   report.microscopeBackground=[];
   for(const mode of ['field','magnification','direction']){

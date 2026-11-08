@@ -1,0 +1,17 @@
+.photo-learning { margin: 12px 0; padding: 12px; border: 1px solid var(--line); border-radius: 10px; }
+.photo-learning h4 { margin: 0 0 5px; }
+.photo-learning p, .photo-learning small { color: var(--muted); font-size: 13px; }
+.photo-learning fieldset {
+  display: flex; flex-wrap: wrap; align-items: flex-start; gap: 9px;
+  border: 0; padding: 0; margin: 8px 0; min-width: 0;
+}
+.photo-learning label { display: grid; gap: 4px; max-width: 100%; font-size: 13px; }
+.photo-learning label.photo-learning-check { display: flex; align-items: baseline; }
+.photo-learning :is(select,input:not([type=checkbox])), .leaf-disks-record input[data-learning] {
+  min-height: 44px; max-width: 100%; box-sizing: border-box;
+  border: 1px solid var(--line); border-radius: 6px; padding: 4px 7px;
+  color: var(--ink); background: #fff;
+}
+.leaf-disks-record input[data-learning] { display: block; width: 5em; }
+.photo-learning input:not([type=checkbox]) { width: 7em; }
+.photo-learning :disabled, .leaf-disks-record input[data-learning]:disabled { opacity: .65; }

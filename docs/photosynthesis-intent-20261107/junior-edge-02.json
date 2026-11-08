@@ -1,0 +1,1096 @@
+{
+  "sha": "4d0419f87f6866c555332c3895c95c5e252385fa",
+  "browser": "157.0.4341.42",
+  "scope": {
+    "noTutor": false,
+    "grade": "senior",
+    "order": "single",
+    "registry": [
+      "photosynthesis"
+    ]
+  },
+  "normalButtonCases": [
+    {
+      "id": "junior-review-report",
+      "question": "实验室的展示卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "local",
+      "selectedSubject": "数学",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": true,
+        "subject": "物理",
+        "localOnly": false,
+        "template": "planeMirror",
+        "message": "已识别：平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。"
+      },
+      "before": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "二次函数｜y = x² − 4x + 3｜顶点 (2, −1)｜对称轴 x = 2｜Δ = 4 > 0",
+        "resultText": "y = x² − 4x + 3 = (x − 2)² − 1：图像开口向上，对称轴 x = 2，顶点 (2, −1)；在 (−∞, 2] 上单调递减，在 [2, +∞) 上单调递增，最小值为 −1，值域为 [−1, +∞)；Δ = 4 > 0，零点为 x = 1 和 x = 3，即图像与 x 轴交于 (1, 0)、(3, 0)。",
+        "metrics": "判别式 Δ：4（两个交点）｜顶点：(2, −1)｜对称轴：x = 2｜开口：向上，最小值 −1｜零点：1、3｜与 y 轴交点：(0, 3)",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤识别函数y = x² − 4x + 3（a = 1，b = −4，c = 3）"
+        }
+      },
+      "actual": {
+        "question": "实验室的展示卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+        "input": "实验室的展示卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+        "subject": "物理",
+        "grade": "senior",
+        "template": "planeMirror",
+        "time": 0,
+        "playing": false,
+        "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+        "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+        "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+        "tutor": {
+          "subject": "物理",
+          "originalQuestion": "实验室的展示卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    },
+    {
+      "id": "junior-report-after",
+      "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高；墙上的实验记录提到用酒精在水浴中加热脱色、稍等片刻用清水洗去碘液后进行观察。",
+      "expected": "local",
+      "selectedSubject": "数学",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": true,
+        "subject": "物理",
+        "localOnly": false,
+        "template": "planeMirror",
+        "message": "已识别：平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。"
+      },
+      "before": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "二次函数｜y = x² − 4x + 3｜顶点 (2, −1)｜对称轴 x = 2｜Δ = 4 > 0",
+        "resultText": "y = x² − 4x + 3 = (x − 2)² − 1：图像开口向上，对称轴 x = 2，顶点 (2, −1)；在 (−∞, 2] 上单调递减，在 [2, +∞) 上单调递增，最小值为 −1，值域为 [−1, +∞)；Δ = 4 > 0，零点为 x = 1 和 x = 3，即图像与 x 轴交于 (1, 0)、(3, 0)。",
+        "metrics": "判别式 Δ：4（两个交点）｜顶点：(2, −1)｜对称轴：x = 2｜开口：向上，最小值 −1｜零点：1、3｜与 y 轴交点：(0, 3)",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤识别函数y = x² − 4x + 3（a = 1，b = −4，c = 3）"
+        }
+      },
+      "actual": {
+        "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高；墙上的实验记录提到用酒精在水浴中加热脱色、稍等片刻用清水洗去碘液后进行观察。",
+        "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高；墙上的实验记录提到用酒精在水浴中加热脱色、稍等片刻用清水洗去碘液后进行观察。",
+        "subject": "物理",
+        "grade": "senior",
+        "template": "planeMirror",
+        "time": 0,
+        "playing": false,
+        "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+        "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+        "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+        "tutor": {
+          "subject": "物理",
+          "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高；墙上的实验记录提到用酒精在水浴中加热脱色、稍等片刻用清水洗去碘液后进行观察。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    },
+    {
+      "id": "junior-background-label",
+      "question": "背景：酒精水浴脱色，稍停片刻用清水冲掉碘液再观察\n平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "local",
+      "selectedSubject": "数学",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": true,
+        "subject": "物理",
+        "localOnly": false,
+        "template": "planeMirror",
+        "message": "已识别：平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。"
+      },
+      "before": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "二次函数｜y = x² − 4x + 3｜顶点 (2, −1)｜对称轴 x = 2｜Δ = 4 > 0",
+        "resultText": "y = x² − 4x + 3 = (x − 2)² − 1：图像开口向上，对称轴 x = 2，顶点 (2, −1)；在 (−∞, 2] 上单调递减，在 [2, +∞) 上单调递增，最小值为 −1，值域为 [−1, +∞)；Δ = 4 > 0，零点为 x = 1 和 x = 3，即图像与 x 轴交于 (1, 0)、(3, 0)。",
+        "metrics": "判别式 Δ：4（两个交点）｜顶点：(2, −1)｜对称轴：x = 2｜开口：向上，最小值 −1｜零点：1、3｜与 y 轴交点：(0, 3)",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤识别函数y = x² − 4x + 3（a = 1，b = −4，c = 3）"
+        }
+      },
+      "actual": {
+        "question": "背景：酒精水浴脱色，稍停片刻用清水冲掉碘液再观察\n平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+        "input": "背景：酒精水浴脱色，稍停片刻用清水冲掉碘液再观察\n平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+        "subject": "物理",
+        "grade": "senior",
+        "template": "planeMirror",
+        "time": 0,
+        "playing": false,
+        "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+        "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+        "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+        "tutor": {
+          "subject": "物理",
+          "originalQuestion": "背景：酒精水浴脱色，稍停片刻用清水冲掉碘液再观察\n平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    },
+    {
+      "id": "junior-one-operation-after",
+      "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+      "expected": "local",
+      "selectedSubject": "数学",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": true,
+        "subject": "物理",
+        "localOnly": false,
+        "template": "planeMirror",
+        "message": "已识别：平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。"
+      },
+      "before": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "二次函数｜y = x² − 4x + 3｜顶点 (2, −1)｜对称轴 x = 2｜Δ = 4 > 0",
+        "resultText": "y = x² − 4x + 3 = (x − 2)² − 1：图像开口向上，对称轴 x = 2，顶点 (2, −1)；在 (−∞, 2] 上单调递减，在 [2, +∞) 上单调递增，最小值为 −1，值域为 [−1, +∞)；Δ = 4 > 0，零点为 x = 1 和 x = 3，即图像与 x 轴交于 (1, 0)、(3, 0)。",
+        "metrics": "判别式 Δ：4（两个交点）｜顶点：(2, −1)｜对称轴：x = 2｜开口：向上，最小值 −1｜零点：1、3｜与 y 轴交点：(0, 3)",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤识别函数y = x² − 4x + 3（a = 1，b = −4，c = 3）"
+        }
+      },
+      "actual": {
+        "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+        "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+        "subject": "物理",
+        "grade": "senior",
+        "template": "planeMirror",
+        "time": 0,
+        "playing": false,
+        "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+        "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+        "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+        "tutor": {
+          "subject": "物理",
+          "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    },
+    {
+      "id": "junior-explicit-scope",
+      "question": "酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。只回答以下物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "local",
+      "selectedSubject": "数学",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": true,
+        "subject": "物理",
+        "localOnly": false,
+        "template": "planeMirror",
+        "message": "已识别：平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。"
+      },
+      "before": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "二次函数｜y = x² − 4x + 3｜顶点 (2, −1)｜对称轴 x = 2｜Δ = 4 > 0",
+        "resultText": "y = x² − 4x + 3 = (x − 2)² − 1：图像开口向上，对称轴 x = 2，顶点 (2, −1)；在 (−∞, 2] 上单调递减，在 [2, +∞) 上单调递增，最小值为 −1，值域为 [−1, +∞)；Δ = 4 > 0，零点为 x = 1 和 x = 3，即图像与 x 轴交于 (1, 0)、(3, 0)。",
+        "metrics": "判别式 Δ：4（两个交点）｜顶点：(2, −1)｜对称轴：x = 2｜开口：向上，最小值 −1｜零点：1、3｜与 y 轴交点：(0, 3)",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤识别函数y = x² − 4x + 3（a = 1，b = −4，c = 3）"
+        }
+      },
+      "actual": {
+        "question": "酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。只回答以下物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+        "input": "酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。只回答以下物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+        "subject": "物理",
+        "grade": "senior",
+        "template": "planeMirror",
+        "time": 0,
+        "playing": false,
+        "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+        "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+        "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+        "tutor": {
+          "subject": "物理",
+          "originalQuestion": "酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。只回答以下物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    },
+    {
+      "id": "junior-mixed-explicit",
+      "question": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。请解释水浴脱色的操作目的。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "clarify",
+      "selectedSubject": "数学",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": false,
+        "subject": "物理",
+        "localOnly": true,
+        "diagnostic": "photosynthesis",
+        "ownership": "mixed",
+        "message": "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：无法确认条件或子问：「卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察」。请核对操作、数值角色与所问；不会自动补条件。"
+      },
+      "before": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "二次函数｜y = x² − 4x + 3｜顶点 (2, −1)｜对称轴 x = 2｜Δ = 4 > 0",
+        "resultText": "y = x² − 4x + 3 = (x − 2)² − 1：图像开口向上，对称轴 x = 2，顶点 (2, −1)；在 (−∞, 2] 上单调递减，在 [2, +∞) 上单调递增，最小值为 −1，值域为 [−1, +∞)；Δ = 4 > 0，零点为 x = 1 和 x = 3，即图像与 x 轴交于 (1, 0)、(3, 0)。",
+        "metrics": "判别式 Δ：4（两个交点）｜顶点：(2, −1)｜对称轴：x = 2｜开口：向上，最小值 −1｜零点：1、3｜与 y 轴交点：(0, 3)",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤识别函数y = x² − 4x + 3（a = 1，b = −4，c = 3）"
+        }
+      },
+      "actual": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。请解释水浴脱色的操作目的。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：无法确认条件或子问：「卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "resultText": "",
+        "metrics": "",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。请解释水浴脱色的操作目的。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "hasResult": false,
+          "currentStep": ""
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    },
+    {
+      "id": "junior-mixed-question-mark",
+      "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色及稍停片刻用清水冲掉碘液再观察，这些操作为什么要这样做？",
+      "expected": "clarify",
+      "selectedSubject": "数学",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": false,
+        "subject": "物理",
+        "localOnly": true,
+        "diagnostic": "photosynthesis",
+        "ownership": "mixed",
+        "message": "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：无法确认条件或子问：「平面镜成像」。请核对操作、数值角色与所问；不会自动补条件。"
+      },
+      "before": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "二次函数｜y = x² − 4x + 3｜顶点 (2, −1)｜对称轴 x = 2｜Δ = 4 > 0",
+        "resultText": "y = x² − 4x + 3 = (x − 2)² − 1：图像开口向上，对称轴 x = 2，顶点 (2, −1)；在 (−∞, 2] 上单调递减，在 [2, +∞) 上单调递增，最小值为 −1，值域为 [−1, +∞)；Δ = 4 > 0，零点为 x = 1 和 x = 3，即图像与 x 轴交于 (1, 0)、(3, 0)。",
+        "metrics": "判别式 Δ：4（两个交点）｜顶点：(2, −1)｜对称轴：x = 2｜开口：向上，最小值 −1｜零点：1、3｜与 y 轴交点：(0, 3)",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤识别函数y = x² − 4x + 3（a = 1，b = −4，c = 3）"
+        }
+      },
+      "actual": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色及稍停片刻用清水冲掉碘液再观察，这些操作为什么要这样做？",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：无法确认条件或子问：「平面镜成像」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "resultText": "",
+        "metrics": "",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。海报介绍酒精水浴脱色及稍停片刻用清水冲掉碘液再观察，这些操作为什么要这样做？",
+          "hasResult": false,
+          "currentStep": ""
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    },
+    {
+      "id": "junior-contradictory-exclusive-scope",
+      "question": "酒精水浴脱色及稍停片刻用清水冲掉碘液再观察，请解释操作目的。只回答以下物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "clarify",
+      "selectedSubject": "数学",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": false,
+        "subject": "物理",
+        "localOnly": true,
+        "diagnostic": "photosynthesis",
+        "ownership": "mixed",
+        "message": "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：无法确认条件或子问：「及稍停片刻用清水冲掉碘液再观察」。请核对操作、数值角色与所问；不会自动补条件。"
+      },
+      "before": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "二次函数｜y = x² − 4x + 3｜顶点 (2, −1)｜对称轴 x = 2｜Δ = 4 > 0",
+        "resultText": "y = x² − 4x + 3 = (x − 2)² − 1：图像开口向上，对称轴 x = 2，顶点 (2, −1)；在 (−∞, 2] 上单调递减，在 [2, +∞) 上单调递增，最小值为 −1，值域为 [−1, +∞)；Δ = 4 > 0，零点为 x = 1 和 x = 3，即图像与 x 轴交于 (1, 0)、(3, 0)。",
+        "metrics": "判别式 Δ：4（两个交点）｜顶点：(2, −1)｜对称轴：x = 2｜开口：向上，最小值 −1｜零点：1、3｜与 y 轴交点：(0, 3)",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤识别函数y = x² − 4x + 3（a = 1，b = −4，c = 3）"
+        }
+      },
+      "actual": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "酒精水浴脱色及稍停片刻用清水冲掉碘液再观察，请解释操作目的。只回答以下物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：无法确认条件或子问：「及稍停片刻用清水冲掉碘液再观察」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "resultText": "",
+        "metrics": "",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "酒精水浴脱色及稍停片刻用清水冲掉碘液再观察，请解释操作目的。只回答以下物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "hasResult": false,
+          "currentStep": ""
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    },
+    {
+      "id": "junior-mixed-unsupported-target",
+      "question": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。求总产氧量。平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "clarify",
+      "selectedSubject": "数学",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": false,
+        "subject": "物理",
+        "localOnly": true,
+        "diagnostic": "photosynthesis",
+        "ownership": "mixed",
+        "message": "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：无法确认条件或子问：「卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察」。请核对操作、数值角色与所问；不会自动补条件。"
+      },
+      "before": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "二次函数｜y = x² − 4x + 3｜顶点 (2, −1)｜对称轴 x = 2｜Δ = 4 > 0",
+        "resultText": "y = x² − 4x + 3 = (x − 2)² − 1：图像开口向上，对称轴 x = 2，顶点 (2, −1)；在 (−∞, 2] 上单调递减，在 [2, +∞) 上单调递增，最小值为 −1，值域为 [−1, +∞)；Δ = 4 > 0，零点为 x = 1 和 x = 3，即图像与 x 轴交于 (1, 0)、(3, 0)。",
+        "metrics": "判别式 Δ：4（两个交点）｜顶点：(2, −1)｜对称轴：x = 2｜开口：向上，最小值 −1｜零点：1、3｜与 y 轴交点：(0, 3)",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤识别函数y = x² − 4x + 3（a = 1，b = −4，c = 3）"
+        }
+      },
+      "actual": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。求总产氧量。平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：无法确认条件或子问：「卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "resultText": "",
+        "metrics": "",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。求总产氧量。平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "hasResult": false,
+          "currentStep": ""
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    },
+    {
+      "id": "junior-exclusive-target",
+      "question": "酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。平面镜成像，物体距镜面20cm，物高5cm，我只求像距、物像距离及像高。",
+      "expected": "local",
+      "selectedSubject": "数学",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": true,
+        "subject": "物理",
+        "localOnly": false,
+        "template": "planeMirror",
+        "message": "已识别：平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。"
+      },
+      "before": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "二次函数｜y = x² − 4x + 3｜顶点 (2, −1)｜对称轴 x = 2｜Δ = 4 > 0",
+        "resultText": "y = x² − 4x + 3 = (x − 2)² − 1：图像开口向上，对称轴 x = 2，顶点 (2, −1)；在 (−∞, 2] 上单调递减，在 [2, +∞) 上单调递增，最小值为 −1，值域为 [−1, +∞)；Δ = 4 > 0，零点为 x = 1 和 x = 3，即图像与 x 轴交于 (1, 0)、(3, 0)。",
+        "metrics": "判别式 Δ：4（两个交点）｜顶点：(2, −1)｜对称轴：x = 2｜开口：向上，最小值 −1｜零点：1、3｜与 y 轴交点：(0, 3)",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤识别函数y = x² − 4x + 3（a = 1，b = −4，c = 3）"
+        }
+      },
+      "actual": {
+        "question": "酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。平面镜成像，物体距镜面20cm，物高5cm，我只求像距、物像距离及像高。",
+        "input": "酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。平面镜成像，物体距镜面20cm，物高5cm，我只求像距、物像距离及像高。",
+        "subject": "物理",
+        "grade": "senior",
+        "template": "planeMirror",
+        "time": 0,
+        "playing": false,
+        "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+        "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+        "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+        "tutor": {
+          "subject": "物理",
+          "originalQuestion": "酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。平面镜成像，物体距镜面20cm，物高5cm，我只求像距、物像距离及像高。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    },
+    {
+      "id": "junior-mixed-quoted-reference",
+      "question": "展板上写着“酒精水浴脱色，稍停片刻用清水冲掉碘液再观察”。请解释这两步。平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "clarify",
+      "selectedSubject": "数学",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": false,
+        "subject": "物理",
+        "localOnly": true,
+        "diagnostic": "photosynthesis",
+        "ownership": "mixed",
+        "message": "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：无法确认条件或子问：「展板上写着“酒精水浴脱色」。请核对操作、数值角色与所问；不会自动补条件。"
+      },
+      "before": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "二次函数｜y = x² − 4x + 3｜顶点 (2, −1)｜对称轴 x = 2｜Δ = 4 > 0",
+        "resultText": "y = x² − 4x + 3 = (x − 2)² − 1：图像开口向上，对称轴 x = 2，顶点 (2, −1)；在 (−∞, 2] 上单调递减，在 [2, +∞) 上单调递增，最小值为 −1，值域为 [−1, +∞)；Δ = 4 > 0，零点为 x = 1 和 x = 3，即图像与 x 轴交于 (1, 0)、(3, 0)。",
+        "metrics": "判别式 Δ：4（两个交点）｜顶点：(2, −1)｜对称轴：x = 2｜开口：向上，最小值 −1｜零点：1、3｜与 y 轴交点：(0, 3)",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤识别函数y = x² − 4x + 3（a = 1，b = −4，c = 3）"
+        }
+      },
+      "actual": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "展板上写着“酒精水浴脱色，稍停片刻用清水冲掉碘液再观察”。请解释这两步。平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：无法确认条件或子问：「展板上写着“酒精水浴脱色」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "resultText": "",
+        "metrics": "",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "展板上写着“酒精水浴脱色，稍停片刻用清水冲掉碘液再观察”。请解释这两步。平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "hasResult": false,
+          "currentStep": ""
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    },
+    {
+      "id": "junior-mixed-exclusive-coordination",
+      "question": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。平面镜成像，物体距镜面20cm，物高5cm，只求像距和操作目的。",
+      "expected": "clarify",
+      "selectedSubject": "数学",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": false,
+        "subject": "物理",
+        "localOnly": true,
+        "diagnostic": "photosynthesis",
+        "ownership": "mixed",
+        "message": "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：无法确认条件或子问：「卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察」。请核对操作、数值角色与所问；不会自动补条件。"
+      },
+      "before": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "二次函数｜y = x² − 4x + 3｜顶点 (2, −1)｜对称轴 x = 2｜Δ = 4 > 0",
+        "resultText": "y = x² − 4x + 3 = (x − 2)² − 1：图像开口向上，对称轴 x = 2，顶点 (2, −1)；在 (−∞, 2] 上单调递减，在 [2, +∞) 上单调递增，最小值为 −1，值域为 [−1, +∞)；Δ = 4 > 0，零点为 x = 1 和 x = 3，即图像与 x 轴交于 (1, 0)、(3, 0)。",
+        "metrics": "判别式 Δ：4（两个交点）｜顶点：(2, −1)｜对称轴：x = 2｜开口：向上，最小值 −1｜零点：1、3｜与 y 轴交点：(0, 3)",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤识别函数y = x² − 4x + 3（a = 1，b = −4，c = 3）"
+        }
+      },
+      "actual": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。平面镜成像，物体距镜面20cm，物高5cm，只求像距和操作目的。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：无法确认条件或子问：「卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "resultText": "",
+        "metrics": "",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。平面镜成像，物体距镜面20cm，物高5cm，只求像距和操作目的。",
+          "hasResult": false,
+          "currentStep": ""
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    },
+    {
+      "id": "mirror-control",
+      "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+      "expected": "local",
+      "selectedSubject": "物理",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": true,
+        "subject": "物理",
+        "localOnly": false,
+        "template": "planeMirror",
+        "message": "已识别：平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。"
+      },
+      "before": {
+        "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+        "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+        "subject": "物理",
+        "grade": "senior",
+        "template": "",
+        "time": 1.24,
+        "playing": false,
+        "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+        "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+        "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+        "tutor": {
+          "subject": "物理",
+          "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+        }
+      },
+      "actual": {
+        "question": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+        "input": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+        "subject": "物理",
+        "grade": "senior",
+        "template": "planeMirror",
+        "time": 0,
+        "playing": false,
+        "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。",
+        "resultText": "像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。成正立、等大的虚像，光屏上接收不到。",
+        "metrics": "像距：20 cm｜物像距离：40 cm｜像高：5 cm",
+        "tutor": {
+          "subject": "物理",
+          "originalQuestion": "平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤提取条件物距 u = 20cm；物高 h = 5cm"
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    },
+    {
+      "id": "general-photosynthesis",
+      "question": "光合作用的原料和产物是什么？",
+      "expected": "fallback",
+      "selectedSubject": "生物",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": false,
+        "subject": "生物",
+        "localOnly": false,
+        "message": "当前题目没有匹配到本地实验模板。"
+      },
+      "before": {
+        "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+        "input": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+        "subject": "生物",
+        "grade": "senior",
+        "template": "",
+        "time": 0,
+        "playing": false,
+        "feedback": "植物细胞结构识别题｜高中 · 亚显微结构（人教版必修1《分子与细胞》）｜可点击结构：细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体、线粒体、内质网、高尔基体、核糖体",
+        "resultText": "结构解析细胞核：细胞核是遗传信息库，是细胞代谢和遗传的控制中心",
+        "metrics": "可点结构 10个｜旋转视角 -10°｜观察时间 0.0s",
+        "tutor": {
+          "subject": "生物",
+          "originalQuestion": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤观察截面先看细胞壁与紧贴其内侧的细胞膜，再看中央大液泡"
+        }
+      },
+      "actual": {
+        "question": "请观察植物细胞的亚显微结构截面图，识别细胞壁、细胞膜、细胞核、液泡、叶绿体和线粒体等结构，并说明它们在细胞生命活动中的主要作用。",
+        "input": "光合作用的原料和产物是什么？",
+        "subject": "生物",
+        "grade": "senior",
+        "template": "",
+        "time": 0,
+        "playing": false,
+        "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+        "resultText": "",
+        "metrics": "",
+        "tutor": {
+          "subject": "生物",
+          "originalQuestion": "光合作用的原料和产物是什么？",
+          "hasResult": false,
+          "currentStep": ""
+        }
+      },
+      "requestCount": 1,
+      "requests": [
+        {
+          "path": "/api/v1/experiment/generate",
+          "mockStatus": 503
+        }
+      ]
+    },
+    {
+      "id": "general-light",
+      "question": "灯光的光照强度与距离有什么关系？",
+      "expected": "fallback",
+      "selectedSubject": "物理",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": false,
+        "subject": "物理",
+        "localOnly": false,
+        "message": "当前题目没有匹配到本地实验模板。"
+      },
+      "before": {
+        "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+        "input": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+        "subject": "物理",
+        "grade": "senior",
+        "template": "",
+        "time": 1.24,
+        "playing": false,
+        "feedback": "初速度 20m/s｜刹车加速度 5m/s2｜停止距离 40m",
+        "resultText": "观察提示刹车开始后，速度每秒减少 5m/s。",
+        "metrics": "速度 v 13.8m/s｜位移 x 21.0m｜时间 t 1.2s",
+        "tutor": {
+          "subject": "物理",
+          "originalQuestion": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤题干条件v₀ = 20m/s，a = −5m/s²，v = 0"
+        }
+      },
+      "actual": {
+        "question": "一辆汽车以20m/s的速度行驶，紧急刹车后加速度大小为5m/s²，求刹车距离。",
+        "input": "灯光的光照强度与距离有什么关系？",
+        "subject": "物理",
+        "grade": "senior",
+        "template": "",
+        "time": 1.24,
+        "playing": false,
+        "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。",
+        "resultText": "",
+        "metrics": "",
+        "tutor": {
+          "subject": "物理",
+          "originalQuestion": "灯光的光照强度与距离有什么关系？",
+          "hasResult": false,
+          "currentStep": ""
+        }
+      },
+      "requestCount": 1,
+      "requests": [
+        {
+          "path": "/api/v1/experiment/generate",
+          "mockStatus": 503
+        }
+      ]
+    },
+    {
+      "id": "junior-without-book",
+      "question": "探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+      "expected": "local",
+      "selectedSubject": "数学",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": true,
+        "subject": "生物",
+        "localOnly": false,
+        "template": "photosynthesis",
+        "ownership": "complete",
+        "message": "已识别：教材预期：见光区变蓝，遮光区不变蓝"
+      },
+      "before": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "二次函数｜y = x² − 4x + 3｜顶点 (2, −1)｜对称轴 x = 2｜Δ = 4 > 0",
+        "resultText": "y = x² − 4x + 3 = (x − 2)² − 1：图像开口向上，对称轴 x = 2，顶点 (2, −1)；在 (−∞, 2] 上单调递减，在 [2, +∞) 上单调递增，最小值为 −1，值域为 [−1, +∞)；Δ = 4 > 0，零点为 x = 1 和 x = 3，即图像与 x 轴交于 (1, 0)、(3, 0)。",
+        "metrics": "判别式 Δ：4（两个交点）｜顶点：(2, −1)｜对称轴：x = 2｜开口：向上，最小值 −1｜零点：1、3｜与 y 轴交点：(0, 3)",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤识别函数y = x² − 4x + 3（a = 1，b = −4，c = 3）"
+        }
+      },
+      "actual": {
+        "question": "探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+        "input": "探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+        "subject": "生物",
+        "grade": "senior",
+        "template": "photosynthesis",
+        "time": 0,
+        "playing": false,
+        "feedback": "教材预期：见光区变蓝，遮光区不变蓝",
+        "resultText": "淀粉是光合作用的产物，光是绿叶制造淀粉不可缺少的条件；完成教材操作后，原见光区遇碘液变蓝，原遮光区不变蓝；暗处理减少原有淀粉干扰；同叶局部遮光作对照；酒精脱色便于观察；碘液检验淀粉；暗处理→双面局部遮光并光照→摘叶去纸→酒精水浴脱色→漂洗、滴碘→稍停、冲洗、观察。",
+        "metrics": "固定人教2024审核体系七下p29–30的完整六步流程；一昼夜暗处理、阳光下几小时、酒精水浴。内部参数1/1只是固定标识，不代表光强、产量或实际操作时长。页面播放位置是操作顺序示意，所列结论为完成全部操作后的教材预期。｜对照变量：是否见光｜原见光区：遇碘变蓝｜原遮光区：不变蓝",
+        "tutor": {
+          "subject": "生物",
+          "originalQuestion": "探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+          "hasResult": true,
+          "currentStep": "当前教材第1步：暗处理。将盆栽天竺葵放在黑暗处一昼夜。当前还不能把最终显色当作已经观察到的结果。确定性结果区列的是完整教材流程完成后的预期，非实测。"
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    },
+    {
+      "id": "junior-unsupported-extra",
+      "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。求总产氧量。",
+      "expected": "protocol-refusal",
+      "selectedSubject": "数学",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": false,
+        "subject": "生物",
+        "localOnly": true,
+        "diagnostic": "photosynthesis",
+        "ownership": "confirmed",
+        "message": "无法确认条件或子问：「求总产氧量」。请核对操作、数值角色与所问；不会自动补条件。"
+      },
+      "before": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "二次函数｜y = x² − 4x + 3｜顶点 (2, −1)｜对称轴 x = 2｜Δ = 4 > 0",
+        "resultText": "y = x² − 4x + 3 = (x − 2)² − 1：图像开口向上，对称轴 x = 2，顶点 (2, −1)；在 (−∞, 2] 上单调递减，在 [2, +∞) 上单调递增，最小值为 −1，值域为 [−1, +∞)；Δ = 4 > 0，零点为 x = 1 和 x = 3，即图像与 x 轴交于 (1, 0)、(3, 0)。",
+        "metrics": "判别式 Δ：4（两个交点）｜顶点：(2, −1)｜对称轴：x = 2｜开口：向上，最小值 −1｜零点：1、3｜与 y 轴交点：(0, 3)",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤识别函数y = x² − 4x + 3（a = 1，b = −4，c = 3）"
+        }
+      },
+      "actual": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。求总产氧量。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "无法确认条件或子问：「求总产氧量」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "resultText": "",
+        "metrics": "",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。求总产氧量。",
+          "hasResult": false,
+          "currentStep": ""
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    },
+    {
+      "id": "junior-bad-order",
+      "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，滴加碘液后清水漂洗，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+      "expected": "protocol-refusal",
+      "selectedSubject": "数学",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": false,
+        "subject": "生物",
+        "localOnly": true,
+        "diagnostic": "photosynthesis",
+        "ownership": "confirmed",
+        "message": "无法确认条件或子问：「滴加碘液后清水漂洗」。请核对操作、数值角色与所问；不会自动补条件。"
+      },
+      "before": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "二次函数｜y = x² − 4x + 3｜顶点 (2, −1)｜对称轴 x = 2｜Δ = 4 > 0",
+        "resultText": "y = x² − 4x + 3 = (x − 2)² − 1：图像开口向上，对称轴 x = 2，顶点 (2, −1)；在 (−∞, 2] 上单调递减，在 [2, +∞) 上单调递增，最小值为 −1，值域为 [−1, +∞)；Δ = 4 > 0，零点为 x = 1 和 x = 3，即图像与 x 轴交于 (1, 0)、(3, 0)。",
+        "metrics": "判别式 Δ：4（两个交点）｜顶点：(2, −1)｜对称轴：x = 2｜开口：向上，最小值 −1｜零点：1、3｜与 y 轴交点：(0, 3)",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤识别函数y = x² − 4x + 3（a = 1，b = −4，c = 3）"
+        }
+      },
+      "actual": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，滴加碘液后清水漂洗，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "无法确认条件或子问：「滴加碘液后清水漂洗」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "resultText": "",
+        "metrics": "",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一昼夜，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，滴加碘液后清水漂洗，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+          "hasResult": false,
+          "currentStep": ""
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    },
+    {
+      "id": "junior-bad-time",
+      "question": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一小时，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+      "expected": "protocol-refusal",
+      "selectedSubject": "数学",
+      "selectedGrade": "senior",
+      "noTutor": false,
+      "order": "single",
+      "viewportWidth": 390,
+      "passed": true,
+      "supplementaryPlan": {
+        "ok": false,
+        "subject": "生物",
+        "localOnly": true,
+        "diagnostic": "photosynthesis",
+        "ownership": "confirmed",
+        "message": "无法确认条件或子问：「盆栽天竺葵先暗处理一小时」。请核对操作、数值角色与所问；不会自动补条件。"
+      },
+      "before": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "二次函数｜y = x² − 4x + 3｜顶点 (2, −1)｜对称轴 x = 2｜Δ = 4 > 0",
+        "resultText": "y = x² − 4x + 3 = (x − 2)² − 1：图像开口向上，对称轴 x = 2，顶点 (2, −1)；在 (−∞, 2] 上单调递减，在 [2, +∞) 上单调递增，最小值为 −1，值域为 [−1, +∞)；Δ = 4 > 0，零点为 x = 1 和 x = 3，即图像与 x 轴交于 (1, 0)、(3, 0)。",
+        "metrics": "判别式 Δ：4（两个交点）｜顶点：(2, −1)｜对称轴：x = 2｜开口：向上，最小值 −1｜零点：1、3｜与 y 轴交点：(0, 3)",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+          "hasResult": true,
+          "currentStep": "1 当前步骤识别函数y = x² − 4x + 3（a = 1，b = −4，c = 3）"
+        }
+      },
+      "actual": {
+        "question": "求二次函数 y = x² - 4x + 3 的顶点坐标以及与 x 轴的交点。",
+        "input": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一小时，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+        "subject": "数学",
+        "grade": "senior",
+        "template": "quadratic",
+        "time": 0,
+        "playing": false,
+        "feedback": "无法确认条件或子问：「盆栽天竺葵先暗处理一小时」。请核对操作、数值角色与所问；不会自动补条件。 如需讲解，请主动打开 AI 导师提问。",
+        "resultText": "",
+        "metrics": "",
+        "tutor": {
+          "subject": "数学",
+          "originalQuestion": "按人教版生物学七年级下册教材，探究绿叶在光下制造有机物，盆栽天竺葵先暗处理一小时，同一叶片用黑纸片从上下两面局部遮光，放在阳光下几小时后摘叶并移去黑纸片，酒精水浴脱色，清水漂洗后置于培养皿滴加碘液，稍停片刻用清水冲掉碘液再观察，说明实验步骤、实验现象、实验结论、操作目的。",
+          "hasResult": false,
+          "currentStep": ""
+        }
+      },
+      "requestCount": 0,
+      "requests": []
+    }
+  ]
+}
