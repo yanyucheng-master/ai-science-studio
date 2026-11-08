@@ -171,7 +171,12 @@ try {
       if (name === 'invalid_twice') { assert.equal(ui.error, true); assert.equal(calls.length, 2); }
       if (name === 'hint') { assert.equal(calls.length, 1); assert.equal(calls[0].stream, false); assert.equal(ui.final, ''); }
       if (['timeout', 'stop'].includes(name)) { assert.equal(calls.length, 1); assert.equal(ui.error, true); }
-      if (name === 'timeout') assert.match(ui.text, /已超时/);
+      // 2026-11-06 个人模型：个人请求超时后只回退一次到公益网关（本脚本的网关对该场景返回 503），
+      // 提示写明超时与回退，不再是单独的“已超时”。
+      if (name === 'timeout') {
+        assert.match(ui.text, /请求超时，已自动转用公益 AI/);
+        assert.equal(report.network.filter(entry => entry.path === '/api/v1/tutor/chat').length, 1, 'one gateway fallback');
+      }
       if (name === 'stop') assert.match(ui.text, /已停止/);
       if (name === 'no_key_experiment') { assert.equal(calls.length, 0); assert.match(ui.text, /大师 · 本地提示/); }
       if (name === 'no_key_question') { assert.equal(calls.length, 0); assert.equal(ui.error, true); }

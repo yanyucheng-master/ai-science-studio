@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
 import { readFile, mkdir, writeFile, mkdtemp } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
@@ -13,7 +14,17 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root=fileURLToPath(new URL('../../',import.meta.url));
 const output=process.env.ANIMATION_QA_OUTPUT || resolve(root,'outputs/animation-upgrade/verification');
 await mkdir(output,{recursive:true});
-const files=new Set(['index.html','app.js','styles.css','science-motion.js','science-formulas.js','biology-protocol-questions.js','physics-extra.js','question-conditions.js','math-extra.js', 'math-experiments.js', 'unit-circle.js', 'math-experiments.css','chemistry-extra.js','chemistry-experiments.js', 'chemistry-equilibria.js', 'chemistry-equilibria-questions.js', 'chemistry-equilibria-experiments.js', 'chemistry-equilibria.css', 'biology-mendel-core.js', 'biology-mendel.js', 'biology-mendel.css', 'biology-microscope-core.js', 'biology-microscope-questions.js', 'biology-microscope.js', 'biology-microscope.css', 'biology-population-core.js', 'biology-population-questions.js', 'biology-population.js', 'biology-population.css', 'biology-leaf-disks-core.js', 'biology-leaf-disks-questions.js', 'biology-leaf-disks.js', 'biology-leaf-disks.css','ai-tutor.js']);
+// Serve exactly the scripts and stylesheets index.html loads (local files under web/ only), so a newly added
+// layer cannot be silently skipped with a 204 the way a hand-written allowlist allowed.
+const indexHtml=await readFile(resolve(root,'web/index.html'),'utf8');
+const files=new Set(['index.html']);
+for(const [,tag] of indexHtml.matchAll(/<(script\b[^>]*\bsrc="[^"]+"[^>]*|link\b[^>]*\brel="stylesheet"[^>]*)>/g)){
+  const ref=(tag.match(/\b(?:src|href)="([^"]+)"/)||[])[1];
+  if(!ref||/^[a-z]+:|^\/\//i.test(ref))continue;
+  const name=ref.split(/[?#]/)[0].replace(/^\.?\//,'');
+  if(existsSync(resolve(root,'web',name)))files.add(name);
+}
+for(const required of ['app.js','ui-motion.js','ui-motion.css','mobile.css','mobile-shell.js','menu-select.js','menu-select.css'])assert.ok(files.has(required),`index.html asset ${required} is served`);
 const server=createServer(async(req,res)=>{
   const name=new URL(req.url,'http://localhost').pathname.slice(1)||'index.html';
   if(!files.has(name)){res.writeHead(204);res.end();return;}
@@ -36,20 +47,34 @@ async function prepare(context){
     return route.fulfill({status:204,body:''});
   });
   await context.addInitScript(()=>{
-    const pending=new Set(), selectionPending=new Set(), timers=new Set(), intervals=new Set();
+    const origins=new Map(), pending=new Set(), selectionPending=new Set(), timers=new Set(), intervals=new Set();
     window.motionAudit={pending,selectionPending,maxPending:0,overlap:[],frames:0,costs:[],times:[],timers,intervals,longTasks:[]};
     const raf=requestAnimationFrame,cancel=cancelAnimationFrame,st=setTimeout,ct=clearTimeout,si=setInterval,ci=clearInterval;
     // Tutor selection capture is an existing one-shot UI frame after pointerup,
     // not a scene animation. Track it separately instead of counting it as a
     // second ongoing clock. All other frame callbacks remain in the audit.
-    window.requestAnimationFrame=cb=>{const set=cb.name==='captureSelection'?selectionPending:pending;let id=raf(t=>{set.delete(id);const start=performance.now();cb(t);if(set===pending){motionAudit.costs.push(performance.now()-start);motionAudit.times.push(t);motionAudit.frames++;}});set.add(id);if(pending.size>1&&motionAudit.overlap.length<10)motionAudit.overlap.push({callback:cb.name,stack:new Error().stack});motionAudit.maxPending=Math.max(motionAudit.maxPending,pending.size);return id;};
-    window.cancelAnimationFrame=id=>{pending.delete(id);selectionPending.delete(id);cancel(id);};
+    window.requestAnimationFrame=cb=>{const set=cb.name==='captureSelection'?selectionPending:pending;let id=raf(t=>{set.delete(id);origins.delete(id);const start=performance.now();cb(t);if(set===pending){motionAudit.costs.push(performance.now()-start);motionAudit.times.push(t);motionAudit.frames++;}});set.add(id);origins.set(id,{callback:cb.name,stack:new Error().stack.split('\n').slice(2,5).join(' | ')});if(pending.size>1&&motionAudit.overlap.length<10)motionAudit.overlap.push({callback:cb.name,stack:new Error().stack,pending:[...pending].map(p=>origins.get(p))});motionAudit.maxPending=Math.max(motionAudit.maxPending,pending.size);return id;};
+    window.cancelAnimationFrame=id=>{pending.delete(id);origins.delete(id);selectionPending.delete(id);cancel(id);};
     window.setTimeout=(cb,ms,...args)=>{let id=st(()=>{timers.delete(id);cb(...args);},ms);timers.add(id);return id;};
     window.clearTimeout=id=>{timers.delete(id);ct(id);};
-    window.setInterval=(...args)=>{const id=si(...args);intervals.add(id);return id;};
-    window.clearInterval=id=>{intervals.delete(id);ci(id);};
+    // announcements.js keeps one intentional 5-minute refresh poll for the page lifetime (not an animation clock);
+    // it is counted separately so every other interval still has to be cleared.
+    const announcementPolls=new Set();motionAudit.announcementPolls=announcementPolls;
+    window.setInterval=(...args)=>{const id=si(...args);(args[1]===300000&&/announcements\.js/.test(new Error().stack)?announcementPolls:intervals).add(id);return id;};
+    window.clearInterval=id=>{intervals.delete(id);announcementPolls.delete(id);ci(id);};
     new PerformanceObserver(list=>motionAudit.longTasks.push(...list.getEntries().map(x=>({start:x.startTime,duration:x.duration})))).observe({type:'longtask',buffered:true});
   });
+}
+async function assertLayersLoaded(page){
+  // The interface layers must really be running, otherwise the frame audit below checks nothing new.
+  const layers=await page.evaluate(()=>{
+    const sheet=name=>[...document.styleSheets].some(s=>(s.href||'').includes(name)&&s.cssRules.length>0);
+    return {uiMotion:document.documentElement.classList.contains('um-on')&&getComputedStyle(document.documentElement).getPropertyValue('--fx-dur-press').trim()!=='',
+      uiMotionCss:sheet('ui-motion.css'),mobileCss:sheet('mobile.css'),mobileShell:Boolean(document.querySelector('.mobile-quickstart')),
+      menuSelect:Boolean(document.querySelector('.menu-select-trigger')),menuSelectCss:sheet('menu-select.css')};
+  });
+  for(const [name,ok] of Object.entries(layers))assert.ok(ok,`interface layer not loaded: ${name}`);
+  return layers;
 }
 async function generate(page,question){
   await page.locator('#questionInput').fill(question);
@@ -102,6 +127,7 @@ try{
   page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
   await page.goto(base+(demo?'?demo=1':''));
   await page.evaluate(()=>{if(state.autoDemoTimer)clearTimeout(state.autoDemoTimer);});
+  await assertLayersLoaded(page);
   await page.waitForTimeout(120);assert.equal(await page.evaluate(()=>motionAudit.pending.size),0);
   // Use the actual prompt/generation controls twice, then scrub and play the result.
   await generate(page,projectileQuestion);await generate(page,projectileQuestion);
@@ -221,8 +247,8 @@ try{
   assert.equal(lockedWheel,'0rad');
   await page.evaluate(()=>{applyWaitingState('物理');clearDemoTimers();clearReasoningTimers();});
   await page.waitForTimeout(2300);
-  const lifecycle=await page.evaluate(()=>({pending:motionAudit.pending.size,max:motionAudit.maxPending,timers:motionAudit.timers.size,intervals:motionAudit.intervals.size}));
-  assert.equal(lifecycle.pending,0);assert.equal(lifecycle.max,1);assert.equal(lifecycle.intervals,0);assert.equal(lifecycle.timers,0);
+  const lifecycle=await page.evaluate(()=>({pending:motionAudit.pending.size,max:motionAudit.maxPending,timers:motionAudit.timers.size,intervals:motionAudit.intervals.size,announcementPolls:motionAudit.announcementPolls.size,overlap:motionAudit.overlap}));
+  assert.equal(lifecycle.pending,0);assert.equal(lifecycle.max,1,JSON.stringify(lifecycle.overlap,null,1));assert.equal(lifecycle.intervals,0);assert.equal(lifecycle.timers,0);assert.ok(lifecycle.announcementPolls<=1,JSON.stringify(lifecycle));
   assert.deepEqual(errors,[]);
   report.variants.push({tag,viewport,demo,errors,chemistry,circuits,performance,lifecycle,board:board.map(x=>({outcome:x.model.outcome,relativePosition:x.end.relativePosition})),brake,dipole});
   console.log(`${tag}: passed`);await context.close();
@@ -259,7 +285,14 @@ try{
  const mobilePage=await mobile.newPage();await mobilePage.goto(base);await choose(mobilePage,'生物');
  await mobilePage.locator('.cell-structure-tag[data-organelle="vacuole"]').tap();
  assert.equal(await mobilePage.locator('#cellDetailName').textContent(),'液泡');
- assert.ok(await mobilePage.locator('#cellDetailCard').evaluate(n=>[...n.querySelectorAll('dd')].every(d=>d.getBoundingClientRect().right<=n.getBoundingClientRect().right-10)));
+ // A boxed card keeps 10px inner space; mobile.css (2026-10-30) flattens it to a top rule with 2px side padding,
+ // where the text only has to stay inside the content box.
+ const cellCard=await mobilePage.locator('#cellDetailCard').evaluate(n=>{
+   const s=getComputedStyle(n),right=n.getBoundingClientRect().right,boxed=s.backgroundImage!=='none'||s.backgroundColor!=='rgba(0, 0, 0, 0)'||parseFloat(s.borderRightWidth)>0;
+   const limit=boxed?right-10:right-parseFloat(s.paddingRight)-parseFloat(s.borderRightWidth)+.5;
+   return {boxed,limit,dd:[...n.querySelectorAll('dd')].map(d=>d.getBoundingClientRect().right)};
+ });
+ assert.ok(cellCard.dd.length&&cellCard.dd.every(r=>r<=cellCard.limit),JSON.stringify(cellCard));
  await screenshot(mobilePage,'390-mobile-plant');
  await choose(mobilePage,'projectile');await mobilePage.locator('#timeline').fill('100');await screenshot(mobilePage,'390-mobile-projectile');
  assert.ok(await mobilePage.locator('.projectile-readout').evaluate(n=>n.scrollWidth<=n.clientWidth+1));

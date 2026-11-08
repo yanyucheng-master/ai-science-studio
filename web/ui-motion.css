@@ -1,0 +1,995 @@
+/* ==========================================================================
+   界面动效与交互（2026-11-06）
+   在 mobile.css 之后加载；配套脚本 ui-motion.js 在 <html> 上加 .um-on。
+   - 只动画 transform、opacity、background-position 和下面用 @property 注册的自定义属性；
+     不支持 @property 时（html 上没有 .um-prop），对应效果停在静态样式。
+   - 页面隐藏（html.um-hidden）或元素不在视口内（[data-um-off]）时暂停循环动画。
+   - prefers-reduced-motion: reduce 下关闭新的循环、滚入、扫光与残影淡出，只保留瞬时颜色变化。
+   - body.harmony-compat-mode（鸿蒙包内运行时）只保留按下态和滑块数值气泡。
+   - 新增的气泡、面板、读数均不可选中，长按不弹系统菜单（命令面板输入框除外）。
+   ========================================================================== */
+
+/* 设计 token。下方另用 @property 把每个 token 注册为“不继承、初始值即 token”：任何元素都能用 var() 取到，
+   但不进入逐元素继承的变量表（实验画面频繁改动的元素自带变量时，不必复制这一整组 token，样式重算更快）。
+   支持 @property 时脚本会给 <html> 加 .um-prop，这组 :root 声明随之不再生效（根元素上的这些声明会让每次样式重算多花时间）；
+   不支持时按这里的 :root 定义正常继承。两处数值保持一致。 */
+:root:not(.um-prop) {
+  /* 颜色 */
+  --fx-blue: #2d73f6;
+  --fx-ink-blue: #1a56d6;
+  --fx-liquid: #74b1fc;
+  --fx-ring: #74adfb;
+  --fx-track: #dde7f6;
+  --fx-sheen: rgba(255, 255, 255, .88);
+  --fx-glow: rgba(116, 177, 252, .62);
+  --fx-halo: rgba(45, 115, 246, .16);
+  --fx-panel: #fbfdff;
+  --fx-panel-line: rgba(198, 219, 251, .9);
+  --fx-panel-shadow: 0 -10px 30px rgba(39, 77, 140, .14);
+  --fx-text: #1d2f52;
+  --fx-muted: #4d5f7d;
+  /* 时长 */
+  --fx-dur-press: 80ms;
+  --fx-dur-release: 240ms;
+  --fx-dur-fast: 180ms;
+  --fx-dur-roll: 160ms;
+  --fx-dur-med: 260ms;
+  --fx-dur-sweep: 420ms;
+  --fx-dur-step-sweep: 560ms;
+  --fx-dur-ring: 6s;
+  --fx-dur-text-sweep: 2.4s;
+  --fx-dur-dot: 1.8s;
+  --fx-dur-drift-a: 52s;
+  --fx-dur-drift-b: 44s;
+  /* 缓动 */
+  --fx-ease-out: cubic-bezier(.16, 1, .3, 1);
+  --fx-ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  --fx-ease-inout: cubic-bezier(.45, 0, .25, 1);
+}
+
+@property --fx-blue { syntax: "<color>"; inherits: false; initial-value: #2d73f6; }
+@property --fx-ink-blue { syntax: "<color>"; inherits: false; initial-value: #1a56d6; }
+@property --fx-liquid { syntax: "<color>"; inherits: false; initial-value: #74b1fc; }
+@property --fx-ring { syntax: "<color>"; inherits: false; initial-value: #74adfb; }
+@property --fx-track { syntax: "<color>"; inherits: false; initial-value: #dde7f6; }
+@property --fx-sheen { syntax: "<color>"; inherits: false; initial-value: rgba(255, 255, 255, .88); }
+@property --fx-glow { syntax: "<color>"; inherits: false; initial-value: rgba(116, 177, 252, .62); }
+@property --fx-halo { syntax: "<color>"; inherits: false; initial-value: rgba(45, 115, 246, .16); }
+@property --fx-panel { syntax: "<color>"; inherits: false; initial-value: #fbfdff; }
+@property --fx-panel-line { syntax: "<color>"; inherits: false; initial-value: rgba(198, 219, 251, .9); }
+@property --fx-panel-shadow { syntax: "*"; inherits: false; initial-value: 0 -10px 30px rgba(39, 77, 140, .14); }
+@property --fx-text { syntax: "<color>"; inherits: false; initial-value: #1d2f52; }
+@property --fx-muted { syntax: "<color>"; inherits: false; initial-value: #4d5f7d; }
+@property --fx-dur-press { syntax: "<time>"; inherits: false; initial-value: 80ms; }
+@property --fx-dur-release { syntax: "<time>"; inherits: false; initial-value: 240ms; }
+@property --fx-dur-fast { syntax: "<time>"; inherits: false; initial-value: 180ms; }
+@property --fx-dur-roll { syntax: "<time>"; inherits: false; initial-value: 160ms; }
+@property --fx-dur-med { syntax: "<time>"; inherits: false; initial-value: 260ms; }
+@property --fx-dur-sweep { syntax: "<time>"; inherits: false; initial-value: 420ms; }
+@property --fx-dur-step-sweep { syntax: "<time>"; inherits: false; initial-value: 560ms; }
+@property --fx-dur-ring { syntax: "<time>"; inherits: false; initial-value: 6s; }
+@property --fx-dur-text-sweep { syntax: "<time>"; inherits: false; initial-value: 2.4s; }
+@property --fx-dur-dot { syntax: "<time>"; inherits: false; initial-value: 1.8s; }
+@property --fx-dur-drift-a { syntax: "<time>"; inherits: false; initial-value: 52s; }
+@property --fx-dur-drift-b { syntax: "<time>"; inherits: false; initial-value: 44s; }
+@property --fx-ease-out { syntax: "*"; inherits: false; initial-value: cubic-bezier(.16, 1, .3, 1); }
+@property --fx-ease-spring { syntax: "*"; inherits: false; initial-value: cubic-bezier(.34, 1.56, .64, 1); }
+@property --fx-ease-inout { syntax: "*"; inherits: false; initial-value: cubic-bezier(.45, 0, .25, 1); }
+@property --um-ring-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@property --um-chain { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --um-dot-t { syntax: "<number>"; inherits: false; initial-value: 0; }
+@property --um-sheen { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+@property --um-sym-glow { syntax: "<color>"; inherits: false; initial-value: rgba(116, 177, 252, 0); }
+@property --um-dot-rest { syntax: "<number>"; inherits: false; initial-value: 0; }
+@property --um-chain-on { syntax: "<number>"; inherits: false; initial-value: 0; }
+@property --um-p { syntax: "<number>"; inherits: false; initial-value: 0; }
+@property --um-o { syntax: "<number>"; inherits: false; initial-value: 0; }
+@property --um-pf { syntax: "<number>"; inherits: false; initial-value: 0; }
+@property --um-of { syntax: "<number>"; inherits: false; initial-value: 0; }
+@property --um-tick-h { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --um-tick-c { syntax: "<color>"; inherits: false; initial-value: #1a56d6; }
+@property --um-mx { syntax: "<length>"; inherits: false; initial-value: -400px; }
+@property --um-my { syntax: "<length>"; inherits: false; initial-value: -400px; }
+@property --um-bx { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --um-by { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --um-tx { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --um-ty { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --um-glider-tint { syntax: "<color>"; inherits: false; initial-value: #edf4ff; }
+
+/* ---------- 通用：新元素不可选中、长按无系统菜单 ---------- */
+.um-bubble, .um-tip, .um-zoom-badge, .um-ghost, .um-ghost-label, .um-dock, .um-rail, .um-keys, .um-tl-marks,
+.um-tab-glider, .um-palette-list, .um-insight-toggle {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* ==========================================================================
+   A1 全局按下态：按下缩到 .96 并加深，松开回弹（回弹由脚本加 .um-release-a/b）
+   用独立的 scale 属性，不覆盖元素原有的 transform；禁用态无反馈，:focus-visible 外框不变
+   ========================================================================== */
+:root.um-on button:active:not(:disabled):not([aria-disabled="true"]),
+:root.um-on [role="button"]:active:not(:disabled):not([aria-disabled="true"]),
+:root.um-on summary:active:not(:disabled):not([aria-disabled="true"]),
+:root.um-on .favorite-item:active:not(:disabled):not([aria-disabled="true"]),
+:root.um-on .cell-structure-tag:active:not(:disabled):not([aria-disabled="true"]) {
+  scale: .96;
+  filter: brightness(.94);
+  transition: scale var(--fx-dur-press) var(--fx-ease-out);
+}
+/* mobile.css 在触屏上用 transform 做过按下缩放，这里统一改用 scale，避免叠加成两次缩小 */
+@media (hover: none) {
+  :root.um-on .play-button:active:not(:disabled),
+  :root.um-on .generate-button:active:not(:disabled),
+  :root.um-on .square-button:active:not(:disabled),
+  :root.um-on .icon-button:active:not(:disabled),
+  :root.um-on .mini-control:active:not(:disabled),
+  :root.um-on .ai-entry-button:active:not(:disabled),
+  :root.um-on .number-control button:active:not(:disabled),
+  :root.um-on .subject-tab:active:not(:disabled),
+  :root.um-on .grade-seg button:active:not(:disabled),
+  :root.um-on .mq-item:active:not(:disabled),
+  :root.um-on .mobile-dock button:active:not(:disabled),
+  :root.um-on .mentor-actions button:active:not(:disabled),
+  :root.um-on .preset-picker:active:not(:disabled),
+  :root.um-on .reason-step:active:not(:disabled),
+  :root.um-on .cell-structure-tag:active:not(:disabled) {
+    transform: none;
+  }
+}
+:root.um-on .um-release-a { animation: um-release-a var(--fx-dur-release) var(--fx-ease-spring); }
+:root.um-on .um-release-b { animation: um-release-b var(--fx-dur-release) var(--fx-ease-spring); }
+@keyframes um-release-a { from { scale: .96; } 55% { scale: 1.012; } to { scale: 1; } }
+@keyframes um-release-b { from { scale: .96; } 55% { scale: 1.012; } to { scale: 1; } }
+
+/* ==========================================================================
+   A2 题目输入框聚焦：一圈浅蓝描边光沿边框流动，约 6 秒一圈（伪元素 + mask，不改内边距与 overflow）
+   ========================================================================== */
+.prompt-input-wrap:where(:root.um-on body:not(.harmony-compat-mode) *) { position: relative; }
+/* 伪元素只在聚焦时生成：实验页的样式失效会反复扫到输入区，平时不留一个看不见的图层 */
+:root.um-on body:not(.harmony-compat-mode) .prompt-input-wrap:focus-within::after {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--um-ring-angle), rgba(116, 173, 251, 0) 0deg, rgba(116, 173, 251, 0) 150deg,
+    var(--fx-ring) 220deg, var(--fx-liquid) 262deg, var(--fx-blue) 300deg, rgba(45, 115, 246, 0) 350deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: um-fade-a var(--fx-dur-med) ease-out;
+  content: "";
+}
+:root.um-on.um-prop body:not(.harmony-compat-mode) .prompt-input-wrap:focus-within::after {
+  animation: um-ring-spin var(--fx-dur-ring) linear infinite, um-fade-a var(--fx-dur-med) ease-out;
+}
+@keyframes um-ring-spin { to { --um-ring-angle: 360deg; } }
+
+/* ==========================================================================
+   A3 生成按钮：点击时扫过一道光（遮罩已有加载指示，不再加第二个）
+   ========================================================================== */
+.generate-button:where(:root.um-on body:not(.harmony-compat-mode) *) { position: relative; }
+/* 只在扫光时生成伪元素并裁切，平时按钮的渲染与原来完全一致 */
+:root.um-on body:not(.harmony-compat-mode) .generate-button.um-sweep { overflow: hidden; }
+:root.um-on body:not(.harmony-compat-mode) .generate-button.um-sweep::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 30%, var(--fx-sheen) 50%, rgba(255, 255, 255, 0) 70%);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-120%);
+  content: "";
+}
+:root.um-on body:not(.harmony-compat-mode) .generate-button.um-sweep::after {
+  animation: um-sweep-x var(--fx-dur-sweep) var(--fx-ease-out) forwards;
+}
+@keyframes um-sweep-x {
+  from { opacity: 1; transform: translateX(-120%); }
+  to { opacity: 1; transform: translateX(120%); }
+}
+
+/* ==========================================================================
+   A4 思维链竖线：顶部到当前步骤的一段亮起；播放中光点沿亮段向下流动，暂停时停住；
+   切换步骤时左侧 3px 蓝条扫一次光
+   ========================================================================== */
+:root.um-on body:not(.harmony-compat-mode) .reasoning-card .reasoning-steps.um-chain-lit::after {
+  position: absolute;
+  z-index: 0;
+  top: 22px;
+  bottom: 22px;
+  left: 17px;
+  width: 8px;
+  /* 变量写在 .reasoning-steps 上；已注册为不继承，伪元素显式继承 */
+  --um-chain: inherit;
+  --um-chain-on: inherit;
+  background-image:
+    radial-gradient(circle at 50% 50%, #fff 0 1.4px, rgba(116, 177, 252, .95) 2.2px, rgba(116, 177, 252, 0) 4px),
+    linear-gradient(180deg, var(--fx-blue), var(--fx-liquid));
+  background-size: 8px 8px, 2px var(--um-chain);
+  background-position: 0 calc((var(--um-chain) - 8px) * var(--um-dot-t)), 3px 0;
+  background-repeat: no-repeat;
+  opacity: var(--um-chain-on, 0);
+  pointer-events: none;
+  transition: --um-chain 360ms var(--fx-ease-out), opacity var(--fx-dur-fast) ease;
+  content: "";
+}
+/* 光点只在播放时挂动画（暂停的动画也会在每次重算样式时被重新评估，拖参数时代价明显）；
+   暂停时脚本把停下的位置写进 --um-dot-rest，伪元素按它静止显示，再播放时从这里接着走 */
+:root.um-on.um-prop body:not(.harmony-compat-mode) .reasoning-card .reasoning-steps.um-chain-lit::after {
+  --um-dot-rest: inherit;
+  --um-dot-t: var(--um-dot-rest);
+}
+:root.um-on.um-prop body.um-playing:not(.harmony-compat-mode) .reasoning-card .reasoning-steps.um-chain-lit::after {
+  animation: um-chain-dot var(--fx-dur-dot) linear infinite;
+  animation-delay: calc(var(--um-dot-rest) * -1 * var(--fx-dur-dot));
+}
+@keyframes um-chain-dot { from { --um-dot-t: 0; } to { --um-dot-t: 1; } }
+
+:root.um-on body:not(.harmony-compat-mode) .reasoning-card .reason-step.um-step-sweep::after {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0), var(--fx-sheen) 50%, rgba(255, 255, 255, 0)) 0 -80% / 100% 60% no-repeat;
+  pointer-events: none;
+  animation: um-step-sweep var(--fx-dur-step-sweep) var(--fx-ease-out) forwards;
+  content: "";
+}
+@keyframes um-step-sweep { from { background-position: 0 -80%; } to { background-position: 0 180%; } }
+
+/* ==========================================================================
+   A5 AI 思考卡：阶段文字上一道渐变扫光（风格同生成遮罩标题）
+   ========================================================================== */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  :root.um-on body:not(.harmony-compat-mode) .ai-thinking-card .ai-thinking-stage {
+    color: transparent;
+    background: linear-gradient(100deg, #637996 0%, #637996 38%, var(--fx-ink-blue) 47%, var(--fx-blue) 52%, var(--fx-ink-blue) 57%, #637996 66%, #637996 100%) 100% 0 / 260% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: um-text-sweep var(--fx-dur-text-sweep) var(--fx-ease-inout) infinite;
+  }
+}
+@keyframes um-text-sweep { from { background-position: 100% 0; } to { background-position: 0 0; } }
+
+/* ==========================================================================
+   A6 读数变化：新数字自下而上滚入；结果胶囊扫一次光（文字始终立即是最终值，只做视觉层）
+   ========================================================================== */
+:root.um-on body:not(.harmony-compat-mode) .um-roll-a { animation: um-roll-a var(--fx-dur-roll) var(--fx-ease-out); }
+:root.um-on body:not(.harmony-compat-mode) .um-roll-b { animation: um-roll-b var(--fx-dur-roll) var(--fx-ease-out); }
+:root.um-on body:not(.harmony-compat-mode) .um-fade-a { animation: um-fade-a var(--fx-dur-roll) ease-out; }
+:root.um-on body:not(.harmony-compat-mode) .um-fade-b { animation: um-fade-b var(--fx-dur-roll) ease-out; }
+/* 滚入时由父元素裁切（overflow: clip 不产生滚动容器），位移不会撑大外层卡片的滚动高度 */
+:root.um-on body:not(.harmony-compat-mode) .um-roll-host { overflow: hidden; overflow: clip; }
+@keyframes um-roll-a { from { opacity: .25; transform: translateY(45%); } to { opacity: 1; transform: none; } }
+@keyframes um-roll-b { from { opacity: .25; transform: translateY(45%); } to { opacity: 1; transform: none; } }
+@keyframes um-fade-a { from { opacity: .3; } to { opacity: 1; } }
+@keyframes um-fade-b { from { opacity: .3; } to { opacity: 1; } }
+
+.formula-result:where(:root.um-on body:not(.harmony-compat-mode) .formula-spotlight p) { position: relative; }
+:root.um-on body:not(.harmony-compat-mode) .formula-spotlight p.formula-result { overflow: hidden; }
+:root.um-on body:not(.harmony-compat-mode) .formula-spotlight p.formula-result.um-capsule-a::after,
+:root.um-on body:not(.harmony-compat-mode) .formula-spotlight p.formula-result.um-capsule-b::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, .9) 50%, rgba(255, 255, 255, 0) 70%);
+  opacity: 0;
+  pointer-events: none;
+  animation: um-sweep-x var(--fx-dur-sweep) var(--fx-ease-out);
+  content: "";
+}
+:root.um-on body:not(.harmony-compat-mode) .formula-spotlight p.formula-result.um-capsule-b::after { animation-name: um-sweep-x2; }
+@keyframes um-sweep-x2 {
+  from { opacity: 1; transform: translateX(-120%); }
+  to { opacity: 1; transform: translateX(120%); }
+}
+
+/* ==========================================================================
+   A7 实验参数滑块 / B3 时间轴：渐变已滑过段、原题值刻度、拖动时滑块放大发光
+   滑块的盒子高度用负外边距抵消，参数行高度与原先一致
+   ========================================================================== */
+:root.um-on body:not(.harmony-compat-mode) .experiment-card .parameter > input[type="range"],
+:root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline {
+  --um-thumb: 16px;
+  --um-tick-h: 0px;
+  --um-tick-c: var(--fx-ink-blue);
+  height: 16px;
+  margin-block: -4.5px; /* 与原生滑块盒子一致：3px 高 + 浏览器默认上下各 2px 外边距 */
+  padding: 0;
+  cursor: pointer;
+  border: 0;
+  border-radius: 8px;
+  background-color: transparent;
+  background-image:
+    linear-gradient(var(--um-tick-c), var(--um-tick-c)),
+    linear-gradient(90deg, var(--fx-blue), var(--fx-liquid)),
+    linear-gradient(var(--fx-track), var(--fx-track));
+  background-size:
+    2px var(--um-tick-h),
+    calc(var(--um-thumb) / 2 + (var(--um-p, 0) + var(--um-pf, 0)) * (100% - var(--um-thumb))) 4px,
+    100% 4px;
+  background-position:
+    calc(var(--um-thumb) / 2 + (var(--um-o, 0) + var(--um-of, 0)) * (100% - var(--um-thumb)) - 1px) 50%,
+    0 50%,
+    0 50%;
+  background-repeat: no-repeat;
+  -webkit-appearance: none;
+  appearance: none;
+  touch-action: manipulation;
+}
+/* 填充比例（um-p）与原题刻度位置（um-o）：脚本按 0.1% 精度写成“整百分位 + 千分位”两个类名，不写行内样式。
+   带行内样式的元素每次样式重算都不能复用已算好的样式，拖动参数时现有代码每次输入会重算约 6 遍，
+   滑块的多层渐变背景因此被反复计算；改用类名后同一组数值的样式可以直接复用。 */
+.um-p-0{--um-p:0}.um-p-1{--um-p:.01}.um-p-2{--um-p:.02}.um-p-3{--um-p:.03}.um-p-4{--um-p:.04}.um-p-5{--um-p:.05}.um-p-6{--um-p:.06}.um-p-7{--um-p:.07}.um-p-8{--um-p:.08}.um-p-9{--um-p:.09}
+.um-p-10{--um-p:.1}.um-p-11{--um-p:.11}.um-p-12{--um-p:.12}.um-p-13{--um-p:.13}.um-p-14{--um-p:.14}.um-p-15{--um-p:.15}.um-p-16{--um-p:.16}.um-p-17{--um-p:.17}.um-p-18{--um-p:.18}.um-p-19{--um-p:.19}
+.um-p-20{--um-p:.2}.um-p-21{--um-p:.21}.um-p-22{--um-p:.22}.um-p-23{--um-p:.23}.um-p-24{--um-p:.24}.um-p-25{--um-p:.25}.um-p-26{--um-p:.26}.um-p-27{--um-p:.27}.um-p-28{--um-p:.28}.um-p-29{--um-p:.29}
+.um-p-30{--um-p:.3}.um-p-31{--um-p:.31}.um-p-32{--um-p:.32}.um-p-33{--um-p:.33}.um-p-34{--um-p:.34}.um-p-35{--um-p:.35}.um-p-36{--um-p:.36}.um-p-37{--um-p:.37}.um-p-38{--um-p:.38}.um-p-39{--um-p:.39}
+.um-p-40{--um-p:.4}.um-p-41{--um-p:.41}.um-p-42{--um-p:.42}.um-p-43{--um-p:.43}.um-p-44{--um-p:.44}.um-p-45{--um-p:.45}.um-p-46{--um-p:.46}.um-p-47{--um-p:.47}.um-p-48{--um-p:.48}.um-p-49{--um-p:.49}
+.um-p-50{--um-p:.5}.um-p-51{--um-p:.51}.um-p-52{--um-p:.52}.um-p-53{--um-p:.53}.um-p-54{--um-p:.54}.um-p-55{--um-p:.55}.um-p-56{--um-p:.56}.um-p-57{--um-p:.57}.um-p-58{--um-p:.58}.um-p-59{--um-p:.59}
+.um-p-60{--um-p:.6}.um-p-61{--um-p:.61}.um-p-62{--um-p:.62}.um-p-63{--um-p:.63}.um-p-64{--um-p:.64}.um-p-65{--um-p:.65}.um-p-66{--um-p:.66}.um-p-67{--um-p:.67}.um-p-68{--um-p:.68}.um-p-69{--um-p:.69}
+.um-p-70{--um-p:.7}.um-p-71{--um-p:.71}.um-p-72{--um-p:.72}.um-p-73{--um-p:.73}.um-p-74{--um-p:.74}.um-p-75{--um-p:.75}.um-p-76{--um-p:.76}.um-p-77{--um-p:.77}.um-p-78{--um-p:.78}.um-p-79{--um-p:.79}
+.um-p-80{--um-p:.8}.um-p-81{--um-p:.81}.um-p-82{--um-p:.82}.um-p-83{--um-p:.83}.um-p-84{--um-p:.84}.um-p-85{--um-p:.85}.um-p-86{--um-p:.86}.um-p-87{--um-p:.87}.um-p-88{--um-p:.88}.um-p-89{--um-p:.89}
+.um-p-90{--um-p:.9}.um-p-91{--um-p:.91}.um-p-92{--um-p:.92}.um-p-93{--um-p:.93}.um-p-94{--um-p:.94}.um-p-95{--um-p:.95}.um-p-96{--um-p:.96}.um-p-97{--um-p:.97}.um-p-98{--um-p:.98}.um-p-99{--um-p:.99}
+.um-p-100{--um-p:1}
+.um-pf-0{--um-pf:0}.um-pf-1{--um-pf:.001}.um-pf-2{--um-pf:.002}.um-pf-3{--um-pf:.003}.um-pf-4{--um-pf:.004}.um-pf-5{--um-pf:.005}.um-pf-6{--um-pf:.006}.um-pf-7{--um-pf:.007}.um-pf-8{--um-pf:.008}.um-pf-9{--um-pf:.009}
+.um-o-0{--um-o:0}.um-o-1{--um-o:.01}.um-o-2{--um-o:.02}.um-o-3{--um-o:.03}.um-o-4{--um-o:.04}.um-o-5{--um-o:.05}.um-o-6{--um-o:.06}.um-o-7{--um-o:.07}.um-o-8{--um-o:.08}.um-o-9{--um-o:.09}
+.um-o-10{--um-o:.1}.um-o-11{--um-o:.11}.um-o-12{--um-o:.12}.um-o-13{--um-o:.13}.um-o-14{--um-o:.14}.um-o-15{--um-o:.15}.um-o-16{--um-o:.16}.um-o-17{--um-o:.17}.um-o-18{--um-o:.18}.um-o-19{--um-o:.19}
+.um-o-20{--um-o:.2}.um-o-21{--um-o:.21}.um-o-22{--um-o:.22}.um-o-23{--um-o:.23}.um-o-24{--um-o:.24}.um-o-25{--um-o:.25}.um-o-26{--um-o:.26}.um-o-27{--um-o:.27}.um-o-28{--um-o:.28}.um-o-29{--um-o:.29}
+.um-o-30{--um-o:.3}.um-o-31{--um-o:.31}.um-o-32{--um-o:.32}.um-o-33{--um-o:.33}.um-o-34{--um-o:.34}.um-o-35{--um-o:.35}.um-o-36{--um-o:.36}.um-o-37{--um-o:.37}.um-o-38{--um-o:.38}.um-o-39{--um-o:.39}
+.um-o-40{--um-o:.4}.um-o-41{--um-o:.41}.um-o-42{--um-o:.42}.um-o-43{--um-o:.43}.um-o-44{--um-o:.44}.um-o-45{--um-o:.45}.um-o-46{--um-o:.46}.um-o-47{--um-o:.47}.um-o-48{--um-o:.48}.um-o-49{--um-o:.49}
+.um-o-50{--um-o:.5}.um-o-51{--um-o:.51}.um-o-52{--um-o:.52}.um-o-53{--um-o:.53}.um-o-54{--um-o:.54}.um-o-55{--um-o:.55}.um-o-56{--um-o:.56}.um-o-57{--um-o:.57}.um-o-58{--um-o:.58}.um-o-59{--um-o:.59}
+.um-o-60{--um-o:.6}.um-o-61{--um-o:.61}.um-o-62{--um-o:.62}.um-o-63{--um-o:.63}.um-o-64{--um-o:.64}.um-o-65{--um-o:.65}.um-o-66{--um-o:.66}.um-o-67{--um-o:.67}.um-o-68{--um-o:.68}.um-o-69{--um-o:.69}
+.um-o-70{--um-o:.7}.um-o-71{--um-o:.71}.um-o-72{--um-o:.72}.um-o-73{--um-o:.73}.um-o-74{--um-o:.74}.um-o-75{--um-o:.75}.um-o-76{--um-o:.76}.um-o-77{--um-o:.77}.um-o-78{--um-o:.78}.um-o-79{--um-o:.79}
+.um-o-80{--um-o:.8}.um-o-81{--um-o:.81}.um-o-82{--um-o:.82}.um-o-83{--um-o:.83}.um-o-84{--um-o:.84}.um-o-85{--um-o:.85}.um-o-86{--um-o:.86}.um-o-87{--um-o:.87}.um-o-88{--um-o:.88}.um-o-89{--um-o:.89}
+.um-o-90{--um-o:.9}.um-o-91{--um-o:.91}.um-o-92{--um-o:.92}.um-o-93{--um-o:.93}.um-o-94{--um-o:.94}.um-o-95{--um-o:.95}.um-o-96{--um-o:.96}.um-o-97{--um-o:.97}.um-o-98{--um-o:.98}.um-o-99{--um-o:.99}
+.um-o-100{--um-o:1}
+.um-of-0{--um-of:0}.um-of-1{--um-of:.001}.um-of-2{--um-of:.002}.um-of-3{--um-of:.003}.um-of-4{--um-of:.004}.um-of-5{--um-of:.005}.um-of-6{--um-of:.006}.um-of-7{--um-of:.007}.um-of-8{--um-of:.008}.um-of-9{--um-of:.009}
+:root.um-on body:not(.harmony-compat-mode) .experiment-card .parameter > input[type="range"].um-has-orig,
+:root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline.um-has-orig { --um-tick-h: 12px; }
+:root.um-on body:not(.harmony-compat-mode) .experiment-card .parameter > input[type="range"].um-snap,
+:root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline.um-snap { --um-tick-c: var(--fx-liquid); --um-tick-h: 16px; }
+:root.um-on body:not(.harmony-compat-mode) .experiment-card .parameter > input[type="range"]:disabled,
+:root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline:disabled { cursor: not-allowed; }
+:root.um-on body:not(.harmony-compat-mode) .experiment-card .parameter > input[type="range"]::-webkit-slider-runnable-track,
+:root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline::-webkit-slider-runnable-track {
+  height: 100%;
+  border: 0;
+  background: transparent;
+}
+:root.um-on body:not(.harmony-compat-mode) .experiment-card .parameter > input[type="range"]::-webkit-slider-thumb,
+:root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline::-webkit-slider-thumb {
+  width: var(--um-thumb);
+  height: var(--um-thumb);
+  margin-top: 0;
+  border: 2px solid var(--fx-blue);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(30, 64, 128, .28);
+  transition: transform var(--fx-dur-fast) var(--fx-ease-spring);
+  -webkit-appearance: none;
+  appearance: none;
+}
+:root.um-on body:not(.harmony-compat-mode) .experiment-card .parameter > input[type="range"]::-moz-range-track,
+:root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline::-moz-range-track { height: 4px; border: 0; background: transparent; }
+:root.um-on body:not(.harmony-compat-mode) .experiment-card .parameter > input[type="range"]::-moz-range-progress,
+:root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline::-moz-range-progress { background: transparent; }
+:root.um-on body:not(.harmony-compat-mode) .experiment-card .parameter > input[type="range"]::-moz-range-thumb,
+:root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline::-moz-range-thumb {
+  box-sizing: border-box;
+  width: var(--um-thumb);
+  height: var(--um-thumb);
+  border: 2px solid var(--fx-blue);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(30, 64, 128, .28);
+  transition: transform var(--fx-dur-fast) var(--fx-ease-spring);
+}
+:root.um-on body:not(.harmony-compat-mode) .experiment-card .parameter > input[type="range"].um-dragging::-webkit-slider-thumb,
+:root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline.um-dragging::-webkit-slider-thumb {
+  box-shadow: 0 0 0 5px var(--fx-halo), 0 0 0 9px rgba(116, 177, 252, .16); /* 只用扩展环，不用模糊阴影：拖动时每次重绘都很便宜 */
+  transform: scale(1.28);
+  transition: none; /* 按下即时放大，松手时按基础样式的过渡缩回 */
+}
+:root.um-on body:not(.harmony-compat-mode) .experiment-card .parameter > input[type="range"].um-dragging::-moz-range-thumb,
+:root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline.um-dragging::-moz-range-thumb {
+  box-shadow: 0 0 0 5px var(--fx-halo), 0 0 0 9px rgba(116, 177, 252, .16); /* 只用扩展环，不用模糊阴影：拖动时每次重绘都很便宜 */
+  transform: scale(1.28);
+  transition: none; /* 按下即时放大，松手时按基础样式的过渡缩回 */
+}
+:root.um-on body:not(.harmony-compat-mode) .experiment-card .parameter > input[type="range"]:disabled::-webkit-slider-thumb,
+:root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline:disabled::-webkit-slider-thumb { border-color: #9fb3d1; }
+:root.um-on body:not(.harmony-compat-mode) .experiment-card .parameter > input[type="range"]:focus-visible,
+:root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline:focus-visible {
+  outline: 2px solid rgba(45, 115, 246, .45);
+  outline-offset: 3px;
+}
+/* 各处原有的滑块高度保持不变：演示模式时间轴 5px；手机参数与时间轴 28px；横屏全屏时间轴 26px */
+:root.um-on body.demo-mode:not(.harmony-compat-mode) .experiment-card #timeline { margin-block: -3.5px; }
+@media (max-width: 640px) {
+  :root.um-on body:not(.harmony-compat-mode) .experiment-card .parameter > input[type="range"],
+  :root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline { height: 28px; margin-block: 0; }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  :root.um-on body:not(.harmony-compat-mode) .experiment-card.immersive-mode .transport #timeline { height: 26px; margin-block: 0; }
+}
+/* 时间轴：播放中，已播放的一段带一道向前流动的前沿光 */
+:root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline { --um-thumb: 14px; }
+:root.um-on.um-prop body.um-playing:not(.harmony-compat-mode) .experiment-card #timeline {
+  background-image:
+    linear-gradient(var(--um-tick-c), var(--um-tick-c)),
+    linear-gradient(90deg, rgba(255, 255, 255, 0) calc(var(--um-sheen) - 26px), var(--fx-sheen) var(--um-sheen), rgba(255, 255, 255, 0) calc(var(--um-sheen) + 1px)),
+    linear-gradient(90deg, var(--fx-blue), var(--fx-liquid)),
+    linear-gradient(var(--fx-track), var(--fx-track));
+  background-size:
+    2px var(--um-tick-h),
+    calc(var(--um-thumb) / 2 + (var(--um-p, 0) + var(--um-pf, 0)) * (100% - var(--um-thumb))) 4px,
+    calc(var(--um-thumb) / 2 + (var(--um-p, 0) + var(--um-pf, 0)) * (100% - var(--um-thumb))) 4px,
+    100% 4px;
+  background-position:
+    calc(var(--um-thumb) / 2 + (var(--um-o, 0) + var(--um-of, 0)) * (100% - var(--um-thumb)) - 1px) 50%,
+    0 50%, 0 50%, 0 50%;
+  animation: um-timeline-sheen 1.3s linear infinite;
+}
+@keyframes um-timeline-sheen { from { --um-sheen: 0%; } to { --um-sheen: 100%; } }
+
+/* 拖动时的数值气泡（滑块与时间轴共用；鸿蒙包内也保留） */
+.um-bubble {
+  position: fixed;
+  z-index: 170;
+  top: 0;
+  left: 0;
+  padding: 4px 9px;
+  color: #fff;
+  font: 700 12px/1.3 "DM Sans", "Noto Sans SC", sans-serif;
+  white-space: nowrap;
+  border-radius: 8px;
+  background: #1d3c74;
+  box-shadow: 0 6px 16px rgba(20, 44, 92, .24);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(var(--um-bx, 0px), var(--um-by, 0px)) translate(-50%, -100%) scale(.9);
+  transform-origin: 50% 100%;
+  contain: layout paint;
+  will-change: transform;
+  transition: opacity 120ms ease; /* 位置每次拖动都会变，不给 transform 加过渡，避免每一帧都重启过渡 */
+}
+.um-bubble.is-on {
+  opacity: 1;
+  transform: translate(var(--um-bx, 0px), var(--um-by, 0px)) translate(-50%, -100%);
+}
+
+/* 时间轴上的思维链步骤刻度（只给有步骤—时间对应的模板） */
+.um-tl-marks { position: absolute; z-index: 2; height: 0; pointer-events: none; }
+.um-tl-mark {
+  position: absolute;
+  top: 0;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: linear-gradient(var(--um-mark-c, #a9bddb), var(--um-mark-c, #a9bddb)) 50% 50% / 3px 10px no-repeat;
+  pointer-events: auto;
+  cursor: pointer;
+}
+/* 与时间轴滑块重叠时不接收指针，按下的是滑块（ui-motion.js coverMarks）；外观不变，键盘仍可聚焦点击 */
+.um-tl-mark.is-covered { pointer-events: none; }
+.um-tl-mark.is-reached { --um-mark-c: var(--fx-ink-blue); }
+.um-tl-mark.is-current, .um-tl-mark:hover { --um-mark-c: var(--fx-blue); }
+.um-tl-mark:focus-visible { outline: 2px solid rgba(45, 115, 246, .55); outline-offset: 1px; }
+
+/* ==========================================================================
+   B1 手机参数底栏（≤640px 竖屏）：实验卡在视口内时把参数行移进底部浮层，原位置保留同样高度
+   ========================================================================== */
+.um-dock { display: none; }
+@media (max-width: 640px) and (orientation: portrait) {
+  :root.um-on body.um-docked .um-dock {
+    position: fixed;
+    z-index: 115;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+    padding: 0 16px calc(10px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--fx-panel-line);
+    border-radius: 18px 18px 0 0;
+    background: var(--fx-panel);
+    box-shadow: var(--fx-panel-shadow);
+    contain: layout paint; /* 底栏里的数值更新不牵动页面其余部分的布局 */
+    animation: um-dock-in var(--fx-dur-med) var(--fx-ease-out);
+  }
+  :root.um-on body.um-docked .mobile-dock { display: none !important; }
+  :root.um-on body.um-docked .toast { bottom: calc(var(--um-dock-h, 120px) + 12px); }
+  :root.um-on body.um-docked .experiment-card { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+@keyframes um-dock-in { from { opacity: .4; transform: translateY(40%); } to { opacity: 1; transform: none; } }
+.um-dock-handle {
+  display: block;
+  width: 100%;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: linear-gradient(#c3d2ea, #c3d2ea) 50% 9px / 40px 4px no-repeat;
+  cursor: grab;
+  touch-action: none;
+}
+.um-dock.is-expanded .um-dock-handle { background-size: 28px 4px; }
+.um-dock-body { display: grid; gap: 4px; }
+.um-dock.is-expanded .um-dock-body {
+  gap: 14px;
+  max-height: 45vh;
+  padding-bottom: 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+/* 收起态：每个参数一行——名称、数值、滑块；不显示说明小字、装饰图标和 −/+ */
+:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock:not(.is-expanded):not(.is-week1) .parameter {
+  grid-template-columns: auto auto minmax(0, 1fr);
+  grid-template-rows: auto;
+  gap: 0 10px;
+  min-height: 40px;
+  align-items: center;
+}
+:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock:not(.is-expanded):not(.is-week1) .parameter-label { grid-column: 1; grid-row: 1; }
+:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock:not(.is-expanded):not(.is-week1) .parameter-label small { display: none; }
+:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock:not(.is-expanded):not(.is-week1) .parameter-label strong { font-size: 13px; white-space: nowrap; }
+:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock:not(.is-expanded):not(.is-week1) .number-control { grid-column: 2; grid-row: 1; justify-self: start; }
+:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock:not(.is-expanded):not(.is-week1) .number-control button { display: none; }
+:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock:not(.is-expanded):not(.is-week1) .number-control strong { min-width: 0; font-size: 15px; }
+:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock:not(.is-expanded):not(.is-week1) .parameter > input[type="range"] { grid-column: 3; grid-row: 1; }
+:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock .parameter-icon { display: none; }
+
+/* ==========================================================================
+   B2 电脑端右侧栏收起为窄栏（≥1101px 两栏布局时）
+   ========================================================================== */
+.um-insight-toggle, .um-rail { display: none; }
+@media (min-width: 1101px) {
+  .insight-column:where(:root.um-on body:not(.harmony-compat-mode):not(.demo-mode):not(.awaiting-generation) *) { position: relative; }
+  :root.um-on body:not(.harmony-compat-mode):not(.demo-mode):not(.awaiting-generation) .um-insight-toggle {
+    position: absolute;
+    z-index: 4;
+    top: 16px;
+    left: -15px;
+    display: grid;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    place-items: center;
+    color: var(--fx-ink-blue);
+    border: 1px solid #d3e2fa;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(45, 89, 168, .12);
+  }
+  .um-insight-toggle .um-ico { width: 14px; height: 14px; stroke-width: 2.2; }
+  :root.um-on body.um-insight-collapsed:not(.harmony-compat-mode):not(.demo-mode):not(.awaiting-generation) .content-grid { grid-template-columns: minmax(0, 1fr) 56px; }
+  :root.um-on body.um-insight-collapsed:not(.harmony-compat-mode):not(.demo-mode):not(.awaiting-generation) .insight-column > .card { display: none; }
+  :root.um-on body.um-insight-collapsed:not(.harmony-compat-mode):not(.demo-mode):not(.awaiting-generation) .um-insight-toggle { display: none; }
+  :root.um-on body.um-insight-collapsed:not(.harmony-compat-mode):not(.demo-mode):not(.awaiting-generation) .um-rail {
+    position: sticky;
+    top: 18px;
+    display: flex;
+    padding: 12px 0;
+    gap: 14px;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid rgba(214, 226, 243, .94);
+    border-radius: 18px;
+    background: var(--surface, rgba(255, 255, 255, .88));
+    box-shadow: var(--shadow);
+    animation: um-fade-a var(--fx-dur-med) ease-out;
+  }
+}
+.um-rail-btn {
+  display: grid;
+  width: 40px;
+  padding: 0;
+  place-items: center;
+  color: var(--fx-ink-blue);
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+}
+.um-rail-btn:hover { background: #eef5ff; }
+.um-rail-steps { height: auto; padding: 8px 0 !important; gap: 9px; }
+.um-rail-dot {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #c8d6ec;
+  border-radius: 50%;
+  background: #fff;
+}
+.um-rail-dot.is-done { border-color: #26c895; background: #26c895; }
+.um-rail-dot.is-active { border-color: var(--fx-blue); background: var(--fx-blue); box-shadow: 0 0 0 3px var(--fx-halo); }
+.um-rail-icon { height: 40px; }
+.um-rail-icon .um-ico { width: 20px; height: 20px; }
+.um-rail-icon .um-rail-ai { font-size: 14px; font-weight: 900; letter-spacing: -.5px; }
+/* 收起 / 展开的过渡：只用透明度与位移 */
+@media (min-width: 1101px) {
+  :root.um-on body.um-insight-leaving:not(.harmony-compat-mode) .insight-column > .card {
+    opacity: 0;
+    transform: translateX(18px);
+    transition: opacity var(--fx-dur-fast) ease, transform var(--fx-dur-fast) var(--fx-ease-out);
+  }
+}
+:root.um-on .um-widen-a { animation: um-widen-a var(--fx-dur-med) var(--fx-ease-out); }
+:root.um-on .um-widen-b { animation: um-widen-b var(--fx-dur-med) var(--fx-ease-out); }
+:root.um-on .um-enter-a { animation: um-enter-a var(--fx-dur-med) var(--fx-ease-out); }
+:root.um-on .um-enter-b { animation: um-enter-b var(--fx-dur-med) var(--fx-ease-out); }
+@keyframes um-widen-a { from { opacity: .55; } to { opacity: 1; } }
+@keyframes um-widen-b { from { opacity: .55; } to { opacity: 1; } }
+@keyframes um-enter-a { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+@keyframes um-enter-b { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+
+/* ==========================================================================
+   B4 快捷键一览、B5 数值直接输入
+   ========================================================================== */
+.um-keys {
+  position: fixed;
+  z-index: 175;
+  right: 24px;
+  bottom: 24px;
+  width: min(300px, calc(100vw - 32px));
+  padding: 14px 16px;
+  color: var(--fx-text);
+  font-size: 13px;
+  border: 1px solid var(--fx-panel-line);
+  border-radius: 16px;
+  background: var(--fx-panel);
+  box-shadow: 0 18px 44px rgba(30, 58, 110, .2);
+  animation: um-pop-in var(--fx-dur-fast) var(--fx-ease-out);
+}
+.um-keys[hidden] { display: none; }
+.um-keys-list { display: grid; margin: 0; gap: 7px 12px; grid-template-columns: auto 1fr; align-items: center; }
+.um-keys-keys { display: flex; gap: 4px; }
+.um-keys-text { margin: 0; color: var(--fx-muted); }
+.um-kbd {
+  min-width: 22px;
+  padding: 1px 6px;
+  color: var(--fx-ink-blue);
+  font: 700 12px/1.6 "DM Sans", "Noto Sans SC", sans-serif;
+  text-align: center;
+  border: 1px solid #cddcf5;
+  border-radius: 6px;
+  background: #f3f8ff;
+}
+@keyframes um-pop-in { from { opacity: 0; transform: translateY(6px) scale(.98); } to { opacity: 1; transform: none; } }
+
+.um-editing:where(.number-control) { position: relative; }
+.um-edit-hidden { visibility: hidden; }
+.um-num-edit {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  color: var(--fx-ink-blue);
+  font: inherit;
+  text-align: right;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  box-shadow: inset 0 -1.5px 0 var(--fx-blue);
+  -webkit-user-select: text;
+  user-select: text;
+}
+.um-num-edit.is-invalid, .um-num-edit.is-invalid-b { color: #c2410c; box-shadow: inset 0 -1.5px 0 #ea580c; animation: um-shake 320ms ease; }
+.um-num-edit.is-invalid-b { animation-name: um-shake-b; }
+@keyframes um-shake { 0%, 100% { transform: none; } 25% { transform: translateX(-3px); } 50% { transform: translateX(3px); } 75% { transform: translateX(-2px); } }
+@keyframes um-shake-b { 0%, 100% { transform: none; } 25% { transform: translateX(-3px); } 50% { transform: translateX(3px); } 75% { transform: translateX(-2px); } }
+:root.um-on body:not(.harmony-compat-mode) .number-control strong { cursor: text; }
+
+/* ==========================================================================
+   C1 公式联动：拖动参数时公式卡里对应的符号发光
+   ========================================================================== */
+:root.um-on body:not(.harmony-compat-mode) .formula-spotlight [data-sym] {
+  text-shadow: 0 0 10px var(--um-sym-glow), 0 0 2px var(--um-sym-glow);
+  transition: --um-sym-glow 520ms ease-out;
+}
+:root.um-on body:not(.harmony-compat-mode) .formula-spotlight [data-sym].um-sym-on {
+  --um-sym-glow: var(--fx-glow);
+  color: var(--fx-ink-blue);
+  transition: none; /* 拖动时公式卡逐次重绘，亮起即时生效，只在熄灭时淡出 */
+}
+
+/* ==========================================================================
+   C2 卡片聚光与质感（仅鼠标设备）
+   ========================================================================== */
+@media (hover: hover) and (pointer: fine) {
+  .experiment-card:where(:root.um-on body:not(.harmony-compat-mode) *) { position: relative; }
+  .reasoning-card:where(:root.um-on body:not(.harmony-compat-mode) *) { position: relative; }
+  .mentor-card:where(:root.um-on body:not(.harmony-compat-mode) *) { position: relative; }
+  .favorites-card:where(:root.um-on body:not(.harmony-compat-mode) *) { position: relative; }
+  :root.um-on body:not(.harmony-compat-mode) .experiment-card::before,
+  :root.um-on body:not(.harmony-compat-mode) .reasoning-card::before,
+  :root.um-on body:not(.harmony-compat-mode) .mentor-card::before,
+  :root.um-on body:not(.harmony-compat-mode) .favorites-card::before {
+    position: absolute;
+    z-index: 6;
+    inset: 0;
+    padding: 1.5px;
+    border-radius: inherit;
+    --um-mx: inherit;
+    --um-my: inherit;
+    background: radial-gradient(260px circle at var(--um-mx, -400px) var(--um-my, -400px), rgba(116, 177, 252, .95), rgba(45, 115, 246, .35) 40%, rgba(45, 115, 246, 0) 72%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--fx-dur-med) ease;
+    content: "";
+  }
+  /* 只有当前亮起的卡片单独成层（光斑随指针移动时只重绘这一层）；其余卡片的光斑全透明，不绘制也不占合成层。
+     原先四张卡常驻四个合成层，每帧的分层与提交都要多处理它们（2026-11-07 性能归因） */
+  :root.um-on body:not(.harmony-compat-mode) .experiment-card.um-lit::before,
+  :root.um-on body:not(.harmony-compat-mode) .reasoning-card.um-lit::before,
+  :root.um-on body:not(.harmony-compat-mode) .mentor-card.um-lit::before,
+  :root.um-on body:not(.harmony-compat-mode) .favorites-card.um-lit::before { opacity: 1; will-change: opacity; }
+
+  /* 学科标签：带光泽的滑动指示块 */
+  .um-has-glider:where(:root.um-on body:not(.harmony-compat-mode) .subject-tabs) { position: relative; }
+  .subject-tab:where(:root.um-on body:not(.harmony-compat-mode) .subject-tabs.um-has-glider *) { position: relative; z-index: 1; }
+  :root.um-on body:not(.harmony-compat-mode) .subject-tabs.um-has-glider .subject-tab.active { border-color: transparent; background: transparent; }
+  :root.um-on body:not(.harmony-compat-mode) .subject-tabs.um-has-glider .um-tab-glider {
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    display: block;
+    border: 1px solid rgba(160, 196, 250, .55);
+    border-radius: 9px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, .78), rgba(255, 255, 255, 0) 58%),
+      linear-gradient(110deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, .55) 46%, rgba(255, 255, 255, 0) 60%) 120% 0 / 260% 100% no-repeat,
+      var(--um-glider-tint);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), 0 4px 12px rgba(45, 89, 168, .12);
+    pointer-events: none;
+    transition: transform var(--fx-dur-med) var(--fx-ease-spring), --um-glider-tint var(--fx-dur-med) ease;
+  }
+  :root.um-on body:not(.harmony-compat-mode) .subject-tabs.um-has-glider .um-tab-glider.um-glint { animation: um-glint 620ms var(--fx-ease-out); }
+  @keyframes um-glint { from { background-position: 0 0, 120% 0, 0 0; } to { background-position: 0 0, -20% 0, 0 0; } }
+
+  /* 背景光斑缓慢漂移 */
+  :root.um-on body:not(.harmony-compat-mode) .ambient { will-change: transform; }
+  :root.um-on body:not(.harmony-compat-mode) .ambient-one { animation: um-drift-a var(--fx-dur-drift-a) ease-in-out infinite alternate; }
+  :root.um-on body:not(.harmony-compat-mode) .ambient-two { animation: um-drift-b var(--fx-dur-drift-b) ease-in-out infinite alternate; }
+}
+.um-tab-glider { display: none; }
+@keyframes um-drift-a { from { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(9vw, 6vh, 0); } to { transform: translate3d(-5vw, 11vh, 0); } }
+@keyframes um-drift-b { from { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(-10vw, -5vh, 0); } to { transform: translate3d(-3vw, -12vh, 0); } }
+
+/* ==========================================================================
+   C3 手机手势：缩放倍数角标、长按读数说明
+   ========================================================================== */
+:root.um-on body:not(.harmony-compat-mode) #scene.um-gestures { touch-action: pan-y; }
+:root.um-on body:not(.harmony-compat-mode) #scene.um-zoomed { touch-action: none; }
+.um-zoom-badge {
+  position: absolute;
+  z-index: 30;
+  top: 10px;
+  left: 10px;
+  padding: 3px 9px;
+  color: #fff;
+  font: 700 12px/1.5 "DM Sans", "Noto Sans SC", sans-serif;
+  border-radius: 999px;
+  background: rgba(29, 60, 116, .86);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--fx-dur-fast) ease;
+}
+.um-zoom-badge.is-on { opacity: 1; }
+.um-tip {
+  position: fixed;
+  z-index: 172;
+  top: 0;
+  left: 0;
+  max-width: min(280px, calc(100vw - 32px));
+  padding: 8px 12px;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.55;
+  border-radius: 10px;
+  background: #1d3c74;
+  box-shadow: 0 10px 24px rgba(20, 44, 92, .26);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(var(--um-tx, 0px), var(--um-ty, 0px)) translate(-50%, calc(-100% - 10px));
+  transition: opacity 120ms ease;
+}
+.um-tip.is-on { opacity: 1; }
+:root.um-on body:not(.harmony-compat-mode) .metric-panel,
+:root.um-on body:not(.harmony-compat-mode) .number-control,
+:root.um-on body:not(.harmony-compat-mode) .parameter-label {
+  -webkit-touch-callout: none;
+}
+
+/* ==========================================================================
+   C4 命令面板（电脑）
+   ========================================================================== */
+.um-palette {
+  width: min(560px, calc(100vw - 32px));
+  max-height: min(70vh, 560px);
+  margin: 12vh auto auto;
+  padding: 0;
+  color: var(--fx-text);
+  border: 1px solid var(--fx-panel-line);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 30px 80px rgba(20, 40, 84, .28);
+  overflow: hidden;
+}
+.um-palette[open] { display: flex; flex-direction: column; animation: um-pop-in var(--fx-dur-fast) var(--fx-ease-out); }
+.um-palette::backdrop { background: rgba(21, 36, 69, .28); }
+.um-palette-input {
+  width: 100%;
+  margin: 0;
+  padding: 16px 18px;
+  color: var(--fx-text);
+  font: inherit;
+  font-size: 15px;
+  border: 0;
+  border-bottom: 1px solid #e3ebf7;
+  outline: 0;
+  background: transparent;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.um-palette-list { margin: 0; padding: 6px; overflow-y: auto; list-style: none; }
+.um-pal-item {
+  display: flex;
+  padding: 9px 12px;
+  gap: 10px;
+  align-items: center;
+  color: var(--fx-text);
+  font-size: 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.um-pal-item[aria-selected="true"] { color: var(--fx-ink-blue); background: #eaf3ff; }
+.um-pal-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.um-pal-meta { flex: none; color: var(--fx-muted); font-size: 12px; }
+.um-pal-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #b3c3dc;
+}
+.um-pal-dot[data-kind="物理"] { background: #2262f3; }
+.um-pal-dot[data-kind="化学"] { background: #20c99a; }
+.um-pal-dot[data-kind="数学"] { background: #9b64e3; }
+.um-pal-dot[data-kind="生物"] { background: #ff8b44; }
+.um-pal-dot[data-kind="action"] { border-radius: 2px; background: var(--fx-blue); }
+.um-pal-dot[data-kind="favorite"] { background: #f5b301; }
+
+/* ==========================================================================
+   C5 对比残影：上一次的停止位置 / 轨迹淡影 + 极简标签
+   ========================================================================== */
+.um-ghost { pointer-events: none; }
+.um-ghost-stop {
+  position: absolute;
+  z-index: 2;
+  top: -6px;
+  bottom: -6px;
+  width: 0;
+  border-left: 3px dashed #d6e8ff;
+  opacity: .42;
+}
+.um-ghost-board {
+  position: absolute;
+  z-index: 3;
+  top: -10px;
+  bottom: -10px;
+  width: 0;
+  border-left: 2px dashed rgba(45, 115, 246, .7);
+  opacity: .32;
+}
+.um-ghost-path {
+  fill: none;
+  stroke: #2d73f6;
+  stroke-width: 2.4;
+  stroke-dasharray: 6 6;
+  opacity: .3;
+  vector-effect: non-scaling-stroke;
+}
+.um-ghost-label {
+  position: absolute;
+  z-index: 8;
+  padding: 1px 8px;
+  color: var(--fx-ink-blue);
+  font: 700 12px/1.6 "DM Sans", "Noto Sans SC", sans-serif;
+  white-space: nowrap;
+  border: 1px dashed rgba(45, 115, 246, .5);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .9);
+  cursor: pointer;
+  pointer-events: auto;
+  animation: um-fade-a var(--fx-dur-med) ease-out;
+}
+svg .um-ghost-svg-label { fill: #1a56d6; font-size: 13px; font-weight: 700; cursor: pointer; pointer-events: auto; }
+
+/* ==========================================================================
+   循环动画的暂停：页面隐藏或元素不在视口内
+   ========================================================================== */
+:root.um-hidden body .prompt-input-wrap::after,
+:root.um-hidden body .reasoning-card .reasoning-steps::after,
+:root.um-hidden body .ai-thinking-stage,
+:root.um-hidden body #timeline,
+:root.um-hidden body .ambient,
+/* 拖动滑块 / 时间轴、生成遮罩显示时背景光斑暂停漂移（每帧 0.3px 左右，停顿看不出）：
+   它的循环动画即使在合成器上运行，每帧仍要在主线程做一次样式重算，拖动时每次输入多 2–3 遍（2026-11-07 性能归因） */
+:root.um-still body .ambient,
+.prompt-input-wrap[data-um-off]::after,
+.reasoning-steps[data-um-off]::after,
+.ai-tutor-workspace[data-um-off] .ai-thinking-stage,
+.transport[data-um-off] #timeline {
+  animation-play-state: paused !important;
+}
+
+/* ==========================================================================
+   减少动态效果：关闭新的循环动画、滚入、扫光与残影淡出，反馈改为瞬时颜色变化
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  :root.um-on button:active:not(:disabled):not([aria-disabled="true"]),
+  :root.um-on [role="button"]:active:not(:disabled):not([aria-disabled="true"]),
+  :root.um-on summary:active:not(:disabled):not([aria-disabled="true"]),
+  :root.um-on .favorite-item:active:not(:disabled):not([aria-disabled="true"]),
+  :root.um-on .cell-structure-tag:active:not(:disabled):not([aria-disabled="true"]) {
+    scale: none;
+    transition: none;
+  }
+  :root.um-on .um-release-a, :root.um-on .um-release-b,
+  :root.um-on .um-roll-a, :root.um-on .um-roll-b, :root.um-on .um-fade-a, :root.um-on .um-fade-b,
+  :root.um-on body .prompt-input-wrap::after,
+  :root.um-on body .generate-button.um-sweep::after,
+  :root.um-on body .reasoning-card .reasoning-steps::after,
+  :root.um-on body .reasoning-card .reason-step.um-step-sweep::after,
+  :root.um-on body .ai-thinking-card .ai-thinking-stage,
+  :root.um-on body .formula-spotlight p.formula-result.um-capsule-a::after,
+  :root.um-on body .formula-spotlight p.formula-result.um-capsule-b::after,
+  :root.um-on body .experiment-card #timeline,
+  :root.um-on body .um-dock,
+  :root.um-on body .um-rail,
+  :root.um-on body .um-keys,
+  :root.um-on body .um-palette[open],
+  :root.um-on body .um-ghost-label,
+  :root.um-on body .um-tab-glider.um-glint,
+  :root.um-on body .ambient,
+  :root.um-on .um-widen-a, :root.um-on .um-widen-b, :root.um-on .um-enter-a, :root.um-on .um-enter-b,
+  .um-num-edit.is-invalid, .um-num-edit.is-invalid-b {
+    animation: none !important;
+  }
+  :root.um-on body .reasoning-card .reason-step.um-step-sweep::after,
+  :root.um-on body .generate-button.um-sweep::after,
+  :root.um-on body .formula-spotlight p.formula-result.um-capsule-a::after,
+  :root.um-on body .formula-spotlight p.formula-result.um-capsule-b::after { display: none; }
+  .um-bubble, .um-bubble.is-on, .um-tip, .um-zoom-badge, .um-tab-glider,
+  :root.um-on body .reasoning-card .reasoning-steps::after,
+  :root.um-on body .formula-spotlight [data-sym],
+  :root.um-on body .prompt-input-wrap::after,
+  :root.um-on body .experiment-card::before,
+  :root.um-on body .reasoning-card::before,
+  :root.um-on body .mentor-card::before,
+  :root.um-on body .favorites-card::before {
+    transition: none !important;
+  }
+  /* 各浏览器私有伪元素分开写：同一条规则里混写时，不认识其中一个的浏览器会丢掉整条规则 */
+  :root.um-on body .experiment-card .parameter > input[type="range"]::-webkit-slider-thumb,
+  :root.um-on body .experiment-card #timeline::-webkit-slider-thumb { transition: none !important; }
+  :root.um-on body .experiment-card .parameter > input[type="range"]::-moz-range-thumb,
+  :root.um-on body .experiment-card #timeline::-moz-range-thumb { transition: none !important; }
+  :root.um-on body .experiment-card .parameter > input[type="range"].um-dragging::-webkit-slider-thumb,
+  :root.um-on body .experiment-card #timeline.um-dragging::-webkit-slider-thumb { transform: none; }
+  :root.um-on body .experiment-card .parameter > input[type="range"].um-dragging::-moz-range-thumb,
+  :root.um-on body .experiment-card #timeline.um-dragging::-moz-range-thumb { transform: none; }
+  /* 减动效时输入框聚焦改为静态的浅蓝描边 */
+  :root.um-on body:not(.harmony-compat-mode) .prompt-input-wrap:focus-within::after {
+    background: linear-gradient(var(--fx-ring), var(--fx-ring));
+  }
+}

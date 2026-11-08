@@ -615,41 +615,52 @@
   // surface：初中讲法给出接触面名称时，图中只写接触面，不写动摩擦因数
   function frictionDiagram(pressure, mu, friction, surface = "") {
     const extra = clamp(Math.round((pressure - 2) / 4), 0, 7);
-    const weights = Array.from({ length: extra }, (_, index) => `<rect class="dg-weight" x="${292 + (index % 2) * 4}" y="${188 - index * 9}" width="36" height="8" rx="2"/>`).join("");
-    const bumps = Array.from({ length: 64 }, (_, index) => {
-      const x = 60 + index * 10;
+    const weights = Array.from({ length: extra }, (_, index) => `<rect class="dg-weight" x="284" y="${224 - index * 10}" width="48" height="9" rx="3"/>`).join("");
+    const bumps = Array.from({ length: 68 }, (_, index) => {
+      const x = 40 + index * 10;
       const height = 1.5 + mu * 7 * (index % 3 === 0 ? 1 : 0.55);
-      return `L${x + 5} ${n2(262 - height)}L${x + 10} 262`;
+      return `L${x + 5} ${n2(312 - height)}L${x + 10} 312`;
     }).join("");
-    const len = clamp(friction * 5, 16, 130);
+    // Keep both balanced-force arrows equally long, with space reserved for labels
+    // throughout the slider range. The velocity lane stays above all seven weights.
+    const len = clamp(friction * 3.5, 36, 84);
+    const pressureEnd = 330 + clamp(pressure * 2, 28, 60);
     const gaugeMax = 25;
-    const pointerX = 452 + (clamp(friction, 0, gaugeMax) / gaugeMax) * 140;
-    const gaugeTicks = Array.from({ length: 6 }, (_, index) => {
-      const x = 452 + index * 28;
-      return `<line class="dg-scale-tick" x1="${x}" y1="224" x2="${x}" y2="${index % 1 ? 229 : 232}"/><text class="dg-scale-num" x="${x}" y="218" text-anchor="middle">${index * 5}</text>`;
+    const pointerX = 444 + (clamp(friction, 0, gaugeMax) / gaugeMax) * 178;
+    const gaugeTicks = Array.from({ length: 26 }, (_, index) => {
+      const x = n2(444 + index * 178 / gaugeMax);
+      const major = index % 5 === 0;
+      return `<line class="dg-scale-tick" x1="${x}" y1="264" x2="${x}" y2="${major ? 275 : 270}"/>${major ? `<text class="dg-scale-num" x="${x}" y="254" text-anchor="middle">${index}</text>` : ""}`;
     }).join("");
     return diagram("dg-friction", "探究滑动摩擦力：用弹簧测力计水平拉动木块在长木板上做匀速直线运动", `
-      ${caption("匀速直线运动：拉力 F 与滑动摩擦力 f 是一对平衡力，f = F")}
-      <path class="dg-board-surface" d="M60 262${bumps}V284H60Z"/>
-      <text class="dg-small" x="700" y="304" text-anchor="end">${surface ? `接触面：${surface}` : `长木板 · 动摩擦因数 μ = ${fmt(mu, 2)}`}</text>
-      <rect class="dg-block" x="270" y="200" width="100" height="62" rx="4"/>
-      <text class="dg-label" x="320" y="236" text-anchor="middle">木块</text>
+      <text class="dg-caption" x="40" y="46">水平匀速拉动</text>
+      <text class="dg-friction-balance" x="720" y="46" text-anchor="end">二力平衡 · F = f</text>
+      <line class="dg-friction-divider" x1="40" y1="66" x2="720" y2="66"/>
+      <text class="dg-small dg-green" x="308" y="108" text-anchor="middle">v（匀速）</text>
+      <line class="dg-velocity" x1="260" y1="128" x2="356" y2="128" marker-end="url(#dgArrowGreen)"/>
+      <path class="dg-board-surface" d="M40 312${bumps}V332H40Z"/>
+      <rect class="dg-block" x="250" y="236" width="116" height="76" rx="7"/>
+      <path class="dg-friction-woodgrain" d="M264 250H350M264 300H350"/>
+      <text class="dg-label dg-friction-block-label" x="308" y="282" text-anchor="middle">木块</text>
       ${weights}
-      ${extra ? `<text class="dg-small" x="336" y="${184 - extra * 9}">砝码</text>` : ""}
-      <line class="dg-string" x1="370" y1="226" x2="432" y2="226"/>
-      <rect class="dg-scale-case" x="432" y="210" width="176" height="32" rx="8"/>
+      ${extra ? `<path class="dg-friction-leader" d="M338 ${229 - (extra - 1) * 10}H354L366 184"/><text class="dg-small" x="374" y="187">砝码</text>` : ""}
+      <line class="dg-string" x1="366" y1="266" x2="426" y2="266"/>
+      <text class="dg-label" x="533" y="194" text-anchor="middle">弹簧测力计 / N</text>
+      <rect class="dg-scale-case" x="426" y="234" width="214" height="62" rx="12"/>
       ${gaugeTicks}
-      <path class="dg-pointer" d="M${n2(pointerX)} 214V240"/>
-      <line class="dg-string" x1="608" y1="226" x2="632" y2="226"/>
-      <text class="dg-label" x="520" y="262" text-anchor="middle">弹簧测力计（N）</text>
-      <line class="dg-force dg-blue-force" x1="636" y1="226" x2="${n2(636 + Math.min(len, 100))}" y2="226" marker-end="url(#dgArrowBlue)"/>
-      <text class="dg-force-text dg-blue" x="642" y="212">F ${eq(friction)} ${fmt(friction, 2)} N</text>
-      <line class="dg-force" x1="296" y1="258" x2="${n2(296 - len)}" y2="258" marker-end="url(#dgArrowRed)"/>
-      <text class="dg-force-text" x="${n2(290 - len)}" y="250" text-anchor="end">f ${eq(friction)} ${fmt(friction, 2)} N</text>
-      <line class="dg-force dg-ink-force" x1="320" y1="262" x2="320" y2="${n2(262 + clamp(pressure * 3, 14, 90))}" marker-end="url(#dgArrowInk)"/>
-      <text class="dg-force-text dg-ink" x="330" y="${n2(262 + clamp(pressure * 3, 14, 90))}">F压 = ${fmt(pressure)} N</text>
-      <line class="dg-velocity" x1="270" y1="180" x2="330" y2="180" marker-end="url(#dgArrowGreen)"/>
-      <text class="dg-small dg-green" x="236" y="184" text-anchor="middle">v（匀速）</text>`);
+      <path class="dg-friction-pointer-head" d="M${n2(pointerX)} 276l-5 7h10Z"/>
+      <path class="dg-pointer" d="M${n2(pointerX)} 283V289"/>
+      <line class="dg-string" x1="640" y1="266" x2="652" y2="266"/>
+      <line class="dg-force dg-blue-force" x1="652" y1="266" x2="${n2(652 + len)}" y2="266" marker-end="url(#dgArrowBlue)"/>
+      <text class="dg-force-text dg-blue" x="720" y="218" text-anchor="end">F ${eq(friction)} ${fmt(friction, 2)} N</text>
+      <line class="dg-force" x1="250" y1="266" x2="${n2(250 - len)}" y2="266" marker-end="url(#dgArrowRed)"/>
+      <text class="dg-force-text" x="164" y="242" text-anchor="middle">f ${eq(friction)} ${fmt(friction, 2)} N</text>
+      <text class="dg-small" x="104" y="292" text-anchor="middle">滑动摩擦力</text>
+      <line class="dg-force dg-ink-force" x1="308" y1="312" x2="308" y2="${n2(pressureEnd)}" marker-end="url(#dgArrowInk)"/>
+      <text class="dg-force-text dg-ink" x="308" y="423" text-anchor="middle">F压 = ${fmt(pressure)} N</text>
+      <text class="dg-note" x="308" y="451" text-anchor="middle">木块对接触面的压力</text>
+      <text class="dg-label" x="480" y="385">接触面：${surface || "长木板"}</text>
+      <text class="dg-note" x="480" y="415">${surface ? "测力计示数为模拟值" : `动摩擦因数 μ = ${fmt(mu, 2)}`}</text>`, 760, 480);
   }
 
   function pressureDiagram(depthCm, density, pressure) {

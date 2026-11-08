@@ -8835,7 +8835,7 @@ $("#favoriteList")?.addEventListener("click", event => {
 });
 
 $("#playbackButton").addEventListener("click", event => {
-  const rates = [1, 1.5, 2];
+  const rates = [1, 1.5, 2, 0.5];
   state.playbackRate = rates[(rates.indexOf(state.playbackRate) + 1) % rates.length];
   event.currentTarget.textContent = `${state.playbackRate}×`;
   showToast(`播放速度已调整为 ${state.playbackRate}×`);
