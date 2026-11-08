@@ -1,5 +1,17 @@
 [
   {
+    "id": "junior-mixed-numbered-reference",
+    "scope": "junior",
+    "question": "实验室的展示卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。请问上述两步的意义是什么？",
+    "expected": "clarify"
+  },
+  {
+    "id": "senior-mixed-numbered-reference",
+    "scope": "senior",
+    "question": "实验室的展示卡片写着三只小烧杯加入富含CO2的清水，每杯放入10片叶圆片。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。请问上述两步的意义是什么？",
+    "expected": "clarify"
+  },
+  {
     "id": "junior-review-report",
     "scope": "junior",
     "question": "实验室的展示卡片记录了酒精水浴脱色及稍停片刻用清水冲掉碘液再观察。另有一道物理题：平面镜成像，物体距镜面20cm，物高5cm，求像距和物像距离及像高。",
