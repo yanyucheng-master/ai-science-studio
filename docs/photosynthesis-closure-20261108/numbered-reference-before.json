@@ -1,0 +1,38 @@
+{
+  "sourceSha": "29422b203c32ea10977fa4bbc6b345b1986f719e",
+  "browser": "157.0.4341.42",
+  "cases": [
+    {
+      "id": "junior-mixed-numbered-reference",
+      "passed": false,
+      "requestCount": 1,
+      "requestPaths": [
+        "/api/v1/experiment/generate"
+      ],
+      "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。"
+    },
+    {
+      "id": "senior-mixed-numbered-reference",
+      "passed": false,
+      "requestCount": 1,
+      "requestPaths": [
+        "/api/v1/experiment/generate"
+      ],
+      "feedback": "AI 服务暂时不可用，题目和当前实验状态均已保留。"
+    },
+    {
+      "id": "junior-review-report",
+      "passed": true,
+      "requestCount": 0,
+      "requestPaths": [],
+      "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。"
+    },
+    {
+      "id": "senior-review-report",
+      "passed": true,
+      "requestCount": 0,
+      "requestPaths": [],
+      "feedback": "平面镜成像｜像距 v = 20cm；物像距离 d = 2u = 40cm；像高 h′ = h = 5cm。"
+    }
+  ]
+}
