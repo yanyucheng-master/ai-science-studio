@@ -77,9 +77,10 @@
     el.querySelector('[data-photo-caption]').textContent=legends[f.step]+'（器材与色彩示意）';
     el.querySelector('[data-photo-svg]').setAttribute('aria-label',s.title+'：'+legends[f.step]);
     el.querySelector('[data-photo-observation]').textContent=f.observationReady?'教材预期：同一叶片的原见光区呈蓝色，原遮光区不变蓝。':'当前步骤尚未完成最终显色观察；不能把绿色、脱色或碘液本身的颜色当作淀粉检验结果。';
+    window.MasterLabPhotosynthesisLearning?.render(root,'photosynthesis',p,f);
     el.querySelectorAll('[data-photosynthesis-step]').forEach((b,i)=>{b.classList.toggle('active',i===f.step);b.setAttribute('aria-current',i===f.step?'step':'false');});
   }
-  kit.register({photosynthesis:{id:'photosynthesis',subject:'生物',level:'junior',block:'植物生理',stage:'光合作用',title:'光合作用：绿叶在光下制造有机物',menuTitle:'绿叶在光下制造有机物',menuMeta:'同叶遮光 · 酒精水浴 · 碘液检验',defaults:[1,1],resetToQuestion:true,localOnly:true,protocolCandidate,protocolAssessment,diagnosticPriority,motion:{duration:12},formatMetric:String,keywords:/光合作用|绿叶.*有机物|天竺葵/,
+  kit.register({photosynthesis:{id:'photosynthesis',subject:'生物',level:'junior',block:'植物生理',stage:'光合作用',title:'光合作用：绿叶在光下制造有机物',menuTitle:'绿叶在光下制造有机物',menuMeta:'同叶遮光 · 酒精水浴 · 碘液检验',defaults:[1,1],resetToQuestion:true,localOnly:true,protocolCandidate,protocolAssessment,diagnosticPriority,motion:{duration:12},protocolSteps:C.STEPS.length,protocolFrame:C.frame,formatMetric:String,keywords:/光合作用|绿叶.*有机物|天竺葵/,
     params:[{label:'教材固定流程',desc:'按人教七下六步操作',unit:'',min:1,max:1,step:1,value:1},{label:'同叶遮光对照',desc:'上下两面局部遮光',unit:'',min:1,max:1,step:1,value:1}],parameter:param=>({...param,locked:true,lockText:'教材固定设置'}),
     strict:{originalText:true,sameConditions:true,caps:[[1,1],[1,1]],fixedDefaults:defaults,intent:{require:[/绿叶/,/有机物/]},values:parse,checkFixed:issue,used:()=>[{cls:"time",value:86400}],asks:{supported:/实验步骤|操作步骤|实验操作顺序|操作流程|实验现象|观察现象|预期现象|实验结论|所得结论|操作目的|各步骤的目的|各步操作的目的/,unsupported:/速率|产量|体积|质量|氧气|二氧化碳|光强|温度/}},
     question,model,visual,renderFrame,presetFor:()=>({p1:1,p2:1,fixed:{...defaults}}),recognition:m=>m.readout,
