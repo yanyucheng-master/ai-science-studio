@@ -1,0 +1,342 @@
+{
+  "edge": {
+    "sourceSha": "5be0c20179cfca05adde30bb23ebb9a34e58937d",
+    "cases": [
+      {
+        "id": "photosynthesis",
+        "width": 1366,
+        "left": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "right": [
+          6,
+          5,
+          4,
+          3,
+          2,
+          1
+        ],
+        "playing": {
+          "scene": 5,
+          "reasoning": 5,
+          "progress": 5,
+          "total": 6,
+          "time": 0.6666666666666666,
+          "playing": false,
+          "dots": 6
+        },
+        "comparison": "我的预测：原见光区不变蓝，原遮光区变蓝。教材预期：原见光区变蓝，原遮光区不变蓝。此处为教材演示现象。",
+        "explanation": "判断正确。同一叶片比较是否见光，滴碘用来检验淀粉。"
+      },
+      {
+        "id": "photosynthesis",
+        "width": 820,
+        "left": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "right": [
+          6,
+          5,
+          4,
+          3,
+          2,
+          1
+        ],
+        "playing": {
+          "scene": 5,
+          "reasoning": 5,
+          "progress": 5,
+          "total": 6,
+          "time": 0.6666666666666666,
+          "playing": false,
+          "dots": 0
+        },
+        "comparison": "我的预测：原见光区不变蓝，原遮光区变蓝。教材预期：原见光区变蓝，原遮光区不变蓝。此处为教材演示现象。",
+        "explanation": "判断正确。同一叶片比较是否见光，滴碘用来检验淀粉。"
+      },
+      {
+        "id": "photosynthesis",
+        "width": 390,
+        "left": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "right": [
+          6,
+          5,
+          4,
+          3,
+          2,
+          1
+        ],
+        "playing": {
+          "scene": 5,
+          "reasoning": 5,
+          "progress": 5,
+          "total": 6,
+          "time": 0.6666666666666666,
+          "playing": false,
+          "dots": 0
+        },
+        "comparison": "我的预测：原见光区不变蓝，原遮光区变蓝。教材预期：原见光区变蓝，原遮光区不变蓝。此处为教材演示现象。",
+        "explanation": "判断正确。同一叶片比较是否见光，滴碘用来检验淀粉。",
+        "lifecycle": [
+          "全屏与失败新题保留当前草稿",
+          "收藏保留当前草稿",
+          "分享独立打开为空",
+          "从收藏重新生成清空",
+          "刷新后为空"
+        ]
+      },
+      {
+        "id": "photosynthesis",
+        "width": 360,
+        "left": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "right": [
+          6,
+          5,
+          4,
+          3,
+          2,
+          1
+        ],
+        "playing": {
+          "scene": 5,
+          "reasoning": 5,
+          "progress": 5,
+          "total": 6,
+          "time": 0.6666666666666666,
+          "playing": false,
+          "dots": 0
+        },
+        "comparison": "我的预测：原见光区不变蓝，原遮光区变蓝。教材预期：原见光区变蓝，原遮光区不变蓝。此处为教材演示现象。",
+        "explanation": "判断正确。同一叶片比较是否见光，滴碘用来检验淀粉。"
+      },
+      {
+        "id": "photosynthesis",
+        "width": 844,
+        "left": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "right": [
+          6,
+          5,
+          4,
+          3,
+          2,
+          1
+        ],
+        "playing": {
+          "scene": 5,
+          "reasoning": 5,
+          "progress": 5,
+          "total": 6,
+          "time": 0.6666666666666666,
+          "playing": false,
+          "dots": 0
+        },
+        "comparison": "我的预测：原见光区不变蓝，原遮光区变蓝。教材预期：原见光区变蓝，原遮光区不变蓝。此处为教材演示现象。",
+        "explanation": "判断正确。同一叶片比较是否见光，滴碘用来检验淀粉。"
+      }
+    ],
+    "errors": [],
+    "api": [],
+    "browser": "157.0.4341.42"
+  },
+  "chromium": {
+    "sourceSha": "5be0c20179cfca05adde30bb23ebb9a34e58937d",
+    "cases": [
+      {
+        "id": "photosynthesis",
+        "width": 1366,
+        "left": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "right": [
+          6,
+          5,
+          4,
+          3,
+          2,
+          1
+        ],
+        "playing": {
+          "scene": 5,
+          "reasoning": 5,
+          "progress": 5,
+          "total": 6,
+          "time": 0.6666666666666666,
+          "playing": false,
+          "dots": 6
+        },
+        "comparison": "我的预测：原见光区不变蓝，原遮光区变蓝。教材预期：原见光区变蓝，原遮光区不变蓝。此处为教材演示现象。",
+        "explanation": "判断正确。同一叶片比较是否见光，滴碘用来检验淀粉。"
+      },
+      {
+        "id": "photosynthesis",
+        "width": 820,
+        "left": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "right": [
+          6,
+          5,
+          4,
+          3,
+          2,
+          1
+        ],
+        "playing": {
+          "scene": 5,
+          "reasoning": 5,
+          "progress": 5,
+          "total": 6,
+          "time": 0.6666666666666666,
+          "playing": false,
+          "dots": 0
+        },
+        "comparison": "我的预测：原见光区不变蓝，原遮光区变蓝。教材预期：原见光区变蓝，原遮光区不变蓝。此处为教材演示现象。",
+        "explanation": "判断正确。同一叶片比较是否见光，滴碘用来检验淀粉。"
+      },
+      {
+        "id": "photosynthesis",
+        "width": 390,
+        "left": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "right": [
+          6,
+          5,
+          4,
+          3,
+          2,
+          1
+        ],
+        "playing": {
+          "scene": 5,
+          "reasoning": 5,
+          "progress": 5,
+          "total": 6,
+          "time": 0.6666666666666666,
+          "playing": false,
+          "dots": 0
+        },
+        "comparison": "我的预测：原见光区不变蓝，原遮光区变蓝。教材预期：原见光区变蓝，原遮光区不变蓝。此处为教材演示现象。",
+        "explanation": "判断正确。同一叶片比较是否见光，滴碘用来检验淀粉。",
+        "lifecycle": [
+          "全屏与失败新题保留当前草稿",
+          "收藏保留当前草稿",
+          "分享独立打开为空",
+          "从收藏重新生成清空",
+          "刷新后为空"
+        ]
+      },
+      {
+        "id": "photosynthesis",
+        "width": 360,
+        "left": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "right": [
+          6,
+          5,
+          4,
+          3,
+          2,
+          1
+        ],
+        "playing": {
+          "scene": 5,
+          "reasoning": 5,
+          "progress": 5,
+          "total": 6,
+          "time": 0.6666666666666666,
+          "playing": false,
+          "dots": 0
+        },
+        "comparison": "我的预测：原见光区不变蓝，原遮光区变蓝。教材预期：原见光区变蓝，原遮光区不变蓝。此处为教材演示现象。",
+        "explanation": "判断正确。同一叶片比较是否见光，滴碘用来检验淀粉。"
+      },
+      {
+        "id": "photosynthesis",
+        "width": 844,
+        "left": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "right": [
+          6,
+          5,
+          4,
+          3,
+          2,
+          1
+        ],
+        "playing": {
+          "scene": 5,
+          "reasoning": 5,
+          "progress": 5,
+          "total": 6,
+          "time": 0.6666666666666666,
+          "playing": false,
+          "dots": 0
+        },
+        "comparison": "我的预测：原见光区不变蓝，原遮光区变蓝。教材预期：原见光区变蓝，原遮光区不变蓝。此处为教材演示现象。",
+        "explanation": "判断正确。同一叶片比较是否见光，滴碘用来检验淀粉。"
+      }
+    ],
+    "errors": [],
+    "api": [],
+    "browser": "151.0.7922.34"
+  }
+}

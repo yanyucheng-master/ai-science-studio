@@ -1,0 +1,856 @@
+{
+  "legacyRafSourceProbe": [
+    {
+      "label": "archived",
+      "attempt": 1,
+      "code": 1,
+      "modes": [],
+      "origins": [
+        {
+          "mode": "discrete",
+          "pending": [
+            {
+              "name": "step",
+              "stack": "Error\n    at window.requestAnimationFrame (<anonymous>:4:117)\n    at step (http://127.0.0.1:58078/brand-motion.js?v=20261020-splash-1:102:28)\n    at <anonymous>:4:370"
+            }
+          ],
+          "recent": [
+            "step",
+            "step",
+            "step",
+            "step",
+            "step",
+            "step",
+            "step",
+            "step"
+          ],
+          "clock": false,
+          "hidden": false,
+          "width": 1042,
+          "height": 648
+        }
+      ],
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at <workspace>/.handoff/photosynthesis-closure-20261108/population-origin-probe.mjs:43:69"
+    },
+    {
+      "label": "master",
+      "attempt": 1,
+      "code": 0,
+      "modes": [
+        "discrete",
+        "logistic"
+      ],
+      "origins": [
+        {
+          "mode": "discrete",
+          "pending": [],
+          "recent": [],
+          "clock": false,
+          "hidden": false,
+          "width": 1042,
+          "height": 648
+        },
+        {
+          "mode": "logistic",
+          "pending": [],
+          "recent": [],
+          "clock": false,
+          "hidden": false,
+          "width": 1042,
+          "height": 648
+        }
+      ],
+      "failure": null
+    }
+  ],
+  "inclineGuard": {
+    "junior": {
+      "phase": 1,
+      "cases": [
+        {
+          "name": "original-1366",
+          "width": 1366,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "geometry": {
+            "forces": [
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  269.2021540559245,
+                  314.69220536424467
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  236.33914466091215,
+                  182.8858738641198
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  331.0084855560494,
+                  211.82919596923233
+                ]
+              }
+            ],
+            "overflow": false,
+            "viewBox": "46.31360698207066 129.65462565882848 467.37278603585867 270.690733423554",
+            "legacyLegend": 0
+          },
+          "pass": true
+        },
+        {
+          "name": "original-820",
+          "width": 820,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "geometry": {
+            "forces": [
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  269.2021540559245,
+                  314.69220536424467
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  236.33914466091215,
+                  182.8858738641198
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  331.0084855560494,
+                  211.82919596923233
+                ]
+              }
+            ],
+            "overflow": false,
+            "viewBox": "46.31360698207066 129.65462565882848 467.37278603585867 270.690733423554",
+            "legacyLegend": 0
+          },
+          "pass": true
+        },
+        {
+          "name": "original-390",
+          "width": 390,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "geometry": {
+            "forces": [
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  269.2021540559245,
+                  314.69220536424467
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  236.33914466091215,
+                  182.8858738641198
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  331.0084855560494,
+                  211.82919596923233
+                ]
+              }
+            ],
+            "overflow": false,
+            "viewBox": "28.593174560649416 91.60013256846192 502.8136508787012 326.4656589353418",
+            "legacyLegend": 0
+          },
+          "pass": true
+        },
+        {
+          "name": "personal-original",
+          "width": 1366,
+          "personal": true,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "pass": true
+        },
+        {
+          "name": "unsupported-bank-no-coordinate-requests",
+          "width": 820,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 1,
+          "errors": [],
+          "pass": true
+        },
+        {
+          "name": "supported-session-and-tampering",
+          "width": 820,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "pass": true
+        }
+      ],
+      "completedCases": 6,
+      "unreached": null
+    },
+    "senior": {
+      "phase": 1,
+      "cases": [
+        {
+          "name": "original-1366",
+          "width": 1366,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "geometry": {
+            "forces": [
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  269.2021540559245,
+                  314.69220536424467
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  236.33914466091215,
+                  182.8858738641198
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  331.0084855560494,
+                  211.82919596923233
+                ]
+              }
+            ],
+            "overflow": false,
+            "viewBox": "46.31360698207066 129.65462565882848 467.37278603585867 270.690733423554",
+            "legacyLegend": 0
+          },
+          "pass": true
+        },
+        {
+          "name": "original-820",
+          "width": 820,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "geometry": {
+            "forces": [
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  269.2021540559245,
+                  314.69220536424467
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  236.33914466091215,
+                  182.8858738641198
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  331.0084855560494,
+                  211.82919596923233
+                ]
+              }
+            ],
+            "overflow": false,
+            "viewBox": "46.31360698207066 129.65462565882848 467.37278603585867 270.690733423554",
+            "legacyLegend": 0
+          },
+          "pass": true
+        },
+        {
+          "name": "original-390",
+          "width": 390,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "geometry": {
+            "forces": [
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  269.2021540559245,
+                  314.69220536424467
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  236.33914466091215,
+                  182.8858738641198
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  331.0084855560494,
+                  211.82919596923233
+                ]
+              }
+            ],
+            "overflow": false,
+            "viewBox": "28.593174560649416 91.60013256846192 502.8136508787012 326.4656589353418",
+            "legacyLegend": 0
+          },
+          "pass": true
+        },
+        {
+          "name": "personal-original",
+          "width": 1366,
+          "personal": true,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "pass": true
+        },
+        {
+          "name": "unsupported-bank-no-coordinate-requests",
+          "width": 820,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 1,
+          "errors": [],
+          "pass": true
+        },
+        {
+          "name": "supported-session-and-tampering",
+          "width": 820,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "pass": true
+        }
+      ],
+      "completedCases": 6,
+      "unreached": null
+    },
+    "joint": {
+      "phase": 1,
+      "cases": [
+        {
+          "name": "original-1366",
+          "width": 1366,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "geometry": {
+            "forces": [
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  269.2021540559245,
+                  314.69220536424467
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  236.33914466091215,
+                  182.8858738641198
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  331.0084855560494,
+                  211.82919596923233
+                ]
+              }
+            ],
+            "overflow": false,
+            "viewBox": "46.31360698207066 129.65462565882848 467.37278603585867 270.690733423554",
+            "legacyLegend": 0
+          },
+          "pass": true
+        },
+        {
+          "name": "original-820",
+          "width": 820,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "geometry": {
+            "forces": [
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  269.2021540559245,
+                  314.69220536424467
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  236.33914466091215,
+                  182.8858738641198
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  331.0084855560494,
+                  211.82919596923233
+                ]
+              }
+            ],
+            "overflow": false,
+            "viewBox": "46.31360698207066 129.65462565882848 467.37278603585867 270.690733423554",
+            "legacyLegend": 0
+          },
+          "pass": true
+        },
+        {
+          "name": "original-390",
+          "width": 390,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "geometry": {
+            "forces": [
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  269.2021540559245,
+                  314.69220536424467
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  236.33914466091215,
+                  182.8858738641198
+                ]
+              },
+              {
+                "from": [
+                  269.2021540559245,
+                  244.69220536424467
+                ],
+                "to": [
+                  331.0084855560494,
+                  211.82919596923233
+                ]
+              }
+            ],
+            "overflow": false,
+            "viewBox": "28.593174560649416 91.60013256846192 502.8136508787012 326.4656589353418",
+            "legacyLegend": 0
+          },
+          "pass": true
+        },
+        {
+          "name": "personal-original",
+          "width": 1366,
+          "personal": true,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "pass": true
+        },
+        {
+          "name": "unsupported-bank-no-coordinate-requests",
+          "width": 820,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 1,
+          "errors": [],
+          "pass": true
+        },
+        {
+          "name": "supported-session-and-tampering",
+          "width": 820,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "pass": true
+        }
+      ],
+      "completedCases": 6,
+      "unreached": null
+    },
+    "baseline": {
+      "phase": 1,
+      "cases": [
+        {
+          "name": "original-1366",
+          "width": 1366,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "pass": false,
+          "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n\n    at <workspace>/.handoff/photosynthesis-closure-20261108/baseline-source-9393867/server/scripts/verify-incline-diagram-browser.js:120:12\n    at async run (<workspace>/.handoff/photosynthesis-closure-20261108/baseline-source-9393867/server/scripts/verify-incline-diagram-browser.js:54:5)\n    at async <workspace>/.handoff/photosynthesis-closure-20261108/baseline-source-9393867/server/scripts/verify-incline-diagram-browser.js:117:41"
+        },
+        {
+          "name": "original-820",
+          "width": 820,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "pass": false,
+          "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n\n    at <workspace>/.handoff/photosynthesis-closure-20261108/baseline-source-9393867/server/scripts/verify-incline-diagram-browser.js:120:12\n    at async run (<workspace>/.handoff/photosynthesis-closure-20261108/baseline-source-9393867/server/scripts/verify-incline-diagram-browser.js:54:5)\n    at async <workspace>/.handoff/photosynthesis-closure-20261108/baseline-source-9393867/server/scripts/verify-incline-diagram-browser.js:117:41"
+        },
+        {
+          "name": "original-390",
+          "width": 390,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "pass": false,
+          "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n\n    at <workspace>/.handoff/photosynthesis-closure-20261108/baseline-source-9393867/server/scripts/verify-incline-diagram-browser.js:120:12\n    at async run (<workspace>/.handoff/photosynthesis-closure-20261108/baseline-source-9393867/server/scripts/verify-incline-diagram-browser.js:54:5)\n    at async <workspace>/.handoff/photosynthesis-closure-20261108/baseline-source-9393867/server/scripts/verify-incline-diagram-browser.js:117:41"
+        },
+        {
+          "name": "personal-original",
+          "width": 1366,
+          "personal": true,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "pass": false,
+          "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n\n    at <workspace>/.handoff/photosynthesis-closure-20261108/baseline-source-9393867/server/scripts/verify-incline-diagram-browser.js:223:12\n    at async run (<workspace>/.handoff/photosynthesis-closure-20261108/baseline-source-9393867/server/scripts/verify-incline-diagram-browser.js:54:5)\n    at async <workspace>/.handoff/photosynthesis-closure-20261108/baseline-source-9393867/server/scripts/verify-incline-diagram-browser.js:221:3"
+        },
+        {
+          "name": "unsupported-bank-no-coordinate-requests",
+          "width": 820,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 1,
+          "errors": [],
+          "pass": true
+        },
+        {
+          "name": "supported-session-and-tampering",
+          "width": 820,
+          "personal": false,
+          "coordinateRequests": 0,
+          "chatRequests": 0,
+          "errors": [],
+          "pass": false,
+          "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n\n    at <workspace>/.handoff/photosynthesis-closure-20261108/baseline-source-9393867/server/scripts/verify-incline-diagram-browser.js:261:12\n    at async run (<workspace>/.handoff/photosynthesis-closure-20261108/baseline-source-9393867/server/scripts/verify-incline-diagram-browser.js:54:5)\n    at async <workspace>/.handoff/photosynthesis-closure-20261108/baseline-source-9393867/server/scripts/verify-incline-diagram-browser.js:255:3"
+        }
+      ],
+      "completedCases": 1,
+      "unreached": "The request-count failure precedes geometry, SVG reload and its zero-repeat request check in the three original width cases."
+    }
+  },
+  "populationBackground": {
+    "junior": {
+      "checks": [
+        {
+          "mode": "discrete",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        },
+        {
+          "mode": "logistic",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        }
+      ],
+      "errors": [],
+      "api": [],
+      "browser": "157.0.4341.42"
+    },
+    "senior": {
+      "checks": [
+        {
+          "mode": "discrete",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        },
+        {
+          "mode": "logistic",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        }
+      ],
+      "errors": [],
+      "api": [],
+      "browser": "157.0.4341.42"
+    },
+    "joint": {
+      "checks": [
+        {
+          "mode": "discrete",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        },
+        {
+          "mode": "logistic",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        }
+      ],
+      "errors": [],
+      "api": [],
+      "browser": "157.0.4341.42"
+    },
+    "baseline": {
+      "checks": [
+        {
+          "mode": "discrete",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":8,\"fixed\":{\"version\":1,\"mode\":\"discrete\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"quantity,trend\"},\"time\":0,\"quantity\":10.01129150390625}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        },
+        {
+          "mode": "logistic",
+          "before": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": false
+          },
+          "hidden": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": true
+          },
+          "after": {
+            "state": "{\"p1\":0.75,\"p2\":3.25,\"fixed\":{\"version\":1,\"mode\":\"logistic\",\"level\":\"senior\",\"levelLocked\":false,\"initial\":100,\"fixedMultiplier\":true,\"equalPeriods\":true,\"asks\":\"peak,quantity,rate\",\"constantCapacity\":true,\"constantRate\":true,\"capacity\":1000,\"timeUnit\":\"day\"},\"time\":0,\"quantity\":559.7815217363694}",
+            "pending": 0,
+            "frames": 0,
+            "hidden": false
+          },
+          "realTabSwitch": true
+        }
+      ],
+      "errors": [],
+      "api": [],
+      "browser": "157.0.4341.42"
+    }
+  }
+}
