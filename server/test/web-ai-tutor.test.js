@@ -15,13 +15,21 @@ const answer = {
 const input = { responseLevel: 'steps' };
 const thinking = { thinking: true, timeoutMs: 1000, maxTokens: 16000 };
 
+// options.storage overrides individual localStorage keys (e.g. the selected personal model and its key);
+// every write is recorded in tutor.storageWrites, and toast notices in tutor.toasts.
 function loadTutor(fetchImpl = () => { throw new Error('Unexpected network request'); }, options = {}) {
   const node = { addEventListener() {}, before() {} };
+  const storageWrites = [];
+  const toasts = [];
+  const getItem = key => {
+    if (options.storage && Object.hasOwn(options.storage, key)) return options.storage[key];
+    return key === 'masterLab.deepseekApiKey' ? options.noKey ? null : 'test-only' : options.savedStore || null;
+  };
   const sandbox = {
     document: { body: { append() {} }, querySelector: () => node, querySelectorAll: () => [], createComment: () => ({}), addEventListener() {} },
-    localStorage: { getItem: key => key === 'masterLab.deepseekApiKey' ? options.noKey ? null : 'test-only' : options.savedStore || null },
+    localStorage: { getItem, setItem: (key, value) => storageWrites.push([key, value]), removeItem: key => storageWrites.push([key, null]) },
     AbortController, TextDecoder, TextEncoder, Response, fetch: fetchImpl, setTimeout, clearTimeout,
-    location: { hostname: 'localhost' }, addEventListener() {}
+    location: { hostname: 'localhost' }, addEventListener() {}, showToast: message => toasts.push(message)
   };
   sandbox.window = sandbox;
   sandbox.MasterLabInstantScene = Scene;
@@ -31,9 +39,13 @@ function loadTutor(fetchImpl = () => { throw new Error('Unexpected network reque
       completeTutorChat, apiRequest, state, contextScope, gatewayChatRequest,
       selectResponseLevel, getAnswerPresentation, softValidateChat, composeQuotedMessage,
       savedSession, savedQuotes, contextSnapshot, boundedHistory, readSessionStore,
-      requestWithQueue, BUSY_RETRY_DELAYS_MS, partialChatContent, checkedTutorChat, answerPlainText, wantsDiagram };`), sandbox);
-  return sandbox.tutorTest;
+      requestWithQueue, BUSY_RETRY_DELAYS_MS, partialChatContent, checkedTutorChat, answerPlainText, wantsDiagram,
+      personalRequestConfig, personalModel, DEEPSEEK_MODEL };`), sandbox);
+  return Object.assign(sandbox.tutorTest, { storageWrites, toasts });
 }
+
+// The public gateway route, as requestWithQueue uses it after a personal attempt fails (no personal key).
+const gatewayRoute = tutor => ({ model: tutor.personalModel(tutor.DEEPSEEK_MODEL), apiKey: '' });
 
 function sseFrame(delta = {}, finishReason = null) {
   return `data: ${JSON.stringify({ choices: [{ delta, finish_reason: finishReason }] })}\n\n`;
@@ -253,7 +265,7 @@ test('web: absent browser key selects the gateway and sends no Authorization hea
     request = { url, options };
     return new Response(JSON.stringify({ mode: 'hint', source: 'local_fallback', summary: '本地教学提示' }));
   }, { noKey: true });
-  const result = await tutor.apiRequest('/api/v1/tutor/chat', {}, 1000);
+  const result = await tutor.apiRequest('/api/v1/tutor/chat', {}, 1000, tutor.personalRequestConfig());
   assert.equal(request.url, 'http://127.0.0.1:10000/api/v1/tutor/chat');
   assert.equal(Object.hasOwn(request.options.headers, 'Authorization'), false);
   assert.equal(result.source, 'local_fallback');
@@ -271,7 +283,7 @@ for (const gateway of [false, true]) {
       }), { headers: { 'Content-Type': 'application/json' } });
     }, { noKey: gateway });
     const request = gateway
-      ? tutor.apiRequest('/api/v1/tutor/chat', {}, 5)
+      ? tutor.apiRequest('/api/v1/tutor/chat', {}, 5, gatewayRoute(tutor))
       : tutor.completeTutorChat([], { responseLevel: 'hint' }, { thinking: false, timeoutMs: 5 });
     await assert.rejects(request, { code: 'AI_TIMEOUT' });
     assert.equal(calls, 1);
@@ -286,7 +298,7 @@ for (const gateway of [false, true]) {
       }
     }), { headers: { 'Content-Type': 'application/json' } }), { noKey: gateway });
     const run = timeoutMs => gateway
-      ? tutor.apiRequest('/api/v1/tutor/chat', {}, timeoutMs)
+      ? tutor.apiRequest('/api/v1/tutor/chat', {}, timeoutMs, gatewayRoute(tutor))
       : tutor.completeTutorChat([], { responseLevel: 'hint' }, { thinking: false, timeoutMs });
     const first = run(1000).catch(error => error.code);
     await Promise.resolve();
@@ -322,10 +334,10 @@ test('web: Chinese history is budgeted by complete UTF-8 request bytes and keeps
 test('web: malformed successful gateway objects are rejected while clarification remains valid', async () => {
   for (const value of [{},[],null,{mode:'unknown',summary:'不能当作正确回答'}]) {
     const tutor=loadTutor(async()=>new Response(JSON.stringify(value)),{noKey:true});
-    await assert.rejects(tutor.apiRequest('/api/v1/tutor/chat',{message:'请解释',responseLevel:'explain'},1000),{code:'INVALID_AI_RESPONSE'});
+    await assert.rejects(tutor.apiRequest('/api/v1/tutor/chat',{message:'请解释',responseLevel:'explain'},1000,gatewayRoute(tutor)),{code:'INVALID_AI_RESPONSE'});
   }
   const tutor=loadTutor(async()=>new Response(JSON.stringify({mode:'clarification',summary:'缺少温度，请补充。',steps:[],formulas:[],finalAnswer:null})),{noKey:true});
-  assert.equal((await tutor.apiRequest('/api/v1/tutor/chat',{message:'求解',responseLevel:'steps'},1000)).mode,'clarification');
+  assert.equal((await tutor.apiRequest('/api/v1/tutor/chat',{message:'求解',responseLevel:'steps'},1000,gatewayRoute(tutor))).mode,'clarification');
 });
 
 test('web: explicit full answers and focused follow-ups use the appropriate response depth', () => {
@@ -423,7 +435,7 @@ test('web: compact presentation keeps distinct sub-answers and collapses an exac
 test('web: null or empty gateway error bodies preserve HTTP failure classification', async () => {
   for (const status of [503,429]) for (const value of [null,{}]) {
     const tutor=loadTutor(async()=>new Response(JSON.stringify(value),{status}),{noKey:true});
-    await assert.rejects(tutor.apiRequest('/api/v1/tutor/chat',{message:'求解',responseLevel:'steps'},1000),
+    await assert.rejects(tutor.apiRequest('/api/v1/tutor/chat',{message:'求解',responseLevel:'steps'},1000,gatewayRoute(tutor)),
       {code:status===429?'RATE_LIMITED':'AI_UNAVAILABLE',status});
   }
 });
@@ -443,7 +455,7 @@ test('web: the captured chemistry reply retains its complete conclusion instead 
 
 test('web: an unreachable gateway is reported as a connection problem, not a missing key', async () => {
   const tutor = loadTutor(async () => { throw new TypeError('Failed to fetch'); }, { noKey: true });
-  await assert.rejects(tutor.apiRequest('/api/v1/tutor/chat', { message: '求解', responseLevel: 'steps' }, 1000),
+  await assert.rejects(tutor.apiRequest('/api/v1/tutor/chat', { message: '求解', responseLevel: 'steps' }, 1000, gatewayRoute(tutor)),
     { code: 'GATEWAY_UNREACHABLE' });
 });
 
@@ -667,4 +679,120 @@ test('web: copied answers keep readable formulas and the conditions they used', 
   assert.match(copied, /关键公式：\\\(s = \\frac\{v_\{0\}\^\{2\}\}\{2a\}\\\)/);
   assert.match(copied, /题目：刹车题/);
   assert.match(copied, /参数：初速度 20；减速度 5/);
+});
+
+// ===== Personal model routes (2026-11-07): simulated network only, no real requests =====
+const PERSONAL_SETTING_KEYS = ['masterLab.personalAiModel', 'masterLab.deepseekApiKey', 'masterLab.kimiApiKey'];
+const GATEWAY_CHAT_URL = 'http://127.0.0.1:10000/api/v1/tutor/chat';
+const explainReply = { mode: 'explain', summary: '加速度描述速度变化的快慢。', steps: [], formulas: [], finalAnswer: null };
+const chatBody = (history = []) => ({ sessionId: 'personal-route', message: '什么是加速度？', responseLevel: 'explain', history,
+  context: { mode: 'question', subject: '物理', originalQuestion: '什么是加速度？', parameters: {} } });
+const kimiStorage = { 'masterLab.personalAiModel': 'kimi-k3.1-pro', 'masterLab.kimiApiKey': 'sk-kimi-personal-test' };
+const deepseekStorage = { 'masterLab.personalAiModel': 'deepseek-flash', 'masterLab.deepseekApiKey': 'sk-deepseek-personal-test' };
+const personalReply = (url, reply = explainReply) => url.startsWith('https://api.moonshot.cn')
+  ? sseResponse(sseFrame({ content: JSON.stringify(reply) }, 'stop') + 'data: [DONE]\n\n')
+  : jsonResponse(JSON.stringify(reply));
+
+for (const [label, storage, url, key, model] of [
+  ['DeepSeek', deepseekStorage, 'https://api.deepseek.com/chat/completions', 'sk-deepseek-personal-test', 'deepseek-flash'],
+  ['Kimi', kimiStorage, 'https://api.moonshot.cn/v1/chat/completions', 'sk-kimi-personal-test', 'kimi-k3.1-pro']
+]) {
+  test(`web: a personal ${label} key sends chat directly from the browser to the selected model with that key`, async () => {
+    const requests = [];
+    const tutor = loadTutor(async (requestUrl, options) => {
+      requests.push({ url: requestUrl, options });
+      return personalReply(requestUrl);
+    }, { storage });
+    const result = await tutor.requestWithQueue('/api/v1/tutor/chat', chatBody(), 1000);
+    assert.equal(requests.length, 1);
+    assert.equal(requests[0].url, url);
+    assert.equal(requests[0].options.headers.Authorization, `Bearer ${key}`);
+    assert.equal(JSON.parse(requests[0].options.body).model, model);
+    assert.equal(result.model, model);
+    assert.equal(result.personalFallbackNotice, undefined);
+    assert.deepEqual(tutor.toasts, []);
+  });
+}
+
+for (const [label, storage, key, failure] of [
+  ['DeepSeek auth failure', deepseekStorage, 'sk-deepseek-personal-test', () => new Response('{}', { status: 401 })],
+  ['Kimi network failure', kimiStorage, 'sk-kimi-personal-test', () => { throw new TypeError('Failed to fetch'); }]
+]) {
+  test(`web: a failed personal route (${label}) falls back once to the public gateway without the key or a settings change`, async () => {
+    const requests = [];
+    const tutor = loadTutor(async (url, options) => {
+      requests.push({ url, options });
+      return url === GATEWAY_CHAT_URL ? new Response(JSON.stringify(explainReply)) : failure();
+    }, { storage });
+    const result = await tutor.requestWithQueue('/api/v1/tutor/chat', chatBody(), 1000);
+    assert.equal(requests.length, 2, 'one personal attempt, then exactly one gateway request');
+    assert.equal(requests[1].url, GATEWAY_CHAT_URL);
+    assert.equal(Object.hasOwn(requests[1].options.headers, 'Authorization'), false);
+    assert.equal(JSON.stringify(requests[1].options.headers).includes(key), false);
+    assert.equal(requests[1].options.body.includes(key), false);
+    assert.match(result.personalFallbackNotice, /已自动转用公益 AI/);
+    assert.equal(result.warnings[0], result.personalFallbackNotice);
+    assert.deepEqual(tutor.toasts, [result.personalFallbackNotice]);
+    assert.deepEqual(tutor.storageWrites.filter(([name]) => PERSONAL_SETTING_KEYS.includes(name)), [], 'user settings are untouched');
+  });
+}
+
+test('web: when the gateway also fails after a personal failure, no further attempt is made and the notice is kept', async () => {
+  const requests = [];
+  const tutor = loadTutor(async url => {
+    requests.push(url);
+    return url === GATEWAY_CHAT_URL
+      ? new Response(JSON.stringify({ error: 'AI_UNAVAILABLE' }), { status: 503 })
+      : new Response('{}', { status: 401 });
+  }, { storage: deepseekStorage });
+  await assert.rejects(tutor.requestWithQueue('/api/v1/tutor/chat', chatBody(), 1000), error => {
+    assert.equal(error.code, 'AI_UNAVAILABLE');
+    assert.match(error.personalFallbackNotice, /DeepSeek V4\.1 Flash 密钥无效或无模型权限，已自动转用公益 AI/);
+    return true;
+  });
+  assert.deepEqual(requests, ['https://api.deepseek.com/chat/completions', GATEWAY_CHAT_URL]);
+});
+
+test('web: Kimi receives earlier turns as a transcript in the user turn while DeepSeek receives them as chat messages', async () => {
+  const history = [{ role: 'user', content: '上一问：什么是速度？' }, { role: 'assistant', content: '上一答：速度描述运动快慢。' }];
+  const sent = {};
+  for (const [label, storage] of [['kimi', kimiStorage], ['deepseek', deepseekStorage]]) {
+    const tutor = loadTutor(async (url, options) => {
+      sent[label] = JSON.parse(options.body);
+      return personalReply(url);
+    }, { storage });
+    await tutor.requestWithQueue('/api/v1/tutor/chat', chatBody(history), 1000);
+  }
+  const kimiMessages = sent.kimi.messages;
+  assert.deepEqual(kimiMessages.map(message => message.role), ['system', 'user'], 'no fabricated assistant turns for Kimi');
+  assert.match(kimiMessages[1].content, /conversationHistory/);
+  assert.match(kimiMessages[1].content, /上一答：速度描述运动快慢。/);
+  assert.equal(sent.kimi.thinking, undefined);
+  assert.ok(sent.kimi.max_completion_tokens >= 8192);
+  const deepseekMessages = sent.deepseek.messages;
+  assert.deepEqual(deepseekMessages.map(message => message.role), ['system', 'user', 'assistant', 'user']);
+  assert.equal(deepseekMessages[2].content, history[1].content);
+  assert.doesNotMatch(deepseekMessages[3].content, /conversationHistory/);
+});
+
+test('web: personal keys never reach the public gateway on chat or generation fallbacks', async () => {
+  for (const storage of [deepseekStorage, kimiStorage]) {
+    const keys = [storage['masterLab.deepseekApiKey'], storage['masterLab.kimiApiKey']].filter(Boolean);
+    for (const [path, body] of [['/api/v1/tutor/chat', chatBody()],
+      ['/api/v1/experiment/generate', { question: '汽车以 20m/s 刹车，加速度 5m/s²，求刹车距离', preferredSubject: '物理' }]]) {
+      const gatewayRequests = [];
+      const tutor = loadTutor(async (url, options) => {
+        if (url.startsWith('http://127.0.0.1:10000')) {
+          gatewayRequests.push(options);
+          return new Response(JSON.stringify(path.endsWith('/chat') ? explainReply : { subject: '物理', source: 'gateway' }));
+        }
+        return new Response(JSON.stringify({ error: 'server_error' }), { status: 500 });
+      }, { storage });
+      await tutor.requestWithQueue(path, body, 1000);
+      assert.equal(gatewayRequests.length, 1, path);
+      const wire = JSON.stringify(gatewayRequests[0].headers) + gatewayRequests[0].body;
+      for (const key of keys) assert.equal(wire.includes(key), false, `${path} must not carry ${key}`);
+      assert.equal(Object.hasOwn(gatewayRequests[0].headers, 'Authorization'), false);
+    }
+  }
 });

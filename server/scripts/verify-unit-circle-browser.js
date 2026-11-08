@@ -64,6 +64,8 @@ try{
   check(await page.evaluate(()=>activeGenericId()==='unitCircle'&&state.p1===30&&state.p2===1),`${width}: actual page selects new deterministic template`);
   check(await page.locator('.parameters input[type=range]').nth(1).isDisabled(),`${width}: second slot is fixed radius, not another variable`);
   check(await page.locator('.parameter').nth(1).locator('.number-control button').evaluateAll(all=>all.every(b=>b.disabled)),`${width}: fixed-radius step buttons disabled`);
+  // 2026-11-06 手机参数底栏：收起态不显示 −/+，按新设计先点把手展开再点步进
+  if(await page.evaluate(()=>document.body.classList.contains('um-docked')&&!document.querySelector('.um-dock').classList.contains('is-expanded')))await page.locator('.um-dock-handle').click();
   await page.locator('.parameters .parameter').nth(0).locator('button[data-delta="1"]').click();check(await page.evaluate(()=>state.p1===30.01&&document.querySelector('.math-unit-circle').dataset.currentDegree==='30.01'),`${width}: decimal increment keeps exact input and updates scene`);await page.locator('#resetButton').click();
   await scene(page,30,Math.sqrt(3)/2,.5,`${width} 30deg`);await layout(page,`unit-circle-${width}`);
   await generate(page,radQuestion);await scene(page,-30,Math.sqrt(3)/2,-.5,`${width} negative radians`);check(await page.evaluate(()=>buildGenericContent().model.unit==='rad'),`${width}: checked original radian unit retained`);await layout(page,`unit-circle-negative-${width}`);

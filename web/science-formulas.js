@@ -212,12 +212,21 @@
   }
 
   const changed = nodes => nodes.some(n => n.type === "frac" || n.type === "root" || n.type === "quantity" || n.sub || n.sup || (n.children && changed(n.children)) || (n.type === "call" && changed([n.fn, n.argument])));
+  // Formula-card symbol keys (2026-11-06): inside a [data-fx-symbols="v0 a …"] formula, the listed atoms get data-sym = letter + subscript
+  // (v₀ → "v0", F浮 → "F浮"). Attributes only: the text, data-math-source and sourceText() output are unchanged.
+  // A lone letter the parser treats as a unit (h, A, W …) is a variable here: units after numbers are already grouped as quantities.
+  const isSymbol = n => n?.type === "atom" && (!n.unit || /^[A-Za-zΑ-Ωα-ω]$/.test(n.value));
+  const symbolKey = n => `${n.value}${n.sub ? n.sub.map(raw).join("") : ""}`;
+  const marked = (n, mark) => Boolean(mark) && isSymbol(n) && mark.has(symbolKey(n));
+  const hasSymbol = (nodes, mark) => nodes.some(n => n && (marked(n, mark) || (n.children && hasSymbol(n.children, mark)) || (n.type === "frac" && hasSymbol([n.numerator, n.denominator], mark)) || (n.type === "root" && hasSymbol([n.content], mark)) || (n.type === "call" && hasSymbol([n.fn, n.argument], mark))));
+  const symbolSet = root => { const host = root?.closest?.("[data-fx-symbols]"); const list = host?.dataset.fxSymbols?.trim(); return list && root.closest("[data-fx-symbols] strong") ? new Set(list.split(/\s+/)) : null; };
   const element = (tag, className, value) => { const n = document.createElement(tag); if (className) n.className = className; if (value !== undefined) n.textContent = value; return n; };
-  function appendNodes(container, nodes) {
+  function appendNodes(container, nodes, mark = null) {
     for (const n of nodes) {
       if (n.sub || n.sup) {
         const span = element("span", "science-math science-scripted");
         span.dataset.mathSource = raw(n);
+        if (marked(n, mark)) span.dataset.sym = symbolKey(n);
         span.setAttribute("role", "math"); span.setAttribute("aria-label", raw(n));
         appendNodes(span, [{ ...n, sub: null, sup: null }]);
         const scripts = element("span", `science-scripts${n.sub && n.sup ? " has-both" : ""}`);
@@ -228,36 +237,38 @@
       if (n.type === "frac") {
         const span = element("span", "science-math vfrac"); span.dataset.mathSource = raw(n); span.setAttribute("role", "math"); span.setAttribute("aria-label", raw(n));
         const num = element("span", "vfrac-num"), den = element("span", "vfrac-den");
-        appendNodes(num, [n.numerator]); appendNodes(den, [n.denominator]); span.append(num, den); container.append(span);
+        appendNodes(num, [n.numerator], mark); appendNodes(den, [n.denominator], mark); span.append(num, den); container.append(span);
       } else if (n.type === "root") {
         const span = element("span", "science-math sqrt-formula"); span.dataset.mathSource = raw(n); span.setAttribute("role", "math"); span.setAttribute("aria-label", raw(n));
         if (n.index) span.append(element("sup", "sqrt-index", n.index));
-        const radicand = element("span", "sqrt-radicand"); appendNodes(radicand, [n.content]); span.append(element("span", "sqrt-sign", "√"), radicand); container.append(span);
+        const radicand = element("span", "sqrt-radicand"); appendNodes(radicand, [n.content], mark); span.append(element("span", "sqrt-sign", "√"), radicand); container.append(span);
       } else if (n.type === "quantity") {
         const span = element("span", "science-math science-quantity"); span.dataset.mathSource = raw(n);
         appendNodes(span, n.children); container.append(span);
       } else if (n.type === "call") {
-        appendNodes(container, [n.fn]); container.append(document.createTextNode(n.separator)); appendNodes(container, [n.argument]);
+        appendNodes(container, [n.fn], mark); container.append(document.createTextNode(n.separator)); appendNodes(container, [n.argument], mark);
       } else if (n.type === "group") {
-        container.append(document.createTextNode(n.open)); appendNodes(container, n.children); container.append(document.createTextNode(n.close));
-      } else if (n.children) appendNodes(container, n.children);
+        container.append(document.createTextNode(n.open)); appendNodes(container, n.children, mark); container.append(document.createTextNode(n.close));
+      } else if (n.children) appendNodes(container, n.children, mark);
+      else if (marked(n, mark)) { const span = element("span", "", n.value); span.dataset.sym = symbolKey(n); container.append(span); }
       else container.append(document.createTextNode(n.value ?? n.raw ?? ""));
     }
   }
 
   function appendText(container, source) { appendNodes(container, parse(source)); }
-  function enhance(root) {
-    if (!root || root.closest?.(".science-math, .katex, [data-no-formula], textarea, input")) return;
+  function enhance(root, markHint = null) {
+    if (!root || root.closest?.(".science-math, .katex, [data-no-formula], [data-sym], textarea, input")) return;
     if (root.namespaceURI === SVG_NS) {
       if (root.tagName.toLowerCase() === "text") enhanceSvgText(root);
       else root.querySelectorAll("text").forEach(enhanceSvgText);
       return;
     }
+    const mark = markHint || symbolSet(root);
     for (const node of [...root.childNodes]) {
       if (node.nodeType === 3) {
         const nodes = parse(node.data);
-        if (changed(nodes)) { const fragment = document.createDocumentFragment(); appendNodes(fragment, nodes); node.replaceWith(fragment); }
-      } else if (node.nodeType === 1 && !node.matches("script, style, textarea, input, code, pre, .science-math, .katex, .ai-inline-math, .ai-display-math, [data-no-formula]")) enhance(node);
+        if (changed(nodes) || hasSymbol(nodes, mark)) { const fragment = document.createDocumentFragment(); appendNodes(fragment, nodes, mark); node.replaceWith(fragment); }
+      } else if (node.nodeType === 1 && !node.matches("script, style, textarea, input, code, pre, .science-math, .katex, .ai-inline-math, .ai-display-math, [data-no-formula], [data-sym]")) enhance(node, mark);
     }
     if (root.matches?.(".vfrac:not(.science-math)")) {
       const numerator = root.querySelector(":scope > .vfrac-num"), denominator = root.querySelector(":scope > .vfrac-den");
@@ -268,7 +279,7 @@
     }
   }
 
-  function safeFragment(value) {
+  function safeFragment(value, mark = null) {
     const template = document.createElement("template"); template.innerHTML = String(value ?? "");
     const output = document.createDocumentFragment();
     const copy = (from, to) => {
@@ -286,10 +297,10 @@
         } else if (node.nodeType === 1) to.append(document.createTextNode(node.outerHTML));
       }
     };
-    copy(template.content, output); enhance(output); return output;
+    copy(template.content, output); enhance(output, mark); return output;
   }
   function html(value) { const host = element("span"); host.append(safeFragment(value)); return host.innerHTML; }
-  function setHtml(host, value) { if (host) host.replaceChildren(safeFragment(value)); }
+  function setHtml(host, value) { if (host) host.replaceChildren(safeFragment(value, symbolSet(host))); }
 
   function toTexNode(n) {
     let value;

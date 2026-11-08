@@ -9,7 +9,9 @@
   const contextEvent = () => window.dispatchEvent(new CustomEvent('masterlab:context-changed', { detail: { reason: 'instant' } }));
   function dismiss() {
     serial++; pending?.abort('user'); pending = null; current = null;
-    panel.hidden = true; document.body.classList.remove('instant-active');
+    // 每次改参数都会经上下文事件走到这里：只在状态确实不同才写，避免无变化的属性写入触发 :has() 失效和 body 观察器多一遍样式重算
+    if (!panel.hidden) panel.hidden = true;
+    if (document.body.classList.contains('instant-active')) document.body.classList.remove('instant-active');
     if ($('instantZoom').open) $('instantZoom').close();
     if ($('promptFavoriteButton')?.dataset.instantDisabled) {
       $('promptFavoriteButton').disabled = favoriteWasDisabled;

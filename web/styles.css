@@ -3699,33 +3699,35 @@ body.ai-tutor-route .ai-tutor-messages { min-height: 360px; max-height: calc(100
 
 .api-key-modal {
   width: min(420px, 100%);
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
   text-align: left;
-}
-
-.api-key-modal .section-kicker {
-  display: inline-block;
-  margin-bottom: 8px;
-  color: #6b7c99;
-  font-size: 10px;
-  letter-spacing: .12em;
 }
 
 .api-key-modal h2 {
   margin: 0 0 8px;
+  padding-right: 28px;
   color: #1c2d4d;
   font-size: 22px;
 }
 
-.api-key-hint {
-  margin: 0 0 16px;
+.api-key-modal h2 span {
+  margin-left: 5px;
+  color: #71829f;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.api-key-modal p {
+  max-width: none;
+  margin: 0;
   color: #667892;
   font-size: 12px;
   line-height: 1.6;
 }
 
-.api-key-hint strong {
-  color: #2057d9;
-  font-weight: 700;
+.api-key-modal .api-key-hint {
+  margin-bottom: 22px;
 }
 
 .api-key-label {
@@ -3736,33 +3738,55 @@ body.ai-tutor-route .ai-tutor-messages { min-height: 360px; max-height: calc(100
   font-weight: 600;
 }
 
-.api-key-input {
+.api-key-input,
+.api-key-select {
   width: 100%;
-  height: 42px;
+  height: 44px;
   padding: 0 12px;
   color: #1c2d4d;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 13px;
+  font: inherit;
+  font-size: 14px;
   border: 1px solid #d5e0f1;
   border-radius: 12px;
   background: #f7f9fd;
   outline: none;
 }
 
-.api-key-input:focus {
+.api-key-select {
+  margin-bottom: 18px;
+  cursor: pointer;
+}
+
+.api-key-input:focus,
+.api-key-select:focus {
   border-color: #7aa3f0;
   background: #fff;
   box-shadow: 0 0 0 3px rgba(32, 87, 217, .12);
 }
 
-.api-key-status {
-  margin: 10px 0 0;
+.api-key-modal .api-key-privacy {
+  margin-top: 8px;
   color: #71829f;
   font-size: 11px;
 }
 
-.api-key-status.is-ready {
-  color: #1a9a6e;
+.api-key-modal .api-key-status {
+  margin-top: 18px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f1f5fc;
+  color: #526987;
+  overflow-wrap: anywhere;
+}
+
+.api-key-modal .api-key-status.is-ready {
+  color: #187959;
+  background: #eef8f3;
+}
+
+.api-key-modal .api-key-status.is-error {
+  color: #b42318;
+  background: #fff1ef;
 }
 
 .api-key-actions {
@@ -3787,6 +3811,11 @@ body.ai-tutor-route .ai-tutor-messages { min-height: 360px; max-height: calc(100
   color: #fff;
   border-color: transparent;
   background: linear-gradient(135deg, #2057d9, #3a7cf0);
+}
+
+@media (max-width: 480px) {
+  .api-key-modal { padding: 24px 20px; }
+  .api-key-input, .api-key-select { font-size: 16px; }
 }
 
 .mentor-mark {
@@ -4732,6 +4761,33 @@ body.ai-tutor-route .ai-tutor-messages { min-height: 360px; max-height: calc(100
 .edu-diagram .dg-drip { fill: none; stroke: #5d9fe0; stroke-width: 2.4; stroke-dasharray: 3 5; stroke-linecap: round; }
 .edu-diagram .dg-board-surface { fill: #e0bf8a; stroke: #8a6a3a; stroke-width: 1.4; }
 .edu-diagram .dg-block { fill: #c99b5d; stroke: #7d5d31; stroke-width: 1.6; }
+/* Friction: separate movement, apparatus and contact annotations into clear lanes. */
+.generic-physics-visual:has(.dg-friction) {
+  background: radial-gradient(ellipse at 50% 40%, #fff 0%, #f2f8ff 74%, #eaf3fc 100%);
+}
+.visual-friction .generic-visual-grid { inset: 8px; }
+.edu-diagram.dg-friction {
+  font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  stroke: none;
+}
+.edu-diagram.dg-friction text { font-weight: 500; }
+.edu-diagram.dg-friction .dg-caption { fill: #243e60; font-size: 24px; font-weight: 700; }
+.edu-diagram.dg-friction .dg-friction-balance { fill: #2563c9; font-size: 21px; font-weight: 600; }
+.edu-diagram.dg-friction .dg-friction-divider { stroke: #dce8f4; stroke-width: 1; }
+.edu-diagram.dg-friction .dg-label { font-size: 21px; }
+.edu-diagram.dg-friction .dg-small { font-size: 19px; }
+.edu-diagram.dg-friction .dg-note { fill: #62758d; font-size: 18px; }
+.edu-diagram.dg-friction .dg-force-text { font-size: 22px; font-weight: 600; }
+.edu-diagram.dg-friction .dg-friction-block-label { fill: #654722; font-weight: 600; }
+.edu-diagram.dg-friction .dg-block { fill: #e3bd82; stroke: #af824a; }
+.edu-diagram.dg-friction .dg-board-surface { fill: #efd7af; stroke: #b79764; }
+.edu-diagram.dg-friction .dg-friction-woodgrain { fill: none; stroke: #c79b61; stroke-width: 1.2; opacity: .55; }
+.edu-diagram.dg-friction .dg-weight { fill: #a6b5c6; stroke: #6c819a; }
+.edu-diagram.dg-friction .dg-friction-leader { fill: none; stroke: #96a8bd; stroke-width: 1.2; }
+.edu-diagram.dg-friction .dg-scale-case { fill: #fff; stroke: #9bafc5; stroke-width: 1.8; }
+.edu-diagram.dg-friction .dg-scale-tick { stroke: #73869e; }
+.edu-diagram.dg-friction .dg-scale-num { fill: #536983; font-size: 16px; }
+.edu-diagram.dg-friction .dg-friction-pointer-head { fill: #d9412f; }
 /* liquid pressure */
 .edu-diagram .dg-probe { fill: #aab8c8; stroke: #56657a; stroke-width: 1.6; }
 .edu-diagram .dg-membrane { stroke: #e0703a; stroke-width: 3; }
@@ -10168,8 +10224,6 @@ body.ai-tutor-detached .generation-overlay { z-index: 10040; }
 .ai-response-mode select:focus-visible, .ai-message-context summary:focus-visible { outline: 2px solid #3174e8; outline-offset: 2px; }
 .ai-selection-action { z-index: 10060; }
 .ai-selection-action[hidden] { display: none !important; }
-.reasoning-steps .reason-step { user-select: text; }
-.formula-spotlight ::selection, .reason-step ::selection, #sceneTip ::selection, #problemText::selection { background: #cde2ff; color: #183c73; }
 .ai-tutor-workspace.is-compact-height .ai-session-toolbar > span:not(.is-error) { display: none; }
 .ai-tutor-workspace.is-compact-height .ai-tutor-context { display: block; margin-top: 4px; padding: 4px 8px; }
 .ai-tutor-workspace.is-compact-height .ai-tutor-context > span,
@@ -11296,4 +11350,31 @@ body.subject-biology-active:not(.awaiting-generation) .reasoning-card .formula-s
   align-items: baseline;
   font-size: 15px;
   line-height: 1.5;
+}
+/* 2026-11-06 引用追问只在 AI 问答界面可用：其余文字默认不可选中；输入框、AI 问答里的对话和“当前题目”除外 */
+html, body {
+  -webkit-user-select: none;
+  user-select: none;
+}
+input, textarea, [contenteditable=""], [contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+.ai-message:not(.error):not(.ai-thinking-row) .ai-message-bubble,
+.ai-tutor-context {
+  -webkit-user-select: text;
+  user-select: text;
+}
+.ai-message-bubble button,
+.ai-message-source,
+.ai-quote-source,
+.ai-message-context,
+.ai-reasoning-block,
+.ai-suggested-questions,
+.ai-answer-tools,
+.ai-diagram,
+.ai-tutor-context > span,
+.ai-context-controls {
+  -webkit-user-select: none;
+  user-select: none;
 }
