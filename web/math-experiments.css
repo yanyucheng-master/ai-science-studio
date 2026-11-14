@@ -50,6 +50,8 @@ body.subject-math-active:not(.awaiting-generation) .experiment-card:has(.math-la
 .unit-circle-diagram { max-height: 370px; }
 .unit-circle-curves { min-height: 200px; }
 .unit-circle-panels svg text { fill: var(--ink); stroke: none; font-size: 17px; font-family: inherit; }
+/* 坐标刻度“1”“−1”会与单位圆相交：文字加白色描边底，圆线在字下方断开，数字清楚可读 */
+.unit-circle-panels .unit-circle-diagram text { paint-order: stroke; stroke: rgba(255,255,255,.94); stroke-width: 3.4px; stroke-linejoin: round; }
 .unit-circle-curves text { font-size: 20px; }
 .uc-axis { stroke: var(--muted); stroke-width: 1.4; }
 .uc-grid { stroke: var(--line); stroke-width: 1; stroke-dasharray: 4 4; }

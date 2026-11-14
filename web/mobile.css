@@ -27,6 +27,12 @@
 .preset-picker-label { display: none; }
 .mobile-quickstart, .mobile-dock, .problem-toggle { display: none; }
 
+/* 模态层打开时，快捷条与参数底栏一起退出显示和键盘焦点顺序。 */
+:root body:has(dialog[open], .modal-backdrop.show, #photoCamera:not([hidden]), #generationOverlay.show) :is(.mobile-dock, .um-dock),
+:root body:is(.announcements-open, .photo-camera-open, .ai-tutor-route) :is(.mobile-dock, .um-dock) {
+  display: none !important;
+}
+
 /* ---------- 2. 触屏手感 ---------- */
 html { -webkit-tap-highlight-color: transparent; }
 button, summary, label, select, a[href], [role="button"], [role="tab"], input[type="range"] { touch-action: manipulation; }
@@ -491,6 +497,7 @@ button, summary, label, select, a[href], [role="button"], [role="tab"], input[ty
   :root body .edu-circuit-svg :is(.component-label, .current-direction-label, .rheostat-connection-label, .rheostat-state-label) { font-size: 22px; font-weight: 400; fill: #4f6782; }
   :root body .edu-circuit-svg :is(.component-value, .component-body-value, .circuit-reading-text, .svg-reading-badge text) { font-size: 21px; font-weight: 500; }
   :root body .edu-circuit-svg .component-symbol { font-size: 21px; font-weight: 500; }
+  :root body .edu-circuit-svg .polarity { font-size: 21px; font-weight: 500; } /* 电源正负号缩放后只有约 6px */
   :root body .edu-circuit-svg .meter-letter { font-size: 32px; font-weight: 500; }
   :root body .circuit-standard-badge { right: 12px; left: 12px; padding: 6px 10px; font-family: inherit; font-weight: 400; line-height: 1.45; text-align: center; }
   :root body .scene.subject-circuit .circuit-board .edu-circuit-svg { top: 64px; height: calc(100% - 70px); }
@@ -695,7 +702,7 @@ button, summary, label, select, a[href], [role="button"], [role="tab"], input[ty
   :root body .edu-diagram:not(.compact-diagram) :is(.dg-label, .dg-value-text, .dg-force-text) { font-size: 20.5px; }
   :root body .edu-diagram:not(.compact-diagram) :is(.dg-small, .dg-note, .dg-dim-text) { font-size: 19px; }
   :root body .edu-diagram:not(.compact-diagram) .dg-table text { font-size: 19px; } /* 表格框按原字号画，只略放大 */
-  :root body .edu-diagram:not(.compact-diagram) :is(.dg-lever-mark, .dg-scale-num) { font-size: 16.5px; }
+  :root body .edu-diagram:not(.compact-diagram) :is(.dg-lever-mark, .dg-scale-num) { font-size: 18.5px; }
   :root body .edu-diagram.dg-sound .dg-small { font-size: 17.2px; } /* 声音：示波器下方的坐标说明贴着画面底边，保持原字号 */
   :root body .edu-diagram.dg-buoyancy .dg-caption { font-size: 20.7px; } /* 浮力：标题紧贴测力计刻度的单位 N，保持原字号 */
   /* 细胞模式图标注 */

@@ -9,7 +9,7 @@ import {fileURLToPath} from 'node:url';
 import {resolve,extname,sep} from 'node:path';
 const {chromium}=createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE||'playwright');
 const root=fileURLToPath(new URL('../../',import.meta.url)),web=resolve(root,'web');
-const output=resolve(root,'artifacts/formula-closeout-2026-10-14');await mkdir(output,{recursive:true});
+const output=process.env.FORMULA_QA_OUTPUT||resolve(root,'artifacts/formula-closeout-2026-10-14');await mkdir(output,{recursive:true});
 const quick=process.argv.includes('--quick');
 const aiOnly=process.argv.includes('--ai-only');
 const variantsOnly=process.argv.includes('--variants');

@@ -15,8 +15,8 @@
 .population-answer { display:flex; flex-direction:column; gap:5px; margin:18px 0; }
 .population-answer strong { color:var(--blue); font-size:26px; }
 .population-answer span:last-child { font-weight:600; }
-.biology-population-scene .population-chart { display:block; width:100%; max-width:680px; height:auto; margin:12px auto; stroke:none; fill:none; }
-.biology-population-scene .population-chart text { fill:var(--ink); stroke:none; font-family:inherit; font-size:19px; }
+.biology-population-scene .population-chart { display:block; width:100%; max-width:520px; height:auto; margin:12px auto; stroke:none; fill:none; }
+.biology-population-scene .population-chart text { fill:var(--ink); stroke:none; font-family:inherit; font-size:13px; }
 .population-chart .population-grid { stroke:#dce5ef; stroke-width:1; }
 .population-chart .population-axis { stroke:#697c94; stroke-width:1.5; }
 .population-chart .population-guide { stroke:#718fbd; stroke-width:2; stroke-dasharray:4 4; }
@@ -24,7 +24,12 @@
 .population-chart .population-curve { fill:none; stroke:#2563cf; stroke-width:2.5; }
 .population-chart .population-capacity { stroke:#c87524; stroke-width:1.5; stroke-dasharray:6 4; }
 .population-chart .population-peak { fill:#c87524; stroke:#fff; stroke-width:1.5; }
-.biology-population-scene .population-chart .population-guide-label { fill:#97520c; font-size:17px; }
+.biology-population-scene .population-chart .population-guide-label { fill:#97520c; font-size:12px; }
+/* 图的像素宽度随容器变化（viewBox 480 宽）：单栏时放大约 1.08 倍，双栏时只有约 0.69 倍；按宽度分档，保证坐标数字读起来都约 13px，不再比别的图表大一倍 */
+@media(min-width:1101px){
+  .biology-population-scene .population-logistic-charts .population-chart text { font-size:18px; }
+  .biology-population-scene .population-logistic-charts .population-chart .population-guide-label { font-size:16px; }
+}
 .population-logistic-charts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
 .population-examples { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:18px; padding-top:12px; border-top:1px solid var(--line); }
 .population-examples button { min-height:44px; padding:8px 12px; color:var(--blue); background:#edf3ff; border:1px solid #cfdef5; border-radius:9px; cursor:pointer; font:inherit; }
@@ -40,6 +45,9 @@
 .generic-physics-lab:has(.biology-population-scene) .stage-facts > div { grid-template-columns:110px minmax(0,1fr); padding:7px 0; border:0; border-radius:0; background:none; box-shadow:none; }
 @media(max-width:1100px){ .population-logistic-charts { grid-template-columns:minmax(0,1fr); } }
 @media(max-width:700px){
+  .biology-population-scene .population-chart { max-width:440px; }
+  .biology-population-scene .population-chart text { font-size:17px; }
+  .biology-population-scene .population-chart .population-guide-label { font-size:15px; }
   .population-logistic-charts { grid-template-columns:minmax(0,1fr); gap:8px; }
   .generic-physics-lab:has(.biology-population-scene){margin:12px;}
   .experiment-card:has(.scene.subject-generic-physics .biology-population-scene) .parameter{min-width:0;grid-template-columns:minmax(0,1fr);gap:8px;}

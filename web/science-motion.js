@@ -70,13 +70,69 @@
     </g>`;
   }
 
+  // 电流脉冲层放在导线之上、元件和文字之下：元件体是不透明的白底，脉冲经过时被挡住，
+  // 不会再盖住“R = 3Ω”之类的标注（原先追加在 SVG 末尾，压在所有东西上面）。
+  function seatPulseLayer(svg) {
+    const layer = svg.querySelector(".circuit-current-pulses");
+    const wire = svg.querySelector("g.edu-wire") || svg.querySelector(".edu-wire");
+    if (!layer || !wire || layer.dataset.seated) return;
+    let anchor = wire;
+    while (anchor.parentNode && anchor.parentNode !== svg) anchor = anchor.parentNode;
+    if (anchor.parentNode === svg && anchor.nextSibling !== layer) anchor.after(layer);
+    layer.dataset.seated = "1";
+  }
+
+  // 方向箭头不放在元件、开关、读数和文字上：从默认位置沿回路往前找第一段空闲的直线导线
+  const ARROW_DEFAULTS = [0.19, 0.74];
+  const ARROW_KEEPOUT = ".edu-meter circle, .resistor-body, .edu-variable-resistor rect, .lamp-circle, .lamp-halo, .edu-switch, .edu-source, .junction, .rheostat-terminal, .svg-reading-badge, text";
+  function arrowFractions(svg, path, length) {
+    const matrix = svg.getScreenCTM?.();
+    if (!matrix || !length) return ARROW_DEFAULTS.slice();
+    const inverse = matrix.inverse();
+    const zones = [...svg.querySelectorAll(ARROW_KEEPOUT)]
+      .filter(node => !node.closest("defs") && !node.closest(".circuit-current-pulses"))
+      .map(node => {
+        const box = node.getBoundingClientRect();
+        if (!box.width && !box.height) return null;
+        const a = new DOMPoint(box.left, box.top).matrixTransform(inverse);
+        const b = new DOMPoint(box.right, box.bottom).matrixTransform(inverse);
+        const pad = node.matches("text") ? 6 : 12;
+        return { l: Math.min(a.x, b.x) - pad, r: Math.max(a.x, b.x) + pad, t: Math.min(a.y, b.y) - pad, b: Math.max(a.y, b.y) + pad };
+      }).filter(Boolean);
+    const free = d => {
+      const p = path.getPointAtLength(d);
+      return !zones.some(z => p.x >= z.l && p.x <= z.r && p.y >= z.t && p.y <= z.b);
+    };
+    const straight = d => {
+      const p0 = path.getPointAtLength(Math.max(0, d - 9)), p1 = path.getPointAtLength(Math.min(length, d + 9));
+      const mid = path.getPointAtLength(d);
+      return Math.abs((p1.x - p0.x) * (mid.y - p0.y) - (p1.y - p0.y) * (mid.x - p0.x)) < 1.5 * Math.hypot(p1.x - p0.x, p1.y - p0.y);
+    };
+    return ARROW_DEFAULTS.map(start => {
+      for (let step = 0; step <= 1000; step += 1) {
+        for (const sign of step ? [1, -1] : [1]) {
+          const fraction = start + sign * step / 1000;
+          if (fraction < 0.03 || fraction > 0.97) continue;
+          const d = fraction * length;
+          if (free(d) && straight(d)) return fraction;
+        }
+      }
+      return start;
+    });
+  }
+
   function bindCircuit(svg, phase = 0) {
+    seatPulseLayer(svg);
     const path = svg.querySelector(".current-loop");
     const length = path.getTotalLength();
     const dots = [...svg.querySelectorAll(".circuit-current-pulse")];
     const arrows = [...svg.querySelectorAll(".current-direction")];
+    let fractions = ARROW_DEFAULTS.slice();
+    let measured = false;
     const motion = { svg, current: 0, phase, get closed() { return !!svg.querySelector(".edu-switch-closed"); },
       render(dt = 0, reduced = false) {
+        // 隐藏（display:none）时取不到屏幕矩阵；等画面出现后再量一次
+        if (!measured && svg.getScreenCTM?.()) { fractions = arrowFractions(svg, path, length); measured = true; }
         const conducting = motion.current > 0 && motion.closed;
         if (conducting && !reduced) motion.phase = (motion.phase + currentSpeed(motion.current) * dt / length) % 1;
         svg.dataset.current = String(motion.current);
@@ -87,7 +143,7 @@
         });
         arrows.forEach((arrow, i) => {
           arrow.style.display = conducting ? "" : "none";
-          const distance = length * (i ? 0.74 : 0.19);
+          const distance = length * fractions[i];
           const p = path.getPointAtLength(distance), next = path.getPointAtLength(distance + 1);
           arrow.setAttribute("transform", `translate(${p.x} ${p.y}) rotate(${Math.atan2(next.y-p.y, next.x-p.x)*180/Math.PI})`);
         });

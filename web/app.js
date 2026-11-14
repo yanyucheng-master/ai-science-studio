@@ -183,6 +183,14 @@ function persistGradeLevel(level) {
 }
 
 const INITIAL_GRADE_LEVEL = loadGradeLevel();
+const CELL_VIEW_STORAGE_KEY = "masterLab.cellView.v1";
+const CELL_3D_DEFAULT_VIEW = window.MasterLabCell3D?.defaultView || { yaw: -30, pitch: 10, zoom: 1 };
+const cell3d = { viewer: null, loading: null, failed: false, modelKey: "" };
+
+function loadCellView() {
+  try { return localStorage.getItem(CELL_VIEW_STORAGE_KEY) === "2d" ? "2d" : "3d"; }
+  catch { return "3d"; }
+}
 
 const state = {
   subject: "物理",
@@ -243,6 +251,10 @@ const state = {
   selectedOrganelle: "nucleus",
   cellRotateX: -4,
   cellRotateY: -10,
+  cellView: loadCellView(),
+  cellYaw: CELL_3D_DEFAULT_VIEW.yaw,
+  cellPitch: CELL_3D_DEFAULT_VIEW.pitch,
+  cellZoom: CELL_3D_DEFAULT_VIEW.zoom,
   cellAutoRotate: false,
   cellDrag: null,
   toastTimer: null,
@@ -874,6 +886,7 @@ const elements = {
   fullscreenButtons: [$("#fullscreenButton"), $("#sceneFullscreenButton")].filter(Boolean),
   plantCellModel: $("#plantCellModel"),
   plantCellViewport: $("#plantCellViewport"),
+  cellModel3d: $("#cellModel3d"),
   cellResetButton: $("#cellResetButton"),
   cellAutoButton: $("#cellAutoButton"),
   cellLabelButton: $("#cellLabelButton"),
@@ -1176,7 +1189,11 @@ function saveCurrentSubjectSnapshot() {
     chemForm: { ...chemistryForm() },
     cellLevelLocked: state.cellLevelLocked,
     cellRotateX: state.cellRotateX,
-    cellRotateY: state.cellRotateY
+    cellRotateY: state.cellRotateY,
+    cellView: state.cellView,
+    cellYaw: state.cellYaw,
+    cellPitch: state.cellPitch,
+    cellZoom: state.cellZoom
   };
   syncFavoriteState();
 }
@@ -1231,8 +1248,15 @@ function restoreSubjectSnapshot(subject) {
     state.cellLevel = normalizeCellLevel(snapshot.cellLevel || state.cellLevel);
     state.cellLevelLocked = Boolean(snapshot.cellLevelLocked);
     state.selectedOrganelle = snapshot.selectedOrganelle || "nucleus";
+    if (snapshot.cellView === "2d" || snapshot.cellView === "3d") state.cellView = snapshot.cellView;
+    setCellView3d({
+      yaw: snapshot.cellYaw ?? CELL_3D_DEFAULT_VIEW.yaw,
+      pitch: snapshot.cellPitch ?? CELL_3D_DEFAULT_VIEW.pitch,
+      zoom: snapshot.cellZoom ?? CELL_3D_DEFAULT_VIEW.zoom
+    });
     syncBiologyContent(state.cellType);
     setCellRotation(snapshot.cellRotateX ?? -4, snapshot.cellRotateY ?? -10);
+    syncBiologyAngleControl();
   }
   if (subject === "化学") {
     state.chemGiven = snapshot.chemGiven || null;
@@ -2712,7 +2736,7 @@ function buildBiologyContent(type = state.cellType, level = state.cellLevel) {
   const count = currentCellOrganelles(type, lvl).length;
   const levelName = CELL_LEVEL_LABELS[lvl];
   const params = [
-    { label: "观察角度", desc: "拖拽或滑动倾转分层剖面", unit: "°", min: -45, max: 45, step: 5, value: state.cellRotateY || -10 },
+    biologyAngleParam(),
     { label: "结构数量", desc: `${levelName}要求识别的结构`, unit: "个", min: 1, max: 12, step: 1, value: count }
   ];
   const generationStages = [
@@ -2809,6 +2833,154 @@ function syncBiologyContent(type = state.cellType, level = state.cellLevel) {
   return content;
 }
 
+function cellViewMode() {
+  return window.MasterLabCell3D && !cell3d.failed && state.cellView === "3d" ? "3d" : "2d";
+}
+
+function cell3dActive() {
+  return state.hasGenerated && state.subject === "生物" && !activeGenericTemplate()
+    && cellViewMode() === "3d" && Boolean(cell3d.viewer);
+}
+
+function currentCellAngle() {
+  return Math.round(cellViewMode() === "3d" ? state.cellYaw : state.cellRotateY);
+}
+
+function biologyAngleParam() {
+  return cellViewMode() === "3d"
+    ? { label: "水平转角", desc: "拖动翻转立体模型，双指或 Ctrl + 滚轮缩放", unit: "°", min: -180, max: 180, step: 5, value: currentCellAngle() }
+    : { label: "观察角度", desc: "拖动倾转平面模式图", unit: "°", min: -45, max: 45, step: 5, value: currentCellAngle() };
+}
+
+function syncBiologyAngleControl() {
+  if (state.subject !== "生物" || activeGenericTemplate()) return;
+  const param = biologyAngleParam();
+  SUBJECTS["生物"].params[0] = param;
+  state.p1 = param.value;
+  elements.paramLabels[0].textContent = param.label;
+  elements.paramDescriptions[0].textContent = param.desc;
+  elements.paramUnits[0].textContent = param.unit;
+  setRange(elements.ranges[0], param);
+  elements.paramValues[0].textContent = formatParam(param, param.value);
+}
+
+function setCellView3d(view, { animate = false } = {}) {
+  if (animate && cell3dActive()) {
+    cell3d.viewer.setView(view, "reset", { animate: true });
+    return;
+  }
+  if (Number.isFinite(view.yaw)) state.cellYaw = ((view.yaw + 180) % 360 + 360) % 360 - 180;
+  if (Number.isFinite(view.pitch)) state.cellPitch = ((view.pitch + 180) % 360 + 360) % 360 - 180;
+  if (Number.isFinite(view.zoom)) state.cellZoom = clamp(view.zoom, 0.65, 1.65);
+  cell3d.viewer?.setView({ yaw: state.cellYaw, pitch: state.cellPitch, zoom: state.cellZoom });
+}
+
+function applyCellAngle(angle) {
+  if (cellViewMode() === "2d") setCellRotation(-8, angle);
+  else {
+    const distance = Math.abs(((state.cellYaw - angle + 540) % 360) - 180);
+    if (distance > 2.5) setCellView3d({ yaw: angle });
+  }
+}
+
+function onCell3dUnavailable() {
+  cell3d.failed = true;
+  cell3d.viewer?.dispose();
+  cell3d.viewer = null;
+  cell3d.modelKey = "";
+  setCellAutoRotate(false);
+  syncBiologyAngleControl();
+  updateCellModelMode();
+  if (state.subject === "生物" && state.hasGenerated && !activeGenericTemplate()) {
+    showToast("立体模型暂时无法显示，已切换平面图。刷新页面后可重试。");
+  }
+}
+
+function ensureCell3d() {
+  if (cell3d.viewer || cell3d.loading || cell3d.failed || !window.MasterLabCell3D || !elements.cellModel3d) return;
+  cell3d.loading = window.MasterLabCell3D.create(elements.cellModel3d, {
+    isActive: () => cell3dActive() && !document.hidden && !location.hash.startsWith("#/ai-tutor"),
+    onSelect: selectBioOrganelle,
+    onHover: id => {
+      clearBioHoverLabels();
+      if (id) $$(`.cell-structure-tag[data-organelle="${id}"]`).forEach(node => node.classList.add("hover"));
+    },
+    onView: view => {
+      state.cellYaw = view.yaw;
+      state.cellPitch = view.pitch;
+      state.cellZoom = view.zoom;
+      if (view.source !== "api") syncBiologyRotationUi();
+    },
+    onBusy: () => animationClock.reconcile(),
+    onInteract: () => { clearReasoningTimers(); setCellAutoRotate(false); },
+    onLost: onCell3dUnavailable
+  }).then(viewer => {
+    cell3d.loading = null;
+    cell3d.viewer = viewer;
+    setCellView3d({ yaw: state.cellYaw, pitch: state.cellPitch, zoom: state.cellZoom });
+    updateCellModelMode();
+    viewer.setSelected(state.selectedOrganelle);
+  }).catch(() => {
+    cell3d.loading = null;
+    onCell3dUnavailable();
+  });
+}
+
+function syncCellViewSurface() {
+  const onCell = state.hasGenerated && state.subject === "生物" && !activeGenericTemplate();
+  if (onCell && cellViewMode() === "3d") ensureCell3d();
+  const live = onCell && cell3dActive();
+  if (!live) cell3d.viewer?.cancelInteraction();
+  if (!live && elements.cellModel3d?.contains(document.activeElement)) elements.plantCellViewport.focus();
+  elements.plantCellModel.hidden = live;
+  if (elements.cellModel3d) elements.cellModel3d.hidden = !live;
+  elements.plantCellViewport.dataset.view = live ? "3d" : "2d";
+  $$(".cell-view-toggle button").forEach(button => {
+    const on = button.dataset.view === cellViewMode();
+    button.classList.toggle("active", on);
+    button.setAttribute("aria-pressed", String(on));
+    button.disabled = button.dataset.view === "3d" && (cell3d.failed || !window.MasterLabCell3D);
+    button.title = button.disabled ? "立体模型不可用，刷新页面后可重试" : "";
+  });
+  const status = $("#cellRenderStatus");
+  if (status) {
+    const loading = cellViewMode() === "3d" && Boolean(cell3d.loading);
+    status.hidden = !onCell || (!loading && !cell3d.failed);
+    status.textContent = cell3d.failed ? "立体模型暂时无法显示，当前使用平面图。刷新页面后可重试。" : "正在载入立体模型…";
+  }
+  const hint = $(".cell-interaction-hint");
+  if (hint) hint.textContent = live
+    ? "拖动翻转 · 双指或 Ctrl + 滚轮缩放 · 点击结构查看功能"
+    : "拖动调整视角 · 点击模型或名称查看功能";
+  if (!live) return;
+  const key = `${state.cellType}:${normalizeCellLevel(state.cellLevel)}`;
+  try {
+    if (key !== cell3d.modelKey) {
+      cell3d.viewer.setModel(state.cellType, currentCellOrganelles().map(({ id, name }) => ({ id, name })));
+      cell3d.modelKey = key;
+    }
+    cell3d.viewer.setLabelsVisible(state.cellLabelsVisible);
+    cell3d.viewer.setSelected(state.selectedOrganelle);
+    elements.cellModel3d.setAttribute("aria-label", `${CELL_TYPE_LABELS[state.cellType]}立体剖开模型。拖动或方向键翻转，加减号缩放，Home 重置。结构名称可用下方按钮选择。`);
+  } catch { onCell3dUnavailable(); }
+}
+
+function setCellView(view) {
+  if (view === "3d" && (cell3d.failed || !window.MasterLabCell3D)) return;
+  clearReasoningTimers();
+  setCellAutoRotate(false);
+  if (state.cellDrag) {
+    const id = state.cellDrag.pointerId;
+    state.cellDrag = null;
+    if (elements.plantCellViewport.hasPointerCapture(id)) elements.plantCellViewport.releasePointerCapture(id);
+  }
+  state.cellView = view === "2d" ? "2d" : "3d";
+  try { localStorage.setItem(CELL_VIEW_STORAGE_KEY, state.cellView); } catch { /* View remains available for this page. */ }
+  syncBiologyAngleControl();
+  updateCellModelMode();
+  if (state.hasGenerated) saveCurrentSubjectSnapshot();
+}
+
 function setCellRotation(x = state.cellRotateX, y = state.cellRotateY) {
   state.cellRotateX = Math.max(-28, Math.min(18, x));
   state.cellRotateY = clamp(y, -45, 45);
@@ -2819,12 +2991,14 @@ function setCellRotation(x = state.cellRotateX, y = state.cellRotateY) {
 }
 
 function setCellAutoRotate(enabled) {
+  cell3d.viewer?.stopMotion();
   state.cellAutoRotate = Boolean(enabled) && !motionPreference.matches;
   cellSweepDirection = state.cellRotateY >= 45 ? -1 : 1;
   if (elements.plantCellModel) elements.plantCellModel.classList.toggle("auto-rotate", state.cellAutoRotate);
   if (elements.cellAutoButton) {
     elements.cellAutoButton.classList.toggle("active", state.cellAutoRotate);
     elements.cellAutoButton.textContent = state.cellAutoRotate ? "停止观察" : "自动观察";
+    elements.cellAutoButton.setAttribute("aria-pressed", String(state.cellAutoRotate));
     elements.cellAutoButton.disabled = motionPreference.matches;
   }
   animationClock.reconcile();
@@ -2841,8 +3015,14 @@ function updateCellModelMode() {
   elements.plantCellModel.dataset.level = level;
   elements.plantCellModel.setAttribute("aria-label", `${CELL_TYPE_LABELS[state.cellType]}${level === "senior" ? "亚显微结构模式图" : "结构示意图"}`);
   elements.plantCellModel.dataset.selected = state.selectedOrganelle;
+  syncCellViewSurface();
   const title = $(".cell-viewer-head > span");
-  if (title) title.textContent = `${CELL_TYPE_LABELS[state.cellType]} · ${level === "senior" ? "亚显微结构" : "结构示意"}`;
+  if (title) {
+    const detail = document.createElement("span");
+    detail.className = "cell-title-detail";
+    detail.textContent = ` · ${level === "senior" ? "亚显微结构" : "结构示意"}`;
+    title.replaceChildren(CELL_TYPE_LABELS[state.cellType], detail);
+  }
   $$(".cell-level-toggle button").forEach(button => {
     const on = button.dataset.level === level;
     button.classList.toggle("active", on);
@@ -2876,6 +3056,7 @@ function renderCellDetail(id = state.selectedOrganelle) {
   const organelle = map.get(id) || map.get(defaultOrganelleForCellType());
   state.selectedOrganelle = organelle.id;
   elements.plantCellModel.dataset.selected = organelle.id;
+  cell3d.viewer?.setSelected(organelle.id);
 
   $$(".cell-organelle").forEach(node => {
     node.classList.toggle("active", node.dataset.organelle === organelle.id);
@@ -2910,9 +3091,11 @@ function selectBioOrganelle(id) {
   showToast(`已选中：${selectedOrganelle().name}`);
 }
 
-function resetBiologyCellModel() {
+function resetBiologyCellModel({ animate = false } = {}) {
   setCellAutoRotate(false);
   setCellRotation(-4, -10);
+  setCellView3d(CELL_3D_DEFAULT_VIEW, { animate });
+  syncBiologyAngleControl();
   updateCellModelMode();
   renderCellDetail(state.selectedOrganelle || defaultOrganelleForCellType());
 }
@@ -3445,6 +3628,26 @@ function renderDiagramVisual(content) {
       .join("");
   }
 }
+
+function seekTextbookStep(index) {
+  const count = activeGenericTemplate()?.protocolSteps;
+  if (!state.hasGenerated || !count || !Number.isInteger(index) || index < 0 || index >= count) return false;
+  clearDemoTimers();
+  clearReasoningTimers();
+  pauseExperiment();
+  state.time = index / count * duration();
+  updateScene();
+  return true;
+}
+
+elements.genericPhysicsVisual?.addEventListener("click", event => {
+  const id = activeGenericId();
+  const selector = id === "photosynthesis" ? "[data-photosynthesis-step]" : id === "leafDisks" ? "[data-leaf-step]" : "";
+  const step = selector && event.target.closest?.(selector);
+  if (!state.hasGenerated || !step) return;
+  const index = Number(id === "photosynthesis" ? step.dataset.photosynthesisStep : step.dataset.leafStep);
+  seekTextbookStep(index);
+});
 
 elements.genericPhysicsVisual?.addEventListener("click", event => {
   if (activeGenericId() === "population") {
@@ -4574,6 +4777,47 @@ function planLocalExperiment(question, context = {}) {
   const presetQuestion = context.presetQuestion ?? SUBJECTS[subjectContext]?.question;
   const strictSubject = presetQuestion && question === presetQuestion ? subjectContext : detectSubjectStrict(question);
   const detected = strictSubject || subjectContext;
+  // The complete protocol parser still validates the original text before any routing inference.
+  const protocolPlans = genericTemplatesOf("生物").filter(template => template.localOnly && template.protocolAssessment).map(template => ({
+    template, parse:parseGenericQuestion(question, template.id, { subject:"生物", gradeLevel }), assessment:template.protocolAssessment(question)
+  }));
+  const completeProtocols = protocolPlans.filter(x=>x.parse?.ok);
+  if(completeProtocols.length===1){const {template,parse}=completeProtocols[0];return {ok:true,subject:"生物",kind:"extra",templateId:template.id,parse,protocolOwnership:"complete"};}
+  const protocolRefusal = (items, uncertain=false) => {
+    const one=items.length===1?items[0]:null;
+    const parse=one?(one.assessment.parsed.ok?one.parse:one.assessment.parsed):{ok:false,message:"题目涉及两套固定教材流程，归属不能唯一确认。请分别给出同叶遮光或叶圆片的条件和所问。"};
+    const message=uncertain?"仅确认了部分教材操作，尚不能确认完整流程。"+parse.message:parse.message;
+    return {ok:false,subject:"生物",localOnly:true,diagnosticTemplateId:one?.template.id||"",protocolOwnership:uncertain?"uncertain":"confirmed",parse:{ok:false,message}};
+  };
+  if(completeProtocols.length>1)return protocolRefusal(completeProtocols);
+  const confirmedProtocols=protocolPlans.filter(x=>["complete","confirmed"].includes(x.assessment.ownership));
+  const uncertainProtocols=protocolPlans.filter(x=>x.assessment.ownership==="uncertain");
+  const ordinary = planStandardExperiment(question, detected, strictSubject, gradeLevel, templateContext);
+  // A single exclusive request can scope out unlabelled facts only after an
+  // ordinary template accepts the full original prompt and no biology ask remains.
+  const candidates = [...confirmedProtocols, ...uncertainProtocols];
+  if (ordinary.ok && ordinary.subject !== "生物" && candidates.every(({assessment}) =>
+    assessment.evidence.singleExclusiveRequest && !assessment.evidence.requested)) return ordinary;
+  const activeProtocols = [...confirmedProtocols, ...uncertainProtocols.filter(x => x.assessment.evidence.requested)];
+  if (activeProtocols.length) {
+    const otherQuestion = ordinary.ok || activeProtocols.some(({assessment}) =>
+      assessment.evidence.questionSections.some(section => {
+        const subject = detectSubjectStrict(section);
+        return subject && subject !== "生物";
+      }));
+    if (otherQuestion) {
+      const refusal = protocolRefusal(activeProtocols);
+      return { ...refusal, subject: detected, protocolOwnership: "mixed",
+        parse: { ok: false, message: "题目同时含有其他实验所问和教材生物操作或子问。请明确只生成哪一道实验，或分开提交各小问。教材流程核对：" + refusal.parse.message } };
+    }
+  }
+  if(confirmedProtocols.length)return protocolRefusal(confirmedProtocols);
+  if(ordinary.ok && !activeProtocols.length)return ordinary;
+  if(uncertainProtocols.length)return protocolRefusal(uncertainProtocols,true);
+  return ordinary;
+}
+
+function planStandardExperiment(question, detected, strictSubject, gradeLevel, templateContext) {
   const failures = [];
   const attempt = (kind, parse, extra = {}) => {
     if (parse?.ok) return { ok: true, subject: detected, kind, parse, ...extra };
@@ -4643,8 +4887,9 @@ function planLocalExperiment(question, context = {}) {
   }
   if (detected === "生物") {
     for (const template of genericTemplatesOf("生物")) {
-      if (!template.keywords?.test(normalizeQuestionText(question))) continue;
-      const generic = attempt("extra", parseGenericQuestion(question, template.id, { subject: "生物", gradeLevel }), { templateId: template.id });
+      if (template.localOnly || !template.keywords?.test(normalizeQuestionText(question))) continue;
+      const parsed = parseGenericQuestion(question, template.id, { subject: "生物", gradeLevel });
+      const generic = attempt("extra", parsed, { templateId: template.id });
       if (generic) return generic;
     }
     const plan = attempt("biology", parseBiologyCellQuestion(question, { gradeLevel }));
@@ -4821,7 +5066,7 @@ function valuesAt(time) {
     return { progress: 0, timelineProgress: 0, metrics: [x, slope, y], x, y, slope };
   }
 
-  return { progress, metrics: [currentCellOrganelles().length, Math.round(state.cellRotateY), t] };
+  return { progress, metrics: [currentCellOrganelles().length, currentCellAngle(), t] };
 }
 
 function formatNumber(value) {
@@ -4901,11 +5146,11 @@ function mathTickText(value, step) {
 
 // One pixel-exact coordinate system for axes, grid and ticks (textbook style: O, x, y, arrows).
 // The tangent graph and the generic math templates (quadratic, linear systems) draw on the same frame.
-function mathGraphFrame(svg, bounds) {
+function mathGraphFrame(svg, bounds, options = {}) {
   const width = Math.max(260, Math.round(svg.clientWidth || 600));
   const height = Math.max(170, Math.round(svg.clientHeight || 280));
   svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-  const pad = { left: 30, right: 30, top: 18, bottom: 22 };
+  const pad = { left: 30, right: width < 420 && options.narrowPadRight ? options.narrowPadRight : 30, top: 18, bottom: 22 };
   const plotW = width - pad.left - pad.right;
   const plotH = height - pad.top - pad.bottom;
   const sx = value => pad.left + ((value - bounds.minX) / (bounds.maxX - bounds.minX)) * plotW;
@@ -4972,6 +5217,14 @@ function mathCurvePath(frame, fn, count = 240) {
 function pruneMathTickLabels(svg, keepSelector) {
   try {
     const keep = [...svg.querySelectorAll(keepSelector)].map(node => node.getBBox());
+    // 叠在图左下角的“图像解释 / 观察提示”说明条也算占用：被它盖住的刻度数字不再画
+    const svgRect = svg.getBoundingClientRect();
+    for (const note of document.querySelectorAll("#mathSlopeNote, #sceneTip")) {
+      if (!note.textContent.trim() || getComputedStyle(note).display === "none" || !svgRect.width || !svg.viewBox?.baseVal?.width) continue;
+      const rect = note.getBoundingClientRect();
+      const scaleX = svg.viewBox.baseVal.width / svgRect.width, scaleY = svg.viewBox.baseVal.height / svgRect.height;
+      if (rect.width && rect.height) keep.push({ x: (rect.left - svgRect.left) * scaleX, y: (rect.top - svgRect.top) * scaleY, width: rect.width * scaleX, height: rect.height * scaleY });
+    }
     svg.querySelectorAll(".math-tick-label").forEach(label => {
       const box = label.getBBox();
       const hit = keep.some(other => box.x < other.x + other.width + 3 && other.x < box.x + box.width + 3 && box.y < other.y + other.height + 1 && other.y < box.y + box.height + 1);
@@ -4987,15 +5240,16 @@ function renderMathGraph(model = currentMathModel(), x = state.p1) {
   const svg = elements.mathGraph;
   if (!svg) return;
   state.mathGraphX = x;
-  const frame = mathGraphFrame(svg, mathGraphBounds(model));
+  // 窄屏多留一点右边距，斜率三角形右侧的 Δy 标注才放得下
+  const frame = mathGraphFrame(svg, mathGraphBounds(model), { narrowPadRight: 52 });
   const { bounds, width, height, pad, plotW, sx, sy, fx, within, axisX, axisY, xStep, parts } = frame;
+  const labels = [];
 
   const { d, firstPoint, lastPoint } = mathCurvePath(frame, value => model.value(value));
   const y0 = model.value(x);
   const slope = model.derivative(x);
   const hasPoint = Number.isFinite(y0);
   const plot = [`<path class="math-curve" d="${d}"/>`];
-  const slopeText = [];
   let triangleDir = 0;
   if (hasPoint && Number.isFinite(slope)) {
     const t1 = y0 + slope * (bounds.minX - x);
@@ -5013,29 +5267,58 @@ function renderMathGraph(model = currentMathModel(), x = state.p1) {
       const qx = sx(xEnd);
       const qy = sy(yEnd);
       plot.push(`<path class="math-slope-triangle" d="M${fx(px)} ${fx(py)}H${fx(qx)}V${fx(qy)}"/>`);
-      slopeText.push(`<text class="math-slope-text" x="${fx((px + qx) / 2)}" y="${fx(py + (qy < py ? 14 : -6))}" text-anchor="middle">Δx = ${mathTickText(run, xStep)}</text>`);
-      const riseRight = dir > 0 ? qx + 6 + 60 < width : qx - 6 - 60 < 0;
-      slopeText.push(`<text class="math-slope-text" x="${fx(riseRight === (dir > 0) ? qx + 6 : qx - 6)}" y="${fx((py + qy) / 2 + 4)}" text-anchor="${riseRight === (dir > 0) ? "start" : "end"}">Δy ${eqSign(slope * run, 4)} ${formatMathNumber(slope * run)}</text>`);
+      // 标注依次尝试候选位置（见 placeMathLabels）：Δx 贴水平边，Δy 贴竖直边，不压曲线、切线和 P 点标注
+      const midX = (px + qx) / 2;
+      const midY = (py + qy) / 2 + 4;
+      const outside = qy < py ? 14 : -6;
+      labels.push({ text: `Δx = ${mathTickText(run, xStep)}`, cls: "math-slope-text", priority: 1,
+        candidates: [[midX, py + outside, "middle"], [midX, py + (qy < py ? -6 : 14), "middle"], [midX, py + outside + (outside > 0 ? 14 : -14), "middle"],
+          [qx + dir * 4, py + outside, dir > 0 ? "start" : "end"], [px - dir * 8, py + outside, dir > 0 ? "end" : "start"]] });
+      const rise = `Δy ${eqSign(slope * run, 4)} ${formatMathNumber(slope * run)}`;
+      labels.push({ text: rise, cls: "math-slope-text", priority: 1,
+        candidates: [[qx + dir * 6, midY, dir > 0 ? "start" : "end"], [qx - dir * 6, midY, dir > 0 ? "end" : "start"],
+          [qx + dir * 6, midY + 16, dir > 0 ? "start" : "end"], [qx + dir * 6, midY - 16, dir > 0 ? "start" : "end"],
+          [qx - dir * 6, midY + 16, dir > 0 ? "end" : "start"], [qx - dir * 6, midY - 16, dir > 0 ? "end" : "start"]] });
     }
   }
-  parts.push(`<g clip-path="url(#mathPlotClip)">${plot.join("")}</g>${slopeText.join("")}`);
-  if (lastPoint && firstPoint) {
-    // Put the function name at the curve end farther from P so it never sits on the slope triangle.
-    const pointX = hasPoint ? sx(x) : width / 2;
-    const useLeft = Math.abs(firstPoint[0] - pointX) > Math.abs(lastPoint[0] - pointX);
-    const end = useLeft ? firstPoint : lastPoint;
-    const labelY = fx(Math.max(Math.min(end[1] + (end[1] < height / 2 ? 18 : -10), height - 26), 14));
-    parts.push(`<text class="math-function-label" x="${fx(useLeft ? Math.max(end[0] + 6, 8) : Math.min(end[0] - 6, width - 8))}" y="${labelY}" text-anchor="${useLeft ? "start" : "end"}">y = ${model.expression}</text>`);
-  }
+  parts.push(`<g clip-path="url(#mathPlotClip)">${plot.join("")}</g>`);
   if (hasPoint) {
     const px = sx(x);
     const py = sy(y0);
     parts.push(`<path class="math-projection" d="M${fx(px)} ${fx(py)}V${fx(axisY)}M${fx(px)} ${fx(py)}H${fx(axisX)}"/>`);
     parts.push(`<circle class="math-point" cx="${fx(px)}" cy="${fx(py)}" r="6.5"/>`);
     const labelRight = triangleDir > 0 ? px - 110 < pad.left : px < pad.left + plotW - 90;
-    parts.push(`<text class="math-point-label" x="${fx(px + (labelRight ? 11 : -11))}" y="${fx(py - 10)}" text-anchor="${labelRight ? "start" : "end"}">P(${formatMathNumber(x)}, ${formatMathNumber(y0)})</text>`);
+    const side = labelRight ? 1 : -1;
+    const anchor = labelRight ? "start" : "end";
+    const candidates = [[px + side * 11, py - 10, anchor], [px - side * 11, py - 10, anchor === "start" ? "end" : "start"],
+      [px + side * 11, py + 20, anchor], [px - side * 11, py + 20, anchor === "start" ? "end" : "start"]];
+    // 贴近点的位置都被占用时，再在稍远的一圈里找空档
+    for (const radius of [22, 34]) {
+      for (const angle of [-60, -120, 60, 120, -90, 90, 0, 180]) {
+        const ux = Math.cos(angle * Math.PI / 180), uy = Math.sin(angle * Math.PI / 180);
+        candidates.push([px + ux * radius, py + uy * radius + (uy > 0.2 ? 12 : uy < -0.2 ? 0 : 5), ux > 0.2 ? "start" : ux < -0.2 ? "end" : "middle"]);
+      }
+    }
+    labels.push({ text: `P(${formatMathNumber(x)}, ${formatMathNumber(y0)})`, cls: "math-point-label", priority: 0, candidates });
   }
+  if (lastPoint && firstPoint) {
+    // 函数名先尝试离 P 较远的曲线端点旁，再沿绘图区由近及远找不压线、不压其他标注的空位
+    const pointX = hasPoint ? sx(x) : width / 2;
+    const useLeft = Math.abs(firstPoint[0] - pointX) > Math.abs(lastPoint[0] - pointX);
+    const end = useLeft ? firstPoint : lastPoint;
+    const labelY = Math.max(Math.min(end[1] + (end[1] < height / 2 ? 18 : -10), height - 26), 14);
+    const candidates = [[useLeft ? Math.max(end[0] + 6, 8) : Math.min(end[0] - 6, width - 8), labelY, useLeft ? "start" : "end"]];
+    const grid = [];
+    for (let gx = pad.left + 6; gx <= pad.left + plotW - 6; gx += 14) {
+      for (let gy = pad.top + 16; gy <= pad.top + (height - pad.top - pad.bottom) - 6; gy += 14) grid.push([gx, gy, "start"]);
+    }
+    grid.sort((m, n) => Math.hypot(m[0] - end[0], m[1] - end[1]) - Math.hypot(n[0] - end[0], n[1] - end[1]));
+    labels.push({ text: `y = ${model.expression}`, cls: "math-function-label", priority: 2, candidates: [...candidates, ...grid.slice(0, 60)], raw: true });
+  }
+  labels.sort((m, n) => m.priority - n.priority);
+  parts.push(labels.map((label, index) => `<text class="${label.cls}" data-label="${index}" x="${fx(label.candidates[0][0])}" y="${fx(label.candidates[0][1])}" text-anchor="${label.candidates[0][2]}">${label.raw ? label.text : mathLabelText(label.text)}</text>`).join(""));
   svg.innerHTML = parts.join("");
+  placeMathLabels(svg, labels, frame);
   pruneMathTickLabels(svg, ".math-slope-text, .math-point-label, .math-function-label");
 }
 
@@ -5112,7 +5395,7 @@ function templateGraphView(svg, spec) {
 // 图中直线与曲线的线段（坐标与 viewBox 一致），用于让标注避开线条
 function mathPlotSegments(svg) {
   const segments = [];
-  svg.querySelectorAll("line.math-line").forEach(node => {
+  svg.querySelectorAll("line.math-line, line.math-tangent").forEach(node => {
     const [x1, y1, x2, y2] = ["x1", "y1", "x2", "y2"].map(name => Number(node.getAttribute(name)));
     if ([x1, y1, x2, y2].every(Number.isFinite)) segments.push([x1, y1, x2, y2]);
   });
@@ -5122,6 +5405,18 @@ function mathPlotSegments(svg) {
       const point = [Number(x), Number(y)];
       if (command === "L" && last) segments.push([...last, ...point]);
       last = point;
+    }
+  });
+  // 切线图的斜率三角形和投影线：M x y、H x2、V y2 组成的折线
+  svg.querySelectorAll("path.math-slope-triangle, path.math-projection").forEach(node => {
+    let at = null;
+    let start = null;
+    for (const [, command, a, b] of String(node.getAttribute("d") || "").matchAll(/([MHV])\s*(-?[\d.]+)(?:[\s,]+(-?[\d.]+))?/g)) {
+      if (command === "M") { at = [Number(a), Number(b)]; start = at; continue; }
+      if (!at) continue;
+      const next = command === "H" ? [Number(a), at[1]] : [at[0], Number(a)];
+      segments.push([...at, ...next]);
+      at = next;
     }
   });
   return segments;
@@ -5375,13 +5670,21 @@ function rotateSolenoidPoint(point, renderState) {
   return { x: x1, y: y1, z: z2 };
 }
 
+// 基础缩放：除了按宽高等比放进画布，还要保证最下方那根磁针（圆 + “磁针”标注，约 226 个单位）
+// 不会越过画布底边被裁掉；窄屏的画布更高，这一项不起作用
+function solenoidBaseScale(bounds) {
+  const bottomFit = (bounds.height * (1 - SOLENOID_CENTER_Y) - 8) / (226 * 1.12);
+  return Math.min(bounds.width / 780, bounds.height / 500, bottomFit) * 1.12;
+}
+const SOLENOID_CENTER_Y = 0.53;
+
 function projectSolenoidPoint(point, renderState, bounds) {
   const rotated = rotateSolenoidPoint(point, renderState);
-  const scale = renderState.zoom * Math.min(bounds.width / 780, bounds.height / 500) * 1.12;
+  const scale = renderState.zoom * solenoidBaseScale(bounds);
   const perspective = 820 / (820 + rotated.z);
   return {
     x: bounds.width * 0.5 + rotated.x * scale * perspective,
-    y: bounds.height * 0.54 + rotated.y * scale * perspective,
+    y: bounds.height * SOLENOID_CENTER_Y + rotated.y * scale * perspective,
     depth: rotated.z,
     scale: scale * perspective
   };
@@ -5389,7 +5692,7 @@ function projectSolenoidPoint(point, renderState, bounds) {
 
 // 线圈画得很小时（窄屏），磁针、磁极圆和回形针随之缩小，磁针标注不再被磁极圆盖住
 function solenoidGlyphScale(renderState, bounds) {
-  const scale = renderState.zoom * Math.min(bounds.width / 780, bounds.height / 500) * 1.12;
+  const scale = renderState.zoom * solenoidBaseScale(bounds);
   return clamp(scale / 0.42, 0.68, 1);
 }
 
@@ -5730,10 +6033,10 @@ const animationClock = ScienceMotion.createClock({
   cancel: id => cancelAnimationFrame(id),
   active: () => !document.hidden && !location.hash.startsWith("#/ai-tutor") && state.hasGenerated && (state.playing || (!motionPreference.matches && (
     (activeSolenoid() && !state.solenoidPaused) ||
-    (state.subject === "生物" && state.cellAutoRotate) ||
+    (state.subject === "生物" && !activeGenericTemplate() && (state.cellAutoRotate || (cell3dActive() && cell3d.viewer.busy()))) ||
     (state.subject === "物理" && circuitMotion?.current > 0 && circuitMotion.closed)
   ))),
-  render: dt => {
+  render: (dt, timestamp) => {
     if (state.playing) {
       state.time = Math.min(duration(), state.time + dt * state.playbackRate * experimentPlaybackTimeScale());
       updateScene();
@@ -5747,7 +6050,9 @@ const animationClock = ScienceMotion.createClock({
       circuitMotion.render(dt);
       circuitPhases.set(state.physicsTemplate, circuitMotion.phase);
     }
-    if (state.subject === "生物" && state.cellAutoRotate) {
+    if (cell3dActive()) {
+      cell3d.viewer.step(dt, state.cellAutoRotate, timestamp);
+    } else if (state.subject === "生物" && !activeGenericTemplate() && state.cellAutoRotate) {
       const next = state.cellRotateY + cellSweepDirection * dt * 12;
       if (Math.abs(next) >= 45) cellSweepDirection *= -1;
       setCellRotation(state.cellRotateX, next);
@@ -5993,6 +6298,7 @@ function updateScene() {
   elements.timeline.value = (values.timelineProgress ?? values.progress) * 100;
   elements.currentTime.textContent = formatTimelineTime(state.time);
   updateSubjectVisuals(values);
+  syncTextbookReasoning(values.progress);
 
   const completed = (values.timelineProgress ?? values.progress) >= 1;
   if (completed) {
@@ -6056,6 +6362,8 @@ function renderReasoning() {
     return;
   }
   const steps = config().steps;
+  const protocol = activeGenericTemplate()?.protocolFrame;
+  if (protocol) state.reasonStep = protocol(clamp(state.time / duration(), 0, 1)).step + 1;
   $(".reasoning-steps").innerHTML = steps.map((step, index) => {
     const number = index + 1;
     const status = number < state.reasonStep ? "done" : number === state.reasonStep ? "active" : "";
@@ -6068,7 +6376,28 @@ function renderReasoning() {
       <i><svg viewBox="0 0 24 24">${icon}</svg></i>
     </button>`;
   }).join("");
-  setReasonProgress(state.reasonStep);
+  setReasonProgress(state.reasonStep, steps.length);
+  if (protocol) $(".reason-step.active")?.setAttribute("aria-current", "step");
+}
+
+function syncTextbookReasoning(progress) {
+  const template = state.hasGenerated && activeGenericTemplate();
+  if (!template?.protocolFrame) return;
+  const next = template.protocolFrame(progress).step + 1;
+  if (state.reasonStep === next) return;
+  state.reasonStep = next;
+  $$(".reasoning-steps .reason-step").forEach(button => {
+    const step = Number(button.dataset.step);
+    const active = step === next, done = step < next;
+    button.classList.toggle("active", active);
+    button.classList.toggle("done", done);
+    if (active) button.setAttribute("aria-current", "step");
+    else button.removeAttribute("aria-current");
+    $("small", button).textContent = done ? "已完成" : active ? "当前步骤" : "待探索";
+    $("svg path", button).setAttribute("d", done ? "m5 12 4 4L19 6" : "m9 18 6-6-6-6");
+  });
+  setReasonProgress(next, template.protocolSteps);
+  $(".reasoning-steps").dispatchEvent(new Event("textbookstepchange"));
 }
 
 function setActiveSubjectTab(subject) {
@@ -6189,12 +6518,13 @@ function formulaSpotlightResult(subject, parts) {
   return "";
 }
 
-function setReasonProgress(step) {
-  const progress = Math.max(0, Math.min(4, Number(step) || 0));
+function setReasonProgress(step, total = 4) {
+  const progress = Math.max(0, Math.min(total, Number(step) || 0));
   const progressEl = $("#reasonProgress");
   if (!progressEl) return;
   progressEl.textContent = String(progress);
-  progressEl.parentElement.style.setProperty("--reason-progress", `${(progress / 4) * 100}%`);
+  $("#reasonTotal").textContent = String(total);
+  progressEl.parentElement.style.setProperty("--reason-progress", `${(progress / Math.max(1, total)) * 100}%`);
 }
 
 function updateGreeting() {
@@ -6266,37 +6596,37 @@ function formatParam(param, value) {
   return `${param.prefix || ""}${Number(value).toFixed(decimals)}`;
 }
 
+// Recognition strings can quote student text or service messages. Never parse them as HTML.
+function renderRecognitionText(label, message, formula = false) {
+  if (!elements.parseFeedback) return;
+  const heading = document.createElement("span"), detail = document.createElement("strong");
+  heading.textContent = label;
+  // Keep text-like punctuation verbatim; optional math enhancement also creates nodes only.
+  if (formula && window.ScienceFormula?.appendText && !/[<>&"']/u.test(String(message ?? ""))) window.ScienceFormula.appendText(detail, String(message ?? ""));
+  else { detail.dataset.noFormula = ""; detail.textContent = String(message ?? ""); }
+  elements.parseFeedback.replaceChildren(heading, detail);
+}
 function setRecognitionFeedback(result, isError = false) {
   if (!elements.parseFeedback) return;
   elements.parseFeedback.classList.add("show");
   elements.parseFeedback.classList.toggle("error", isError);
   elements.parseFeedback.classList.remove("pending");
-  if (isError) {
-    elements.parseFeedback.innerHTML = `<span>识别提示</span><strong>${result.message}</strong>`;
-    return;
-  }
+  if (isError) { renderRecognitionText("识别提示", result.message); return; }
   let recognitionText = result.recognitionText;
-  if (!recognitionText && result.type === "braking_distance") {
-    recognitionText = buildPhysicsBrakeContent(result.v0, result.aAbs).recognitionText;
-  }
-  if (!recognitionText && state.subject === "化学") {
-    recognitionText = buildChemistryFeCuSO4Content().recognitionText;
-  }
-  if (!recognitionText) recognitionText = result.message || "已识别典型题型模板";
-  elements.parseFeedback.innerHTML = `<span>识别结果</span><strong>${verticalizeFormulaHtml(recognitionText)}</strong>`;
+  if (!recognitionText && result.type === "braking_distance") recognitionText = buildPhysicsBrakeContent(result.v0, result.aAbs).recognitionText;
+  if (!recognitionText && state.subject === "化学") recognitionText = buildChemistryFeCuSO4Content().recognitionText;
+  renderRecognitionText("识别结果", recognitionText || result.message || "已识别典型题型模板", true);
 }
-
 function setRecognitionPending(message = "题目已修改，点击“生成实验”重新识别。") {
   if (!elements.parseFeedback) return;
   elements.parseFeedback.classList.add("show", "pending");
   elements.parseFeedback.classList.remove("error");
-  elements.parseFeedback.innerHTML = `<span>待重新识别</span><strong>${message}</strong>`;
+  renderRecognitionText("待重新识别", message);
 }
-
 function clearRecognitionFeedback() {
   if (!elements.parseFeedback) return;
   elements.parseFeedback.classList.remove("show", "error", "pending");
-  elements.parseFeedback.innerHTML = "";
+  elements.parseFeedback.replaceChildren();
 }
 
 function syncPhysicsQuestionFromState() {
@@ -6389,6 +6719,7 @@ function renderWaitingReasoning() {
 }
 
 function applyWaitingState(subject = state.subject, options = {}) {
+  window.MasterLabPhotosynthesisLearning?.clear(elements.genericPhysicsVisual);
   window.MasterLabShare?.leaveContext();
   window.MasterLabInstant?.dismiss();
   clearDemoTimers();
@@ -6648,7 +6979,7 @@ function updateParameters(reset = true, options = {}) {
   }
 
   if (state.subject === "生物" && !generic) {
-    setCellRotation(-8, state.p1);
+    applyCellAngle(state.p1);
     updateFormulaSpotlight("生物");
     if (state.hasGenerated) {
       if (options.syncQuestion) syncSubjectQuestionFromState("生物");
@@ -6791,7 +7122,9 @@ function buildMasterLabAIContext() {
       ...gradeLevelContext(experimentLevelInfo()?.content)
     },
     formula: displayedSource($(".formula-spotlight strong")).trim().slice(0, 600),
-    currentStep: displayedSource(currentReasoning).replace(/\s+/g, " ").trim().slice(0, 600)
+    currentStep: (genericModel && activeGenericTemplate()?.stepContext
+      ? activeGenericTemplate().stepContext(state.time / duration())
+      : displayedSource(currentReasoning)).replace(/\s+/g, " ").trim().slice(0, 600)
   };
 }
 
@@ -6952,6 +7285,7 @@ function refreshGeneratedSubjectSurface(subject = state.subject, options = {}) {
 }
 
 function applySubject(subject, updateQuestion = true, options = {}) {
+  if (subject !== state.subject) window.MasterLabPhotosynthesisLearning?.clear(elements.genericPhysicsVisual);
   window.MasterLabShare?.leaveContext();
   clearDemoTimers();
   clearReasoningTimers();
@@ -7039,6 +7373,8 @@ function playExperiment() {
   state.playing = true;
   animationClock.reconcile();
   elements.playButton.classList.add("playing");
+  elements.playButton.setAttribute("aria-label", "暂停实验");
+  elements.playButton.setAttribute("aria-pressed", "true");
   if (document.body.classList.contains("demo-mode")) setDemoStep(4, "看见速度如何归零");
   animationClock.reconcile();
 }
@@ -7046,6 +7382,8 @@ function playExperiment() {
 function pauseExperiment() {
   state.playing = false;
   elements.playButton.classList.remove("playing");
+  elements.playButton.setAttribute("aria-label", "播放实验");
+  elements.playButton.setAttribute("aria-pressed", "false");
   elements.car.classList.remove("moving");
   animationClock.reconcile();
 }
@@ -7336,6 +7674,10 @@ function applyReasoningStepEffect(step) {
 
 function activateReasoningStep(step, options = {}) {
   if (!state.hasGenerated) return;
+  if (activeGenericTemplate()?.protocolFrame) {
+    if (options.manual) seekTextbookStep(Number(step) - 1);
+    return;
+  }
   const maxStep = Math.max(config().steps.length, 4);
   const nextStep = Math.max(1, Math.min(maxStep, Number(step) || 1));
   if (options.manual) clearReasoningTimers();
@@ -7345,7 +7687,7 @@ function activateReasoningStep(step, options = {}) {
 
 function scheduleReasoningAutoAdvance() {
   clearReasoningTimers();
-  if (!state.hasGenerated) return;
+  if (!state.hasGenerated || activeGenericTemplate()?.protocolFrame) return;
   const runId = state.reasoningAutoRun;
   const subject = state.subject;
   const question = state.generatedQuestion;
@@ -7425,6 +7767,7 @@ elements.playButton.addEventListener("click", () => {
   state.playing ? pauseExperiment() : playExperiment();
 });
 $("#resetButton").addEventListener("click", () => {
+  window.MasterLabPhotosynthesisLearning?.clear(elements.genericPhysicsVisual);
   clearDemoTimers();
   clearReasoningTimers();
   resetExperiment();
@@ -7483,7 +7826,7 @@ function currentPhysicsPresetKey() {
 /* ===== 预设菜单（各学科，按学段与板块分组，2026-10-16）=====
    菜单项写在 index.html（data-subject / data-level / data-block）。打开时按当前学科和学段重新分组：
    本学段按板块分组排在前面，另一学段折叠在底部；当前已预选的那一项隐藏。 */
-const PRESET_BLOCK_ORDER = Object.freeze(["力学", "电学", "电磁学", "光学", "热学", "声学", "化学计算", "几何", "函数", "方程（组）", "三角函数", "导数", "细胞", "遗传", "观察工具", "种群"]);
+const PRESET_BLOCK_ORDER = Object.freeze(["力学", "电学", "电磁学", "光学", "热学", "声学", "化学计算", "几何", "函数", "方程（组）", "三角函数", "导数", "细胞", "植物生理", "遗传", "观察工具", "种群"]);
 const DEDICATED_PRESET_KEYS = new Set(["brake", "solenoid", "boardSlider", "projectile", "circuit", "feCuSO4", "tangent", "cellPlant", "cellAnimal"]);
 const PRESET_OPTIONS = $$("#physicsPresetDropdown .preset-option");
 PRESET_OPTIONS.forEach(option => {
@@ -7892,11 +8235,12 @@ $$(".subject-tab").forEach(button => {
 });
 
 function syncBiologyRotationUi() {
-  if (state.subject !== "生物") return;
-  state.p1 = Math.round(state.cellRotateY);
+  if (state.subject !== "生物" || activeGenericTemplate()) return;
+  state.p1 = currentCellAngle();
   if (elements.ranges[0]) elements.ranges[0].value = state.p1;
   if (elements.paramValues[0]) elements.paramValues[0].textContent = `${state.p1}`;
-  if (state.hasGenerated) updateScene();
+  if (state.hasGenerated && !cell3dActive()) updateScene();
+  else if (state.hasGenerated && elements.metricValues[1]) elements.metricValues[1].textContent = formatMetricValue(state.p1, 1);
 }
 
 // The cell model is re-rendered per cell type and level, so organelle events are delegated.
@@ -7906,6 +8250,10 @@ elements.plantCellModel?.addEventListener("keydown", event => {
   event.preventDefault();
   event.stopPropagation();
   selectBioOrganelle(node.dataset.organelle);
+});
+
+$$(".cell-view-toggle button").forEach(button => {
+  button.addEventListener("click", event => { event.stopPropagation(); setCellView(button.dataset.view); });
 });
 
 $$(".cell-level-toggle button").forEach(button => {
@@ -7928,8 +8276,8 @@ elements.cellLabelButton?.addEventListener("click", event => {
 
 $$(".cell-structure-tag").forEach(tag => {
   tag.addEventListener("pointerdown", event => event.stopPropagation());
-  tag.addEventListener("pointerenter", () => tag.classList.add("hover"));
-  tag.addEventListener("pointerleave", () => tag.classList.remove("hover"));
+  tag.addEventListener("pointerenter", () => { tag.classList.add("hover"); if (cell3dActive()) cell3d.viewer.setHover(tag.dataset.organelle); });
+  tag.addEventListener("pointerleave", () => { tag.classList.remove("hover"); cell3d.viewer?.setHover(""); });
   tag.addEventListener("click", event => {
     event.stopPropagation();
     selectBioOrganelle(tag.dataset.organelle);
@@ -7982,13 +8330,14 @@ function updateBioHoverLabel(clientX, clientY) {
 
 if (elements.plantCellViewport) {
   elements.plantCellViewport.addEventListener("mousemove", event => {
+    if (cell3dActive()) return;
     updateBioHoverLabel(event.clientX, event.clientY);
   });
 
   elements.plantCellViewport.addEventListener("mouseleave", clearBioHoverLabels);
 
   elements.plantCellViewport.addEventListener("pointerdown", event => {
-    if (state.subject !== "生物" || !state.hasGenerated) return;
+    if (state.subject !== "生物" || !state.hasGenerated || cell3dActive() || event.button !== 0) return;
     clearReasoningTimers();
     setCellAutoRotate(false);
     state.cellDrag = {
@@ -8014,7 +8363,7 @@ if (elements.plantCellViewport) {
 
   const endCellDrag = event => {
     if (!state.cellDrag || state.cellDrag.pointerId !== event.pointerId) return;
-    const wasTap = (state.cellDrag.distance || 0) < 8;
+    const wasTap = event.type === "pointerup" && (state.cellDrag.distance || 0) < 8;
     const directOrganelle = state.cellDrag.directOrganelle;
     state.cellDrag = null;
     if (elements.plantCellViewport.hasPointerCapture(event.pointerId)) {
@@ -8033,7 +8382,7 @@ elements.cellResetButton?.addEventListener("click", event => {
   event.stopPropagation();
   if (state.subject !== "生物") return;
   clearReasoningTimers();
-  resetBiologyCellModel();
+  resetBiologyCellModel({ animate: true });
   syncBiologyRotationUi();
   showToast(`已重置${CELL_TYPE_LABELS[state.cellType] || "细胞"}观察视角`);
 });
@@ -8170,7 +8519,8 @@ async function generateExperiment(options = {}) {
   const detected = plan.subject;
   if (!plan.ok) {
     const inputAtHandoff = $("#questionInput").value;
-    const remote = await handOffUnmatchedQuestion(plan.parse, displayQuestion, detected, allowAiFallback);
+    const localReason = plan.localOnly ? { ...plan.parse, message: plan.parse.message + " 如需讲解，请主动打开 AI 导师提问。" } : plan.parse;
+    const remote = await handOffUnmatchedQuestion(localReason, displayQuestion, detected, allowAiFallback && !plan.localOnly);
     // The student edited the question during the analysis: never overwrite the new text
     // with the old question or open the old question's experiment.
     if ($("#questionInput").value !== inputAtHandoff) {
@@ -8183,6 +8533,7 @@ async function generateExperiment(options = {}) {
     }
     return;
   }
+  window.MasterLabPhotosynthesisLearning?.clear(elements.genericPhysicsVisual);
   // A prompt can switch subjects without clicking a subject tab. Save the
   // still-active experiment before assigning the new template and parameters.
   if (detected !== state.subject) saveCurrentSubjectSnapshot();
@@ -8363,7 +8714,7 @@ async function generateExperiment(options = {}) {
   updateGradeTag();
   dispatchAIContextChanged();
   setDemoStep(3, "点击播放或请求 AI 导师提示");
-  if (!options.shared) showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : genericParse ? `${GENERIC_TEMPLATES[genericParse.templateId].subject}典型题模板已生成，可拖动参数观察变化` : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
+  if (!options.shared) showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : genericParse?.templateId === "leafDisks" ? "高中光合作用教材流程已生成，可播放或回看六步操作": genericParse?.templateId === "photosynthesis" ? "教材光合作用实验已生成，可播放或回看六步操作" : genericParse ? `${GENERIC_TEMPLATES[genericParse.templateId].subject}典型题模板已生成，可拖动参数观察变化` : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
   return true;
 }
 
@@ -8544,6 +8895,11 @@ $("#challengeButton").addEventListener("click", () => {
   if (genericTemplate) {
     const template = genericTemplate;
     const fixed = template.fixedWithDefaults(state.extraFixed?.[template.id]);
+    if (template.parameter && template.params.every((param, index) => template.parameter(param, index, fixed).locked)) {
+      setReasoningStep(4, `<span>教材追问</span>${buildGenericContent().challenge}`);
+      showToast("按教材流程回看并解释操作目的");
+      return;
+    }
     const custom = template.variant?.(state.p1, state.p2, fixed);
     if (custom) {
       state.p1 = custom.p1;
