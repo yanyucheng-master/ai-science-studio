@@ -13,18 +13,22 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;600;700;800&amp;display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;600;700;800&amp;display=swap"></noscript>
   <link rel="stylesheet" href="vendor/katex/katex.min.css?v=0.19.0">
-  <link rel="stylesheet" href="styles.css?v=20261107-friction-layout-1">
-  <link rel="stylesheet" href="math-experiments.css?v=20261030-math-1">
+  <link rel="stylesheet" href="styles.css?v=20261108-diagram-fixes-1">
+  <link rel="stylesheet" href="math-experiments.css?v=20261108-diagram-fixes-1">
   <link rel="stylesheet" href="chemistry-equilibria.css?v=20261030-chemistry-v2-1">
   <link rel="stylesheet" href="biology-mendel.css?v=20261031-mendel-1">
+  <link rel="stylesheet" href="biology-photosynthesis.css?v=20261101-photo-2">
   <link rel="stylesheet" href="biology-microscope.css?v=20261031-microscope-1">
-  <link rel="stylesheet" href="biology-population.css?v=20261101-population-2">
+  <link rel="stylesheet" href="biology-population.css?v=20261108-diagram-fixes-1">
+  <link rel="stylesheet" href="biology-leaf-disks.css?v=20261102-leaf-disks-1">
+  <link rel="stylesheet" href="photosynthesis-learning.css?v=20261108-lesson-1">
   <link rel="stylesheet" href="instant-experiment.css?v=20261018-instant-1">
   <link rel="stylesheet" href="tutor-focus.css?v=20261019-tutor-followups-1">
   <link rel="stylesheet" href="photo-question.css?v=20261031-photo-1">
-  <link rel="stylesheet" href="mobile.css?v=20261102-photo-1">
-  <link rel="stylesheet" href="ui-motion.css?v=20261107-ui-fix-1">
+  <link rel="stylesheet" href="mobile.css?v=20261114-cell-motion-modal-1">
+  <link rel="stylesheet" href="ui-motion.css?v=20261108-diagram-fixes-1">
   <link rel="stylesheet" href="menu-select.css?v=20261107-menu-select-1">
+  <link rel="stylesheet" href="biology-cell-3d.css?v=20261114-cell-reference-1">
 </head>
 <body class="awaiting-generation">
   <script src="brand-motion.js?v=20261107-animation-1"></script>
@@ -230,6 +234,10 @@
               <span>硝酸钾冷却结晶</span>
               <small>五点溶解度 · 析晶 · 质量守恒</small>
             </button>
+            <button class="preset-option" type="button" data-preset="photosynthesis" data-subject="生物" data-level="junior" data-block="植物生理">
+              <span>绿叶在光下制造有机物</span>
+              <small>教材六步 · 双面遮光 · 碘液检验</small>
+            </button>
             <button class="preset-option" type="button" data-preset="mendel" data-subject="生物" data-level="both" data-block="遗传">
               <span>孟德尔分离定律</span>
               <small>配子组合 · 理论概率 · 可复现抽样</small>
@@ -241,6 +249,10 @@
             <button class="preset-option" type="button" data-preset="population" data-subject="生物" data-level="both" data-block="种群">
               <span>种群数量模型</span>
               <small>倍数 · 环境容纳量 · 增长速率</small>
+            </button>
+            <button class="preset-option" type="button" data-preset="leafDisks" data-subject="生物" data-level="senior" data-block="植物生理">
+              <span>光照与叶圆片上浮</span>
+              <small>教材六步 · 三组对照 · 同时段观察</small>
             </button>
             <button class="preset-option" type="button" data-preset="cellPlant" data-subject="生物" data-level="both" data-block="细胞">
               <span>植物细胞：结构与功能</span>
@@ -308,7 +320,7 @@
           </div>
 
           <div class="transport">
-            <button class="play-button" id="playButton" aria-label="播放实验">
+            <button class="play-button" id="playButton" aria-label="播放实验" aria-pressed="false">
               <svg class="play-icon" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></svg>
               <svg class="pause-icon" viewBox="0 0 24 24"><path d="M8 5v14m8-14v14"/></svg>
             </button>
@@ -662,18 +674,24 @@
                 <div class="cell-viewer">
                   <div class="cell-viewer-head">
                     <span>植物细胞 · 结构剖面</span>
+                    <div class="cell-view-toggle" role="group" aria-label="细胞显示方式">
+                      <button type="button" data-view="3d" class="active" aria-pressed="true">立体</button>
+                      <button type="button" data-view="2d" aria-pressed="false">平面</button>
+                    </div>
                     <div class="cell-level-toggle" role="group" aria-label="教材学段">
-                      <button type="button" data-level="junior" aria-pressed="false" title="人教版七年级上册：光学显微镜下的基本结构">初中</button>
+                      <button type="button" data-level="junior" aria-pressed="false" title="人教版七年级上册：细胞基本结构与功能">初中</button>
                       <button type="button" data-level="senior" aria-pressed="true" title="人教版必修1《分子与细胞》：亚显微结构">高中</button>
                     </div>
                     <div class="cell-viewer-actions">
                       <button type="button" id="cellLabelButton" class="active" aria-pressed="true">隐藏标注</button>
                       <button type="button" id="cellResetButton">重置视角</button>
-                      <button type="button" id="cellAutoButton">自动观察</button>
+                      <button type="button" id="cellAutoButton" aria-pressed="false">自动观察</button>
                     </div>
                   </div>
-                  <div class="plant-cell-viewport" id="plantCellViewport">
+                  <p id="cellRenderStatus" class="cell-render-status" role="status" hidden></p>
+                  <div class="plant-cell-viewport" id="plantCellViewport" tabindex="-1">
                     <div class="plant-cell-model" id="plantCellModel" aria-label="植物细胞结构模式图" role="group"></div>
+                    <div class="cell-model-3d" id="cellModel3d" role="group" tabindex="0" aria-label="细胞立体剖开模型" hidden></div>
                   </div>
                     <div class="cell-structure-tags" role="group" aria-label="细胞结构选择">
                       <button type="button" class="cell-structure-tag wall-tag" data-organelle="cellWall" data-label="细胞壁" aria-label="细胞壁">细胞壁</button>
@@ -709,7 +727,7 @@
                 </div>
                 <details class="cell-model-note">
                   <summary>模型说明 · <span id="cellSourceNote">依据：人教版必修1《分子与细胞》</span> · 结构示意，非实际比例</summary>
-                  <p>初中（七年级上册）只要求光学显微镜下的基本结构：植物细胞有细胞壁、细胞膜、细胞质、细胞核、液泡、叶绿体和线粒体，动物细胞有细胞膜、细胞质、细胞核和线粒体。高中（必修1）为电子显微镜下的亚显微结构：植物细胞同样具有内质网、高尔基体和核糖体；高等植物细胞没有中心体，溶酶体主要分布在动物细胞中。核糖体等结构已放大示意，颜色与大小不代表真实比例。支持左右倾转 ±45°。</p>
+                  <p>初中层按人教版七年级上册提供细胞基本结构与功能识别，高中层按必修1展示亚显微结构，并增加内质网、高尔基体、核糖体等结构。植物模型以含叶绿体和明显中央液泡的成熟植物细胞为例，细胞核偏向边缘。动物模型包含高中层的溶酶体与中心体。立体模型剖开外层和部分细胞器以展示内部，支持水平转动一周、上下翻转、缩放与结构点选。平面模式支持左右倾转 ±45°。颜色、数量、大小和空间位置均为教学示意，膜和小型细胞器已放大。</p>
                 </details>
               </div>
               <div class="bio-label"><span>当前结构</span><strong id="bioFluidity">细胞核</strong></div>
@@ -756,7 +774,7 @@
                 <span class="section-kicker">生成实验后展开</span>
                 <h2>解题思维链</h2>
               </div>
-              <span class="progress-ring"><strong id="reasonProgress">0</strong>/4</span>
+              <span class="progress-ring"><strong id="reasonProgress">0</strong>/<span id="reasonTotal">4</span></span>
             </div>
 
             <div class="formula-spotlight">
@@ -1066,12 +1084,13 @@
   </dialog>
 
   <script src="science-formulas.js?v=20261106-ui-motion-1"></script>
-  <script src="science-motion.js?v=20260922-motion-1"></script>
-  <script src="physics-extra.js?v=20261107-friction-layout-1"></script>
+  <script src="science-motion.js?v=20261108-diagram-fixes-1"></script>
+  <script src="biology-protocol-questions.js?v=20261108-lesson-1"></script>
+  <script src="physics-extra.js?v=20261113-photosynthesis-final-1"></script>
   <script src="question-conditions.js?v=20261021-question-conditions-1"></script>
   <script src="math-extra.js?v=20261031-declutter-2"></script>
   <script src="math-experiments.js?v=20261030-acceptance-1"></script>
-  <script src="unit-circle.js?v=20261030-acceptance-1"></script>
+  <script src="unit-circle.js?v=20261108-diagram-fixes-1"></script>
   <script src="chemistry-extra.js?v=20261016-week2-1"></script>
   <script src="chemistry-experiments.js?v=20261031-declutter-2"></script>
   <script src="chemistry-equilibria.js?v=20261030-acceptance-1"></script>
@@ -1079,17 +1098,24 @@
   <script src="chemistry-equilibria-experiments.js?v=20261030-acceptance-1"></script>
   <script src="biology-mendel-core.js?v=20261031-mendel-1"></script>
   <script src="biology-mendel.js?v=20261031-mendel-1"></script>
+  <script src="biology-photosynthesis-core.js?v=20261101-photo-1"></script>
+  <script src="biology-photosynthesis.js?v=20261108-lesson-1"></script>
   <script src="biology-microscope-core.js?v=20261031-microscope-1"></script>
   <script src="biology-microscope-questions.js?v=20261031-microscope-1"></script>
   <script src="biology-microscope.js?v=20261031-microscope-1"></script>
   <script src="biology-population-core.js?v=20261101-population-2"></script>
   <script src="biology-population-questions.js?v=20261101-population-2"></script>
-  <script src="biology-population.js?v=20261101-population-2"></script>
+  <script src="biology-population.js?v=20261108-diagram-fixes-1"></script>
   <script src="instant-scene.js?v=20261020-incline-data-1"></script>
   <script src="incline-presets.js?v=20261020-incline-competition-1"></script>
   <script src="incline-diagram.js?v=20261020-incline-data-1"></script>
-  <script src="app.js?v=20261106-ui-motion-1"></script>
-  <script src="experiment-share.js?v=20261020-share-1"></script>
+  <script src="biology-leaf-disks-core.js?v=20261102-leaf-disks-1"></script>
+  <script src="biology-leaf-disks-questions.js?v=20261106-separators-1"></script>
+  <script src="biology-leaf-disks.js?v=20261108-lesson-1"></script>
+  <script src="photosynthesis-learning.js?v=20261108-lesson-1"></script>
+  <script src="biology-cell-3d.js?v=20261114-cell-motion-modal-1"></script>
+  <script src="app.js?v=20261114-cell-motion-modal-1"></script>
+  <script src="experiment-share.js?v=20261113-photosynthesis-final-1"></script>
   <script src="vendor/katex/katex.min.js?v=0.19.0"></script>
   <script src="vendor/katex/mhchem.min.js?v=0.19.0"></script>
   <script src="tutor-checks.js?v=20261011-tutor-round-1"></script>
@@ -1098,8 +1124,8 @@
   <script src="instant-experiment.js?v=20261107-ui-motion-guard-1"></script>
   <script src="announcements.js?v=20261008-announcements-2"></script>
   <script src="photo-question.js?v=20261102-photo-2"></script>
-  <script src="mobile-shell.js?v=20261030-mobile-4"></script>
-  <script src="ui-motion.js?v=20261107-ui-fix-1"></script>
+  <script src="mobile-shell.js?v=20261114-cell-motion-modal-1"></script>
+  <script src="ui-motion.js?v=20261114-cell-motion-modal-1"></script>
   <script src="menu-select.js?v=20261107-menu-select-1"></script>
 </body>
 </html>

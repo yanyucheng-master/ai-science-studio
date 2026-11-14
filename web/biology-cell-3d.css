@@ -1,0 +1,67 @@
+.cell-view-toggle {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 8px;
+  background: #eaf1f5;
+}
+.cell-view-toggle button {
+  min-height: 28px;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 6px;
+  color: #526b7d;
+  background: transparent;
+  font: inherit;
+  font-size: 11px;
+}
+.cell-view-toggle button.active { color: #195bb0; background: #fff; box-shadow: 0 1px 4px #244b7114; }
+.cell-view-toggle button:disabled { opacity: .5; cursor: default; }
+.cell-view-toggle button:focus-visible { outline: 2px solid #2768ca; outline-offset: 2px; }
+.cell-viewer-head { flex-wrap: wrap; gap: 8px; }
+.cell-viewer-head > span { margin-right: auto; }
+.cell-viewer-head .cell-level-toggle { margin-left: 0; }
+.cell-viewer-head .cell-viewer-actions { margin-left: auto; }
+#plantCellModel[hidden], #cellModel3d[hidden] { display: none; }
+.cell-model-3d {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  outline: none;
+  border-radius: 12px;
+}
+.cell-model-3d:focus-visible { outline: 2px solid #2768ca; outline-offset: -2px; }
+.plant-cell-viewport[data-view="3d"] { height: clamp(300px, 60cqw, 500px); }
+.cell-3d-canvas { display: block; width: 100%; height: 100%; }
+.cell-3d-labels, .cell-3d-leaders { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.cell-3d-leaders line { stroke: #90a9b8; stroke-width: .8; }
+.cell-3d-leaders circle { fill: #6b90a5; }
+.cell-3d-label {
+  position: absolute;
+  width: 74px;
+  min-height: 20px;
+  transform: translateY(-50%);
+  padding: 1px 0;
+  border: 0;
+  border-radius: 5px;
+  color: #35586d;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.cell-3d-label.active, .cell-3d-label.hover { color: #195b8a; background: transparent; font-weight: 700; }
+.cell-3d-label[hidden] { display: none; }
+.cell-render-status { margin: 4px 0; color: #526b7d; font-size: 11px; line-height: 1.6; }
+.cell-render-status[hidden] { display: none; }
+@media (max-width: 700px) {
+  .cell-title-detail { display: none; }
+  .cell-viewer-head > span { font-size: 11px; }
+  .cell-view-toggle button { padding: 4px 8px; }
+  .cell-viewer-head .cell-viewer-actions { flex-basis: 100%; justify-content: flex-end; }
+  .cell-3d-label { width: 56px; font-size: 10.5px; }
+}

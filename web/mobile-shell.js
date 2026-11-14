@@ -213,10 +213,15 @@
     </button>`;
   document.body.append(dock);
 
+  const dockBlocked = () => Boolean($("dialog[open], .modal-backdrop.show, #photoCamera:not([hidden]), #generationOverlay.show"))
+    || ["announcements-open", "photo-camera-open", "ai-tutor-route"].some(name => document.body.classList.contains(name));
   $(".mobile-dock-edit", dock).addEventListener("click", () => {
+    if (dockBlocked()) return;
     window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   });
-  $(".mobile-dock-ai", dock).addEventListener("click", () => $("#aiTutorEntryButton")?.click());
+  $(".mobile-dock-ai", dock).addEventListener("click", () => {
+    if (!dockBlocked()) $("#aiTutorEntryButton")?.click();
+  });
 
   if (promptPanel && "IntersectionObserver" in window) {
     new IntersectionObserver(entries => {

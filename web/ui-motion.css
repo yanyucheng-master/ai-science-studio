@@ -146,8 +146,9 @@
    A2 题目输入框聚焦：一圈浅蓝描边光沿边框流动，约 6 秒一圈（伪元素 + mask，不改内边距与 overflow）
    ========================================================================== */
 .prompt-input-wrap:where(:root.um-on body:not(.harmony-compat-mode) *) { position: relative; }
-/* 伪元素只在聚焦时生成：实验页的样式失效会反复扫到输入区，平时不留一个看不见的图层 */
-:root.um-on body:not(.harmony-compat-mode) .prompt-input-wrap:focus-within::after {
+/* 伪元素只在输入题目时（框内文本框聚焦，脚本加 .um-typing）生成：实验页的样式失效会反复扫到输入区，平时不留一个看不见的图层。
+   框内还有拍照、实验库、生成按钮，原先用 :focus-within 时点这些按钮光圈也会一直转（每帧主线程重算与重绘），2026-11-07 改为只认文本框 */
+:root.um-on body:not(.harmony-compat-mode) .prompt-input-wrap.um-typing::after {
   position: absolute;
   z-index: 3;
   inset: 0;
@@ -162,7 +163,7 @@
   animation: um-fade-a var(--fx-dur-med) ease-out;
   content: "";
 }
-:root.um-on.um-prop body:not(.harmony-compat-mode) .prompt-input-wrap:focus-within::after {
+:root.um-on.um-prop body:not(.harmony-compat-mode) .prompt-input-wrap.um-typing::after {
   animation: um-ring-spin var(--fx-dur-ring) linear infinite, um-fade-a var(--fx-dur-med) ease-out;
 }
 @keyframes um-ring-spin { to { --um-ring-angle: 360deg; } }
@@ -399,6 +400,13 @@
   box-shadow: 0 0 0 5px var(--fx-halo), 0 0 0 9px rgba(116, 177, 252, .16); /* 只用扩展环，不用模糊阴影：拖动时每次重绘都很便宜 */
   transform: scale(1.28);
   transition: none; /* 按下即时放大，松手时按基础样式的过渡缩回 */
+}
+/* 手机（触屏为主的设备）拖时间轴：滑块只亮起光环、不放大（ui-motion.js 同时不显示数值气泡，当前时间已在时间轴下方）。
+   放大会让拖动中每次输入多一遍样式重算和一次重绘；时间轴本身很轻，这部分占比最大（2026-11-08 手机端特效简化）。
+   参数滑块与电脑端保持放大 */
+@media (hover: none) and (pointer: coarse) {
+  :root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline.um-dragging::-webkit-slider-thumb { transform: none; }
+  :root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline.um-dragging::-moz-range-thumb { transform: none; }
 }
 :root.um-on body:not(.harmony-compat-mode) .experiment-card .parameter > input[type="range"]:disabled::-webkit-slider-thumb,
 :root.um-on body:not(.harmony-compat-mode) .experiment-card #timeline:disabled::-webkit-slider-thumb { border-color: #9fb3d1; }
@@ -884,7 +892,7 @@
 .um-ghost-board {
   position: absolute;
   z-index: 3;
-  top: -10px;
+  top: -92px; /* 标签挂在滑块（盒高 52px，探出木板上沿）上方，不再被滑块盒子盖住 */
   bottom: -10px;
   width: 0;
   border-left: 2px dashed rgba(45, 115, 246, .7);
@@ -922,7 +930,7 @@ svg .um-ghost-svg-label { fill: #1a56d6; font-size: 13px; font-weight: 700; curs
 :root.um-hidden body .ai-thinking-stage,
 :root.um-hidden body #timeline,
 :root.um-hidden body .ambient,
-/* 拖动滑块 / 时间轴、生成遮罩显示时背景光斑暂停漂移（每帧 0.3px 左右，停顿看不出）：
+/* 拖动滑块 / 时间轴、生成遮罩显示时，以及点击、按键、滚轮后 1.5 秒内，背景光斑暂停漂移（每帧 0.3px 左右，停顿看不出）：
    它的循环动画即使在合成器上运行，每帧仍要在主线程做一次样式重算，拖动时每次输入多 2–3 遍（2026-11-07 性能归因） */
 :root.um-still body .ambient,
 .prompt-input-wrap[data-um-off]::after,
@@ -989,7 +997,7 @@ svg .um-ghost-svg-label { fill: #1a56d6; font-size: 13px; font-weight: 700; curs
   :root.um-on body .experiment-card .parameter > input[type="range"].um-dragging::-moz-range-thumb,
   :root.um-on body .experiment-card #timeline.um-dragging::-moz-range-thumb { transform: none; }
   /* 减动效时输入框聚焦改为静态的浅蓝描边 */
-  :root.um-on body:not(.harmony-compat-mode) .prompt-input-wrap:focus-within::after {
+  :root.um-on body:not(.harmony-compat-mode) .prompt-input-wrap.um-typing::after {
     background: linear-gradient(var(--fx-ring), var(--fx-ring));
   }
 }

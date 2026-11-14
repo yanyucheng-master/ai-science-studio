@@ -307,7 +307,7 @@
     const full = fixedWithDefaults(template, fixed);
     if (template.strict.sameConditions) {
       // 原题没写学段线索时，按实验当前的讲法核对（双学段模板的讲法跟随全局学段）
-      const original = template.strict.values(source, G.extractQuantities(source), { gradeLevel: full.level });
+      const original = template.strict.values(template.strict.originalText ? text : source, G.extractQuantities(source), { gradeLevel: full.level });
       if (!original?.ok || !G.approx(original.p1, p1) || !G.approx(original.p2, p2)
         || Object.entries(original.fixed || {}).some(([key, value]) => typeof value === "number"
           ? !G.approx(value, full[key]) : value !== full[key])) {
@@ -331,7 +331,8 @@
     const source = G.normalize(text);
     const intent = intentProblem(template, source);
     if (intent) return miss(intent);
-    const values = template.strict.values(source, G.extractQuantities(source), context);
+    // Protocol diagnostics need original spelling/punctuation; all other templates keep normalized input.
+    const values = template.strict.values(template.strict.originalText ? text : source, G.extractQuantities(source), context);
     if (!values?.ok) return miss(values?.message || template.failMessage);
     const p1 = G.tidy(values.p1);
     const p2 = G.tidy(values.p2);
@@ -340,7 +341,7 @@
     if (range) return miss(range);
     const fixedProblem = template.strict.checkFixed?.(fixed, p1, p2);
     if (fixedProblem) return miss(fixedProblem);
-    const check = checkQuestion(template, source, p1, p2, fixed, { skipIntent: true });
+    const check = checkQuestion(template, template.strict.originalText ? text : source, p1, p2, fixed, { skipIntent: true });
     if (!check.ok) return miss(check.message);
     const model = template.model(p1, p2, fixed);
     return {
@@ -433,6 +434,7 @@
       ticks.push(`<line class="dg-lever-tick" x1="${x}" y1="${cm % 10 ? cy - 3 : cy - 6}" x2="${x}" y2="${cy + 6}"/>`);
       if (cm && cm % 10 === 0) ticks.push(`<text class="dg-lever-mark" x="${x}" y="${cy - 10}" text-anchor="middle">${Math.abs(cm)}</text>`);
     }
+    // 受力箭头在钩码外侧；力的文字放在箭头中段、与箭杆和钩码都隔开 12px 以上，不贴箭头头部
     const weights = (point, count, side) => {
       const top = point.y + 24;
       const blocks = Array.from({ length: count }, (_, index) => {
@@ -445,29 +447,36 @@
         <line class="dg-force" x1="${n2(arrowX)}" y1="${n2(point.y + 8)}" x2="${n2(arrowX)}" y2="${n2(point.y + 8 + length)}" marker-end="url(#dgArrowRed)"/>`;
     };
     const armY = 350;
-    const leftForceLabel = left.x < 140
-      ? { x: 22, y: 76, anchor: "start" }
-      : { x: left.x - 30, y: left.y + 40 + force * 7, anchor: "end" };
+    const forceLabel = (point, count, side, text, outer) => {
+      const arrowX = point.x + (side === "left" ? -24 : 24);
+      const midY = point.y + 8 + (26 + count * 7) * 0.45 + 6;
+      const gap = 14;
+      const toLeft = side === "left" ? outer : !outer;
+      return `<text class="dg-force-text" x="${n2(toLeft ? arrowX - gap : arrowX + gap + (side === "left" ? 24 + 12 : 0))}" y="${n2(midY)}" text-anchor="${toLeft ? "end" : "start"}">${text}</text>`;
+    };
+    // 左侧力臂很长时，外侧放不下“F₁ = 10 N”，改放到钩码内侧（朝支点一侧）
+    const leftOuter = left.x - 24 - 14 - 92 > 10;
+    const armLabelY = armY + 29;
     return diagram("dg-lever", `杠杆平衡条件实验：支点 O 在中点，左侧挂 ${force} 个钩码距支点 ${arm}cm，右侧挂 6 个钩码距支点 20cm`, `
       ${caption(status === "平衡" ? "杠杆在水平位置平衡：F₁l₁ = F₂l₂" : `F₁l₁ ${status === "左端下沉" ? ">" : "<"} F₂l₂，杠杆${status}`)}
       <text class="dg-note" x="748" y="394" text-anchor="end">每个钩码重 1 N · 刻度单位 cm</text>
       <path class="dg-support" d="M${cx} ${cy + 4}L${cx - 22} ${cy + 58}H${cx + 22}Z"/>
-      <rect class="dg-base" x="${cx - 60}" y="${cy + 58}" width="120" height="9" rx="2"/>
+      <rect class="dg-base" x="${cx - 36}" y="${cy + 58}" width="72" height="9" rx="2"/>
       <g transform="rotate(${angle} ${cx} ${cy})">
         <rect class="dg-lever-bar" x="${cx - 312}" y="${cy - 6}" width="624" height="12" rx="3"/>
         ${ticks.join("")}
       </g>
       <circle class="dg-pivot" cx="${cx}" cy="${cy}" r="4.5"/>
-      <text class="dg-label" x="${cx + 10}" y="${cy + 26}">O</text>
+      <text class="dg-label" x="${cx + 26}" y="${cy + 30}">O</text>
       ${weights(left, force, "left")}
       ${weights(right, 6, "right")}
-      <text class="dg-force-text" x="${n2(leftForceLabel.x)}" y="${n2(leftForceLabel.y)}" text-anchor="${leftForceLabel.anchor}">F₁ = ${fmt(force)} N</text>
-      <text class="dg-force-text" x="${n2(right.x + 30)}" y="${n2(right.y + 82)}">F₂ = 6 N</text>
+      ${forceLabel(left, force, "left", `F₁ = ${fmt(force)} N`, leftOuter)}
+      ${forceLabel(right, 6, "right", "F₂ = 6 N", true)}
       <line class="dg-extension" x1="${cx}" y1="${cy + 70}" x2="${cx}" y2="${armY + 8}"/>
       <line class="dg-extension" x1="${n2(left.x)}" y1="${n2(left.y + 34 + force * 11)}" x2="${n2(left.x)}" y2="${armY + 8}"/>
       <line class="dg-extension" x1="${n2(right.x)}" y1="${n2(right.y + 96)}" x2="${n2(right.x)}" y2="${armY + 8}"/>
-      ${dimension(left.x, armY, cx, armY, `l₁ = ${fmt(arm)} cm`, (left.x + cx) / 2, armY - 8)}
-      ${dimension(cx, armY, right.x, armY, "l₂ = 20 cm", (cx + right.x) / 2, armY - 8)}`);
+      ${arm * scale < 100 ? dimension(left.x, armY, cx, armY, `l₁ = ${fmt(arm)} cm`, cx - 10, armLabelY, "end") : dimension(left.x, armY, cx, armY, `l₁ = ${fmt(arm)} cm`, (left.x + cx) / 2, armLabelY)}
+      ${dimension(cx, armY, right.x, armY, "l₂ = 20 cm", (cx + right.x) / 2, armLabelY)}`);
   }
 
   function lensRule(u, f) {
@@ -565,50 +574,53 @@
     const scaleTop = 42;
     // 测力计量程随物重放大（15、30、45……N），指针不会跑出刻度
     const dialMax = [15, 30, 45, 60, 75, 90, 150].find(max => max >= weight - 1e-9) ?? 150;
-    const perN = 90 / dialMax;
-    const pointerY = scaleTop + 14 + reading * perN;
+    // 表盘：单位 N 位于盒内左上角，刻度数字右对齐，避免单位与零刻度重叠
+    const tickTop = scaleTop + 32;
+    const tickStep = 5;
+    const perN = (tickStep * 15) / dialMax;
+    const pointerY = tickTop + reading * perN;
     const bucketWater = 58 * clamp(volumeMl / 800, 0, 1);
     const tint = clamp((density - 700) / 600, 0, 1);
     const liquid = `rgba(${Math.round(120 - 60 * tint)}, ${Math.round(180 - 40 * tint)}, ${Math.round(236 - 20 * tint)}, ${n2(0.36 + 0.24 * tint)})`;
     const ticks = Array.from({ length: 16 }, (_, index) => {
-      const y = scaleTop + 14 + index * 6;
-      return `<line class="dg-scale-tick" x1="${index % 5 ? 344 : 340}" y1="${n2(y)}" x2="350" y2="${n2(y)}"/>${index % 5 ? "" : `<text class="dg-scale-num" x="356" y="${n2(y + 4)}">${index * dialMax / 15}</text>`}`;
+      const y = tickTop + index * tickStep;
+      return `<line class="dg-scale-tick" x1="342" y1="${n2(y)}" x2="${index % 5 ? 345 : 349}" y2="${n2(y)}"/>${index % 5 ? "" : `<text class="dg-scale-num" x="376" y="${n2(y + 5)}" text-anchor="end">${index * dialMax / 15}</text>`}`;
     }).join("");
     const spring = Array.from({ length: 9 }, (_, index) => {
-      const y1 = scaleTop + 12 + (index * (pointerY - scaleTop - 14)) / 9;
-      const y2 = scaleTop + 12 + ((index + 0.5) * (pointerY - scaleTop - 14)) / 9;
-      return `L${index % 2 ? 322 : 338} ${n2(y1)}L${index % 2 ? 338 : 322} ${n2(y2)}`;
+      const y1 = scaleTop + 12 + (index * (pointerY - scaleTop - 12)) / 9;
+      const y2 = scaleTop + 12 + ((index + 0.5) * (pointerY - scaleTop - 12)) / 9;
+      return `L${index % 2 ? 324 : 336} ${n2(y1)}L${index % 2 ? 336 : 324} ${n2(y2)}`;
     }).join("");
     return diagram("dg-buoyancy", "阿基米德原理实验：弹簧测力计吊着物体浸入溢水杯，排开的液体流入小桶", `
       ${caption("称重法测浮力：F浮 = G − F示；阿基米德原理：F浮 = G排")}
-      <rect class="dg-scale-case" x="312" y="${scaleTop}" width="54" height="118" rx="8"/>
+      <rect class="dg-scale-case" x="280" y="${scaleTop}" width="104" height="118" rx="8"/>
       <path class="dg-spring" d="M330 ${scaleTop + 10}${spring}L330 ${n2(pointerY)}"/>
       ${ticks}
-      <path class="dg-pointer" d="M318 ${n2(pointerY)}H352"/>
-      <text class="dg-small" x="372" y="${scaleTop + 12}">N</text>
+      <path class="dg-pointer" d="M314 ${n2(pointerY)}H340"/>
+      <text class="dg-small" x="300" y="${scaleTop + 25}" text-anchor="middle">N</text>
       <line class="dg-string" x1="330" y1="${scaleTop + 118}" x2="330" y2="${n2(blockTop)}"/>
-      <text class="dg-label" x="300" y="${scaleTop + 50}" text-anchor="end">弹簧测力计</text>
-      <text class="dg-value-text" x="300" y="${scaleTop + 80}" text-anchor="end">F示 ${eq(reading)} ${fmt(reading, 2)} N</text>
+      <text class="dg-label" x="262" y="${scaleTop + 48}" text-anchor="end">弹簧测力计</text>
+      <text class="dg-value-text" x="262" y="${scaleTop + 80}" text-anchor="end">F示 ${eq(reading)} ${fmt(reading, 2)} N</text>
       <path class="dg-liquid" style="fill:${liquid}" d="M254 ${surface}H406V366H254Z"/>
       <rect class="dg-object-block" x="285" y="${n2(blockTop)}" width="90" height="${blockH}" rx="4"/>
       <path class="dg-liquid-front" style="fill:${liquid}" d="M285 ${surface}H375V${n2(Math.max(surface, blockTop + blockH))}H285Z"/>
       <path class="dg-glass" d="M250 150V370H410V${surface - 4}L470 ${surface + 26}"/>
       <path class="dg-glass" d="M410 ${surface + 8}L466 ${surface + 36}"/>
       <path class="dg-drip" d="M468 ${surface + 32}Q478 ${surface + 52} 486 ${surface + 60}"/>
-      <text class="dg-label" x="244" y="186" text-anchor="end">溢水杯</text>
+      <text class="dg-label" x="240" y="186" text-anchor="end">溢水杯</text>
       <path class="dg-liquid" style="fill:${liquid}" d="M474 ${n2(368 - bucketWater)}H552V368H474Z"/>
       <path class="dg-glass" d="M470 300V372H556V300"/>
-      <text class="dg-label" x="513" y="294" text-anchor="middle">小桶</text>
-      <text class="dg-small" x="513" y="392" text-anchor="middle">排开液体 V排 = ${fmt(volumeMl)} mL</text>
-      <text class="dg-small" x="252" y="392">ρ液 = ${fmt(density)} kg/m³</text>
-      <g class="dg-table" transform="translate(596 110)">
-        <rect width="156" height="150" rx="10"/>
-        <text x="12" y="28">${weightSource === "assumed" ? "设物重" : "物重"} G ${eq(weight)} ${fmt(weight, 2)} N</text>
-        <text x="12" y="56">F示 ${eq(reading)} ${fmt(reading, 2)} N</text>
-        <text x="12" y="84">F浮 = G − F示</text>
-        <text class="dg-value-text" x="12" y="114">${eq(force)} ${fmt(force, 2)} N</text>
-        <text x="12" y="142">G排 ${eq(force)} ${fmt(force, 2)} N</text>
-      </g>`);
+      <text class="dg-label" x="513" y="286" text-anchor="middle">小桶</text>
+      <text class="dg-small" x="513" y="396" text-anchor="middle">排开液体 V排 = ${fmt(volumeMl)} mL</text>
+      <text class="dg-small" x="330" y="396" text-anchor="middle">ρ液 = ${fmt(density)} kg/m³</text>
+      <g class="dg-table" transform="translate(588 104)">
+        <rect width="164" height="164" rx="10"/>
+        <text x="12" y="30">${weightSource === "assumed" ? "设物重" : "物重"} G ${eq(weight)} ${fmt(weight, 2)} N</text>
+        <text x="12" y="60">F示 ${eq(reading)} ${fmt(reading, 2)} N</text>
+        <text x="12" y="90">F浮 = G − F示</text>
+        <text class="dg-value-text" x="12" y="120">${eq(force)} ${fmt(force, 2)} N</text>
+        <text x="12" y="150">G排 ${eq(force)} ${fmt(force, 2)} N</text>
+      </g>`, 760, 432);
   }
 
   // surface：初中讲法给出接触面名称时，图中只写接触面，不写动摩擦因数
@@ -657,7 +669,7 @@
       <text class="dg-small" x="104" y="292" text-anchor="middle">滑动摩擦力</text>
       <line class="dg-force dg-ink-force" x1="308" y1="312" x2="308" y2="${n2(pressureEnd)}" marker-end="url(#dgArrowInk)"/>
       <text class="dg-force-text dg-ink" x="308" y="423" text-anchor="middle">F压 = ${fmt(pressure)} N</text>
-      <text class="dg-note" x="308" y="451" text-anchor="middle">木块对接触面的压力</text>
+      <text class="dg-note" x="308" y="465" text-anchor="middle">木块对接触面的压力</text>
       <text class="dg-label" x="480" y="385">接触面：${surface || "长木板"}</text>
       <text class="dg-note" x="480" y="415">${surface ? "测力计示数为模拟值" : `动摩擦因数 μ = ${fmt(mu, 2)}`}</text>`, 760, 480);
   }
@@ -674,29 +686,31 @@
     const rest = 232;
     const leftLevel = rest + half;
     const rightLevel = rest - half;
+    // 容器左壁在 x=96，标尺在壁外；“h = …”写在容器内、深度标注线左侧，离壁和标尺都留出 ≥12px
+    const wall = 96;
     const ruler = Array.from({ length: 11 }, (_, index) => {
       const y = surface + index * 10 * px;
-      return `<line class="dg-scale-tick" x1="${index % 5 ? 104 : 98}" y1="${y}" x2="112" y2="${y}"/><text class="dg-scale-num" x="94" y="${y + 4}" text-anchor="end">${index * 10}</text>`;
+      return `<line class="dg-scale-tick" x1="${index % 5 ? 80 : 74}" y1="${y}" x2="88" y2="${y}"/><text class="dg-scale-num" x="68" y="${y + 4}" text-anchor="end">${index * 10}</text>`;
     }).join("");
     return diagram("dg-pressure", "用 U 形管压强计探究液体内部压强：探头在液体中的深度越大，U 形管两侧液面高度差越大", `
       ${caption("U 形管两侧液面高度差反映探头处液体压强的大小")}
-      <path class="dg-liquid" style="fill:${liquid}" d="M124 ${surface}H356V352H124Z"/>
-      <path class="dg-glass" d="M120 56V356H360V56"/>
+      <path class="dg-liquid" style="fill:${liquid}" d="M${wall + 4} ${surface}H356V352H${wall + 4}Z"/>
+      <path class="dg-glass" d="M${wall} 56V356H360V56"/>
       ${ruler}
-      <text class="dg-small" x="70" y="${surface - 20}">深度/cm</text>
+      <text class="dg-small" x="28" y="${surface - 22}">深度/cm</text>
       <path class="dg-tube" d="M258 ${n2(probeY - 8)}V70Q258 48 280 48H511Q533 48 533 70"/>
       <rect class="dg-probe" x="232" y="${n2(probeY - 10)}" width="52" height="20" rx="4"/>
       <line class="dg-membrane" x1="234" y1="${n2(probeY + 10)}" x2="282" y2="${n2(probeY + 10)}"/>
-      ${dimension(206, surface, 206, probeY, "", 0, 0)}
-      <text class="dg-dim-text" x="200" y="${n2((surface + probeY) / 2 + 4)}" text-anchor="end">h = ${fmt(depthCm)} cm</text>
+      ${dimension(212, surface, 212, probeY, "", 0, 0)}
+      <text class="dg-dim-text" x="204" y="${n2((surface + probeY) / 2 + 5)}" text-anchor="end">h = ${fmt(depthCm)} cm</text>
       <path class="dg-u-liquid" d="M540 ${n2(leftLevel)}V330Q540 356 571 356Q602 356 602 330V${n2(rightLevel)}H616V330Q616 370 571 370Q526 370 526 330V${n2(leftLevel)}Z"/>
       <path class="dg-glass dg-u-tube" d="M526 76V330Q526 370 571 370Q616 370 616 330V76M540 76V330Q540 356 571 356Q602 356 602 330V76"/>
       <line class="dg-extension" x1="516" y1="${n2(leftLevel)}" x2="640" y2="${n2(leftLevel)}"/>
       <line class="dg-extension" x1="600" y1="${n2(rightLevel)}" x2="640" y2="${n2(rightLevel)}"/>
       ${deltaCm > 1 ? dimension(634, rightLevel, 634, leftLevel, "", 0, 0) : ""}
-      <text class="dg-dim-text" x="646" y="${n2((leftLevel + rightLevel) / 2 + 4)}">Δh ≈ ${fmt(deltaCm, 1)} cm</text>
+      <text class="dg-dim-text" x="648" y="${n2((leftLevel + rightLevel) / 2 + 5)}">Δh ≈ ${fmt(deltaCm, 1)} cm</text>
       <text class="dg-label" x="571" y="392" text-anchor="middle">U 形管压强计（管内为水）</text>
-      <text class="dg-small" x="240" y="392" text-anchor="middle">ρ液 = ${fmt(density)} kg/m³ · p = ρgh ${eq(pressure)} ${fmt(pressure, 0)} Pa</text>`);
+      <text class="dg-small" x="228" y="392" text-anchor="middle">ρ液 = ${fmt(density)} kg/m³ · p = ρgh ${eq(pressure)} ${fmt(pressure, 0)} Pa</text>`);
   }
 
   function heatDiagram(mHot, tHot, t, mCold = 200, tCold = 20) {
@@ -763,7 +777,7 @@
       ${dimension(rope.right + 40, endStart, rope.right + 40, endNow, "", 0, 0)}
       <text class="dg-dim-text" x="${rope.right + 48}" y="${(endStart + endNow) / 2 + 4}">s = 3h</text>
       <line class="dg-force dg-blue-force" x1="${rope.right}" y1="${endNow - 22}" x2="${rope.right}" y2="${endNow - 74}" marker-end="url(#dgArrowBlue)"/>
-      <text class="dg-force-text dg-blue" x="${rope.right + 10}" y="${endNow - 58}">F = ${fmt(force)} N</text>
+      <text class="dg-force-text dg-blue" x="${rope.right + 16}" y="${endNow - 58}">F = ${fmt(force)} N</text>
       <g class="dg-table" transform="translate(574 110)">
         <rect width="178" height="230" rx="10"/>
         <text x="12" y="28">W有 = Gh</text>
@@ -800,7 +814,7 @@
     const scopeX = 150;
     const scopeY = 176;
     const scopeW = 540;
-    const scopeH = 200;
+    const scopeH = 184; // 示波器下方的说明里有分式（1/f），向上多占一行：示波器矮一点，说明才不碰到边框
     const cycles = freq / 100;
     const ampPx = (amp / 100) * 75;
     const wave = Array.from({ length: 361 }, (_, index) => {
@@ -824,7 +838,7 @@
       <path class="dg-scope-wave" d="${wave}"/>
       <text class="dg-small" x="${scopeX - 10}" y="${scopeY + 12}" text-anchor="end">示波器</text>
       <text class="dg-small" x="${scopeX - 10}" y="${scopeY + 38}" text-anchor="end">1 ms/格</text>
-      <text class="dg-small" x="${scopeX + scopeW}" y="${scopeY + scopeH + 18}" text-anchor="end">横轴：时间 t　纵轴：振动幅度　周期 T = 1/f ≈ ${fmt(1000 / freq, 2)} ms</text>`);
+      <text class="dg-small" x="${scopeX + scopeW}" y="${scopeY + scopeH + 30}" text-anchor="end">横轴：时间 t　纵轴：振动幅度　周期 T = 1/f ≈ ${fmt(1000 / freq, 2)} ms</text>`);
   }
 
 
@@ -939,42 +953,75 @@
   }
 
   function planeMirrorDiagram(model) {
-    const [u,h] = model.metrics;
+    const [u, h] = model.metrics;
     const compact = window.matchMedia?.("(max-width: 560px)").matches;
     const center = compact ? 180 : 380;
-    const dx = compact ? 40 + 55 * u / (u + 40) : 75 + 165 * u / (u + 40);
-    const height = 45 + 108 * h / (h + 15);
+    const dx = compact ? 78 + 62 * u / (u + 40) : 118 + 125 * u / (u + 40);
+    const height = 40 + 100 * h / (h + 15);
     const left = center - dx, right = center + dx;
-    const labelU = model.distanceKnown ? `u = ${fmt(u,6)} cm` : "物距未给出";
-    const labelV = model.distanceKnown ? `v = ${fmt(u,6)} cm` : "像距等于物距";
-    if(compact) return diagram("plane-mirror-diagram compact-diagram", "物像关于镜面对称，虚像正立且与物等大", `
-      ${caption("平面镜成像 · 物像对称",180,32)}
-      <text class="dg-label dg-green" x="90" y="76" text-anchor="middle">物体</text><text class="dg-label dg-blue" x="270" y="76" text-anchor="middle">正立等大虚像</text>
-      <rect x="181" y="77" width="9" height="168" fill="url(#dgHatch)"/><path d="M180 74V247" stroke="#4f6482" stroke-width="3"/>
-      <text class="dg-small" x="180" y="272" text-anchor="middle">镜面</text>
-      <path class="dg-extension" d="M${n2(left)} ${n2(238-height)}H${n2(right)} M${n2(left)} 238H${n2(right)}"/>
-      <g class="mirror-object" style="transform:translate(${n2(left)}px,238px) scaleY(${n2(height/100)})"><path d="M0 0V-100M-8 -88L0 -100L8 -88" fill="none" stroke="#1b9270" stroke-width="3.2"/></g>
-      <g class="mirror-image" style="transform:translate(${n2(right)}px,238px) scaleY(${n2(height/100)})"><path d="M0 0V-100M-8 -88L0 -100L8 -88" fill="none" stroke="#2563c9" stroke-width="3.2" stroke-dasharray="6 4"/></g>
-      <text class="dg-small" x="90" y="308" text-anchor="middle">${model.heightKnown?`h = ${fmt(h,6)} cm`:"物高未给出"}</text>
-      <text class="dg-small" x="270" y="308" text-anchor="middle">${model.heightKnown?`h′ = ${fmt(h,6)} cm`:"h′ = h"}</text>
-      ${dimension(left,334,180,334,labelU,90,358)}${dimension(180,334,right,334,labelV,270,358)}
-      ${dimension(left,386,right,386,model.distanceKnown?`物像距离 d = ${fmt(2*u,6)} cm`:"物像距离 d = 2u",180,414)}`,360,438);
+    const base = 238;
+    const top = base - height;
+    const labelU = model.distanceKnown ? `u = ${fmt(u, 6)} cm` : "物距未给出";
+    const labelV = model.distanceKnown ? `v = ${fmt(u, 6)} cm` : "像距等于物距";
+    const labelH = model.heightKnown ? `h = ${fmt(h, 6)} cm` : "物高未给出";
+    const labelH2 = model.heightKnown ? `h′ = ${fmt(h, 6)} cm` : "h′ = h";
+    const labelD = model.distanceKnown ? `物像距离 d = 2u = ${fmt(2 * u, 6)} cm` : "物像距离 d = 2u";
+    // 近似字宽：用来判断标注放得进尺寸线之间，还是移到尺寸线外侧，避免两个标注互相挤压或压到界线
+    const textWidth = text => [...String(text)].reduce((sum, ch) => sum + (/[　-鿿]/.test(ch) ? 18 : /[\s]/.test(ch) ? 5 : 9.5), 0);
+    const arrow = (x, className, color, dash) => `<g class="${className}" style="transform:translate(${n2(x)}px,${base}px) scaleY(${n2(height / 100)})"><path d="M0 0V-100M-8 -88L0 -100L8 -88" fill="none" stroke="${color}" stroke-width="3.2"${dash ? ` stroke-dasharray="${dash}"` : ""}/></g>`;
+    const mirror = `
+      <rect x="${center + 1}" y="88" width="10" height="159" fill="url(#dgHatch)"/><path d="M${center} 86V247" stroke="#4f6482" stroke-width="3"/>`;
+    const rows = compact
+      ? { dimUV: 330, dimD: 388, vEnd: 274 }
+      : { dimUV: 292, dimD: 334, vEnd: 274 };
+    // 物体、镜面、虚像三个名称在同一行（y=64），位于各自对象的正上方，与箭头顶部和镜面都留有间距
+    const names = `
+      <text class="dg-label dg-green" x="${n2(left)}" y="70" text-anchor="middle">物体</text>
+      <text class="dg-small" x="${center}" y="70" text-anchor="middle">镜面</text>
+      <text class="dg-label dg-blue" x="${n2(right)}" y="70" text-anchor="middle">虚像</text>`;
+    const guides = `
+      <path class="dg-extension" d="M${n2(left)} ${n2(top)}H${n2(right)} M${n2(left)} ${base}H${n2(right)}"/>`;
+    if (compact) {
+      // 窄屏：物高、像高写在箭头下方，界线从标注下方开始；u、v 共用一行
+      const uvText = model.distanceKnown ? `u = v = ${fmt(u, 6)} cm` : "像距 v = 物距 u";
+      return diagram("plane-mirror-diagram compact-diagram", "物像关于镜面对称，虚像正立且与物等大", `
+        ${caption("平面镜成像 · 物像对称", 180, 32)}
+        ${names}
+        ${mirror}
+        ${guides}
+        ${arrow(left, "mirror-object", "#1b9270")}
+        ${arrow(right, "mirror-image", "#2563c9", "6 4")}
+        <text class="dg-small" x="${n2(Math.max(left, 62))}" y="264" text-anchor="middle">${labelH}</text>
+        <text class="dg-small" x="${n2(Math.min(right, 298))}" y="264" text-anchor="middle">${labelH2}</text>
+        <path class="dg-extension" d="M${n2(left)} ${rows.vEnd}V${rows.dimD} M${center} 252V${rows.dimUV} M${n2(right)} ${rows.vEnd}V${rows.dimD}"/>
+        ${dimension(left, rows.dimUV, center, rows.dimUV, "", 0, 0)}${dimension(center, rows.dimUV, right, rows.dimUV, "", 0, 0)}
+        <text class="dg-dim-text" x="${center}" y="${rows.dimUV + 30}" text-anchor="middle">${uvText}</text>
+        ${dimension(left, rows.dimD, right, rows.dimD, "", 0, 0)}
+        <text class="dg-dim-text" x="${center}" y="${rows.dimD + 30}" text-anchor="middle">${labelD}</text>`, 360, 438);
+    }
+    // 宽屏：物高、像高写在箭头外侧中段；u、v 放得下就居中，放不下就移到界线外侧
+    const midY = (top + base) / 2 + 6;
+    const span = dx;
+    const fit = text => textWidth(text) + 16 <= span;
+    const uLabel = fit(labelU) && fit(labelV)
+      ? `<text class="dg-dim-text" x="${n2((left + center) / 2)}" y="${rows.dimUV + 26}" text-anchor="middle">${labelU}</text><text class="dg-dim-text" x="${n2((center + right) / 2)}" y="${rows.dimUV + 26}" text-anchor="middle">${labelV}</text>`
+      : `<text class="dg-dim-text" x="${n2(left - 10)}" y="${rows.dimUV + 26}" text-anchor="end">${labelU}</text><text class="dg-dim-text" x="${n2(right + 10)}" y="${rows.dimUV + 26}" text-anchor="start">${labelV}</text>`;
     return diagram("plane-mirror-diagram", "物体和正立等大的虚像关于镜面对称，像与物到镜面的距离相等", `
-      ${caption("平面镜成像 · 物像对称",380,32)}
-      <text class="dg-label dg-green" x="190" y="76" text-anchor="middle">物体</text>
-      <text class="dg-label dg-blue" x="570" y="76" text-anchor="middle">正立、等大的虚像</text>
-      <rect x="381" y="77" width="10" height="168" fill="url(#dgHatch)"/>
-      <path d="M380 74V247" stroke="#4f6482" stroke-width="3"/>
-      <text class="dg-small" x="380" y="68" text-anchor="middle">镜面</text>
-      <path class="dg-extension" d="M${n2(left)} ${n2(238-height)}H${n2(right)} M${n2(left)} 238H${n2(right)}"/>
-      <g class="mirror-object" style="transform:translate(${n2(left)}px,238px) scaleY(${n2(height/100)})"><path d="M0 0V-100M-8 -88L0 -100L8 -88" fill="none" stroke="#1b9270" stroke-width="3.2"/></g>
-      <g class="mirror-image" style="transform:translate(${n2(right)}px,238px) scaleY(${n2(height/100)})"><path d="M0 0V-100M-8 -88L0 -100L8 -88" fill="none" stroke="#2563c9" stroke-width="3.2" stroke-dasharray="6 4"/></g>
-      <text class="dg-small" x="190" y="274" text-anchor="middle">${model.heightKnown ? `物高 h = ${fmt(h,6)} cm` : "物高未给出"}</text>
-      <text class="dg-small" x="570" y="274" text-anchor="middle">${model.heightKnown ? `像高 h′ = ${fmt(h,6)} cm` : "h′ = h"}</text>
-      <path class="dg-extension" d="M${n2(left)} 245V343 M380 251V296 M${n2(right)} 245V343"/>
-      ${dimension(left,296,380,296,labelU,220,320)}
-      ${dimension(380,296,right,296,labelV,540,320)}
-      ${dimension(left,343,right,343,model.distanceKnown ? `物像距离 d = 2u = ${fmt(2*u,6)} cm` : "物像距离 d = 2u",380,366)}`);
+      ${caption("平面镜成像 · 物像对称", 380, 32)}
+      ${names}
+      ${mirror}
+      ${guides}
+      ${arrow(left, "mirror-object", "#1b9270")}
+      ${arrow(right, "mirror-image", "#2563c9", "6 4")}
+      <text class="dg-small" x="${n2(left - 16)}" y="${n2(midY)}" text-anchor="end">${labelH}</text>
+      <text class="dg-small" x="${n2(right + 16)}" y="${n2(midY)}" text-anchor="start">${labelH2}</text>
+      <path class="dg-extension" d="M${n2(left)} ${base}V${rows.dimD} M${center} 252V${rows.dimUV} M${n2(right)} ${base}V${rows.dimD}"/>
+      ${dimension(left, rows.dimUV, center, rows.dimUV, "", 0, 0)}
+      ${dimension(center, rows.dimUV, right, rows.dimUV, "", 0, 0)}
+      ${uLabel}
+      ${dimension(left, rows.dimD, right, rows.dimD, "", 0, 0)}
+      <text class="dg-dim-text" x="380" y="${rows.dimD + 27}" text-anchor="middle">${labelD}</text>
+      <text class="dg-note" x="748" y="416" text-anchor="end">虚线箭头为虚像，光屏上接收不到</text>`, 760, 440);
   }
 
   function genericShell(model, bodyHtml) {
@@ -1671,7 +1718,7 @@
               <circle class="lamp-circle" cx="550" cy="260" r="32"></circle>
               <line class="lamp-filament" x1="530" y1="240" x2="570" y2="280"></line>
               <line class="lamp-filament" x1="570" y1="240" x2="530" y2="280"></line>
-              <text class="component-label" x="550" y="307" text-anchor="middle">小灯泡</text>
+              <text class="component-label" x="550" y="314" text-anchor="middle">小灯泡</text>
             </g>
 
             <g class="edu-voltmeter-branch" aria-label="电压表并联在小灯泡两端">

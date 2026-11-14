@@ -18,6 +18,7 @@
   const coarseQuery = media("(pointer: coarse)");
   const dockQuery = media("(max-width: 640px) and (orientation: portrait)");
   const wideQuery = media("(min-width: 1101px)");
+  const touchQuery = media("(hover: none) and (pointer: coarse)"); // 手机等触屏为主的设备
   const reduced = () => reducedQuery.matches;
   const compat = () => body.classList.contains("harmony-compat-mode");
   const appReady = () => typeof state !== "undefined" && typeof config === "function" && typeof elements !== "undefined";
@@ -49,6 +50,28 @@
     if (on) stillReasons.add(reason); else stillReasons.delete(reason);
     const still = stillReasons.size > 0;
     if (root.classList.contains("um-still") !== still) root.classList.toggle("um-still", still);
+  }
+  // 点击、按键、滚轮后 1.5 秒内也暂停：交互期间每帧少一次主线程样式重算，停手后继续漂移（计时器一次性，每次交互重新计时）
+  let inputStillTimer = 0;
+  const pauseForInput = () => {
+    setStill("input", true);
+    clearTimeout(inputStillTimer);
+    inputStillTimer = later(() => setStill("input", false), 1500);
+  };
+  ["pointerdown", "keydown", "wheel"].forEach(type => doc.addEventListener(type, pauseForInput, { capture: true, passive: true }));
+
+  /* A2 题目输入框光圈只在输入题目时出现：框内文本框聚焦时给输入框加 .um-typing（ui-motion.css）。
+     框内还有拍照、实验库、生成按钮，用 :focus-within 时点这些按钮光圈也会一直转，每帧都要在主线程重算并重绘 */
+  const promptWrap = $(".prompt-input-wrap");
+  if (promptWrap) {
+    const textField = el => Boolean(el?.matches?.('textarea, input:not([type="file"]):not([type="button"]):not([type="submit"]):not([type="checkbox"]):not([type="radio"]):not([type="range"])'));
+    const syncTyping = next => {
+      const on = Boolean(next) && promptWrap.contains(next) && textField(next);
+      if (promptWrap.classList.contains("um-typing") !== on) promptWrap.classList.toggle("um-typing", on);
+    };
+    promptWrap.addEventListener("focusin", event => syncTyping(event.target));
+    promptWrap.addEventListener("focusout", event => syncTyping(event.relatedTarget));
+    syncTyping(doc.activeElement);
   }
 
   /* ---------- 页面隐藏 / 元素离开视口：暂停循环动画 ---------- */
@@ -235,7 +258,7 @@
     return unit ? `${value} ${unit}` : value;
   }
   function placeBubble() {
-    if (!drag) return;
+    if (!drag?.bubble) return;
     const { input, rect, thumb } = drag;
     const x = rect.left + thumb / 2 + fraction(input) * (rect.width - thumb);
     // 只改变化了的部分（同一个文字节点、相同坐标不重写），拖动中每次输入少一些样式与布局失效
@@ -266,16 +289,20 @@
   doc.addEventListener("pointerdown", event => {
     const input = event.target.closest?.('.experiment-card .parameter > input[type="range"], .experiment-card #timeline');
     if (!input || input.disabled || event.button > 0) return;
-    // 只在按下时量一次位置，拖动过程中不再读布局
-    drag = { input, param: input !== timeline, changed: false, rect: input.getBoundingClientRect(), thumb: parseFloat(getComputedStyle(input).getPropertyValue("--um-thumb")) || 16 };
+    // 只在按下时量一次位置，拖动过程中不再读布局。
+    // 手机（触屏为主的设备）拖时间轴不显示数值气泡：当前时间已显示在时间轴下方，气泡每次输入都要重排重绘
+    // （2026-11-08 手机端特效简化；参数滑块、电脑端不变，鸿蒙兼容模式保留气泡）
+    drag = { input, param: input !== timeline, changed: false, bubble: !(input === timeline && touchQuery.matches && !compat()), rect: input.getBoundingClientRect(), thumb: parseFloat(getComputedStyle(input).getPropertyValue("--um-thumb")) || 16 };
     if (drag.param) snapshotReadouts(); // 拖动开始时的读数，松手时与之比较
     if (drag.param && marks.isConnected && !marks.hidden) { marks.hidden = true; drag.hidMarks = true; }
     setStill("drag", true);
     input.classList.add("um-dragging");
     clearTimeout(bubbleTimer);
-    attach(bubble, body);
-    placeBubble();
-    bubble.classList.add("is-on");
+    if (drag.bubble) {
+      attach(bubble, body);
+      placeBubble();
+      bubble.classList.add("is-on");
+    }
   }, true);
   ["pointerup", "pointercancel"].forEach(type => doc.addEventListener(type, endDrag, true));
   window.addEventListener("blur", endDrag);
@@ -467,7 +494,7 @@
         line.className = "um-ghost um-ghost-board";
         line.style.left = `${left}%`;
         const tag = ghostTag(label);
-        Object.assign(tag.style, { left: `${left}%`, bottom: "calc(100% + 16px)", transform: "translateX(-50%)" });
+        Object.assign(tag.style, { left: `${left}%`, bottom: "calc(100% + 92px)", transform: "translateX(-50%)" });
         board.append(line, tag);
         ghost.nodes.push(line, tag);
       } else if (snapshot.kind === "projectile") {
@@ -745,14 +772,17 @@
     }
   }
 
-  /* ==================== B3 时间轴步骤刻度（刹车：沿用演示模式已有的步骤—时间对应） ==================== */
+  /* ==================== B3 时间轴步骤刻度 ==================== */
   const transport = $(".experiment-card .transport");
   const marks = doc.createElement("nav");
   marks.className = "um-tl-marks";
   marks.setAttribute("aria-label", "解题步骤刻度");
   marks.hidden = true;
   function stepTimes() {
-    if (!generated() || compat() || templateKey() !== "brake") return null;
+    if (!generated() || compat()) return null;
+    const count = activeGenericTemplate()?.protocolSteps;
+    if (count) return Array.from({length:count}, (_, index) => [index+1, index/count]);
+    if (templateKey() !== "brake") return null;
     // playDemoSequence：第 1 步在起点；第 3 步在 max(1.2s, 38%)；第 4 步在 max(2.4s, 72%)（按实验时长与倍速换算）；第 2 步没有时间点
     const ms = (duration() / state.playbackRate) * 1000;
     if (!(ms > 0)) return null;
@@ -803,6 +833,10 @@
   marks.addEventListener("click", event => {
     const button = event.target.closest(".um-tl-mark");
     if (!button || !generated()) return;
+    if (activeGenericTemplate()?.protocolSteps) {
+      activateReasoningStep(Number(button.dataset.step), { manual: true });
+      return;
+    }
     timeline.value = String(Number(button.dataset.at) * 100);
     timeline.dispatchEvent(new Event("input", { bubbles: true }));
     activateReasoningStep(Number(button.dataset.step), { manual: true });
@@ -912,6 +946,11 @@
   dock.innerHTML = '<button type="button" class="um-dock-handle" aria-expanded="false" aria-label="展开参数"></button><section class="um-dock-body"></section>';
   const dockHandle = $(".um-dock-handle", dock);
   const dockBody = $(".um-dock-body", dock);
+  for (const name of ["pointerdown", "click", "keydown"]) dock.addEventListener(name, event => {
+    if (!blockingLayerOpen()) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  }, { capture: true });
   let docked = false;
   // 提示条按底栏高度上移；变量写在提示条自身，不写在 body 上（避免整页继承变量表变化）
   const toastNode = $("#toast");
@@ -956,7 +995,7 @@
     setDocked(sceneInView && slotCovered);
   }
   function toggleDock(expand = !dock.classList.contains("is-expanded")) {
-    if (dock.classList.contains("is-week1")) return; // 并联电路、平面镜保持原来的三行参数
+    if (blockingLayerOpen() || dock.classList.contains("is-week1")) return; // 并联电路、平面镜保持原来的三行参数
     dock.classList.toggle("is-expanded", expand);
     dockHandle.setAttribute("aria-expanded", String(expand));
     dockHandle.setAttribute("aria-label", expand ? "收起参数" : "展开参数");
@@ -1029,7 +1068,14 @@
     if (button) setCollapsed(false, { focus: button.dataset.open });
   });
   function syncRail(steps) {
-    $$(".um-rail-dot", rail).forEach((dot, index) => {
+    const host = $(".um-rail-steps", rail);
+    while (host.children.length > steps.length) host.lastElementChild.remove();
+    while (host.children.length < steps.length) {
+      const dot = doc.createElement("i");
+      dot.className = "um-rail-dot";
+      host.append(dot);
+    }
+    [...host.children].forEach((dot, index) => {
       dot.classList.toggle("is-done", Boolean(steps[index]?.classList.contains("done")));
       dot.classList.toggle("is-active", Boolean(steps[index]?.classList.contains("active")));
     });
@@ -1043,6 +1089,8 @@
   const unlight = () => { litCard?.classList.remove("um-lit"); litCard = null; };
   doc.addEventListener("pointermove", event => {
     if (event.pointerType !== "mouse" || compat() || !fineQuery.matches) return;
+    // 拖动滑块 / 时间轴时边缘光停在按下处，松手后继续跟随：拖动中每次移动少一次卡片样式更新与重绘（2026-11-07 性能归因）
+    if (drag) return;
     if (event.timeStamp - lastMove < 16) return; // 按事件时间戳节流，不另申请动画帧
     lastMove = event.timeStamp;
     const cardNode = event.target.closest?.(LIT) || null;
@@ -1374,6 +1422,7 @@
   if (playButton) new MutationObserver(() => { syncPlaying(); setTitles(); }).observe(playButton, { attributes: true, attributeFilter: ["class"] });
   if (stepsHost) {
     new MutationObserver(syncChain).observe(stepsHost, { childList: true });
+    stepsHost.addEventListener("textbookstepchange", syncChain);
     if ("ResizeObserver" in window) new ResizeObserver(() => { if (activeStep) measureChain(); }).observe(stepsHost);
   }
   if (timeline && "ResizeObserver" in window) new ResizeObserver(() => { marksKey = ""; layoutMarks(); }).observe(timeline);

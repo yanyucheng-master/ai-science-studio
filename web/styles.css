@@ -9937,6 +9937,14 @@ body.ai-tutor-route .scene *, body.ai-tutor-route .scene *::before, body.ai-tuto
     top: 44px;
     height: calc(100% - 44px);
   }
+
+  /* 测小灯泡电功率：说明条在窄屏换成两行（约 49px），电路图再往下让一段，不压住“开关 S · 闭合” */
+  .generic-circuit-badge + .lamp-power-schematic {
+    top: 84px;
+    height: calc(100% - 84px);
+  }
+  .generic-physics-visual:has(.lamp-power-schematic) { height: auto; aspect-ratio: 334 / 270; }
+  .scene.subject-generic-physics:has(.lamp-power-schematic) { min-height: 512px; }
 }
 
 /* ===== 窄屏布局修正（2026-10-07）：标签、工具条和读数互不遮挡 ===== */
