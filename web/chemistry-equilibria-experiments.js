@@ -98,7 +98,7 @@
       <div class="eq-panels"><figure><figcaption>无色母液与白色晶体</figcaption>${vessel(true)}<p>纯KNO₃和水，不蒸发、不失水；各状态均达到平衡。</p></figure><figure><figcaption>教材离散溶解度数据</figcaption><svg viewBox="0 0 450 290" class="eq-graph" role="img" aria-label="每100克水的硝酸钾溶解度数据">${axes('S（g，每100g水）','温度（°C）')}<polyline class="eq-grid" points="${Object.entries(core.SOLUBILITY).map(([t,s])=>`${48+(t-20)*9.3},${232-s*1.7}`).join(' ')}"/>${Object.entries(core.SOLUBILITY).map(([t,s])=>`<circle cx="${48+(t-20)*9.3}" cy="${232-s*1.7}" r="4" class="eq-table-point"/><text x="${48+(t-20)*9.3}" y="254" text-anchor="middle">${t}</text><text x="${48+(t-20)*9.3}" y="${220-s*1.7}" text-anchor="${t==='20'?'start':t==='60'?'end':'middle'}">${s}</text>`).join('')}<circle data-eq-point r="6" class="eq-point"/></svg><p>单位为 g KNO₃ / 100g水。连线仅示意，不用于插值。</p></figure></div>
       <div class="eq-current" aria-live="off"><strong data-eq-current></strong><span data-eq-mass></span></div>
       <div class="eq-mass-bar" aria-label="晶体与母液的质量比例"><span data-eq-crystal-bar></span><span></span></div><p class="eq-mass-legend">蓝色：晶体质量；浅色：母液质量。<span data-eq-conservation></span></p>
-      <p class="chemistry-model-note">播放只逐点显示60、50、40、30、20°C中适用的平衡状态；进度不表示真实冷却时间、析晶速率或成核过程。晶体形状与数量为示意。下方结果对应目标终温。</p>
+      <p class="chemistry-model-note">选择上方教材终温，直接比较对应的平衡状态与析晶质量。各状态按教材离散溶解度数据计算，晶体形状与数量为示意。</p>
       <details class="eq-reference"><summary>教材操作参照与适用条件</summary><p>人教初中实验9-6：向10mL水中分次加入3g硝酸钾并搅拌，观察剩余固体；加热使剩余固体溶解，再加溶质并搅拌，静置冷却观察结晶。教材操作没有指定本场景的60°C与水质量范围。</p><p>数据来自表9-1：20、30、40、50、60°C时为31.6、45.8、63.9、85.5、110g每100g水。只计算无水KNO₃晶体；母液含水和仍溶解的溶质。高中内容为初中知识复习与质量守恒拓展，不引入Ksp。</p></details>
     </section>`;
   }
@@ -107,11 +107,11 @@
     const t=temperatures[Math.min(temperatures.length-1,Math.floor(clamp(p)*temperatures.length))];
     return core.cooling({...coolingDefaults,waterMass:m.waterMass,finalTemperature:t});
   }
-  function renderCooling(root,m,p){
+  function renderCooling(root,m){
     const scene=root.querySelector('.eq-cooling');if(!scene)return;
-    const n=coolingFrame(m,p);scene.dataset.currentTemperature=String(n.finalTemperature);scene.dataset.crystalMass=String(n.crystals);
+    const n=coolingFrame(m,1);scene.dataset.currentTemperature=String(n.finalTemperature);scene.dataset.crystalMass=String(n.crystals);
     scene.querySelector('[data-eq-phase]').textContent=`${n.finalTemperature}°C 平衡状态`;
-    scene.querySelector('[data-eq-current]').textContent=`演示当前：${n.finalTemperature}°C；晶体 ${mass(n.crystals)}`;
+    scene.querySelector('[data-eq-current]').textContent=`当前选择：${n.finalTemperature}°C；晶体 ${mass(n.crystals)}`;
     scene.querySelector('[data-eq-mass]').textContent=`仍溶解 ${mass(n.dissolved)}；母液 ${mass(n.motherLiquor)}`;
     scene.querySelector('[data-eq-conservation]').textContent=`晶体 + 母液 = ${mass(n.totalMass)}；水恒为 ${mass(n.waterMass)}。`;
     const dot=scene.querySelector('[data-eq-point]');dot.setAttribute('cx',String(48+(n.finalTemperature-20)*9.3));dot.setAttribute('cy',String(232-n.solubility*1.7));
@@ -137,8 +137,8 @@
       // The complete grammar above validates every clause. The shared ask
       // scanner can include trailing givens after a question-first colon.
       used:(w,t)=>[{cls:'mass',value:w/1000},{cls:'temperature',value:60},{cls:'temperature',value:t}],asks:{supported:/质量|晶体|溶解|母液|^(?:冷却后|终态)?(?:充分)?达到平衡$|^(?:全程)?(?:不蒸发(?:且|并)?不(?:损失|损耗)水|水不蒸发且无损失)$/,unsupported:/质量分数|体积|密度|反推|速率|生成|消耗/}},
-    question:Q.coolingQuestion,model:coolingModel,visual:coolingVisual,frame:coolingFrame,renderFrame:renderCooling,recognition:m=>`KNO₃｜水${number(m.waterMass)}g｜${m.readout}`,
+    motion:null,question:Q.coolingQuestion,model:coolingModel,visual:coolingVisual,frame:coolingFrame,renderFrame:renderCooling,recognition:m=>`KNO₃｜水${number(m.waterMass)}g｜${m.readout}`,
     presetFor:level=>({p1:100,p2:20,fixed:{...coolingDefaults,level}}),
-    copy:m=>({steps:[['固定起始状态','60°C饱和纯KNO₃水溶液已备好；不蒸发、不失水。',m.level==='junior'?'饱和必须同时说明温度与水的质量。':'初中知识复习与质量守恒拓展，不引入沉淀溶解平衡。'],['读取同一教材数表',`60°C：110g；${m.finalTemperature}°C：${m.solubility}g（均按每100g水）。`,'分母是水质量，不是溶液质量；不对其他温度插值。'],['计算并核对守恒',m.formulaDetail,'母液=水+仍溶解的KNO₃；晶体+母液=初始总质量。'],['按所问回答',m.conclusion,'数据精度按教材表值，动画不表示真实成核或结晶速度。']],hint:'温度下降后，每100g水能保留多少溶质？原来的多余溶质在哪里？',mentor:'母液质量为什么不能只用终态溶解量代替？水量加倍时各质量怎样变化？',challenge:'保持水量不变，比较各终温；回到60°C时晶体应为0。',sceneTip:m.conclusion,generationStages:stages('核对饱和初态、水量与终温','按五点教材数据计算各质量','显示平衡状态与质量守恒')})};
+    copy:m=>({steps:[['固定起始状态','60°C饱和纯KNO₃水溶液已备好；不蒸发、不失水。',m.level==='junior'?'饱和必须同时说明温度与水的质量。':'初中知识复习与质量守恒拓展，不引入沉淀溶解平衡。'],['读取同一教材数表',`60°C：110g；${m.finalTemperature}°C：${m.solubility}g（均按每100g水）。`,'分母是水质量，不是溶液质量；不对其他温度插值。'],['计算并核对守恒',m.formulaDetail,'母液=水+仍溶解的KNO₃；晶体+母液=初始总质量。'],['按所问回答',m.conclusion,'数据精度按教材表值，晶体图用于示意平衡状态。']],hint:'温度下降后，每100g水能保留多少溶质？原来的多余溶质在哪里？',mentor:'母液质量为什么不能只用终态溶解量代替？水量加倍时各质量怎样变化？',challenge:'保持水量不变，比较各终温；回到60°C时晶体应为0。',sceneTip:m.conclusion,generationStages:stages('核对饱和初态、水量与终温','按五点教材数据计算各质量','显示平衡状态与质量守恒')})};
   kit.register({hclNaohNeutralization:neutral,kno3Cooling:cooling});
 })();

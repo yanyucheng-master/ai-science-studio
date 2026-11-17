@@ -11121,6 +11121,15 @@ body.subject-math-active.subject-generic-template-active:not(.awaiting-generatio
 .solution-step-list { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 6px; list-style: none; margin: 14px 0; padding: 0; }
 .solution-step-list li { min-width: 0; border-radius: 9px; padding: 7px 4px; text-align: center; font-size: 11px; color: var(--muted); }
 .solution-step-list li.is-current { color: var(--blue); background: rgba(55,121,243,.12); font-weight: 700; }
+.solution-step-list button {
+  width: 100%; min-height: 44px; border: 0; border-radius: 8px; padding: 6px;
+  color: inherit; background: transparent; font: inherit; cursor: pointer;
+}
+.solution-steps > button {
+  min-height: 40px; padding: 6px 12px; margin-bottom: 10px; border: 1px solid var(--line); border-radius: 8px;
+  color: var(--blue); background: #fff; font: inherit; font-size: 13px; cursor: pointer;
+}
+.solution-steps button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 .solution-stations { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0; margin-bottom: 14px; }
 .solution-station { min-width: 0; padding: 10px 6px; text-align: center; }
 .solution-station + .solution-station { border-left: 1px solid var(--line); }

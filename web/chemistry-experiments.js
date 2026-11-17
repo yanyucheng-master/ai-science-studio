@@ -278,9 +278,11 @@
       stage:progress>=1?(pure?'纯水准备完成':'混匀完成'):[pure?'无需称盐':'称取 NaCl','称取水','依次加入容器','搅拌混匀'][step]};
   }
   function solutionVisual(m){
+    const labels = [m.w === 0 ? '无需称盐' : '称盐', '称水', '加入', '混匀'];
+    const steps = labels.map((label, index) => `<li><button type="button" data-experiment-step="${index}" aria-label="查看第${index + 1}步：${label}">${index + 1} ${label}</button></li>`).join('');
     return `<section class="chemistry-lab-scene chemistry-solution" aria-label="称盐、称水、加入与混匀步骤示意">
       <div class="chemistry-scene-heading"><strong>${m.w===0?'纯水（0%）':'氯化钠溶液配制'}</strong><span data-solution-stage>准备配料</span></div>
-      <ol class="solution-step-list"><li>1 称盐</li><li>2 称水</li><li>3 加入</li><li>4 混匀</li></ol>
+      <nav class="solution-steps" aria-label="溶液配制四步"><ol class="solution-step-list">${steps}</ol><button type="button" data-experiment-reset>恢复原题</button></nav>
       <div class="solution-stations">
         <div class="solution-station"><span>称盐 · 托盘当前剩余</span><svg class="solution-apparatus" viewBox="0 0 180 155" role="img" aria-label="电子秤托盘上的白色纯NaCl">
           <path class="chemistry-glass" d="M25 98H155L145 113H35Z"/><g data-solution-salt>${[0,1,2,3,4,5,6].map(i=>`<rect class="chemistry-solid" x="${55+i*9}" y="${87-i%3*6}" width="8" height="8" rx="1"/>`).join('')}</g>
@@ -296,19 +298,23 @@
         </svg><strong data-solution-mixture-readout>0 g</strong></div>
       </div>
       <div class="chemistry-live-readouts"><div><span>目标溶液总质量</span><strong>${grams(m.mass)}</strong></div><div><span>混匀后质量分数</span><strong>${fmt(m.w)}%</strong></div><div><span>已称配料总质量</span><strong data-solution-weighed>0 g</strong></div></div>
-      <p class="chemistry-model-note">操作步骤示意进度 <b data-solution-progress>0%</b>。固定20°C，完全溶解、不计转移损失。盐水无色；液面和盐粒仅作示意，不代表精确体积、密度或粒子数。${m.w===0?'0%无需称盐，直接称水。':''}</p>
+      <p class="chemistry-model-note">当前查看 <b data-solution-progress>第1步</b>。点击上方步骤查看对应操作完成后的示意。固定20°C，完全溶解、不计转移损失。盐水无色；液面和盐粒仅作示意，不代表精确体积、密度或粒子数。${m.w===0?'0%无需称盐，直接称水。':''}</p>
     </section>`;
   }
-  function renderSolution(root,m,p,{reducedMotion=false}={}){
-    const scene=root.querySelector('.chemistry-solution');if(!scene)return;const f=solutionFrame(m,p);
+  function renderSolution(root,m,p){
+    const scene=root.querySelector('.chemistry-solution');if(!scene)return;
+    const step = Math.min(3, Math.floor(unitProgress(p) * 4));
+    const completionProgress = m.w === 0 ? [0, .3, .8, 1] : [.2, .45, .8, 1];
+    const stages = [m.w === 0 ? '无需称盐' : '称盐完成', '称水完成', '加入完成', '混匀完成'];
+    const f = { ...solutionFrame(m, completionProgress[step]), step, stage: stages[step] };
     const text=(sel,value)=>{scene.querySelector(sel).textContent=value;};
     scene.dataset.mixtureMass=String(f.mixtureMass);scene.dataset.step=String(f.step);
-    text('[data-solution-stage]',f.stage);text('[data-solution-progress]',`${Math.round(f.progress*100)}%`);text('[data-solution-salt-readout]',m.w===0?'无需称盐':grams(f.saltOnScale));text('[data-solution-water-readout]',grams(f.waterInCup));text('[data-solution-mixture-readout]',grams(f.mixtureMass));text('[data-solution-weighed]',grams(f.saltWeighed+f.waterWeighed));
+    text('[data-solution-stage]',f.stage);text('[data-solution-progress]',`第${step+1}步`);text('[data-solution-salt-readout]',m.w===0?'无需称盐':grams(f.saltOnScale));text('[data-solution-water-readout]',grams(f.waterInCup));text('[data-solution-mixture-readout]',grams(f.mixtureMass));text('[data-solution-weighed]',grams(f.saltWeighed+f.waterWeighed));
     scene.querySelector('[data-solution-salt]').style.opacity=f.saltOnScale>0?'1':'0';scene.querySelector('[data-solution-crystals]').style.opacity=m.w>0&&f.saltAdded>0?String(1-f.mixed):'0';
     const liquid=(selector,fraction,height,bottom)=>{const el=scene.querySelector(selector);el.setAttribute('height',String(height*fraction));el.setAttribute('y',String(bottom-height*fraction));};
     liquid('[data-solution-water]',f.waterInCup/m.waterMass,86,131);liquid('[data-solution-mixture]',f.waterAdded/m.waterMass,74,134);
-    const stirring=!reducedMotion&&f.step===3&&p<1?Math.sin(p*70)*7:0;scene.querySelector('[data-solution-stirrer]').setAttribute('transform',`translate(${stirring} 0)`);
-    scene.querySelectorAll('.solution-step-list li').forEach((el,i)=>{el.classList.toggle('is-current',i===f.step);if(i===f.step)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');});
+    scene.querySelector('[data-solution-stirrer]').setAttribute('transform','translate(0 0)');
+    scene.querySelectorAll('.solution-step-list li').forEach((el,i)=>{el.classList.toggle('is-current',i===f.step);if(i===f.step)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');el.querySelector('button').setAttribute('aria-current',i===f.step?'step':'false');});
   }
   const naclSolution={id:'naclSolution',subject:'化学',level:'both',menuTitle:'氯化钠溶液配制',menuMeta:'质量分数 · 称量与混匀',stage:'溶液配制',block:'化学计算',title:'配制一定质量分数的氯化钠溶液',defaults:[100,10],keywords:/氯化钠|NaCl|盐水|食盐/i,
     params:[{label:'溶液总质量 M',desc:'盐和水的总质量，不是水的质量',unit:'g',min:20,max:500,step:10,value:100},{label:'质量分数 w',desc:'盐质量÷溶液总质量×100%；0%为纯水',unit:'%',min:0,max:20,step:.5,value:10}],
@@ -316,7 +322,7 @@
       checkFixed:(f,m,w)=>!preciseParam(m)||!preciseParam(w)||m<20||m>500||w<0||w>20?'参数超出演示范围或超过四位小数。':f.temperature!==20||!['junior','senior'].includes(f.level)||typeof f.levelLocked!=='boolean'||typeof f.asks!=='string'||f.asks.split(',').some(k=>!Object.hasOwn(solutionAskText,k))?'配制模型固定条件无效。':'',
       used:(m,w)=>[{cls:'mass',value:m/1000},{cls:'percent',value:w},{cls:'temperature',value:20}],asks:{supported:/质量|氯化钠|NaCl|食盐|盐|水|步骤|方法|配制|多少/,unsupported:/体积|密度|溶解度|浓度.*变化/}},
     failMessage:'请给出目标溶液总质量与溶质质量分数。',question:solutionQuestion,model:solutionModel,visual:solutionVisual,recognition:m=>`NaCl 配制｜M=${fmt(m.mass)}g，w=${fmt(m.w)}%｜${m.readout}`,
-    copy:(m)=>({metrics:[['溶液总质量','g'],['目标质量分数','%'],['所需 NaCl','g']],steps:[['提取条件',`20°C，目标总质量 ${grams(m.mass)}，质量分数 ${fmt(m.w)}%。`,'确认给出的是溶液总质量。'],['质量分数定义','w = m(溶质) / m(溶液) × 100%',m.level==='junior'?'分母包含盐和水，不能只取水的质量。':'质量分数为无量纲比值；用质量守恒核对配料，不引入体积加和或物质的量浓度。'],['计算配料',m.formulaDetail,'盐质量与水质量之和必须等于目标总质量。'],['称量与混匀',m.w===0?'无需称盐，称取纯水后加入容器。':`称取 NaCl ${grams(m.saltMass)}、水 ${grams(m.waterMass)}，依次加入并搅拌至完全溶解。`,'盐水保持无色，操作进度不表示真实溶解速率。']],hint:'小提示：百分数的分母是溶液总质量；求盐后，再用总质量减去盐质量求水。',mentor:'固定质量分数使总质量加倍，盐和水各怎样变化？固定总质量提高质量分数时呢？',challenge:'调整总质量或质量分数，观察配料关系；主动重置回原题配置。',sceneTip:m.conclusion}),
-    presetFor:level=>({p1:level==='junior'?100:200,p2:level==='junior'?10:5,fixed:{level,levelLocked:false,temperature:20,asks:'salt,steps,water'}}),motion:{duration:10},resetToQuestion:true,frame:solutionFrame,renderFrame:renderSolution};
+    copy:(m)=>({metrics:[['溶液总质量','g'],['目标质量分数','%'],['所需 NaCl','g']],steps:[['提取条件',`20°C，目标总质量 ${grams(m.mass)}，质量分数 ${fmt(m.w)}%。`,'确认给出的是溶液总质量。'],['质量分数定义','w = m(溶质) / m(溶液) × 100%',m.level==='junior'?'分母包含盐和水，不能只取水的质量。':'质量分数为无量纲比值；用质量守恒核对配料，不引入体积加和或物质的量浓度。'],['计算配料',m.formulaDetail,'盐质量与水质量之和必须等于目标总质量。'],['称量与混匀',m.w===0?'无需称盐，称取纯水后加入容器。':`称取 NaCl ${grams(m.saltMass)}、水 ${grams(m.waterMass)}，依次加入并搅拌至完全溶解。`,'盐水保持无色，操作图用于说明称量与混匀。']],hint:'小提示：百分数的分母是溶液总质量；求盐后，再用总质量减去盐质量求水。',mentor:'固定质量分数使总质量加倍，盐和水各怎样变化？固定总质量提高质量分数时呢？',challenge:'调整总质量或质量分数，观察配料关系；主动重置回原题配置。',sceneTip:m.conclusion}),
+    presetFor:level=>({p1:level==='junior'?100:200,p2:level==='junior'?10:5,fixed:{level,levelLocked:false,temperature:20,asks:'salt,steps,water'}}),manualSteps:4,resetToQuestion:true,frame:solutionFrame,renderFrame:renderSolution};
   kit.register({caco3Hcl,naclSolution});
 })();

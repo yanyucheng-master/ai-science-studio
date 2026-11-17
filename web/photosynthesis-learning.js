@@ -15,11 +15,11 @@
   function mount(scene, senior) {
     const prediction = document.createElement('section');
     prediction.className = 'photo-learning';
-    prediction.innerHTML = '<h4>1. 我的预测</h4><p>可选。开始操作后，本轮预测锁定。</p><fieldset data-predictions>'
+    prediction.innerHTML = '<div class="photo-learning-heading"><h4>1. 我的预测</h4><button type="button" data-experiment-reset>重新填写</button></div><p>可选。点击步骤查看操作后，本轮预测锁定。</p><fieldset data-predictions>'
       + (senior ? groups.map((g, i) => '<label>'+g+'预计浮起数（0–10）'+input('predict'+i, g+'预测浮起数')+'</label>').join('')
         : select('predict0','原见光区',colors) + select('predict1','原遮光区',colors))
-      + '</fieldset><p>2. 操作：用下面的步骤按钮或统一播放器完成教材流程。</p>'
-      + '<small>记录限本页当前实验。刷新、重置、重新生成或重新打开收藏和分享后可重新填写。</small>';
+      + '</fieldset><p>2. 操作：点击下面的步骤按钮，查看各步操作、目的与现象。</p>'
+      + '<small>记录限本页当前实验。“重新填写”会清空本轮记录并回到第1步。刷新、重新生成或重新打开收藏和分享后也可重新填写。</small>';
     scene.querySelector('nav').before(prediction);
 
     const followup = document.createElement('section');
@@ -41,7 +41,7 @@
       Array.from(record.querySelectorAll('[data-observed-count]')).forEach((cell, i) => {
         cell.innerHTML = '<span>待观察</span>'+input('observed'+i, groups[i]+'记录浮起数');
       });
-      record.querySelector('p').textContent = '填写各组浮起数（0–10）。网页动画只演示单片上浮机理。';
+      record.querySelector('p').textContent = '填写各组浮起数（0–10）。网页示意图解释单片上浮机理。';
     } else scene.querySelector('.photo-caution').before(followup);
 
     const fields = Object.fromEntries([...scene.querySelectorAll('[data-learning]')].map(el => [el.dataset.learning,el]));
