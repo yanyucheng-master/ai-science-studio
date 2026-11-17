@@ -132,7 +132,7 @@
   const cooling={...shared,id:'kno3Cooling',menuTitle:'硝酸钾冷却结晶',menuMeta:'五点溶解度 · 析晶 · 质量守恒',stage:'溶解度与结晶',title:'硝酸钾：冷却结晶与质量守恒',defaults:[100,20],keywords:/硝酸钾|KNO3/i,
     params:[{label:'水质量 W',desc:'50–200g；不是溶液总质量',unit:'g',min:50,max:200,step:10,value:100},{label:'目标终温',desc:'只支持20、30、40、50、60°C',unit:'°C',min:20,max:60,step:10,value:20}],
     // preciseParams narrows every step to the stated precision; the final temperature must stay on the five table points.
-    parameter:(param,index)=>index===1?{...param,step:10}:param,
+    parameter:(param,index)=>index===1?{...param,step:10,control:'select',options:[20,30,40,50,60].map(value=>({value,label:`${value} °C`}))}:param,
     strict:{sameConditions:true,preciseParams:true,caps:[[50,200],[20,60]],fixedDefaults:coolingDefaults,intent:{require:[/硝酸钾|KNO3/i,/饱和/]},values:(s,t,c)=>Q.cooling(s,c),checkFixed:coolingIssue,
       // The complete grammar above validates every clause. The shared ask
       // scanner can include trailing givens after a question-first colon.

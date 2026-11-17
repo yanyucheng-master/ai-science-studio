@@ -1154,6 +1154,9 @@ function updateSubjectBodyClass(subject = state.subject) {
   document.body.classList.toggle("subject-board-slider-active", subject === "物理" && state.physicsTemplate === "boardSlider" && state.hasGenerated);
   document.body.classList.toggle("subject-extra-physics-active", subject === "物理" && isExtraPhysicsTemplate() && state.hasGenerated);
   document.body.classList.toggle("subject-generic-template-active", Boolean(activeGenericTemplate(subject)) && state.hasGenerated);
+  const template = activeGenericTemplate(subject);
+  document.body.classList.toggle("experiment-step-playback", Boolean(template?.protocolSteps) && state.hasGenerated);
+  document.body.classList.toggle("experiment-static-playback", Boolean(template && !template.motion) && state.hasGenerated);
 }
 
 function saveCurrentSubjectSnapshot() {
@@ -2015,7 +2018,7 @@ function buildPhysicsSolenoidContent(
     metrics: [["左端磁极", ""], ["右端磁极", ""], ["当前磁性", ""]],
     params: [
       { label: "电流大小 I", desc: "调整电流大小", unit: "A", min: SOLENOID_LIMITS.currentMin, max: SOLENOID_LIMITS.currentMax, step: 0.1, value: model.current },
-      { label: "线圈匝数 N", desc: "其他条件与长度基本相同时", unit: "匝", min: SOLENOID_LIMITS.turnsMin, max: SOLENOID_LIMITS.turnsMax, step: 50, value: model.turns }
+      { label: "线圈匝数 N", desc: "其他条件与长度基本相同时", unit: "匝", min: SOLENOID_LIMITS.turnsMin, max: SOLENOID_LIMITS.turnsMax, step: 50, value: model.turns, control: "number" }
     ],
     steps: [
       ["提取条件", `从${viewText}观察，电流沿${directionText}方向。`, `电流 I = ${currentText}A，线圈匝数 N = ${turnsText}匝，铁芯：${coreText}。`],
@@ -5598,6 +5601,11 @@ function formatTime(seconds) {
 }
 
 function formatTimelineTime(seconds) {
+  const template = activeGenericTemplate();
+  if (template?.protocolSteps) {
+    const step = template.protocolFrame(clamp(Number(seconds) / duration(), 0, 1)).step + 1;
+    return `第 ${step} / ${template.protocolSteps} 步`;
+  }
   if (activeGenericTemplate()?.motion) return `${Math.round(Math.max(0, Number(seconds) || 0) / duration() * 100)}%`;
   if (
     state.subject === "物理" &&
@@ -6582,15 +6590,85 @@ function setRange(range, param) {
   range.step = rangeStepFor(param);
   range.value = param.value;
   // 题目写明“足量”的量没有数值：滑块和加减按钮锁定
-  const locked = Boolean(param.locked);
+  const locked = Boolean(param.locked) || Number(param.min) === Number(param.max);
   range.disabled = locked;
   const parameter = range.closest(".parameter");
   parameter?.classList.toggle("is-locked", locked);
+  parameter?.classList.toggle("is-number-control", !locked && param.control === "number");
+  parameter?.classList.toggle("is-choice-control", !locked && param.control === "select");
   parameter?.querySelectorAll(".number-control button").forEach(button => { button.disabled = locked; });
+  const control = parameter?.querySelector(".number-control");
+  if (!control) return;
+  let number = control.querySelector(".parameter-number");
+  if (!number && param.control === "number") {
+    number = document.createElement("input");
+    number.type = "number";
+    number.required = true;
+    number.className = "parameter-number";
+    number.addEventListener("change", () => {
+      if (!number.value || !number.checkValidity()) {
+        showToast(number.validationMessage);
+        number.reportValidity();
+        number.value = range.value;
+        return;
+      }
+      if (Number(number.value) === Number(range.value)) return;
+      range.value = number.value;
+      range.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    number.addEventListener("keydown", event => {
+      if (event.key === "Enter" && !event.isComposing) number.blur();
+      if (event.key === "Escape") {
+        number.value = range.value;
+        number.blur();
+      }
+    });
+    control.querySelector("strong").before(number);
+  }
+  if (number) {
+    number.disabled = locked || param.control !== "number";
+    number.min = range.min;
+    number.max = range.max;
+    number.step = range.step;
+    number.inputMode = Number(range.step) % 1 === 0 ? "numeric" : "decimal";
+    number.setAttribute("aria-label", `${param.label}${param.unit ? `（${param.unit}）` : ""}`);
+  }
+  let choice = control.querySelector(".parameter-choice");
+  if (!choice && param.control === "select") {
+    choice = document.createElement("select");
+    choice.className = "parameter-choice";
+    choice.addEventListener("change", () => {
+      range.value = choice.value;
+      range.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    control.append(choice);
+  }
+  if (choice) {
+    choice.disabled = locked || param.control !== "select";
+    choice.setAttribute("aria-label", param.label);
+    const options = param.options || [];
+    const key = JSON.stringify(options);
+    if (choice.dataset.options !== key) {
+      choice.replaceChildren(...options.map(option => new Option(option.label, String(option.value))));
+      choice.dataset.options = key;
+    }
+  }
+  control.querySelector("strong").tabIndex = locked || param.control ? -1 : 0;
+  syncParameterValue(param, elements.ranges.indexOf(range), Number(range.value));
+}
+
+function syncParameterValue(param, index, value) {
+  elements.paramValues[index].textContent = formatParam(param, value);
+  const control = elements.ranges[index].closest(".parameter").querySelector(".number-control");
+  const number = control.querySelector(".parameter-number");
+  const choice = control.querySelector(".parameter-choice");
+  if (number) number.value = String(value);
+  if (choice) choice.value = String(value);
 }
 
 function formatParam(param, value) {
   if (typeof param.valueText === "function") return param.valueText(value);
+  if (param.locked && param.lockText) return param.lockText;
   const valueDecimals = decimalPlaces(Number(Number(value).toFixed(4)));
   const decimals = Math.min(4, Math.max(decimalPlaces(param.step), valueDecimals));
   return `${param.prefix || ""}${Number(value).toFixed(decimals)}`;
@@ -6673,7 +6751,7 @@ function syncPhysicsControlsFromState() {
     elements.paramDescriptions[index].textContent = param.desc;
     elements.paramUnits[index].textContent = param.unit;
     setRange(elements.ranges[index], param);
-    elements.paramValues[index].textContent = formatParam(param, index === 0 ? state.p1 : state.p2);
+    syncParameterValue(param, index, index === 0 ? state.p1 : state.p2);
   });
   elements.totalTime.textContent = formatTimelineTime(duration());
   if (activeGenericTemplate()) {
@@ -6863,7 +6941,7 @@ function updateParameters(reset = true, options = {}) {
     syncMathContent();
   }
   config().params.forEach((param, index) => {
-    elements.paramValues[index].textContent = formatParam(param, index === 0 ? state.p1 : state.p2);
+    syncParameterValue(param, index, index === 0 ? state.p1 : state.p2);
   });
   elements.totalTime.textContent = formatTimelineTime(duration());
 
@@ -7276,7 +7354,7 @@ function refreshGeneratedSubjectSurface(subject = state.subject, options = {}) {
     elements.paramDescriptions[index].textContent = param.desc;
     elements.paramUnits[index].textContent = param.unit;
     setRange(elements.ranges[index], param);
-    elements.paramValues[index].textContent = formatParam(param, index === 0 ? state.p1 : state.p2);
+    syncParameterValue(param, index, index === 0 ? state.p1 : state.p2);
   });
   elements.mentorMessage.innerHTML = current.mentor;
   renderReasoning();
@@ -7349,7 +7427,7 @@ function applySubject(subject, updateQuestion = true, options = {}) {
 
 function playExperiment() {
   if (activeGenericTemplate() && !activeGenericTemplate().motion) {
-    showToast("该题型为参数即时探究：拖动下方滑块即可同步公式和结论");
+    showToast("该题型为参数即时探究：调整上方参数即可同步公式和结论");
     return;
   }
   if (state.subject === "物理" && state.physicsTemplate === "solenoid") {

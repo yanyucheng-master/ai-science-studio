@@ -61,6 +61,7 @@
   kit.register({mendel:{id:'mendel',subject:'生物',level:'both',block:'遗传',stage:'遗传与概率',title:'孟德尔分离定律：理论与模拟',menuTitle:'孟德尔分离定律',menuMeta:'配子组合 · 理论概率 · 抽样',defaults:[400,1],resetToQuestion:true,motion:{duration:10},formatMetric:value,keywords:/亲本|孟德尔|基因型|等位基因/,
     params:[{label:'后代数 N',desc:'1–2000整数；不改变理论比例',unit:'个',min:1,max:2000,step:1,value:400},{label:'模拟种子',desc:'1–9999整数；相同条件可复现',unit:'',min:1,max:9999,step:1,value:1}],
     strict:{sameConditions:true,caps:[[1,2000],[1,9999]],fixedDefaults,intent:{require:[/亲本/,/基因/]},values:(s,t,c)=>parse(s,c),checkFixed:issue,used:()=>[],asks:{supported:/基因型|显隐性|期望|模拟个数|^(?:一对常染色体等位基因A和a|A对a完全显性|配子等概率且随机受精|后代独立且无选择差异|亲本(?:为|是|=)?(?:AA|Aa|aa)[×*](?:AA|Aa|aa)|后代数(?:为|是|=)?\d+个|模拟种子(?:为|是|=)?\d+)$/,unsupported:/反推|患病|至少|恰好|连续|伴性/}},
+    parameter:param=>({...param,control:'number'}),
     question,model,visual,renderFrame,frame:C.frame,recognition:m=>m.readout,presetFor:level=>({p1:400,p2:1,fixed:{...fixedDefaults,level}}),
     copy:m=>({steps:[['核对条件',`${m.parent1}×${m.parent2}，${m.n}个后代；${conditions}。`,'只在给定模型中计算。'],['分别形成配子','每个亲本向后代提供一个等位基因。','杂合子两种各一半；纯合子只有一种。'],['先预测再抽样',m.formulaDetail,'种子不改变理论概率，期望个数不是必然结果。'],['比较并解释',m.conclusion,'改变种子观察样本波动；不能以一次比例吻合证明定律。']],hint:`先预测${m.parent1}×${m.parent2}时隐性概率，再比较期望个数与本次模拟。`,mentor:`在当前${m.n}个后代中，隐性期望为${m.expected.aa}。这是否意味着每次模拟都恰好得到这个数量？请结合当前亲本和理论概率解释。`,challenge:'保持亲本不变，分别调整后代数和种子，观察哪些结果保持不变。',sceneTip:m.conclusion,generationStages:stages('核对亲本与遗传模型','枚举配子组合计算理论概率','生成可复现的放回抽样')})}});
 })();

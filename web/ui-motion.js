@@ -1,5 +1,5 @@
 /* 界面动效与交互（2026-11-06）：按下回弹、生成扫光、思维链流光、读数滚入、滑块气泡 / 原题刻度 / 吸附、
-   手机参数底栏、右栏收起、时间轴刻度、快捷键、数值直接输入、公式联动、卡片聚光、手机手势、命令面板、对比残影。
+   顶部参数区、右栏收起、快捷键、数值直接输入、公式联动、卡片聚光、手机手势、命令面板、对比残影。
    只读写 app.js 已有的全局状态与函数，不改科学计算、题目解析、AI 请求和存储协议；读数文字始终是最终值，只做视觉层。
    实验动画按“同一时刻只有一个待执行的动画帧”验收，本文件不申请 requestAnimationFrame：
    动效交给 CSS，指针移动按事件时间戳节流，计时器都是短时、一次性并会清理。
@@ -16,7 +16,6 @@
   const reducedQuery = media("(prefers-reduced-motion: reduce)");
   const fineQuery = media("(hover: hover) and (pointer: fine)");
   const coarseQuery = media("(pointer: coarse)");
-  const dockQuery = media("(max-width: 640px) and (orientation: portrait)");
   const wideQuery = media("(min-width: 1101px)");
   const touchQuery = media("(hover: none) and (pointer: coarse)"); // 手机等触屏为主的设备
   const reduced = () => reducedQuery.matches;
@@ -39,7 +38,7 @@
     el.classList.add(next);
   }
 
-  // 本文件新增的浮层、角标、刻度等只在用到时挂到页面上：实验页每次改参数都会触发几次大范围的样式失效，
+  // 本文件新增的浮层、角标等只在用到时挂到页面上：实验页每次改参数都会触发几次大范围的样式失效，
   // 已挂载的节点（即使隐藏）都会被一并重算；闲置时摘下，拖动参数时不额外增加样式重算。
   const attach = (node, parent, before = null) => { if (parent && node.parentNode !== parent) parent.insertBefore(node, before); };
   const detach = node => { if (node.parentNode) node.remove(); };
@@ -188,19 +187,6 @@
     const min = Number(input.min) || 0, max = Number(input.max), value = Number(input.value);
     return max > min ? clamp((value - min) / (max - min), 0, 1) : 0;
   };
-  // B3 步骤刻度盖在时间轴上：滑块停在刻度处（生成后在 0% 的第 1 步）时，按下命中的是刻度按钮，滑块拖不动。
-  // 与滑块重叠的刻度暂时不接收指针（.is-covered），按下的就是滑块；其余刻度照常点击跳转，键盘操作不变。
-  // 尺寸在摆放刻度时记下（layoutMarks），这里随时间轴每次改值只比较数值，不读布局。
-  const MARK_HALF = 9; // .um-tl-mark 宽 18px（ui-motion.css）
-  let markCover = null; // { track, reach, items: [[button, at]] }
-  function coverMarks() {
-    if (!markCover) return;
-    const at = fraction(timeline);
-    markCover.items.forEach(([button, markAt]) => {
-      const covered = Math.abs(at - markAt) * markCover.track < markCover.reach;
-      if (button.classList.contains("is-covered") !== covered) button.classList.toggle("is-covered", covered);
-    });
-  }
   // 比例按 0.1% 量化成两个类名（见 ui-motion.css 的 um-p / um-o 类）；只在变化时替换，不写行内样式
   const levelClasses = new WeakMap();
   function setLevel(input, key, value) {
@@ -217,7 +203,7 @@
   }
   function paintRange(input) {
     setLevel(input, "p", fraction(input));
-    if (input === timeline) { coverMarks(); return; }
+    if (input === timeline) return;
     const orig = originalFor(input);
     input.classList.toggle("um-has-orig", orig !== null);
     if (orig !== null) {
@@ -277,8 +263,6 @@
     bubble.classList.remove("is-on");
     clearTimeout(bubbleTimer);
     bubbleTimer = later(() => { if (!drag) detach(bubble); }, 160);
-    // 拖参数时实验时长在变，步骤刻度先收起，松手后按新时长重新摆放
-    if (finished.hidMarks) { marksKey = ""; layoutMarks(); }
     // 拖动过程中只更新气泡和符号发光；松手后再统一做读数滚入、结果扫光和残影（避免每一帧都触发额外的布局）
     if (finished.param && finished.changed) {
       rollChanged();
@@ -294,7 +278,6 @@
     // （2026-11-08 手机端特效简化；参数滑块、电脑端不变，鸿蒙兼容模式保留气泡）
     drag = { input, param: input !== timeline, changed: false, bubble: !(input === timeline && touchQuery.matches && !compat()), rect: input.getBoundingClientRect(), thumb: parseFloat(getComputedStyle(input).getPropertyValue("--um-thumb")) || 16 };
     if (drag.param) snapshotReadouts(); // 拖动开始时的读数，松手时与之比较
-    if (drag.param && marks.isConnected && !marks.hidden) { marks.hidden = true; drag.hidMarks = true; }
     setStill("drag", true);
     input.classList.add("um-dragging");
     clearTimeout(bubbleTimer);
@@ -548,7 +531,6 @@
     snapshotReadouts();
   }
   function afterParamChange(index) {
-    layoutMarks();
     rollChanged();
     glowSymbols(index);
     if (!compat()) renderGhost();
@@ -568,7 +550,7 @@
   doc.addEventListener("input", event => {
     const input = event.target;
     if (!(input instanceof HTMLInputElement) || input.type !== "range") return;
-    if (input === timeline) { if (drag?.input === timeline) placeBubble(); refreshMarks(); return; }
+    if (input === timeline) { if (drag?.input === timeline) placeBubble(); return; }
     const index = rangeIndex(input);
     if (index < 0) return;
     if (drag?.input === input) {
@@ -697,7 +679,7 @@
   }, true);
   if (!compat()) {
     $$(".experiment-card .number-control strong").forEach(strong => {
-      strong.tabIndex = 0;
+      strong.tabIndex = strong.closest(".parameter").matches(".is-number-control, .is-choice-control, .is-locked") ? -1 : 0;
       strong.title = "点击输入数值 · 双击回到原题值";
     });
   }
@@ -764,83 +746,12 @@
     const previous = activeStep;
     activeStep = activeIndex;
     measureChain();
-    refreshMarks();
     const node = steps[activeIndex - 1];
     if (node && previous && !reduced() && !compat()) {
       node.classList.add("um-step-sweep");
       node.addEventListener("animationend", () => node.classList.remove("um-step-sweep"), { once: true });
     }
   }
-
-  /* ==================== B3 时间轴步骤刻度 ==================== */
-  const transport = $(".experiment-card .transport");
-  const marks = doc.createElement("nav");
-  marks.className = "um-tl-marks";
-  marks.setAttribute("aria-label", "解题步骤刻度");
-  marks.hidden = true;
-  function stepTimes() {
-    if (!generated() || compat()) return null;
-    const count = activeGenericTemplate()?.protocolSteps;
-    if (count) return Array.from({length:count}, (_, index) => [index+1, index/count]);
-    if (templateKey() !== "brake") return null;
-    // playDemoSequence：第 1 步在起点；第 3 步在 max(1.2s, 38%)；第 4 步在 max(2.4s, 72%)（按实验时长与倍速换算）；第 2 步没有时间点
-    const ms = (duration() / state.playbackRate) * 1000;
-    if (!(ms > 0)) return null;
-    return [[1, 0], [3, Math.min(1, Math.max(1200, ms * 0.38) / ms)], [4, Math.min(1, Math.max(2400, ms * 0.72) / ms)]];
-  }
-  let marksKey = "";
-  function layoutMarks() {
-    if (!transport || !timeline) return;
-    const times = stepTimes();
-    const visibleNow = Boolean(times) && getComputedStyle(transport).display !== "none" && timeline.offsetWidth > 0;
-    marks.hidden = !visibleNow;
-    if (!visibleNow) { marksKey = ""; markCover = null; detach(marks); return; }
-    attach(marks, transport);
-    const key = `${state.playbackRate}|${times.map(t => t[1].toFixed(3)).join(",")}|${timeline.offsetLeft}|${timeline.offsetWidth}|${timeline.offsetTop}|${timeline.offsetHeight}`;
-    if (key !== marksKey) {
-      marksKey = key;
-      const thumb = parseFloat(getComputedStyle(timeline).getPropertyValue("--um-thumb")) || 14;
-      const track = Math.max(0, timeline.offsetWidth - thumb);
-      Object.assign(marks.style, {
-        left: `${timeline.offsetLeft + thumb / 2}px`,
-        width: `${track}px`,
-        top: `${timeline.offsetTop + timeline.offsetHeight / 2}px`
-      });
-      marks.replaceChildren(...times.map(([step, at]) => {
-        const button = doc.createElement("button");
-        button.type = "button";
-        button.className = "um-tl-mark";
-        button.dataset.step = String(step);
-        button.dataset.at = String(at);
-        button.style.left = `${(at * 100).toFixed(2)}%`;
-        button.setAttribute("aria-label", `跳到第 ${step} 步`);
-        button.title = `第 ${step} 步`;
-        return button;
-      }));
-      markCover = { track, reach: thumb / 2 + MARK_HALF + 2, items: $$(".um-tl-mark", marks).map(button => [button, Number(button.dataset.at)]) };
-      coverMarks();
-    }
-    refreshMarks();
-  }
-  function refreshMarks() {
-    if (marks.hidden || !timeline || !appReady()) return;
-    const progress = fraction(timeline);
-    $$(".um-tl-mark", marks).forEach(button => {
-      button.classList.toggle("is-reached", progress >= Number(button.dataset.at) - 1e-6);
-      button.classList.toggle("is-current", Number(button.dataset.step) === state.reasonStep);
-    });
-  }
-  marks.addEventListener("click", event => {
-    const button = event.target.closest(".um-tl-mark");
-    if (!button || !generated()) return;
-    if (activeGenericTemplate()?.protocolSteps) {
-      activateReasoningStep(Number(button.dataset.step), { manual: true });
-      return;
-    }
-    timeline.value = String(Number(button.dataset.at) * 100);
-    timeline.dispatchEvent(new Event("input", { bubbles: true }));
-    activateReasoningStep(Number(button.dataset.step), { manual: true });
-  });
 
   /* ==================== B4 快捷键 ==================== */
   const RATES = [0.5, 1, 1.5, 2];
@@ -867,11 +778,7 @@
     const button = $("#playbackButton");
     if (button) button.textContent = `${rate}×`;
     if (typeof showToast === "function") showToast(`播放速度已调整为 ${rate}×`);
-    marksKey = "";
-    layoutMarks();
   }
-  // 倍速按钮的点击处理在 app.js（不经过 setRate）；本文件晚于 app.js 加载，同一元素上的监听排在其后，此时倍速已更新
-  $("#playbackButton")?.addEventListener("click", () => { marksKey = ""; layoutMarks(); });
   function stepBy(delta) {
     if (!generated()) return false;
     const total = Math.max(config().steps.length, 4);
@@ -936,82 +843,7 @@
     setTitle(playButton, playButton?.classList.contains("playing") ? "暂停（空格）" : "播放（空格）");
   }
 
-  /* ==================== B1 手机参数底栏 ==================== */
-  const parameters = $(".experiment-card .parameters");
-  const card = $(".experiment-card");
   const scene = $("#scene");
-  const dock = doc.createElement("section");
-  dock.className = "um-dock";
-  dock.setAttribute("aria-label", "实验参数");
-  dock.innerHTML = '<button type="button" class="um-dock-handle" aria-expanded="false" aria-label="展开参数"></button><section class="um-dock-body"></section>';
-  const dockHandle = $(".um-dock-handle", dock);
-  const dockBody = $(".um-dock-body", dock);
-  for (const name of ["pointerdown", "click", "keydown"]) dock.addEventListener(name, event => {
-    if (!blockingLayerOpen()) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-  }, { capture: true });
-  let docked = false;
-  // 提示条按底栏高度上移；变量写在提示条自身，不写在 body 上（避免整页继承变量表变化）
-  const toastNode = $("#toast");
-  const setDockHeight = () => toastNode?.style.setProperty("--um-dock-h", `${dock.offsetHeight}px`);
-  function rowsVisible() {
-    if (!parameters || getComputedStyle(parameters).display === "none") return false;
-    return $$(".parameter", parameters).some(row => getComputedStyle(row).display !== "none");
-  }
-  function dockEligible() {
-    if (!parameters || !card || !scene || compat() || !dockQuery.matches || !generated()) return false;
-    if (["awaiting-generation", "fullscreen-lock", "ai-tutor-route", "announcements-open", "demo-mode"].some(name => body.classList.contains(name))) return false;
-    return !card.classList.contains("immersive-mode") && rowsVisible();
-  }
-  function setDocked(on) {
-    if (on === docked || !parameters) return;
-    docked = on;
-    if (on) {
-      parameters.style.minHeight = `${parameters.offsetHeight}px`; // 原位置保留同样高度，页面不跳
-      dock.classList.toggle("is-week1", Boolean(card.querySelector(".week1-scene")));
-      attach(dock, parameters);
-      dockBody.append(...[...parameters.children].filter(node => node !== dock));
-      body.classList.add("um-docked");
-      setDockHeight();
-    } else {
-      dock.classList.remove("is-expanded");
-      dockHandle.setAttribute("aria-expanded", "false");
-      dockHandle.setAttribute("aria-label", "展开参数");
-      [...dockBody.children].forEach(node => parameters.insertBefore(node, dock));
-      detach(dock);
-      parameters.style.minHeight = "";
-      body.classList.remove("um-docked");
-    }
-  }
-  function updateDock() {
-    if (!parameters) return;
-    if (!dockEligible()) { setDocked(false); return; }
-    const sceneBox = scene.getBoundingClientRect();
-    const slot = parameters.getBoundingClientRect();
-    // 实验画面在视口内、参数在原位置看不全时固定到底部；滚到参数整块露出（底栏之上）时放回原位
-    const sceneInView = sceneBox.bottom > 60 && sceneBox.top < innerHeight - 140;
-    const slotCovered = docked ? slot.bottom > innerHeight - dock.offsetHeight + 2 : slot.bottom > innerHeight + 4;
-    setDocked(sceneInView && slotCovered);
-  }
-  function toggleDock(expand = !dock.classList.contains("is-expanded")) {
-    if (blockingLayerOpen() || dock.classList.contains("is-week1")) return; // 并联电路、平面镜保持原来的三行参数
-    dock.classList.toggle("is-expanded", expand);
-    dockHandle.setAttribute("aria-expanded", String(expand));
-    dockHandle.setAttribute("aria-label", expand ? "收起参数" : "展开参数");
-    setDockHeight();
-  }
-  let handleStart = null;
-  dockHandle.addEventListener("pointerdown", event => { handleStart = { y: event.clientY, moved: false }; try { dockHandle.setPointerCapture(event.pointerId); } catch { /* 忽略 */ } });
-  dockHandle.addEventListener("pointermove", event => {
-    if (!handleStart || handleStart.moved) return;
-    const dy = event.clientY - handleStart.y;
-    if (Math.abs(dy) > 24) { handleStart.moved = true; toggleDock(dy < 0); }
-  });
-  dockHandle.addEventListener("click", () => { if (!handleStart?.moved) toggleDock(); handleStart = null; });
-  dockHandle.addEventListener("pointercancel", () => { handleStart = null; });
-  window.addEventListener("scroll", updateDock, { passive: true });
-  window.addEventListener("resize", () => { setDocked(false); updateDock(); });
 
   /* ==================== B2 电脑端右侧栏收起 ==================== */
   const insight = $(".insight-column");
@@ -1281,7 +1113,7 @@
   }, { passive: true, capture: true });
   ["pointerup", "pointercancel"].forEach(type => doc.addEventListener(type, hideTip, true));
   doc.addEventListener("contextmenu", event => {
-    if (event.target.closest?.(".metric-panel, .experiment-card .number-control, .experiment-card .parameter-label, .um-dock, .um-bubble, .um-tip")) event.preventDefault();
+    if (event.target.closest?.(".metric-panel, .experiment-card .number-control, .experiment-card .parameter-label, .um-bubble, .um-tip")) event.preventDefault();
   });
 
   /* ==================== C4 命令面板 ==================== */
@@ -1409,10 +1241,7 @@
     syncGestureClass();
     paintAll();
     watchExperimentChange();
-    updateDock();
     placeGlider();
-    marksKey = "";
-    layoutMarks();
     syncChain();
     setTitles();
     const fullscreen = body.classList.contains("fullscreen-lock");
@@ -1425,7 +1254,6 @@
     stepsHost.addEventListener("textbookstepchange", syncChain);
     if ("ResizeObserver" in window) new ResizeObserver(() => { if (activeStep) measureChain(); }).observe(stepsHost);
   }
-  if (timeline && "ResizeObserver" in window) new ResizeObserver(() => { marksKey = ""; layoutMarks(); }).observe(timeline);
   let bodyClass = body.className;
   new MutationObserver(() => {
     // 只在与本文件无关的类变化时同步（自己加的 um-* 类不触发）
@@ -1444,7 +1272,6 @@
     if (!showing) onStateChange();
   }).observe(overlay, { attributes: true, attributeFilter: ["class"] });
   coarseQuery.addEventListener?.("change", syncGestureClass);
-  dockQuery.addEventListener?.("change", () => { setDocked(false); updateDock(); });
   syncPlaying();
   onStateChange();
 })();
