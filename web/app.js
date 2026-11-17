@@ -1155,7 +1155,7 @@ function updateSubjectBodyClass(subject = state.subject) {
   document.body.classList.toggle("subject-extra-physics-active", subject === "物理" && isExtraPhysicsTemplate() && state.hasGenerated);
   document.body.classList.toggle("subject-generic-template-active", Boolean(activeGenericTemplate(subject)) && state.hasGenerated);
   const template = activeGenericTemplate(subject);
-  document.body.classList.toggle("experiment-step-playback", Boolean(template?.protocolSteps) && state.hasGenerated);
+  document.body.classList.toggle("experiment-step-playback", Boolean(template?.protocolSteps || template?.manualSteps) && state.hasGenerated);
   document.body.classList.toggle("experiment-static-playback", Boolean(template && !template.motion) && state.hasGenerated);
 }
 
@@ -3632,24 +3632,30 @@ function renderDiagramVisual(content) {
   }
 }
 
-function seekTextbookStep(index) {
-  const count = activeGenericTemplate()?.protocolSteps;
+function seekExperimentStep(index) {
+  const template = activeGenericTemplate();
+  const count = template?.protocolSteps || template?.manualSteps;
   if (!state.hasGenerated || !count || !Number.isInteger(index) || index < 0 || index >= count) return false;
   clearDemoTimers();
   clearReasoningTimers();
   pauseExperiment();
-  state.time = index / count * duration();
+  state.time = (index + 0.5) / count * duration();
   updateScene();
   return true;
 }
 
 elements.genericPhysicsVisual?.addEventListener("click", event => {
-  const id = activeGenericId();
-  const selector = id === "photosynthesis" ? "[data-photosynthesis-step]" : id === "leafDisks" ? "[data-leaf-step]" : "";
-  const step = selector && event.target.closest?.(selector);
+  const reset = event.target.closest?.("[data-experiment-reset]");
+  if (state.hasGenerated && reset) {
+    window.MasterLabPhotosynthesisLearning?.clear(elements.genericPhysicsVisual);
+    clearDemoTimers();
+    clearReasoningTimers();
+    resetExperiment();
+    return;
+  }
+  const step = event.target.closest?.("[data-experiment-step]");
   if (!state.hasGenerated || !step) return;
-  const index = Number(id === "photosynthesis" ? step.dataset.photosynthesisStep : step.dataset.leafStep);
-  seekTextbookStep(index);
+  seekExperimentStep(Number(step.dataset.experimentStep));
 });
 
 elements.genericPhysicsVisual?.addEventListener("click", event => {
@@ -7426,6 +7432,11 @@ function applySubject(subject, updateQuestion = true, options = {}) {
 }
 
 function playExperiment() {
+  const template = activeGenericTemplate();
+  if (template?.protocolSteps || template?.manualSteps) {
+    showToast("点击步骤按钮即可查看对应操作和现象");
+    return;
+  }
   if (activeGenericTemplate() && !activeGenericTemplate().motion) {
     showToast("该题型为参数即时探究：调整上方参数即可同步公式和结论");
     return;
@@ -7753,7 +7764,7 @@ function applyReasoningStepEffect(step) {
 function activateReasoningStep(step, options = {}) {
   if (!state.hasGenerated) return;
   if (activeGenericTemplate()?.protocolFrame) {
-    if (options.manual) seekTextbookStep(Number(step) - 1);
+    if (options.manual) seekExperimentStep(Number(step) - 1);
     return;
   }
   const maxStep = Math.max(config().steps.length, 4);
@@ -7852,6 +7863,8 @@ $("#resetButton").addEventListener("click", () => {
 });
 
 elements.timeline.addEventListener("input", event => {
+  const template = activeGenericTemplate();
+  if (template?.protocolSteps || template?.manualSteps) return;
   clearDemoTimers();
   clearReasoningTimers();
   pauseExperiment();
@@ -9256,6 +9269,8 @@ $("#shareButton").addEventListener("click", () => {
 document.addEventListener("keydown", event => {
   if (event.defaultPrevented || $("#announcementsDialog")?.open || event.target.closest?.("input, textarea, select, button, [contenteditable], summary")) return;
   if (event.code === "Space" && event.target.tagName !== "INPUT") {
+    const template = activeGenericTemplate();
+    if (template?.protocolSteps || template?.manualSteps) return;
     event.preventDefault();
     if ((state.subject === "数学" && !activeGenericTemplate()?.motion) || (state.subject === "生物" && !activeGenericTemplate()?.motion)) {
       playExperiment();

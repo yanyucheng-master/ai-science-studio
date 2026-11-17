@@ -781,6 +781,12 @@
   }
   function stepBy(delta) {
     if (!generated()) return false;
+    const count = activeGenericTemplate()?.manualSteps;
+    if (count) {
+      const current = Math.min(count - 1, Math.floor(state.time / duration() * count));
+      const next = clamp(current + delta, 0, count - 1);
+      return next !== current && seekExperimentStep(next);
+    }
     const total = Math.max(config().steps.length, 4);
     const next = clamp((state.reasonStep || 1) + delta, 1, total);
     if (next === state.reasonStep) return false;
@@ -822,7 +828,7 @@
       const input = $("#questionInput");
       if (input) { input.focus(); input.select?.(); handled = true; }
     } else if (key === "[" || key === "]") {
-      if (appReady()) {
+      if (appReady() && shown($("#playbackButton"))) {
         const index = RATES.indexOf(state.playbackRate);
         setRate(RATES[clamp((index < 0 ? 1 : index) + (key === "]" ? 1 : -1), 0, RATES.length - 1)]);
         handled = true;

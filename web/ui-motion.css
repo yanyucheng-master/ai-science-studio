@@ -540,27 +540,10 @@
   :root body .experiment-card .parameter:is(.is-number-control, .is-choice-control, .is-locked) .parameter-label strong { white-space: normal; }
 }
 
-/* 教材流程显示当前步骤，具体步骤通过场景中的命名按钮定位。 */
-:root body.experiment-step-playback .experiment-card .transport :is(#timeline, #totalTime),
+/* 手动分步实验通过场景中的命名按钮切换，操作区集中于步骤附近。 */
+:root body.experiment-step-playback .experiment-card .transport { display: none; }
+:root body.experiment-step-playback .experiment-card #sceneFullscreenButton { display: none !important; }
 :root body.experiment-static-playback .experiment-card .transport :is(#playButton, #timeline, #currentTime, #totalTime, #playbackButton) { display: none; }
-:root body.experiment-step-playback .experiment-card .transport {
-  height: auto;
-  min-height: 52px;
-  padding-block: 8px;
-}
-:root body.experiment-step-playback .experiment-card .transport #currentTime {
-  position: static;
-  order: 1;
-  margin-right: auto;
-  color: var(--blue);
-  font-size: 14px;
-  white-space: nowrap;
-}
-
-@media (max-width: 420px) {
-  :root body.experiment-step-playback .experiment-card .transport { gap: 6px; padding-inline: 0; }
-  :root body.experiment-step-playback .experiment-card .transport #currentTime { font-size: 12px; }
-}
 /* ==========================================================================
    B2 电脑端右侧栏收起为窄栏（≥1101px 两栏布局时）
    ========================================================================== */

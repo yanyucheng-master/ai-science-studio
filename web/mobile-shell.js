@@ -251,8 +251,9 @@
 
   function syncTransportFlag() {
     transportFrame = 0;
-    // 播放栏是否显示由各学科样式决定；移出去的全屏按钮跟随它显隐
-    const visible = Boolean(transport) && getComputedStyle(transport).display !== "none";
+    // 手动分步实验的全屏入口位于标题栏，其余实验跟随播放栏显隐。
+    const visible = document.body.classList.contains("experiment-step-playback")
+      || Boolean(transport) && getComputedStyle(transport).display !== "none";
     document.body.classList.toggle("transport-visible", visible);
   }
   function queueTransportFlag() {
@@ -262,7 +263,7 @@
 
   // 竖屏手机（≤640px）和横屏手机（矮屏、触屏）都放在标题区；横屏全屏时标题区在右侧，退出按钮也在那里
   const headerQuery = matchMedia("(max-width: 640px), (max-height: 500px) and (orientation: landscape) and (pointer: coarse)");
-  const buttonsInHeader = () => headerQuery.matches;
+  const buttonsInHeader = () => headerQuery.matches || document.body.classList.contains("experiment-step-playback");
 
   function placeFullscreenButtons() {
     if (!headerTools) return;
@@ -373,6 +374,7 @@
   new MutationObserver(() => {
     renderQuickStart();
     queueProblemSync();
+    if (document.body.classList.contains("fullscreen-in-header") !== buttonsInHeader()) placeFullscreenButtons();
     queueTransportFlag();
     queueProjectileFit();
   }).observe(document.body, { attributes: true, attributeFilter: ["class"] });

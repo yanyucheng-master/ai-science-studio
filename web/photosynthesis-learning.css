@@ -1,5 +1,11 @@
 .photo-learning { margin: 12px 0; padding: 12px; border: 1px solid var(--line); border-radius: 10px; }
 .photo-learning h4 { margin: 0 0 5px; }
+.photo-learning-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.photo-learning-heading button {
+  min-height: 40px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 8px;
+  color: var(--blue); background: #fff; font: inherit; font-size: 13px; cursor: pointer;
+}
+.photo-learning-heading button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 .photo-learning p, .photo-learning small { color: var(--muted); font-size: 13px; }
 .photo-learning fieldset {
   display: flex; flex-wrap: wrap; align-items: flex-start; gap: 9px;
