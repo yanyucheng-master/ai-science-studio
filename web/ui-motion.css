@@ -97,7 +97,7 @@
 @property --um-glider-tint { syntax: "<color>"; inherits: false; initial-value: #edf4ff; }
 
 /* ---------- 通用：新元素不可选中、长按无系统菜单 ---------- */
-.um-bubble, .um-tip, .um-zoom-badge, .um-ghost, .um-ghost-label, .um-dock, .um-rail, .um-keys, .um-tl-marks,
+.um-bubble, .um-tip, .um-zoom-badge, .um-ghost, .um-ghost-label, .um-rail, .um-keys,
 .um-tab-glider, .um-palette-list, .um-insight-toggle {
   -webkit-user-select: none;
   user-select: none;
@@ -470,89 +470,97 @@
   transform: translate(var(--um-bx, 0px), var(--um-by, 0px)) translate(-50%, -100%);
 }
 
-/* 时间轴上的思维链步骤刻度（只给有步骤—时间对应的模板） */
-.um-tl-marks { position: absolute; z-index: 2; height: 0; pointer-events: none; }
-.um-tl-mark {
-  position: absolute;
-  top: 0;
-  width: 18px;
-  height: 18px;
-  margin: -9px 0 0 -9px;
-  padding: 0;
-  border: 0;
-  border-radius: 4px;
-  background: linear-gradient(var(--um-mark-c, #a9bddb), var(--um-mark-c, #a9bddb)) 50% 50% / 3px 10px no-repeat;
-  pointer-events: auto;
-  cursor: pointer;
+/* 参数位于实验画面上方，与播放控件一起按文档顺序访问。 */
+:root body:not(.awaiting-generation) .experiment-card > .parameters {
+  margin: 0 0 10px;
+  padding: 0 2px 12px;
+  border-bottom: 1px solid var(--line);
 }
-/* 与时间轴滑块重叠时不接收指针，按下的是滑块（ui-motion.js coverMarks）；外观不变，键盘仍可聚焦点击 */
-.um-tl-mark.is-covered { pointer-events: none; }
-.um-tl-mark.is-reached { --um-mark-c: var(--fx-ink-blue); }
-.um-tl-mark.is-current, .um-tl-mark:hover { --um-mark-c: var(--fx-blue); }
-.um-tl-mark:focus-visible { outline: 2px solid rgba(45, 115, 246, .55); outline-offset: 1px; }
-
-/* ==========================================================================
-   B1 手机参数底栏（≤640px 竖屏）：实验卡在视口内时把参数行移进底部浮层，原位置保留同样高度
-   ========================================================================== */
-.um-dock { display: none; }
-@media (max-width: 640px) and (orientation: portrait) {
-  :root.um-on body.um-docked .um-dock {
-    position: fixed;
-    z-index: 115;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    display: block;
-    padding: 0 16px calc(10px + env(safe-area-inset-bottom));
-    border-top: 1px solid var(--fx-panel-line);
-    border-radius: 18px 18px 0 0;
-    background: var(--fx-panel);
-    box-shadow: var(--fx-panel-shadow);
-    contain: layout paint; /* 底栏里的数值更新不牵动页面其余部分的布局 */
-    animation: um-dock-in var(--fx-dur-med) var(--fx-ease-out);
-  }
-  :root.um-on body.um-docked .mobile-dock { display: none !important; }
-  :root.um-on body.um-docked .toast { bottom: calc(var(--um-dock-h, 120px) + 12px); }
-  :root.um-on body.um-docked .experiment-card { -webkit-backdrop-filter: none; backdrop-filter: none; }
+.scene.subject-solenoid .solenoid-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
-@keyframes um-dock-in { from { opacity: .4; transform: translateY(40%); } to { opacity: 1; transform: none; } }
-.um-dock-handle {
-  display: block;
-  width: 100%;
-  height: 22px;
+.scene.subject-solenoid .solenoid-layout { height: auto; min-height: 0; flex: 1 1 auto; }
+.scene.subject-solenoid .solenoid-control-strip {
+  height: auto;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
   margin: 0;
-  padding: 0;
-  border: 0;
-  background: linear-gradient(#c3d2ea, #c3d2ea) 50% 9px / 40px 4px no-repeat;
-  cursor: grab;
-  touch-action: none;
+  justify-content: flex-start;
 }
-.um-dock.is-expanded .um-dock-handle { background-size: 28px 4px; }
-.um-dock-body { display: grid; gap: 4px; }
-.um-dock.is-expanded .um-dock-body {
-  gap: 14px;
-  max-height: 45vh;
-  padding-bottom: 4px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-/* 收起态：每个参数一行——名称、数值、滑块；不显示说明小字、装饰图标和 −/+ */
-:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock:not(.is-expanded):not(.is-week1) .parameter {
-  grid-template-columns: auto auto minmax(0, 1fr);
-  grid-template-rows: auto;
-  gap: 0 10px;
-  min-height: 40px;
+
+/* 参数按操作含义显示为数值、有限选项或固定条件。底层 range 继续承接现有计算与恢复逻辑。 */
+.parameter-number, .parameter-choice { display: none; }
+:root body .experiment-card .parameter:is(.is-number-control, .is-choice-control, .is-locked) > input[type="range"] { display: none; }
+:root body .experiment-card .parameter:is(.is-number-control, .is-choice-control, .is-locked) {
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
 }
-:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock:not(.is-expanded):not(.is-week1) .parameter-label { grid-column: 1; grid-row: 1; }
-:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock:not(.is-expanded):not(.is-week1) .parameter-label small { display: none; }
-:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock:not(.is-expanded):not(.is-week1) .parameter-label strong { font-size: 13px; white-space: nowrap; }
-:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock:not(.is-expanded):not(.is-week1) .number-control { grid-column: 2; grid-row: 1; justify-self: start; }
-:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock:not(.is-expanded):not(.is-week1) .number-control button { display: none; }
-:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock:not(.is-expanded):not(.is-week1) .number-control strong { min-width: 0; font-size: 15px; }
-:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock:not(.is-expanded):not(.is-week1) .parameter > input[type="range"] { grid-column: 3; grid-row: 1; }
-:root body:not(.awaiting-generation) .experiment-card .parameters .um-dock .parameter-icon { display: none; }
+:root body .experiment-card .parameter:is(.is-number-control, .is-choice-control, .is-locked) .number-control {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+}
+:root body .experiment-card .parameter.is-number-control .parameter-number {
+  display: block;
+  width: 8ch;
+  min-height: 36px;
+  padding: 4px;
+  border: 0;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--blue);
+  font: inherit;
+  font-size: 16px;
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.parameter-number::-webkit-inner-spin-button, .parameter-number::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+:root body .experiment-card .parameter.is-choice-control .parameter-choice {
+  display: block;
+  max-width: 100%;
+  min-height: 36px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--blue);
+  font: inherit;
+  font-size: 16px;
+}
+.parameter-number:focus-visible, .parameter-choice:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+:root body .experiment-card .parameter.is-number-control .number-control strong,
+:root body .experiment-card .parameter.is-choice-control .number-control > :is(strong, small, button),
+:root body .experiment-card .parameter.is-locked .number-control button { display: none; }
+:root body .experiment-card .parameter.is-locked .number-control { border: 0; background: transparent; }
+:root body .experiment-card .parameter.is-locked .number-control strong { white-space: normal; }
+@media (max-width: 420px) {
+  :root body .experiment-card .parameter:is(.is-number-control, .is-choice-control, .is-locked) .parameter-label strong { white-space: normal; }
+}
 
+/* 教材流程显示当前步骤，具体步骤通过场景中的命名按钮定位。 */
+:root body.experiment-step-playback .experiment-card .transport :is(#timeline, #totalTime),
+:root body.experiment-static-playback .experiment-card .transport :is(#playButton, #timeline, #currentTime, #totalTime, #playbackButton) { display: none; }
+:root body.experiment-step-playback .experiment-card .transport {
+  height: auto;
+  min-height: 52px;
+  padding-block: 8px;
+}
+:root body.experiment-step-playback .experiment-card .transport #currentTime {
+  position: static;
+  order: 1;
+  margin-right: auto;
+  color: var(--blue);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+  :root body.experiment-step-playback .experiment-card .transport { gap: 6px; padding-inline: 0; }
+  :root body.experiment-step-playback .experiment-card .transport #currentTime { font-size: 12px; }
+}
 /* ==========================================================================
    B2 电脑端右侧栏收起为窄栏（≥1101px 两栏布局时）
    ========================================================================== */
@@ -962,7 +970,6 @@ svg .um-ghost-svg-label { fill: #1a56d6; font-size: 13px; font-weight: 700; curs
   :root.um-on body .formula-spotlight p.formula-result.um-capsule-a::after,
   :root.um-on body .formula-spotlight p.formula-result.um-capsule-b::after,
   :root.um-on body .experiment-card #timeline,
-  :root.um-on body .um-dock,
   :root.um-on body .um-rail,
   :root.um-on body .um-keys,
   :root.um-on body .um-palette[open],

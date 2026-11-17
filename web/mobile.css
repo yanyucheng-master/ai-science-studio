@@ -27,9 +27,9 @@
 .preset-picker-label { display: none; }
 .mobile-quickstart, .mobile-dock, .problem-toggle { display: none; }
 
-/* 模态层打开时，快捷条与参数底栏一起退出显示和键盘焦点顺序。 */
-:root body:has(dialog[open], .modal-backdrop.show, #photoCamera:not([hidden]), #generationOverlay.show) :is(.mobile-dock, .um-dock),
-:root body:is(.announcements-open, .photo-camera-open, .ai-tutor-route) :is(.mobile-dock, .um-dock) {
+/* 模态层打开时，手机快捷条退出显示和键盘焦点顺序。 */
+:root body:has(dialog[open], .modal-backdrop.show, #photoCamera:not([hidden]), #generationOverlay.show) .mobile-dock,
+:root body:is(.announcements-open, .photo-camera-open, .ai-tutor-route) .mobile-dock {
   display: none !important;
 }
 
@@ -787,33 +787,33 @@ button, summary, label, select, a[href], [role="button"], [role="tab"], input[ty
   :root body .mentor-card .mentor-actions .mentor-open-page { color: #1a56d6; border-color: transparent; background: transparent; box-shadow: none; }
 }
 
-/* ---------- 4. 横屏矮屏的全屏：左画面，右标题/播放/参数 ---------- */
+/* ---------- 4. 横屏矮屏的全屏：标题、参数和播放置于画面上方 ---------- */
 @media (max-height: 500px) and (orientation: landscape) {
-  .experiment-card.immersive-mode {
+  .experiment-card:is(:fullscreen, .immersive-mode) {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(240px, 34%);
-    grid-template-rows: auto auto minmax(0, 1fr);
-    grid-template-areas: "scene header" "scene transport" "scene params";
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+    grid-template-areas: "header" "params" "transport" "scene";
     height: 100vh;
     height: 100dvh;
     padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
     gap: 8px 14px;
     overflow: hidden;
   }
-  .experiment-card.immersive-mode .card-header { grid-area: header; min-height: 0; margin: 0; }
-  .experiment-card.immersive-mode .card-header p,
-  .experiment-card.immersive-mode .problem-toggle { display: none !important; }
-  .experiment-card.immersive-mode .title-row h2 { font-size: 15px; }
-  .experiment-card.immersive-mode .transport { position: relative; grid-area: transport; height: 58px; margin: 0; padding: 0 0 16px; gap: 6px; align-items: center; }
-  .experiment-card.immersive-mode .transport .play-button { order: 0; flex: 0 0 40px; width: 40px; height: 40px; }
-  .experiment-card.immersive-mode .transport .timeline { order: 1; flex: 1 1 auto; width: auto; min-width: 0; height: 26px; margin: 0; }
-  .experiment-card.immersive-mode .transport #resetButton { order: 2; }
-  .experiment-card.immersive-mode .transport #playbackButton { order: 3; }
-  .experiment-card.immersive-mode .transport #fullscreenButton { order: 4; }
-  .experiment-card.immersive-mode .transport .timecode { position: absolute; bottom: 0; min-width: 0; font-size: 11px; line-height: 14px; }
-  .experiment-card.immersive-mode .transport #currentTime { left: 46px; }
-  .experiment-card.immersive-mode .transport #totalTime { right: 126px; }
-  .experiment-card.immersive-mode .transport .mini-control { flex: 0 0 36px; width: 36px; min-width: 0; height: 36px; padding: 0; font-size: 12px; }
-  .experiment-card.immersive-mode .scene { grid-area: scene; height: auto !important; min-height: 0; overflow: auto; }
-  .experiment-card.immersive-mode .parameters { grid-area: params; grid-template-columns: 1fr; gap: 10px; padding: 4px 2px 0; overflow-y: auto; }
+  .experiment-card:is(:fullscreen, .immersive-mode) .card-header { grid-area: header; min-height: 0; margin: 0; }
+  .experiment-card:is(:fullscreen, .immersive-mode) .card-header p,
+  .experiment-card:is(:fullscreen, .immersive-mode) .problem-toggle { display: none !important; }
+  .experiment-card:is(:fullscreen, .immersive-mode) .title-row h2 { font-size: 15px; }
+  .experiment-card:is(:fullscreen, .immersive-mode) .transport { position: relative; grid-area: transport; height: 58px; margin: 0; padding: 0 0 16px; gap: 6px; align-items: center; }
+  .experiment-card:is(:fullscreen, .immersive-mode) .transport .play-button { order: 0; flex: 0 0 40px; width: 40px; height: 40px; }
+  .experiment-card:is(:fullscreen, .immersive-mode) .transport .timeline { order: 1; flex: 1 1 auto; width: auto; min-width: 0; height: 26px; margin: 0; }
+  .experiment-card:is(:fullscreen, .immersive-mode) .transport #resetButton { order: 2; }
+  .experiment-card:is(:fullscreen, .immersive-mode) .transport #playbackButton { order: 3; }
+  .experiment-card:is(:fullscreen, .immersive-mode) .transport #fullscreenButton { order: 4; }
+  .experiment-card:is(:fullscreen, .immersive-mode) .transport .timecode { position: absolute; bottom: 0; min-width: 0; font-size: 11px; line-height: 14px; }
+  .experiment-card:is(:fullscreen, .immersive-mode) .transport #currentTime { left: 46px; }
+  .experiment-card:is(:fullscreen, .immersive-mode) .transport #totalTime { right: 126px; }
+  .experiment-card:is(:fullscreen, .immersive-mode) .transport .mini-control { flex: 0 0 36px; width: 36px; min-width: 0; height: 36px; padding: 0; font-size: 12px; }
+  .experiment-card:is(:fullscreen, .immersive-mode) .scene { grid-area: scene; height: auto !important; min-height: 0; overflow: auto; }
+  .experiment-card:is(:fullscreen, .immersive-mode) .parameters { grid-area: params; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 4px 2px 0; }
 }

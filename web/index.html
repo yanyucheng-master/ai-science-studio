@@ -25,8 +25,8 @@
   <link rel="stylesheet" href="instant-experiment.css?v=20261018-instant-1">
   <link rel="stylesheet" href="tutor-focus.css?v=20261019-tutor-followups-1">
   <link rel="stylesheet" href="photo-question.css?v=20261031-photo-1">
-  <link rel="stylesheet" href="mobile.css?v=20261114-cell-motion-modal-1">
-  <link rel="stylesheet" href="ui-motion.css?v=20261108-diagram-fixes-1">
+  <link rel="stylesheet" href="mobile.css?v=20261117-top-controls-1">
+  <link rel="stylesheet" href="ui-motion.css?v=20261117-top-controls-1">
   <link rel="stylesheet" href="menu-select.css?v=20261107-menu-select-1">
   <link rel="stylesheet" href="biology-cell-3d.css?v=20261114-cell-reference-1">
 </head>
@@ -319,6 +319,33 @@
             </div>
           </div>
 
+          <div class="parameters">
+            <div class="parameter">
+              <div class="parameter-label">
+                <span class="parameter-icon speed-param"><svg viewBox="0 0 24 24"><path d="M4 18a8 8 0 1 1 16 0M12 12l4-4"/></svg></span>
+                <div><strong id="paramLabel1">初速度 v₀</strong><small id="paramDesc1">调整车辆起始速度</small></div>
+              </div>
+              <input id="speedRange" type="range" min="5" max="80" step="1" value="20">
+              <div class="number-control">
+                <button data-target="speedRange" data-delta="-1">−</button>
+                <strong id="speedParam">20</strong><small id="paramUnit1">m/s</small>
+                <button data-target="speedRange" data-delta="1">+</button>
+              </div>
+            </div>
+            <div class="parameter">
+              <div class="parameter-label">
+                <span class="parameter-icon accel-param"><svg viewBox="0 0 24 24"><path d="M5 15c2-4 4-6 7-6s5 2 7 6M5 19h14M12 9V4m-3 3 3-3 3 3"/></svg></span>
+                <div><strong id="paramLabel2">加速度 a</strong><small id="paramDesc2">调整刹车减速度</small></div>
+              </div>
+              <input id="accelRange" type="range" min="1" max="20" step="1" value="5">
+              <div class="number-control">
+                <button data-target="accelRange" data-delta="-1">−</button>
+                <strong id="accelParam">−5</strong><small id="paramUnit2">m/s²</small>
+                <button data-target="accelRange" data-delta="1">+</button>
+              </div>
+            </div>
+          </div>
+
           <div class="transport">
             <button class="play-button" id="playButton" aria-label="播放实验" aria-pressed="false">
               <svg class="play-icon" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></svg>
@@ -410,6 +437,13 @@
             </div>
 
             <div class="subject-stage solenoid-stage" id="solenoidStage">
+              <div class="solenoid-control-strip">
+                <button type="button" data-solenoid-action="view">观察端：<b id="solenoidViewText">左端</b></button>
+                <button type="button" data-solenoid-action="reverse">反转电流</button>
+                <button type="button" data-solenoid-action="core">铁芯：<b id="solenoidCoreText">未插入</b></button>
+                <button type="button" data-solenoid-action="pause">暂停动画</button>
+                <button type="button" data-solenoid-action="reset">恢复默认</button>
+              </div>
               <div class="solenoid-layout">
                 <div class="solenoid-lab" id="solenoidLab">
                   <canvas id="solenoidCanvas" class="solenoid-canvas" aria-label="通电螺线管三维交互模型"></canvas>
@@ -456,13 +490,7 @@
                 </aside>
               </div>
 
-              <div class="solenoid-control-strip">
-                <button type="button" data-solenoid-action="view">观察端：<b id="solenoidViewText">左端</b></button>
-                <button type="button" data-solenoid-action="reverse">反转电流</button>
-                <button type="button" data-solenoid-action="core">铁芯：<b id="solenoidCoreText">未插入</b></button>
-                <button type="button" data-solenoid-action="pause">暂停动画</button>
-                <button type="button" data-solenoid-action="reset">恢复默认</button>
-              </div>
+
             </div>
 
             <div class="subject-stage projectile-stage" id="projectileStage">
@@ -689,10 +717,6 @@
                     </div>
                   </div>
                   <p id="cellRenderStatus" class="cell-render-status" role="status" hidden></p>
-                  <div class="plant-cell-viewport" id="plantCellViewport" tabindex="-1">
-                    <div class="plant-cell-model" id="plantCellModel" aria-label="植物细胞结构模式图" role="group"></div>
-                    <div class="cell-model-3d" id="cellModel3d" role="group" tabindex="0" aria-label="细胞立体剖开模型" hidden></div>
-                  </div>
                     <div class="cell-structure-tags" role="group" aria-label="细胞结构选择">
                       <button type="button" class="cell-structure-tag wall-tag" data-organelle="cellWall" data-label="细胞壁" aria-label="细胞壁">细胞壁</button>
                       <button type="button" class="cell-structure-tag membrane-tag" data-organelle="cellMembrane" data-label="细胞膜" aria-label="细胞膜">细胞膜</button>
@@ -707,6 +731,11 @@
                       <button type="button" class="cell-structure-tag" data-organelle="lysosome" data-label="溶酶体">溶酶体</button>
                       <button type="button" class="cell-structure-tag" data-organelle="centrosome" data-label="中心体">中心体</button>
                     </div>
+                  <div class="plant-cell-viewport" id="plantCellViewport" tabindex="-1">
+                    <div class="plant-cell-model" id="plantCellModel" aria-label="植物细胞结构模式图" role="group"></div>
+                    <div class="cell-model-3d" id="cellModel3d" role="group" tabindex="0" aria-label="细胞立体剖开模型" hidden></div>
+                  </div>
+
                   <p class="cell-interaction-hint">拖动调整视角 · 点击模型或名称查看功能</p>
                   <div class="cell-selection-badge" id="cellSelectionBadge">
                     <span>当前结构</span>
@@ -739,32 +768,7 @@
             </div>
           </div>
 
-          <div class="parameters">
-            <div class="parameter">
-              <div class="parameter-label">
-                <span class="parameter-icon speed-param"><svg viewBox="0 0 24 24"><path d="M4 18a8 8 0 1 1 16 0M12 12l4-4"/></svg></span>
-                <div><strong id="paramLabel1">初速度 v₀</strong><small id="paramDesc1">调整车辆起始速度</small></div>
-              </div>
-              <input id="speedRange" type="range" min="5" max="80" step="1" value="20">
-              <div class="number-control">
-                <button data-target="speedRange" data-delta="-1">−</button>
-                <strong id="speedParam">20</strong><small id="paramUnit1">m/s</small>
-                <button data-target="speedRange" data-delta="1">+</button>
-              </div>
-            </div>
-            <div class="parameter">
-              <div class="parameter-label">
-                <span class="parameter-icon accel-param"><svg viewBox="0 0 24 24"><path d="M5 15c2-4 4-6 7-6s5 2 7 6M5 19h14M12 9V4m-3 3 3-3 3 3"/></svg></span>
-                <div><strong id="paramLabel2">加速度 a</strong><small id="paramDesc2">调整刹车减速度</small></div>
-              </div>
-              <input id="accelRange" type="range" min="1" max="20" step="1" value="5">
-              <div class="number-control">
-                <button data-target="accelRange" data-delta="-1">−</button>
-                <strong id="accelParam">−5</strong><small id="paramUnit2">m/s²</small>
-                <button data-target="accelRange" data-delta="1">+</button>
-              </div>
-            </div>
-          </div>
+
         </section>
 
         <aside class="insight-column">
@@ -1086,7 +1090,7 @@
   <script src="science-formulas.js?v=20261106-ui-motion-1"></script>
   <script src="science-motion.js?v=20261108-diagram-fixes-1"></script>
   <script src="biology-protocol-questions.js?v=20261108-lesson-1"></script>
-  <script src="physics-extra.js?v=20261113-photosynthesis-final-1"></script>
+  <script src="physics-extra.js?v=20261117-top-controls-1"></script>
   <script src="question-conditions.js?v=20261021-question-conditions-1"></script>
   <script src="math-extra.js?v=20261031-declutter-2"></script>
   <script src="math-experiments.js?v=20261030-acceptance-1"></script>
@@ -1095,17 +1099,17 @@
   <script src="chemistry-experiments.js?v=20261031-declutter-2"></script>
   <script src="chemistry-equilibria.js?v=20261030-acceptance-1"></script>
   <script src="chemistry-equilibria-questions.js?v=20261030-acceptance-1"></script>
-  <script src="chemistry-equilibria-experiments.js?v=20261030-acceptance-1"></script>
+  <script src="chemistry-equilibria-experiments.js?v=20261117-experiment-controls-1"></script>
   <script src="biology-mendel-core.js?v=20261031-mendel-1"></script>
-  <script src="biology-mendel.js?v=20261031-mendel-1"></script>
+  <script src="biology-mendel.js?v=20261117-experiment-controls-1"></script>
   <script src="biology-photosynthesis-core.js?v=20261101-photo-1"></script>
-  <script src="biology-photosynthesis.js?v=20261108-lesson-1"></script>
+  <script src="biology-photosynthesis.js?v=20261117-experiment-controls-1"></script>
   <script src="biology-microscope-core.js?v=20261031-microscope-1"></script>
   <script src="biology-microscope-questions.js?v=20261031-microscope-1"></script>
-  <script src="biology-microscope.js?v=20261031-microscope-1"></script>
+  <script src="biology-microscope.js?v=20261117-top-controls-1"></script>
   <script src="biology-population-core.js?v=20261101-population-2"></script>
   <script src="biology-population-questions.js?v=20261101-population-2"></script>
-  <script src="biology-population.js?v=20261108-diagram-fixes-1"></script>
+  <script src="biology-population.js?v=20261117-top-controls-1"></script>
   <script src="instant-scene.js?v=20261020-incline-data-1"></script>
   <script src="incline-presets.js?v=20261020-incline-competition-1"></script>
   <script src="incline-diagram.js?v=20261020-incline-data-1"></script>
@@ -1114,7 +1118,7 @@
   <script src="biology-leaf-disks.js?v=20261108-lesson-1"></script>
   <script src="photosynthesis-learning.js?v=20261108-lesson-1"></script>
   <script src="biology-cell-3d.js?v=20261114-cell-motion-modal-1"></script>
-  <script src="app.js?v=20261114-cell-motion-modal-1"></script>
+  <script src="app.js?v=20261117-top-controls-1"></script>
   <script src="experiment-share.js?v=20261113-photosynthesis-final-1"></script>
   <script src="vendor/katex/katex.min.js?v=0.19.0"></script>
   <script src="vendor/katex/mhchem.min.js?v=0.19.0"></script>
@@ -1125,7 +1129,7 @@
   <script src="announcements.js?v=20261008-announcements-2"></script>
   <script src="photo-question.js?v=20261102-photo-2"></script>
   <script src="mobile-shell.js?v=20261114-cell-motion-modal-1"></script>
-  <script src="ui-motion.js?v=20261114-cell-motion-modal-1"></script>
+  <script src="ui-motion.js?v=20261117-top-controls-1"></script>
   <script src="menu-select.js?v=20261107-menu-select-1"></script>
 </body>
 </html>

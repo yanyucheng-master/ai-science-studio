@@ -1056,7 +1056,9 @@
       min: 1,
       max: FRICTION_SURFACES.length,
       step: 1,
-      valueText: value => frictionSurface(value).name
+      valueText: value => frictionSurface(value).name,
+      control: "select",
+      options: FRICTION_SURFACES.map((surface, index) => ({ value: index + 1, label: surface.name }))
     }
   ];
   function juniorFrictionModel(normal, surface) {
@@ -2194,7 +2196,7 @@
         ]),
         mentor: `这个题型中，哪个量是被控制的变量？哪个量会随着参数变化而改变？`,
         hint: `小提示：先锁定核心公式 <strong>${model.formula}</strong>，再逐一代入题目给出的物理量。`,
-        challenge: `试试看：拖动下方参数，观察 <strong>${model.facts[0].label}</strong> 如何变化，并用公式解释。`,
+        challenge: `试试看：调整上方参数，观察 <strong>${model.facts[0].label}</strong> 如何变化，并用公式解释。`,
         generationStages: stages(`识别${template.menuTitle}条件`, `匹配核心关系：${model.badge}`, `生成结论：${model.readout}`),
         recognitionText: template.recognition(model),
         formulaHtml: `${model.formulaDetail}<br>${model.conclusion}`,
