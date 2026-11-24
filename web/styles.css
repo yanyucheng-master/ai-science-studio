@@ -11395,3 +11395,69 @@ input, textarea, [contenteditable=""], [contenteditable="true"] {
   -webkit-user-select: none;
   user-select: none;
 }
+
+/* 2026-11-24 收藏卡片美化
+   - 悬停时条目右移 2px 会让列表横向溢出，出现横向滚动条 → 去掉位移，列表禁止横向滚动
+   - 条目改为圆角浅底块（不再用整行直角高亮 + 分隔线），文字与高亮边缘留出内边距
+   - 图标按学科统一：物理=原子、化学=锥形瓶、生物=叶子、数学=坐标系与曲线（不再按单个实验画不同图案） */
+.favorite-list {
+  display: grid;
+  margin: 0 -6px;
+  padding: 2px 6px;
+  gap: 4px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.favorite-list .history-item {
+  padding: 7px 8px;
+  border-bottom: 0;
+  border-radius: 12px;
+  transition: background 150ms ease, box-shadow 150ms ease;
+}
+.favorite-list .history-item:last-child { padding-bottom: 7px; }
+.favorite-list .history-item:hover { transform: none; background: #f3f7fd; }
+.favorite-list .history-item.current {
+  background: #edf3ff;
+  box-shadow: inset 0 0 0 1px rgba(42, 103, 238, .14);
+}
+.favorite-list .history-item.current strong { color: #1a56d6; }
+.favorite-list .history-item > svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 150ms ease, color 150ms ease;
+}
+.favorite-list .history-item:hover > svg,
+.favorite-list .history-item.current > svg { color: #2a67ee; transform: translateX(2px); }
+.favorite-list .history-item:focus-visible { border-radius: 12px; }
+.favorite-list .history-visual { border-radius: 10px; }
+.favorite-list .history-item[data-subject="物理"] .history-visual { background: #e8f0ff; }
+.favorite-list .history-item[data-subject="化学"] .history-visual { background: #e3f7f0; }
+.favorite-list .history-item[data-subject="生物"] .history-visual { background: #eefaf2; }
+.favorite-list .history-item[data-subject="数学"] .history-visual { background: #efedff; }
+
+
+/* 学科图标：用 mask 画单色线条图标，颜色跟随学科；覆盖原来按实验区分的 ::before / ::after 图案 */
+.favorite-list .history-visual::before {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  margin: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  -webkit-mask: var(--fav-icon) center / 20px 20px no-repeat;
+  mask: var(--fav-icon) center / 20px 20px no-repeat;
+  background: var(--fav-ink, #2f6fea);
+  content: "";
+}
+.favorite-list .history-visual::after { content: none; }
+.favorite-list .history-item[data-subject="物理"] .history-visual { --fav-ink: #2f6fea; --fav-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><ellipse cx='12' cy='12' rx='9.5' ry='3.8'/><ellipse cx='12' cy='12' rx='9.5' ry='3.8' transform='rotate%2860 12 12%29'/><ellipse cx='12' cy='12' rx='9.5' ry='3.8' transform='rotate%28120 12 12%29'/><circle cx='12' cy='12' r='1.6' fill='black'/></svg>"); }
+.favorite-list .history-item[data-subject="化学"] .history-visual { --fav-ink: #1fae8a; --fav-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M9.5 3h5M10.5 3v6L5 18.5A1.7 1.7 0 0 0 6.5 21h11a1.7 1.7 0 0 0 1.5-2.5L13.5 9V3'/><path d='M7.6 15h8.8'/></svg>"); }
+.favorite-list .history-item[data-subject="生物"] .history-visual { --fav-ink: #2fa866; --fav-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M5 19C5 10 10 5 20 4c0 10-5 15-13 15'/><path d='M5 19 13 11'/></svg>"); }
+.favorite-list .history-item[data-subject="数学"] .history-visual { --fav-ink: #6a55e0; --fav-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M4 3v17h17'/><path d='M6.5 17c3-9 5.5-11 7.5-6s4 3 6-4'/></svg>"); }
+.favorite-list .history-item.current .history-visual { background: #fff; }
