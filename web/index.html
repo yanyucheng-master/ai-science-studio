@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="mobile.css?v=20261117-top-controls-1">
   <link rel="stylesheet" href="ui-motion.css?v=20261117-manual-steps-1">
   <link rel="stylesheet" href="menu-select.css?v=20261107-menu-select-1">
-  <link rel="stylesheet" href="biology-cell-3d.css?v=20261114-cell-reference-1">
+  <link rel="stylesheet" href="biology-cell-3d.css?v=20261124-cell-cutaway-1">
 </head>
 <body class="awaiting-generation">
   <script src="brand-motion.js?v=20261107-animation-1"></script>
@@ -706,6 +706,10 @@
                       <button type="button" data-view="3d" class="active" aria-pressed="true">立体</button>
                       <button type="button" data-view="2d" aria-pressed="false">平面</button>
                     </div>
+                    <div class="cell-cut-toggle" role="group" aria-label="立体模型剖切方式" data-no-formula>
+                      <button type="button" data-cutaway="half" class="active" aria-pressed="true">1/2</button>
+                      <button type="button" data-cutaway="quarter" aria-pressed="false">1/4</button>
+                    </div>
                     <div class="cell-level-toggle" role="group" aria-label="教材学段">
                       <button type="button" data-level="junior" aria-pressed="false" title="人教版七年级上册：细胞基本结构与功能">初中</button>
                       <button type="button" data-level="senior" aria-pressed="true" title="人教版必修1《分子与细胞》：亚显微结构">高中</button>
@@ -1117,8 +1121,8 @@
   <script src="biology-leaf-disks-questions.js?v=20261106-separators-1"></script>
   <script src="biology-leaf-disks.js?v=20261117-manual-steps-1"></script>
   <script src="photosynthesis-learning.js?v=20261117-manual-steps-1"></script>
-  <script src="biology-cell-3d.js?v=20261114-cell-motion-modal-1"></script>
-  <script src="app.js?v=20261117-manual-steps-1"></script>
+  <script src="biology-cell-3d.js?v=20261124-cell-cutaway-1"></script>
+  <script src="app.js?v=20261124-cell-cutaway-1"></script>
   <script src="experiment-share.js?v=20261113-photosynthesis-final-1"></script>
   <script src="vendor/katex/katex.min.js?v=0.19.0"></script>
   <script src="vendor/katex/mhchem.min.js?v=0.19.0"></script>

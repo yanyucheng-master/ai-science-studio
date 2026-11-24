@@ -184,12 +184,20 @@ function persistGradeLevel(level) {
 
 const INITIAL_GRADE_LEVEL = loadGradeLevel();
 const CELL_VIEW_STORAGE_KEY = "masterLab.cellView.v1";
+const CELL_CUTAWAY_STORAGE_KEY = "masterLab.cellCutaway.v1";
 const CELL_3D_DEFAULT_VIEW = window.MasterLabCell3D?.defaultView || { yaw: -30, pitch: 10, zoom: 1 };
 const cell3d = { viewer: null, loading: null, failed: false, modelKey: "" };
 
 function loadCellView() {
   try { return localStorage.getItem(CELL_VIEW_STORAGE_KEY) === "2d" ? "2d" : "3d"; }
   catch { return "3d"; }
+}
+
+// 立体模型的剖切方式：half = 剖去上半（默认），quarter = 剖去前上方四分之一。
+const normalizeCellCutaway = value => (value === "quarter" ? "quarter" : "half");
+function loadCellCutaway() {
+  try { return normalizeCellCutaway(localStorage.getItem(CELL_CUTAWAY_STORAGE_KEY)); }
+  catch { return "half"; }
 }
 
 const state = {
@@ -252,6 +260,7 @@ const state = {
   cellRotateX: -4,
   cellRotateY: -10,
   cellView: loadCellView(),
+  cellCutaway: loadCellCutaway(),
   cellYaw: CELL_3D_DEFAULT_VIEW.yaw,
   cellPitch: CELL_3D_DEFAULT_VIEW.pitch,
   cellZoom: CELL_3D_DEFAULT_VIEW.zoom,
@@ -1194,6 +1203,7 @@ function saveCurrentSubjectSnapshot() {
     cellRotateX: state.cellRotateX,
     cellRotateY: state.cellRotateY,
     cellView: state.cellView,
+    cellCutaway: state.cellCutaway,
     cellYaw: state.cellYaw,
     cellPitch: state.cellPitch,
     cellZoom: state.cellZoom
@@ -1252,6 +1262,7 @@ function restoreSubjectSnapshot(subject) {
     state.cellLevelLocked = Boolean(snapshot.cellLevelLocked);
     state.selectedOrganelle = snapshot.selectedOrganelle || "nucleus";
     if (snapshot.cellView === "2d" || snapshot.cellView === "3d") state.cellView = snapshot.cellView;
+    if (snapshot.cellCutaway) state.cellCutaway = normalizeCellCutaway(snapshot.cellCutaway);
     setCellView3d({
       yaw: snapshot.cellYaw ?? CELL_3D_DEFAULT_VIEW.yaw,
       pitch: snapshot.cellPitch ?? CELL_3D_DEFAULT_VIEW.pitch,
@@ -2945,6 +2956,14 @@ function syncCellViewSurface() {
     button.disabled = button.dataset.view === "3d" && (cell3d.failed || !window.MasterLabCell3D);
     button.title = button.disabled ? "立体模型不可用，刷新页面后可重试" : "";
   });
+  $$(".cell-cut-toggle button").forEach(button => {
+    const on = button.dataset.cutaway === state.cellCutaway;
+    button.classList.toggle("active", on);
+    button.setAttribute("aria-pressed", String(on));
+    button.disabled = cellViewMode() !== "3d";
+    button.title = button.disabled ? "剖切方式用于立体模型"
+      : button.dataset.cutaway === "half" ? "剖去上半：完整呈现水平剖面" : "剖去前上方四分之一：同时呈现水平与竖直剖面";
+  });
   const status = $("#cellRenderStatus");
   if (status) {
     const loading = cellViewMode() === "3d" && Boolean(cell3d.loading);
@@ -2956,15 +2975,15 @@ function syncCellViewSurface() {
     ? "拖动翻转 · 双指或 Ctrl + 滚轮缩放 · 点击结构查看功能"
     : "拖动调整视角 · 点击模型或名称查看功能";
   if (!live) return;
-  const key = `${state.cellType}:${normalizeCellLevel(state.cellLevel)}`;
+  const key = `${state.cellType}:${normalizeCellLevel(state.cellLevel)}:${state.cellCutaway}`;
   try {
     if (key !== cell3d.modelKey) {
-      cell3d.viewer.setModel(state.cellType, currentCellOrganelles().map(({ id, name }) => ({ id, name })));
+      cell3d.viewer.setModel(state.cellType, currentCellOrganelles().map(({ id, name }) => ({ id, name })), { cutaway: state.cellCutaway });
       cell3d.modelKey = key;
     }
     cell3d.viewer.setLabelsVisible(state.cellLabelsVisible);
     cell3d.viewer.setSelected(state.selectedOrganelle);
-    elements.cellModel3d.setAttribute("aria-label", `${CELL_TYPE_LABELS[state.cellType]}立体剖开模型。拖动或方向键翻转，加减号缩放，Home 重置。结构名称可用下方按钮选择。`);
+    elements.cellModel3d.setAttribute("aria-label", `${CELL_TYPE_LABELS[state.cellType]}立体剖开模型（${state.cellCutaway === "half" ? "剖去上半" : "剖去四分之一"}）。拖动或方向键翻转，加减号缩放，Home 重置。结构名称可用下方按钮选择。`);
   } catch { onCell3dUnavailable(); }
 }
 
@@ -2980,6 +2999,17 @@ function setCellView(view) {
   state.cellView = view === "2d" ? "2d" : "3d";
   try { localStorage.setItem(CELL_VIEW_STORAGE_KEY, state.cellView); } catch { /* View remains available for this page. */ }
   syncBiologyAngleControl();
+  updateCellModelMode();
+  if (state.hasGenerated) saveCurrentSubjectSnapshot();
+}
+
+function setCellCutaway(cutaway) {
+  const next = normalizeCellCutaway(cutaway);
+  if (next === state.cellCutaway || cellViewMode() !== "3d") return;
+  clearReasoningTimers();
+  setCellAutoRotate(false);
+  state.cellCutaway = next;
+  try { localStorage.setItem(CELL_CUTAWAY_STORAGE_KEY, next); } catch { /* Choice remains available for this page. */ }
   updateCellModelMode();
   if (state.hasGenerated) saveCurrentSubjectSnapshot();
 }
@@ -8345,6 +8375,11 @@ elements.plantCellModel?.addEventListener("keydown", event => {
 
 $$(".cell-view-toggle button").forEach(button => {
   button.addEventListener("click", event => { event.stopPropagation(); setCellView(button.dataset.view); });
+});
+
+$$(".cell-cut-toggle button").forEach(button => {
+  button.addEventListener("pointerdown", event => event.stopPropagation());
+  button.addEventListener("click", event => { event.stopPropagation(); setCellCutaway(button.dataset.cutaway); });
 });
 
 $$(".cell-level-toggle button").forEach(button => {
