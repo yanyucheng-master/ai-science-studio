@@ -1,4 +1,4 @@
-.cell-view-toggle {
+.cell-view-toggle, .cell-cut-toggle {
   display: inline-flex;
   flex-shrink: 0;
   gap: 2px;
@@ -6,7 +6,7 @@
   border-radius: 8px;
   background: #eaf1f5;
 }
-.cell-view-toggle button {
+.cell-view-toggle button, .cell-cut-toggle button {
   min-height: 28px;
   padding: 4px 10px;
   border: 0;
@@ -16,9 +16,10 @@
   font: inherit;
   font-size: 11px;
 }
-.cell-view-toggle button.active { color: #195bb0; background: #fff; box-shadow: 0 1px 4px #244b7114; }
-.cell-view-toggle button:disabled { opacity: .5; cursor: default; }
-.cell-view-toggle button:focus-visible { outline: 2px solid #2768ca; outline-offset: 2px; }
+.cell-view-toggle button.active, .cell-cut-toggle button.active { color: #195bb0; background: #fff; box-shadow: 0 1px 4px #244b7114; }
+.cell-view-toggle button:disabled, .cell-cut-toggle button:disabled { opacity: .5; cursor: default; }
+.cell-view-toggle button:focus-visible, .cell-cut-toggle button:focus-visible { outline: 2px solid #2768ca; outline-offset: 2px; }
+.cell-cut-toggle button { font-variant-numeric: tabular-nums; }
 .cell-viewer-head { flex-wrap: wrap; gap: 8px; }
 .cell-viewer-head > span { margin-right: auto; }
 .cell-viewer-head .cell-level-toggle { margin-left: 0; }
@@ -61,7 +62,7 @@
 @media (max-width: 700px) {
   .cell-title-detail { display: none; }
   .cell-viewer-head > span { font-size: 11px; }
-  .cell-view-toggle button { padding: 4px 8px; }
+  .cell-view-toggle button, .cell-cut-toggle button { padding: 4px 8px; }
   .cell-viewer-head .cell-viewer-actions { flex-basis: 100%; justify-content: flex-end; }
   .cell-3d-label { width: 56px; font-size: 10.5px; }
 }
