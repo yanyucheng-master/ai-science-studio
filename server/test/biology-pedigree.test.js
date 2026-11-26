@@ -85,6 +85,13 @@ test('P06 identifies two actual families with mode-specific conflict members', (
   assert.deepEqual(Array.from(result.results.AD.conflicts[0].members), ['II-1', 'II-2', 'III-1']);
 });
 
+test('affected daughter exclusion explicitly explains the missing paternal X allele', () => {
+  const result = C.analyze(Q.find('P02'));
+  const conflict = result.results.XR.conflicts.find(item => item.members.includes('II-1'));
+  assert.ok(conflict.text.includes('受累女儿需从父亲得到Xᵃ'));
+  assert.ok(conflict.text.includes('未受累父亲XᴬY无法提供'));
+});
+
 for (const [name, mutate] of [
   ['duplicate member', data => data.people[1].id = data.people[0].id],
   ['invalid sex', data => data.people[0].sex = 'unknown'],

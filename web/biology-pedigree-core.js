@@ -123,8 +123,26 @@
       }
       if (locationAllowed) visit(0, {});
       const conflicts = !locationAllowed ? [{ type: 'locus', members: [], text: `题给定位与${modes[mode]}不符` }]
-        : families.filter(f => !f.rows.length).map(f => ({ type: 'family', family: f.id,
-          members: [f.father, f.mother, ...f.children], text: `${f.id}：${f.father}与${f.mother}的配子不能满足这些子女表型及题给事实` }));
+        : families.filter(f => !f.rows.length).flatMap(f => {
+          const reasons = [];
+          for (const id of f.children) {
+            const child = people[id], available = new Set();
+            for (const father of domains[f.father]) for (const mother of domains[f.mother]) {
+              offspring(father, mother, mode).filter(row => row.sex === child.sex).forEach(row => available.add(row.dose));
+            }
+            if (domains[id].some(dose => available.has(dose))) continue;
+            const fatherText = domains[f.father].map(dose => genotype(dose, 'M', mode)).join('或') || '无符合题给事实的基因型';
+            const motherText = domains[f.mother].map(dose => genotype(dose, 'F', mode)).join('或') || '无符合题给事实的基因型';
+            const childText = [...available].map(dose => genotype(dose, child.sex, mode)).join('或') || '无可行组合';
+            const rule = mode === 'XR' && child.sex === 'F' && child.phenotype === 'affected'
+              && people[f.father].phenotype === 'unaffected'
+              ? '伴X隐性受累女儿需从父亲得到Xᵃ，但未受累父亲XᴬY无法提供。' : '';
+            reasons.push({ type: 'family', family: f.id, members: [f.father, f.mother, id],
+              text: `${f.id}：父亲${f.father}可为${fatherText}，母亲${f.mother}可为${motherText}。对子女${id}可能传递为${childText}，与题给表型或携带事实不符。${rule}` });
+          }
+          return reasons.length ? reasons : [{ type: 'family', family: f.id,
+            members: [f.father, f.mother, ...f.children], text: `${f.id}：${f.father}与${f.mother}的配子不能同时满足全部子女表型及题给事实` }];
+        });
       if (locationAllowed && !assignments.length && !conflicts.length) conflicts.push({ type: 'joint',
         members: data.people.map(p => p.id), text: '各家庭约束联用后没有一致基因型，请核对整条亲缘链及题给事实' });
       const genotypes = Object.fromEntries(data.people.map(p => [p.id, [...new Set(assignments.map(row => row[p.id]))].sort()]));
