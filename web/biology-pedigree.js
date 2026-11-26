@@ -57,6 +57,7 @@
       <h3>${data.id} · ${data.title}</h3><p class="pedigree-muted">虚构课堂家系 · v${data.version} · ${data.locus === 'X' ? '题给基因位于X染色体非同源区' : '题给基因位置未知'}</p>
       <nav class="pedigree-cases" aria-label="切换完整样例">${catalog.cases.map(item => `<button type="button" data-pedigree-case="${item.id}" aria-pressed="${data.id === item.id}">${item.id}</button>`).join('')}</nav>
       <button type="button" data-experiment-reset>重置当前样例</button>
+      <button type="button" data-pedigree-fullscreen>全屏查看</button>
       <nav class="pedigree-steps" aria-label="六步手动推导">${steps.map((label, i) => `<button type="button" data-experiment-step="${i}" aria-label="第${i + 1}步，${label}">${i + 1} ${label}</button>`).join('')}</nav>
       <div class="pedigree-legend" aria-label="图例"><span>□ 男性</span><span>○ 女性</span><span>■/● 受累</span><span>空心 表型未受累</span><span>? 表型未知</span><span>携 携带证据另列来源</span></div>
       <div class="pedigree-scroll" tabindex="0" aria-label="家系图，窄屏可在图内横向滚动">${svg(data)}</div>

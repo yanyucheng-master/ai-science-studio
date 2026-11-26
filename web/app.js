@@ -3690,6 +3690,10 @@ elements.genericPhysicsVisual?.addEventListener("click", event => {
 
 elements.genericPhysicsVisual?.addEventListener("click", event => {
   if (activeGenericId() === "pedigree") {
+    if (event.target.closest?.("[data-pedigree-fullscreen]")) {
+      toggleExperimentFullscreen();
+      return;
+    }
     const example = event.target.closest?.("[data-pedigree-case]");
     if (example) {
       const preset = window.MasterLabPedigreeQuestions.preset(example.dataset.pedigreeCase);

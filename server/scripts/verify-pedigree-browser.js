@@ -170,6 +170,13 @@ try {
       const initial = await snapshot(page);
       check(text.length < 1200 && initial.fixed.level === 'senior', `${id} ${width}px full versioned question and senior content`);
       await geometry(page, id, width);
+      if (id === 'P02') {
+        await page.locator('[data-pedigree-fullscreen]').click();
+        check(await page.locator('.experiment-card').evaluate(node => node.classList.contains('immersive-mode')), `${width}px actual fullscreen control opens existing shell`);
+        await geometry(page, id + '-fullscreen', width);
+        await page.locator('[data-pedigree-fullscreen]').click();
+        check(!await page.locator('.experiment-card').evaluate(node => node.classList.contains('immersive-mode')), `${width}px fullscreen returns without reset`);
+      }
       await page.locator('.pedigree-svg [data-pedigree-member]').first().focus();
       await page.keyboard.press('Enter');
       check(await page.locator('[data-pedigree-selection]').textContent() !== '点选一个成员查看其亲缘与题给信息。', `${id} keyboard member selection`);
