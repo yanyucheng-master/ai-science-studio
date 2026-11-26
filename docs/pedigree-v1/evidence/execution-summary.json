@@ -1,0 +1,1972 @@
+{
+  "reviewUrl": "https://github.com/yanyucheng-master/ai-science-studio/issues/11#issuecomment-7193444847",
+  "featureBranch": "codex/biology-pedigree-v1",
+  "baseSha": "a91e09f4fb3d965ea927e55b305ca71f34ab8b82",
+  "executionSha": "582ceccf74d341e122fb6cdc988bc3882566c868",
+  "executionTree": "a71ee0f2184557e70ac9992da9d7383015fbf867",
+  "sourceFreeze": [
+    {
+      "name": "baseline",
+      "archiveSha256": "1b6fba52617049b153df704281cc2e0ea2545bdda2d09fd196351bd3c1041997",
+      "trackedFilesChecked": 293
+    },
+    {
+      "name": "candidate",
+      "archiveSha256": "641e5d56a1073f90a0c069c7aa6e875bd79f4977841872f249b4e63459b64959",
+      "trackedFilesChecked": 310
+    }
+  ],
+  "baseline": {
+    "sourceSha": "a91e09f4fb3d965ea927e55b305ca71f34ab8b82",
+    "node": "v24.22.1",
+    "os": "Windows_NT 10.0.26200 x64",
+    "started": "2026-11-26T14:25:05.313Z",
+    "finished": "2026-11-26T14:58:26.939Z",
+    "groups": [
+      {
+        "name": "incline-guard",
+        "command": "node scripts/verify-incline-diagram-browser.js --guard-only",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:25:05.314Z",
+        "finished": "2026-11-26T14:25:11.207Z",
+        "counts": {
+          "cases": 6
+        },
+        "stdoutSha256": "1157cdc163af5fb11ebe3ed5202b5a6bf72b35452c64ae23ac1ab0f850a623c9",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "population-background",
+        "command": "node scripts/verify-population-background-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:25:11.208Z",
+        "finished": "2026-11-26T14:25:45.308Z",
+        "counts": {
+          "checks": 0
+        },
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "9abba7abc3a6f547e0cc0c97d5fdfa5d566ea5a0085ab693b626567fea093c6d",
+        "failureEvidence": [
+          "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.parameters input[type=range]').nth(1)\u001b[22m\n\u001b[2m    - locator resolved to <input min=\"0\" max=\"20\" step=\"1\" value=\"5\" type=\"range\" id=\"accelRange\" class=\"um-p-20 um-pf-0 um-has-orig um-o-20 um-of-0\"/>\u001b[22m\n\u001b[2m    - fill(\"8\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+        ],
+        "internalWaitTimeout": true,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "learning",
+        "command": "node scripts/verify-photosynthesis-learning-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:25:45.309Z",
+        "finished": "2026-11-26T14:25:48.135Z",
+        "counts": {
+          "cases": 0
+        },
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "b527063c42f853f92e021abf4c378f30b5623ee887f2160e580f089d6503837a",
+        "failureEvidence": [
+          "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok(Math.abs(result.time-(step-1)/6)<1e-8)\n"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "ui-interactions",
+        "command": "node scripts/verify-ui-interactions-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:25:48.136Z",
+        "finished": "2026-11-26T14:26:24.268Z",
+        "counts": {
+          "checks": 112,
+          "failures": 22
+        },
+        "stdoutSha256": "43d59076698d0290b1b6799025ca12400aa651cb4333280b789bf4edc9bfcb6e",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "failureEvidence": [
+          "desktop UI-03 刹车实验显示 3 个步骤刻度 :: {\"info\":{\"template\":\"brake\",\"duration\":4,\"rate\":1},\"one\":null}",
+          "desktop UI-03 倍速按钮到 1.5× 后刻度与快捷键路径一致 :: {\"rateNow\":1.5,\"button\":null,\"shortcut\":null}",
+          "desktop UI-03 倍速按钮到 2× 后刻度与快捷键路径一致 :: {\"rateNow\":2,\"button\":null,\"shortcut\":null}",
+          "desktop UI-03 倍速按钮到 0.5× 后刻度与快捷键路径一致 :: {\"rateNow\":0.5,\"button\":null,\"shortcut\":null}",
+          "desktop UI-03 倍速按钮到 1× 后刻度与快捷键路径一致 :: {\"rateNow\":1,\"button\":null,\"shortcut\":null}",
+          "mobile UI-03 刹车实验显示 3 个步骤刻度 :: {\"info\":{\"template\":\"brake\",\"duration\":4,\"rate\":1},\"one\":null}",
+          "mobile UI-03 倍速按钮到 1.5× 后刻度与快捷键路径一致 :: {\"rateNow\":1.5,\"button\":null,\"shortcut\":null}",
+          "mobile UI-03 倍速按钮到 2× 后刻度与快捷键路径一致 :: {\"rateNow\":2,\"button\":null,\"shortcut\":null}",
+          "mobile UI-03 倍速按钮到 0.5× 后刻度与快捷键路径一致 :: {\"rateNow\":0.5,\"button\":null,\"shortcut\":null}",
+          "mobile UI-03 倍速按钮到 1× 后刻度与快捷键路径一致 :: {\"rateNow\":1,\"button\":null,\"shortcut\":null}",
+          "desktop-reduced UI-03 刹车实验显示 3 个步骤刻度 :: {\"info\":{\"template\":\"brake\",\"duration\":4,\"rate\":1},\"one\":null}",
+          "desktop-reduced UI-03 倍速按钮到 1.5× 后刻度与快捷键路径一致 :: {\"rateNow\":1.5,\"button\":null,\"shortcut\":null}",
+          "desktop-reduced UI-03 倍速按钮到 2× 后刻度与快捷键路径一致 :: {\"rateNow\":2,\"button\":null,\"shortcut\":null}",
+          "desktop-reduced UI-03 倍速按钮到 0.5× 后刻度与快捷键路径一致 :: {\"rateNow\":0.5,\"button\":null,\"shortcut\":null}",
+          "desktop-reduced UI-03 倍速按钮到 1× 后刻度与快捷键路径一致 :: {\"rateNow\":1,\"button\":null,\"shortcut\":null}",
+          "mobile-reduced UI-03 刹车实验显示 3 个步骤刻度 :: {\"info\":{\"template\":\"brake\",\"duration\":4,\"rate\":1},\"one\":null}",
+          "mobile-reduced UI-03 倍速按钮到 1.5× 后刻度与快捷键路径一致 :: {\"rateNow\":1.5,\"button\":null,\"shortcut\":null}",
+          "mobile-reduced UI-03 倍速按钮到 2× 后刻度与快捷键路径一致 :: {\"rateNow\":2,\"button\":null,\"shortcut\":null}",
+          "mobile-reduced UI-03 倍速按钮到 0.5× 后刻度与快捷键路径一致 :: {\"rateNow\":0.5,\"button\":null,\"shortcut\":null}",
+          "mobile-reduced UI-03 倍速按钮到 1× 后刻度与快捷键路径一致 :: {\"rateNow\":1,\"button\":null,\"shortcut\":null}",
+          "desktop 时间轴在 0% 时按下命中滑块（第 1 步刻度让开指针） :: {\"geo\":{\"x\":202,\"y\":384.078125,\"value\":0},\"hit\":{\"timeline\":true,\"target\":\"timeline um-p-0 um-pf-0\",\"covered\":[]}}",
+          "aborted: page.evaluate: TypeError: Cannot read properties of null (reading 'getBoundingClientRect')\n    at eval (eval at evaluate (:311:30), <anonymous>:1:77)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at timelineThumb (<workspace>\\.handoff\\pedigree-v1-implementation-20261126\\baseline-source\\server\\scripts\\verify-ui-interactions-browser.js:256:26)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-ui-interactions-browser.js:437:3",
+          "FAIL desktop UI-03 刹车实验显示 3 个步骤刻度 {\"info\":{\"template\":\"brake\",\"duration\":4,\"rate\":1},\"one\":null}",
+          "FAIL desktop UI-03 倍速按钮到 1.5× 后刻度与快捷键路径一致 {\"rateNow\":1.5,\"button\":null,\"shortcut\":null}",
+          "FAIL desktop UI-03 倍速按钮到 2× 后刻度与快捷键路径一致 {\"rateNow\":2,\"button\":null,\"shortcut\":null}",
+          "FAIL desktop UI-03 倍速按钮到 0.5× 后刻度与快捷键路径一致 {\"rateNow\":0.5,\"button\":null,\"shortcut\":null}",
+          "FAIL desktop UI-03 倍速按钮到 1× 后刻度与快捷键路径一致 {\"rateNow\":1,\"button\":null,\"shortcut\":null}",
+          "FAIL mobile UI-03 刹车实验显示 3 个步骤刻度 {\"info\":{\"template\":\"brake\",\"duration\":4,\"rate\":1},\"one\":null}",
+          "FAIL mobile UI-03 倍速按钮到 1.5× 后刻度与快捷键路径一致 {\"rateNow\":1.5,\"button\":null,\"shortcut\":null}",
+          "FAIL mobile UI-03 倍速按钮到 2× 后刻度与快捷键路径一致 {\"rateNow\":2,\"button\":null,\"shortcut\":null}",
+          "FAIL mobile UI-03 倍速按钮到 0.5× 后刻度与快捷键路径一致 {\"rateNow\":0.5,\"button\":null,\"shortcut\":null}",
+          "FAIL mobile UI-03 倍速按钮到 1× 后刻度与快捷键路径一致 {\"rateNow\":1,\"button\":null,\"shortcut\":null}",
+          "FAIL desktop-reduced UI-03 刹车实验显示 3 个步骤刻度 {\"info\":{\"template\":\"brake\",\"duration\":4,\"rate\":1},\"one\":null}",
+          "FAIL desktop-reduced UI-03 倍速按钮到 1.5× 后刻度与快捷键路径一致 {\"rateNow\":1.5,\"button\":null,\"shortcut\":null}",
+          "FAIL desktop-reduced UI-03 倍速按钮到 2× 后刻度与快捷键路径一致 {\"rateNow\":2,\"button\":null,\"shortcut\":null}",
+          "FAIL desktop-reduced UI-03 倍速按钮到 0.5× 后刻度与快捷键路径一致 {\"rateNow\":0.5,\"button\":null,\"shortcut\":null}",
+          "FAIL desktop-reduced UI-03 倍速按钮到 1× 后刻度与快捷键路径一致 {\"rateNow\":1,\"button\":null,\"shortcut\":null}",
+          "FAIL mobile-reduced UI-03 刹车实验显示 3 个步骤刻度 {\"info\":{\"template\":\"brake\",\"duration\":4,\"rate\":1},\"one\":null}",
+          "FAIL mobile-reduced UI-03 倍速按钮到 1.5× 后刻度与快捷键路径一致 {\"rateNow\":1.5,\"button\":null,\"shortcut\":null}",
+          "FAIL mobile-reduced UI-03 倍速按钮到 2× 后刻度与快捷键路径一致 {\"rateNow\":2,\"button\":null,\"shortcut\":null}",
+          "FAIL mobile-reduced UI-03 倍速按钮到 0.5× 后刻度与快捷键路径一致 {\"rateNow\":0.5,\"button\":null,\"shortcut\":null}",
+          "FAIL mobile-reduced UI-03 倍速按钮到 1× 后刻度与快捷键路径一致 {\"rateNow\":1,\"button\":null,\"shortcut\":null}",
+          "FAIL desktop 时间轴在 0% 时按下命中滑块（第 1 步刻度让开指针） {\"geo\":{\"x\":202,\"y\":384.078125,\"value\":0},\"hit\":{\"timeline\":true,\"target\":\"timeline um-p-0 um-pf-0\",\"covered\":[]}}"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "protocol-routing",
+        "command": "node scripts/verify-photosynthesis-routing-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:26:24.269Z",
+        "finished": "2026-11-26T14:29:12.024Z",
+        "counts": {
+          "failures": 0,
+          "checks": 118,
+          "cases": 117,
+          "layouts": 0
+        },
+        "stdoutSha256": "9fac69b032d98082b022226b7be64c758c877280bdf0f4b036354f4daf9f60dd",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "protocol-intent",
+        "command": "node scripts/verify-photosynthesis-routing-browser.js --intent",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:29:12.025Z",
+        "finished": "2026-11-26T14:32:46.725Z",
+        "counts": {
+          "failures": 0,
+          "checks": 273,
+          "cases": 272,
+          "layouts": 0
+        },
+        "stdoutSha256": "2a822161704be07ebe967dc29ffc7396d16caacaf48788397aa137221ae9b7c1",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "protocol-separators",
+        "command": "node scripts/verify-photosynthesis-separators-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:32:46.726Z",
+        "finished": "2026-11-26T14:36:10.245Z",
+        "counts": {
+          "failures": 0,
+          "checks": 320,
+          "cases": 320,
+          "layouts": 0
+        },
+        "stdoutSha256": "38f5b165f6f3d84a17d145bf2b22905aa559009bc4c4956aba684de7167682aa",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "protocol-review",
+        "command": "node scripts/verify-photosynthesis-review-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:36:10.246Z",
+        "finished": "2026-11-26T14:37:33.777Z",
+        "counts": {
+          "checks": 342,
+          "layouts": 0
+        },
+        "stdoutSha256": "ea4a58bc92d9e0669f405ada0ceab35cff3d156a92b2b4e4a1e59582a32ecdcf",
+        "stderrSha256": "45f1f5916b0933ad27694aec638d15f4771688a8e2f718ee37e1df020ba2eaf5",
+        "failureEvidence": [
+          "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#playButton')\u001b[22m\n\u001b[2m    - locator resolved to <button title=\"播放（空格）\" id=\"playButton\" aria-label=\"播放实验\" class=\"play-button\" aria-pressed=\"false\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+        ],
+        "internalWaitTimeout": true,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "photosynthesis-integration",
+        "command": "node scripts/verify-photosynthesis-integration-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:37:33.778Z",
+        "finished": "2026-11-26T14:37:36.685Z",
+        "counts": {
+          "checks": 3,
+          "layouts": 0
+        },
+        "stdoutSha256": "23bf19f388cdaf6d0de9cbaeaaa5327671a3e2c9b6fcfae56465395157b1a01c",
+        "stderrSha256": "4ba4bf226216aa295e242d770591977887f29338da088a29228bc0c35e5686b9",
+        "failureEvidence": [
+          "AssertionError [ERR_ASSERTION]: 1366: unique shared controls photosynthesis"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "photosynthesis-browser",
+        "command": "node scripts/verify-photosynthesis-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:37:36.685Z",
+        "finished": "2026-11-26T14:37:39.673Z",
+        "counts": {
+          "checks": 11,
+          "layouts": 1
+        },
+        "stdoutSha256": "32056f5d13d6f68741d1ee4a221ea53f580bddaabf2a3d70e51c2e619c21f55d",
+        "stderrSha256": "42ffcff6405b0e71a83c462f7dedcaf28cc8e117ed6c25ef1295be631e7689ab",
+        "failureEvidence": [
+          "AssertionError [ERR_ASSERTION]: photo-step4-1366: readable captions and touch targets"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "photosynthesis-model",
+        "command": "node --test test/biology-photosynthesis.test.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:37:39.674Z",
+        "finished": "2026-11-26T14:37:39.851Z",
+        "counts": {
+          "tests": 69,
+          "pass": 68,
+          "fail": 1,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "b0d85d6ce98efa54bc4d3bafaa2cb9f413307c544a9b47c10c550ad19c3eb19d",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "failureEvidence": [
+          "✖ visual is local markup and does not echo untrusted input or add a player (0.6521ms)",
+          "✖ failing tests:"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "leaf-disks-browser",
+        "command": "node scripts/verify-leaf-disks-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:37:39.851Z",
+        "finished": "2026-11-26T14:37:42.802Z",
+        "counts": {
+          "checks": 8,
+          "layouts": 1
+        },
+        "stdoutSha256": "54c0873e31282095e34060c554073f6e67eb21f402c9a9d44fb7a6ccd1055f94",
+        "stderrSha256": "9accd3398450c300d80dda3207f6b15b91d9b2e4d6a381dacd7874c1b71a3936",
+        "failureEvidence": [
+          "AssertionError [ERR_ASSERTION]: leaf-step2-1366: readable captions and touch targets"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "leaf-disks-model",
+        "command": "node --test test/biology-leaf-disks.test.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:37:42.803Z",
+        "finished": "2026-11-26T14:37:42.988Z",
+        "counts": {
+          "tests": 94,
+          "pass": 93,
+          "fail": 1,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "dbe97e23416d13ecdcedcd68004a374c72b79721df01f01d37d724a4d14378f8",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "failureEvidence": [
+          "✖ scene and tutor retain no measured data and distinguish mechanism from group results (0.681ms)",
+          "✖ failing tests:"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "node",
+        "command": "node --test",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:37:42.988Z",
+        "finished": "2026-11-26T14:37:44.511Z",
+        "counts": {
+          "tests": 1307,
+          "pass": 1305,
+          "fail": 2,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "e58225211a532077cfe1e3771cd3f9b7164ebd78ff323d695f77160fa5004d6e",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "failureEvidence": [
+          "✖ scene and tutor retain no measured data and distinguish mechanism from group results (1.356ms)",
+          "✖ visual is local markup and does not echo untrusted input or add a player (0.9827ms)",
+          "✖ failing tests:"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "question-bank",
+        "command": "node scripts/verify-question-bank-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:37:44.512Z",
+        "finished": "2026-11-26T14:44:12.457Z",
+        "counts": {},
+        "stdoutSha256": "b97d38eadf4bfcff60929464600eb0ed72a10f64f6d612d5321b88f8cddda49b",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "week1",
+        "command": "node scripts/verify-week1-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:44:12.458Z",
+        "finished": "2026-11-26T14:45:30.115Z",
+        "counts": {
+          "layouts": 50,
+          "failures": 15
+        },
+        "stdoutSha256": "07b1883b83f9045d97d0aa4032420541f2c51f5815f835bd0a0ac2b12aa189d2",
+        "stderrSha256": "5669966bf6aae315f563fe2de1981402772fe0e700f565cbfc82d538cd9c7118",
+        "failureEvidence": [
+          "768-planeMirror: explanations should be in reasoning, not diagram footnotes",
+          "768-planeMirror-1-1: explanations should be in reasoning, not diagram footnotes",
+          "768-planeMirror-30-30: explanations should be in reasoning, not diagram footnotes",
+          "768-planeMirror-6-3: explanations should be in reasoning, not diagram footnotes",
+          "1366-planeMirror: explanations should be in reasoning, not diagram footnotes",
+          "1366-planeMirror-1-1: explanations should be in reasoning, not diagram footnotes",
+          "1366-planeMirror-30-30: explanations should be in reasoning, not diagram footnotes",
+          "1366-planeMirror-6-3: explanations should be in reasoning, not diagram footnotes",
+          "1920-planeMirror: explanations should be in reasoning, not diagram footnotes",
+          "1920-planeMirror-1-1: explanations should be in reasoning, not diagram footnotes",
+          "1920-planeMirror-30-30: explanations should be in reasoning, not diagram footnotes",
+          "1920-planeMirror-6-3: explanations should be in reasoning, not diagram footnotes",
+          "large-mirror: explanations should be in reasoning, not diagram footnotes",
+          "precise-mirror: labels overlap [[\"u = 12.1234 cm\",\"v = 12.1234 cm\"]]",
+          "precise-mirror: explanations should be in reasoning, not diagram footnotes"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "week2",
+        "command": "node scripts/verify-week2-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:45:30.115Z",
+        "finished": "2026-11-26T14:46:04.318Z",
+        "counts": {
+          "checks": 33,
+          "failures": 1
+        },
+        "stdoutSha256": "24c9bde9e51634857a531d0b5ccbcde7fa5e03df261fa1b18d480c758ae84bfc",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "failureEvidence": [
+          "摩擦双学段：locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#accelRange')\u001b[22m\n\u001b[2m    - locator resolved to <input min=\"1\" max=\"3\" step=\"1\" value=\"5\" type=\"range\" id=\"accelRange\" class=\"um-p-0 um-pf-0\"/>\u001b[22m\n\u001b[2m    - fill(\"3\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at <workspace>\\.handoff\\pedigree-v1-implementation-20261126\\baseline-source\\server\\scripts\\verify-week2-browser.js:249:39"
+        ],
+        "internalWaitTimeout": true,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "tutor",
+        "command": "node scripts/verify-tutor-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:46:04.319Z",
+        "finished": "2026-11-26T14:46:13.670Z",
+        "counts": {},
+        "stdoutSha256": "136b5323c48ae807f5bd4a4cd505ee225572af6b6aed2463c5c58028625f8e39",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "animation",
+        "command": "node scripts/verify-animation-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:46:13.671Z",
+        "finished": "2026-11-26T14:46:39.023Z",
+        "counts": {},
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "abaf04a0cb28b0218b9ffab4c2fe8f26b3c3b8b4cc45969d4525e95589d9f63b",
+        "failureEvidence": [
+          "AssertionError [ERR_ASSERTION]: [\n {\n  \"callback\": \"retypesetSceneFormulas\",\n  \"stack\": \"Error\\n    at window.requestAnimationFrame (<anonymous>:9:509)\\n    at MediaQueryList.<anonymous> (http://127.0.0.1:59544/mobile-shell.js?v=20261117-manual-steps-1:393:49)\",\n  \"pending\": [\n   {\n    \"callback\": \"frame\",\n    \"stack\": \"    at request (http://127.0.0.1:59544/app.js?v=20261124-cell-cutaway-1:6076:24) |     at reconcile (http://127.0.0.1:59544/science-motion.js?v=20261108-diagram-fixes-1:17:43) |     at frame (http://127.0.0.1:59544/science-motion.js?v=20261108-diagram-fixes-1:25:67)\"\n   },\n   {\n    \"callback\": \"retypesetSceneFormulas\",\n    \"stack\": \"    at MediaQueryList.<anonymous> (http://127.0.0.1:59544/mobile-shell.js?v=20261117-manual-steps-1:393:49)\"\n   }\n  ]\n },\n {\n  \"callback\": \"frame\",\n  \"stack\": \"Error\\n    at window.requestAnimationFrame (<anonymous>:9:509)\\n    at request (http://127.0.0.1:59544/app.js?v=20261124-cell-cutaway-1:6076:24)\\n    at reconcile (http://127.0.0.1:59544/science-motion.js?v=20261108-diagram-fixes-1:17:43)\\n    at frame (http://127.0.0.1:59544/science-motion.js?v=20261108-diagram-fixes-1:25:67)\\n    at <anonymous>:9:182\",\n  \"pending\": [\n   {\n    \"callback\": \"retypesetSceneFormulas\",\n    \"stack\": \"    at MediaQueryList.<anonymous> (http://127.0.0.1:59544/mobile-shell.js?v=20261117-manual-steps-1:393:49)\"\n   },\n   {\n    \"callback\": \"frame\",\n    \"stack\": \"    at request (http://127.0.0.1:59544/app.js?v=20261124-cell-cutaway-1:6076:24) |     at reconcile (http://127.0.0.1:59544/science-motion.js?v=20261108-diagram-fixes-1:17:43) |     at frame (http://127.0.0.1:59544/science-motion.js?v=20261108-diagram-fixes-1:25:67)\"\n   }\n  ]\n }\n]\n\n2 !== 1\n"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "announcements",
+        "command": "node scripts/verify-announcements-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:46:39.024Z",
+        "finished": "2026-11-26T14:46:43.672Z",
+        "counts": {
+          "cases": 8
+        },
+        "stdoutSha256": "5ac226ba00919f3dc2f569db0d0448209b23f6fe01efd2f14722c2987a1c435d",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "formula",
+        "command": "node scripts/verify-formula-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:46:43.673Z",
+        "finished": "2026-11-26T14:51:04.877Z",
+        "counts": {
+          "layouts": 69,
+          "failures": 0
+        },
+        "stdoutSha256": "3d8131b56a569313c2e574c4f3c697fe5d481ad30c7b5a3d9b7e06e463a6e8a4",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "ai-quality",
+        "command": "node scripts/verify-ai-quality-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:51:04.878Z",
+        "finished": "2026-11-26T14:51:29.436Z",
+        "counts": {},
+        "stdoutSha256": "9f9fc24f9e3a1854af998b64ee794277fc22825f0751e44a8049953c9c5d40e9",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "share",
+        "command": "node scripts/verify-share-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:51:29.436Z",
+        "finished": "2026-11-26T14:52:06.709Z",
+        "counts": {
+          "checks": 14,
+          "roundTrips": 276,
+          "adjustedTemplates": 45
+        },
+        "stdoutSha256": "f76528f059d640715459813d62ff8d340ddcc7a3796841561e7b089606d0ae29",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "instant",
+        "command": "node scripts/verify-instant-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:52:06.710Z",
+        "finished": "2026-11-26T14:52:21.691Z",
+        "counts": {},
+        "stdoutSha256": "3f19268087a437a03081e33593ebf9b930bdb22781f8902ab1b35e2e2cc8e8c7",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "instant-routing",
+        "command": "node scripts/verify-instant-routing-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:52:21.692Z",
+        "finished": "2026-11-26T14:52:29.801Z",
+        "counts": {},
+        "stdoutSha256": "74b94cc47f9737695b101949d305d9178812f2910ce439233d0d11e62bb5091a",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "tutor-diagram",
+        "command": "node scripts/verify-tutor-diagram-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:52:29.802Z",
+        "finished": "2026-11-26T14:52:41.501Z",
+        "counts": {
+          "cases": 19
+        },
+        "stdoutSha256": "dc1b1816df406233f5064d0c2838fc130dd4ee1cd9bbe87e4da3f949083f68a5",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "tutor-presentation",
+        "command": "node scripts/verify-tutor-presentation-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:52:41.502Z",
+        "finished": "2026-11-26T14:52:58.565Z",
+        "counts": {
+          "cases": 27
+        },
+        "stdoutSha256": "a5635e0dccffdc586a0e99e967f0f975433c989d42d74cdccf72d33c03c83fdd",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "incline-core",
+        "command": "node scripts/verify-incline-diagram-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:52:58.566Z",
+        "finished": "2026-11-26T14:53:04.496Z",
+        "counts": {
+          "cases": 7
+        },
+        "stdoutSha256": "a2e91740225da931f1d0512b5ab414df80cfd8f2e1b7826949f5ddded9c4fb8a",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "incline-render",
+        "command": "node scripts/verify-incline-diagram-browser.js --render",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:53:04.497Z",
+        "finished": "2026-11-26T14:53:12.573Z",
+        "counts": {
+          "cases": 11
+        },
+        "stdoutSha256": "dbb014a40a5d91ea012dd9323d8832394398582bd4bc111c1bdb653d96e1598a",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "incline-competition",
+        "command": "node scripts/verify-incline-diagram-browser.js --competition",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:53:12.573Z",
+        "finished": "2026-11-26T14:53:25.642Z",
+        "counts": {
+          "cases": 19
+        },
+        "stdoutSha256": "6b7fc922fd8eac0ae91d36baf98df31dd2c8432f0ce9d67e1c99743a19253d56",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "incline-data",
+        "command": "node scripts/verify-incline-diagram-browser.js --data",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:53:25.643Z",
+        "finished": "2026-11-26T14:53:46.730Z",
+        "counts": {
+          "cases": 32
+        },
+        "stdoutSha256": "bf2396644d9b878a2dda361a586217abf2ff83a9b0514a853cb54fd389d8bc35",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "chemistry-model",
+        "command": "node --test test/chemistry-experiments.test.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:53:46.731Z",
+        "finished": "2026-11-26T14:53:46.924Z",
+        "counts": {
+          "tests": 20,
+          "pass": 20,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "adf72a587dd02f762cb0a5078b68d9422c00a06b0f60c7ab3f09d216dfc3e26f",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "chemistry-browser",
+        "command": "node scripts/verify-chemistry-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:53:46.925Z",
+        "finished": "2026-11-26T14:54:51.251Z",
+        "counts": {
+          "checks": 49,
+          "layouts": 3
+        },
+        "stdoutSha256": "bc8594eb2bdbedb3e827720ab86ea4fb3091c13599c0da02633d0ac3dbd3dccd",
+        "stderrSha256": "6d4f5fc0f748203a15bebad1389b07752e31d10cf01ee6515ad4e314d60ddf41",
+        "failureEvidence": [
+          "{'message': 'locator.fill: Timeout 30000ms exceeded.\\nCall log:\\n\\x1b[2m  - waiting for locator(\\'#timeline\\')\\x1b[22m\\n\\x1b[2m    - locator resolved to <input min=\"0\" max=\"100\" value=\"0\" type=\"range\" id=\"timeline\" aria-label=\"实验进度\" class=\"timeline um-p-0 um-pf-0\"/>\\x1b[22m\\n\\x1b[2m    - fill(\"20\")\\x1b[22m\\n\\x1b[2m  - attempting fill action\\x1b[22m\\n\\x1b[2m    2 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m      - element is not visible\\x1b[22m\\n\\x1b[2m    - retrying fill action\\x1b[22m\\n\\x1b[2m    - waiting 20ms\\x1b[22m\\n\\x1b[2m    2 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m      - element is not visible\\x1b[22m\\n\\x1b[2m    - retrying fill action\\x1b[22m\\n\\x1b[2m      - waiting 100ms\\x1b[22m\\n\\x1b[2m    59 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m       - element is not visible\\x1b[22m\\n\\x1b[2m     - retrying fill action\\x1b[22m\\n\\x1b[2m       - waiting 500ms\\x1b[22m\\n', 'stack': 'locator.fill: Timeout 30000ms exceeded.\\nCall log:\\n\\x1b[2m  - waiting for locator(\\'#timeline\\')\\x1b[22m\\n\\x1b[2m    - locator resolved to <input min=\"0\" max=\"100\" value=\"0\" type=\"range\" id=\"timeline\" aria-label=\"实验进度\" class=\"timeline um-p-0 um-pf-0\"/>\\x1b[22m\\n\\x1b[2m    - fill(\"20\")\\x1b[22m\\n\\x1b[2m  - attempting fill action\\x1b[22m\\n\\x1b[2m    2 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m      - element is not visible\\x1b[22m\\n\\x1b[2m    - retrying fill action\\x1b[22m\\n\\x1b[2m    - waiting 20ms\\x1b[22m\\n\\x1b[2m    2 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m      - element is not visible\\x1b[22m\\n\\x1b[2m    - retrying fill action\\x1b[22m\\n\\x1b[2m      - waiting 100ms\\x1b[22m\\n\\x1b[2m    59 × waiting for element to be visible, enabled"
+        ],
+        "internalWaitTimeout": true,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "math-model",
+        "command": "node --test test/math-experiments.test.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:54:51.252Z",
+        "finished": "2026-11-26T14:54:51.412Z",
+        "counts": {
+          "tests": 25,
+          "pass": 25,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "01b7609e19742b04f968d10ad39e6e383bf908abf97560a3654874015797b0fe",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "math-browser",
+        "command": "node scripts/verify-math-experiments-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:54:51.413Z",
+        "finished": "2026-11-26T14:54:54.082Z",
+        "counts": {
+          "checks": 5,
+          "layouts": 1
+        },
+        "stdoutSha256": "3abb70e01f6a269c9feef69663cbe1ecb2787aed8d32399a3bd9dba0dd63d278",
+        "stderrSha256": "fd35c87b2efea885cbc11edbbafd4a83b0b8c6a76d553172913b89493a60b6f1",
+        "failureEvidence": [
+          "{'message': 'pythagoras-1366: controls usable; public UI playback/scene/parameters order', 'stack': 'AssertionError [ERR_ASSERTION]: pythagoras-1366: controls usable; public UI playback/scene/parameters order\\n    at check (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-math-experiments-browser.js:23:28)\\n    at layout (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-math-experiments-browser.js:42:284)\\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-math-experiments-browser.js:86:183'}"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "experiment-layout",
+        "command": "node scripts/verify-experiment-layout-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:54:54.083Z",
+        "finished": "2026-11-26T14:56:14.170Z",
+        "counts": {
+          "cases": 46
+        },
+        "stdoutSha256": "f574aa0e51b7b7f7eb3907f997d4a450f37dac612fb0943eabc3f860f22b8094",
+        "stderrSha256": "27c20048d9a72ada18a70b24d44bc2c647091470a73a0f8f19590e1b177438ec",
+        "failureEvidence": [
+          "brake-1366x768 AssertionError [ERR_ASSERTION]: brake-1366x768: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "projectile-1366x768 AssertionError [ERR_ASSERTION]: projectile-1366x768: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "boardSlider-1366x768 AssertionError [ERR_ASSERTION]: boardSlider-1366x768: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "feCuSO4-1366x768 AssertionError [ERR_ASSERTION]: feCuSO4-1366x768: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "caco3Hcl-1366x768 AssertionError [ERR_ASSERTION]: caco3Hcl-1366x768: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "naclSolution-1366x768 AssertionError [ERR_ASSERTION]: naclSolution-1366x768: preserve playback visibility\n\nfalse !== true\n\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:63:10)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "brake-820x900 AssertionError [ERR_ASSERTION]: brake-820x900: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "projectile-820x900 AssertionError [ERR_ASSERTION]: projectile-820x900: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "boardSlider-820x900 AssertionError [ERR_ASSERTION]: boardSlider-820x900: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "feCuSO4-820x900 AssertionError [ERR_ASSERTION]: feCuSO4-820x900: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "caco3Hcl-820x900 AssertionError [ERR_ASSERTION]: caco3Hcl-820x900: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "naclSolution-820x900 AssertionError [ERR_ASSERTION]: naclSolution-820x900: preserve playback visibility\n\nfalse !== true\n\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:63:10)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "brake-390x844 AssertionError [ERR_ASSERTION]: brake-390x844: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "projectile-390x844 AssertionError [ERR_ASSERTION]: projectile-390x844: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "boardSlider-390x844 AssertionError [ERR_ASSERTION]: boardSlider-390x844: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "feCuSO4-390x844 AssertionError [ERR_ASSERTION]: feCuSO4-390x844: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "caco3Hcl-390x844 AssertionError [ERR_ASSERTION]: caco3Hcl-390x844: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "naclSolution-390x844 AssertionError [ERR_ASSERTION]: naclSolution-390x844: preserve playback visibility\n\nfalse !== true\n\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:63:10)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "brake-1265x638 AssertionError [ERR_ASSERTION]: brake-1265x638: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "projectile-1265x638 AssertionError [ERR_ASSERTION]: projectile-1265x638: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "boardSlider-1265x638 AssertionError [ERR_ASSERTION]: boardSlider-1265x638: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "feCuSO4-1265x638 AssertionError [ERR_ASSERTION]: feCuSO4-1265x638: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "caco3Hcl-1265x638 AssertionError [ERR_ASSERTION]: caco3Hcl-1265x638: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "naclSolution-1265x638 AssertionError [ERR_ASSERTION]: naclSolution-1265x638: preserve playback visibility\n\nfalse !== true\n\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:63:10)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "static-solenoid AssertionError [ERR_ASSERTION]: static-solenoid: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-circuit AssertionError [ERR_ASSERTION]: static-circuit: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-lever AssertionError [ERR_ASSERTION]: static-lever: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-lens AssertionError [ERR_ASSERTION]: static-lens: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-buoyancy AssertionError [ERR_ASSERTION]: static-buoyancy: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-friction AssertionError [ERR_ASSERTION]: static-friction: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-lampPower AssertionError [ERR_ASSERTION]: static-lampPower: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-parallelCircuit AssertionError [ERR_ASSERTION]: static-parallelCircuit: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-planeMirror AssertionError [ERR_ASSERTION]: static-planeMirror: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-seriesCircuit AssertionError [ERR_ASSERTION]: static-seriesCircuit: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-heatBalance AssertionError [ERR_ASSERTION]: static-heatBalance: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-liquidPressure AssertionError [ERR_ASSERTION]: static-liquidPressure: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-efficiency AssertionError [ERR_ASSERTION]: static-efficiency: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-sound AssertionError [ERR_ASSERTION]: static-sound: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-quadratic AssertionError [ERR_ASSERTION]: static-quadratic: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-linearSystem AssertionError [ERR_ASSERTION]: static-linearSystem: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-tangent AssertionError [ERR_ASSERTION]: static-tangent: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "demo-1366 AssertionError [ERR_ASSERTION]: demo-1366: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:141:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:136:5",
+          "demo-1265 AssertionError [ERR_ASSERTION]: demo-1265: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:141:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:136:5",
+          "transitions-favorites-and-share AssertionError [ERR_ASSERTION]: transition-to-math: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:150:5\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-experiment-layout-browser.js:145:52"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "unit-circle-model",
+        "command": "node --test test/unit-circle.test.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:56:14.171Z",
+        "finished": "2026-11-26T14:56:14.352Z",
+        "counts": {
+          "tests": 73,
+          "pass": 73,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "0274a7736710dbebcbd3b97a0ac816c5de484d4c7883485bb6a90d562a25413c",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "unit-circle-browser",
+        "command": "node scripts/verify-unit-circle-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:56:14.353Z",
+        "finished": "2026-11-26T14:56:17.094Z",
+        "counts": {
+          "checks": 10,
+          "layouts": 1
+        },
+        "stdoutSha256": "712ac99667e149b0bc95630c989f36ee7e2b52859192e8464abfd7f165f1b94e",
+        "stderrSha256": "7309c72bce1212b7f2ba6c9f14b0667e08eaba39fdd4c78b8a0d87fa5e6b9b7c",
+        "failureEvidence": [
+          "{'message': 'unit-circle-1366: existing shared playback/scene/parameter order and controls', 'stack': 'AssertionError [ERR_ASSERTION]: unit-circle-1366: existing shared playback/scene/parameter order and controls\\n    at check (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-unit-circle-browser.js:24:38)\\n    at layout (<workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-unit-circle-browser.js:59:318)\\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/baseline-source/server/scripts/verify-unit-circle-browser.js:70:59'}"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "equilibria-model",
+        "command": "node --test test/chemistry-equilibria.test.js test/chemistry-equilibria-templates.test.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:56:17.094Z",
+        "finished": "2026-11-26T14:56:17.452Z",
+        "counts": {
+          "tests": 63,
+          "pass": 63,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "0023254b3c9f7dd62d2166c50662d51775f04f71bd2f70f17f981f16e701145c",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "equilibria-browser",
+        "command": "node scripts/verify-chemistry-equilibria-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:56:17.452Z",
+        "finished": "2026-11-26T14:56:53.436Z",
+        "counts": {
+          "checks": 11,
+          "layouts": 1
+        },
+        "stdoutSha256": "febec68c1cd9c9ebf5f4650adc471aca6b367e8c9010dacfadfd52de379ffb3d",
+        "stderrSha256": "88cc9dc902af8297410c7cdb14af0994747c20c4a9e0411724b14d2aa6da586c",
+        "failureEvidence": [
+          "{'message': 'locator.fill: Timeout 30000ms exceeded.\\nCall log:\\n\\x1b[2m  - waiting for locator(\\'#timeline\\')\\x1b[22m\\n\\x1b[2m    - locator resolved to <input min=\"0\" max=\"100\" value=\"0\" type=\"range\" id=\"timeline\" aria-label=\"实验进度\" class=\"timeline um-p-0 um-pf-0\"/>\\x1b[22m\\n\\x1b[2m    - fill(\"100\")\\x1b[22m\\n\\x1b[2m  - attempting fill action\\x1b[22m\\n\\x1b[2m    2 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m      - element is not visible\\x1b[22m\\n\\x1b[2m    - retrying fill action\\x1b[22m\\n\\x1b[2m    - waiting 20ms\\x1b[22m\\n\\x1b[2m    2 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m      - element is not visible\\x1b[22m\\n\\x1b[2m    - retrying fill action\\x1b[22m\\n\\x1b[2m      - waiting 100ms\\x1b[22m\\n\\x1b[2m    59 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m       - element is not visible\\x1b[22m\\n\\x1b[2m     - retrying fill action\\x1b[22m\\n\\x1b[2m       - waiting 500ms\\x1b[22m\\n', 'stack': 'locator.fill: Timeout 30000ms exceeded.\\nCall log:\\n\\x1b[2m  - waiting for locator(\\'#timeline\\')\\x1b[22m\\n\\x1b[2m    - locator resolved to <input min=\"0\" max=\"100\" value=\"0\" type=\"range\" id=\"timeline\" aria-label=\"实验进度\" class=\"timeline um-p-0 um-pf-0\"/>\\x1b[22m\\n\\x1b[2m    - fill(\"100\")\\x1b[22m\\n\\x1b[2m  - attempting fill action\\x1b[22m\\n\\x1b[2m    2 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m      - element is not visible\\x1b[22m\\n\\x1b[2m    - retrying fill action\\x1b[22m\\n\\x1b[2m    - waiting 20ms\\x1b[22m\\n\\x1b[2m    2 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m      - element is not visible\\x1b[22m\\n\\x1b[2m    - retrying fill action\\x1b[22m\\n\\x1b[2m      - waiting 100ms\\x1b[22m\\n\\x1b[2m    59 × waiting for element to be visible, enabl"
+        ],
+        "internalWaitTimeout": true,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "mendel-model",
+        "command": "node --test test/biology-mendel.test.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:56:53.436Z",
+        "finished": "2026-11-26T14:56:53.593Z",
+        "counts": {
+          "tests": 17,
+          "pass": 17,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "ef996d71a3ba0333dbf4a20d07591b5e38bb4f01e7c0310b64d2946586272005",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "mendel-browser",
+        "command": "node scripts/verify-mendel-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:56:53.593Z",
+        "finished": "2026-11-26T14:56:56.180Z",
+        "counts": {
+          "checks": 1,
+          "layouts": 0
+        },
+        "stdoutSha256": "faf587af858c3a312bc475764da8166e1a35efa91f28f969a67ac559e0bb6ec4",
+        "stderrSha256": "6cb31e6032d37c7ba8a80dd253d1c7139a1c7157bd02655c484ed40a6d64d6c8",
+        "failureEvidence": [
+          "AssertionError [ERR_ASSERTION]: 1366: scene encloses content before parameters"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "acceptance-fixes",
+        "command": "node scripts/verify-acceptance-fixes-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:56:56.181Z",
+        "finished": "2026-11-26T14:57:21.346Z",
+        "counts": {
+          "checks": 62,
+          "failures": 0
+        },
+        "stdoutSha256": "621a431fb5faa8a32e3737b068ba5279c3f7e91bcebf7ca237873a37bd25b530",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "microscope-model",
+        "command": "node --test test/biology-microscope.test.js test/biology-microscope-questions.test.js test/biology-microscope-templates.test.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:57:21.347Z",
+        "finished": "2026-11-26T14:57:21.508Z",
+        "counts": {
+          "tests": 36,
+          "pass": 36,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "47b1c64c9db14b4b0ed5eb1cbf2eeffc99142e7616089f134cd771677b303002",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "microscope-browser",
+        "command": "node scripts/verify-microscope-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:57:21.508Z",
+        "finished": "2026-11-26T14:57:54.144Z",
+        "counts": {
+          "checks": 4,
+          "layouts": 0
+        },
+        "stdoutSha256": "ab67c703713491f4afcb2bcc32f13d200431b619f022f349bdfb7209bc84c86f",
+        "stderrSha256": "17bdb9b51699a9d69cb59c5941965d55be8f25a761f0f01951a52615cb209948",
+        "failureEvidence": [
+          "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.parameters input[type=range]').first()\u001b[22m\n\u001b[2m    - locator resolved to <input min=\"1\" max=\"100\" value=\"20\" step=\"0.01\" type=\"range\" id=\"speedRange\" class=\"um-p-39 um-pf-4 um-has-orig um-o-39 um-of-4\"/>\u001b[22m\n\u001b[2m    - fill(\"20\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+        ],
+        "internalWaitTimeout": true,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "population-model",
+        "command": "node --test test/biology-population.test.js test/biology-population-logistic.test.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:57:54.145Z",
+        "finished": "2026-11-26T14:57:54.312Z",
+        "counts": {
+          "tests": 65,
+          "pass": 65,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "49d517bf70dc1e140a9ddbedf35e8b69968b80f8ad2c97692bf07e3e69af98ee",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "population-browser",
+        "command": "node scripts/verify-population-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:57:54.313Z",
+        "finished": "2026-11-26T14:58:26.939Z",
+        "counts": {
+          "checks": 5,
+          "layouts": 0
+        },
+        "stdoutSha256": "9041a779168e6fb36dfec4baac1914392f3c6d11ee91a475115f146ddcb11773",
+        "stderrSha256": "db490c41de63302016d6e2efa5a17aa1310a9b2801b0cab66c13b64648ab5d43",
+        "failureEvidence": [
+          "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.parameters input[type=range]').nth(1)\u001b[22m\n\u001b[2m    - locator resolved to <input min=\"0\" max=\"20\" step=\"1\" value=\"5\" type=\"range\" id=\"accelRange\" class=\"um-p-20 um-pf-0 um-has-orig um-o-20 um-of-0\"/>\u001b[22m\n\u001b[2m    - fill(\"0\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+        ],
+        "internalWaitTimeout": true,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      }
+    ],
+    "totals": {
+      "passed": 26,
+      "failed": 21,
+      "timeout": 0,
+      "notExecutedGroups": 0
+    }
+  },
+  "candidate": {
+    "sourceSha": "582ceccf74d341e122fb6cdc988bc3882566c868",
+    "node": "v24.22.1",
+    "os": "Windows_NT 10.0.26200 x64",
+    "started": "2026-11-26T14:51:53.695Z",
+    "finished": "2026-11-26T15:30:25.776Z",
+    "groups": [
+      {
+        "name": "pedigree",
+        "command": "node scripts/verify-pedigree-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:51:53.696Z",
+        "finished": "2026-11-26T14:53:31.027Z",
+        "counts": {
+          "checks": 1042,
+          "layouts": 35
+        },
+        "stdoutSha256": "eaf0128998b4be3d56a5bc01c72f399ae89b8a2630d428d7656d5c327c9e160c",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "incline-guard",
+        "command": "node scripts/verify-incline-diagram-browser.js --guard-only",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:53:31.029Z",
+        "finished": "2026-11-26T14:53:36.681Z",
+        "counts": {
+          "cases": 6
+        },
+        "stdoutSha256": "1157cdc163af5fb11ebe3ed5202b5a6bf72b35452c64ae23ac1ab0f850a623c9",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "population-background",
+        "command": "node scripts/verify-population-background-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:53:36.682Z",
+        "finished": "2026-11-26T14:54:10.991Z",
+        "counts": {
+          "checks": 0
+        },
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "6117e15b4fe48d674a584352fbc91b29c2f77698db29b1d6d75fc8dc23bbfce2",
+        "failureEvidence": [
+          "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.parameters input[type=range]').nth(1)\u001b[22m\n\u001b[2m    - locator resolved to <input min=\"0\" max=\"20\" step=\"1\" value=\"5\" type=\"range\" id=\"accelRange\" class=\"um-p-20 um-pf-0 um-has-orig um-o-20 um-of-0\"/>\u001b[22m\n\u001b[2m    - fill(\"8\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+        ],
+        "internalWaitTimeout": true,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "learning",
+        "command": "node scripts/verify-photosynthesis-learning-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:54:10.992Z",
+        "finished": "2026-11-26T14:54:13.790Z",
+        "counts": {
+          "cases": 0
+        },
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "49b7ca73c9f0753bc19d309e387cd6c96380d2feae950d0d70673bb17f24540d",
+        "failureEvidence": [
+          "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok(Math.abs(result.time-(step-1)/6)<1e-8)\n"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "ui-interactions",
+        "command": "node scripts/verify-ui-interactions-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T14:54:13.791Z",
+        "finished": "2026-11-26T14:54:50.019Z",
+        "counts": {
+          "checks": 112,
+          "failures": 22
+        },
+        "stdoutSha256": "2f809468a9c12273a9527d4ac5990e69c5dd28a701f90271867b7db334278168",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "failureEvidence": [
+          "desktop UI-03 刹车实验显示 3 个步骤刻度 :: {\"info\":{\"template\":\"brake\",\"duration\":4,\"rate\":1},\"one\":null}",
+          "desktop UI-03 倍速按钮到 1.5× 后刻度与快捷键路径一致 :: {\"rateNow\":1.5,\"button\":null,\"shortcut\":null}",
+          "desktop UI-03 倍速按钮到 2× 后刻度与快捷键路径一致 :: {\"rateNow\":2,\"button\":null,\"shortcut\":null}",
+          "desktop UI-03 倍速按钮到 0.5× 后刻度与快捷键路径一致 :: {\"rateNow\":0.5,\"button\":null,\"shortcut\":null}",
+          "desktop UI-03 倍速按钮到 1× 后刻度与快捷键路径一致 :: {\"rateNow\":1,\"button\":null,\"shortcut\":null}",
+          "mobile UI-03 刹车实验显示 3 个步骤刻度 :: {\"info\":{\"template\":\"brake\",\"duration\":4,\"rate\":1},\"one\":null}",
+          "mobile UI-03 倍速按钮到 1.5× 后刻度与快捷键路径一致 :: {\"rateNow\":1.5,\"button\":null,\"shortcut\":null}",
+          "mobile UI-03 倍速按钮到 2× 后刻度与快捷键路径一致 :: {\"rateNow\":2,\"button\":null,\"shortcut\":null}",
+          "mobile UI-03 倍速按钮到 0.5× 后刻度与快捷键路径一致 :: {\"rateNow\":0.5,\"button\":null,\"shortcut\":null}",
+          "mobile UI-03 倍速按钮到 1× 后刻度与快捷键路径一致 :: {\"rateNow\":1,\"button\":null,\"shortcut\":null}",
+          "desktop-reduced UI-03 刹车实验显示 3 个步骤刻度 :: {\"info\":{\"template\":\"brake\",\"duration\":4,\"rate\":1},\"one\":null}",
+          "desktop-reduced UI-03 倍速按钮到 1.5× 后刻度与快捷键路径一致 :: {\"rateNow\":1.5,\"button\":null,\"shortcut\":null}",
+          "desktop-reduced UI-03 倍速按钮到 2× 后刻度与快捷键路径一致 :: {\"rateNow\":2,\"button\":null,\"shortcut\":null}",
+          "desktop-reduced UI-03 倍速按钮到 0.5× 后刻度与快捷键路径一致 :: {\"rateNow\":0.5,\"button\":null,\"shortcut\":null}",
+          "desktop-reduced UI-03 倍速按钮到 1× 后刻度与快捷键路径一致 :: {\"rateNow\":1,\"button\":null,\"shortcut\":null}",
+          "mobile-reduced UI-03 刹车实验显示 3 个步骤刻度 :: {\"info\":{\"template\":\"brake\",\"duration\":4,\"rate\":1},\"one\":null}",
+          "mobile-reduced UI-03 倍速按钮到 1.5× 后刻度与快捷键路径一致 :: {\"rateNow\":1.5,\"button\":null,\"shortcut\":null}",
+          "mobile-reduced UI-03 倍速按钮到 2× 后刻度与快捷键路径一致 :: {\"rateNow\":2,\"button\":null,\"shortcut\":null}",
+          "mobile-reduced UI-03 倍速按钮到 0.5× 后刻度与快捷键路径一致 :: {\"rateNow\":0.5,\"button\":null,\"shortcut\":null}",
+          "mobile-reduced UI-03 倍速按钮到 1× 后刻度与快捷键路径一致 :: {\"rateNow\":1,\"button\":null,\"shortcut\":null}",
+          "desktop 时间轴在 0% 时按下命中滑块（第 1 步刻度让开指针） :: {\"geo\":{\"x\":202,\"y\":384.078125,\"value\":0},\"hit\":{\"timeline\":true,\"target\":\"timeline um-p-0 um-pf-0\",\"covered\":[]}}",
+          "aborted: page.evaluate: TypeError: Cannot read properties of null (reading 'getBoundingClientRect')\n    at eval (eval at evaluate (:311:30), <anonymous>:1:77)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at timelineThumb (<workspace>\\.handoff\\pedigree-v1-implementation-20261126\\candidate-release-source\\server\\scripts\\verify-ui-interactions-browser.js:256:26)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-ui-interactions-browser.js:437:3",
+          "FAIL desktop UI-03 刹车实验显示 3 个步骤刻度 {\"info\":{\"template\":\"brake\",\"duration\":4,\"rate\":1},\"one\":null}",
+          "FAIL desktop UI-03 倍速按钮到 1.5× 后刻度与快捷键路径一致 {\"rateNow\":1.5,\"button\":null,\"shortcut\":null}",
+          "FAIL desktop UI-03 倍速按钮到 2× 后刻度与快捷键路径一致 {\"rateNow\":2,\"button\":null,\"shortcut\":null}",
+          "FAIL desktop UI-03 倍速按钮到 0.5× 后刻度与快捷键路径一致 {\"rateNow\":0.5,\"button\":null,\"shortcut\":null}",
+          "FAIL desktop UI-03 倍速按钮到 1× 后刻度与快捷键路径一致 {\"rateNow\":1,\"button\":null,\"shortcut\":null}",
+          "FAIL mobile UI-03 刹车实验显示 3 个步骤刻度 {\"info\":{\"template\":\"brake\",\"duration\":4,\"rate\":1},\"one\":null}",
+          "FAIL mobile UI-03 倍速按钮到 1.5× 后刻度与快捷键路径一致 {\"rateNow\":1.5,\"button\":null,\"shortcut\":null}",
+          "FAIL mobile UI-03 倍速按钮到 2× 后刻度与快捷键路径一致 {\"rateNow\":2,\"button\":null,\"shortcut\":null}",
+          "FAIL mobile UI-03 倍速按钮到 0.5× 后刻度与快捷键路径一致 {\"rateNow\":0.5,\"button\":null,\"shortcut\":null}",
+          "FAIL mobile UI-03 倍速按钮到 1× 后刻度与快捷键路径一致 {\"rateNow\":1,\"button\":null,\"shortcut\":null}",
+          "FAIL desktop-reduced UI-03 刹车实验显示 3 个步骤刻度 {\"info\":{\"template\":\"brake\",\"duration\":4,\"rate\":1},\"one\":null}",
+          "FAIL desktop-reduced UI-03 倍速按钮到 1.5× 后刻度与快捷键路径一致 {\"rateNow\":1.5,\"button\":null,\"shortcut\":null}",
+          "FAIL desktop-reduced UI-03 倍速按钮到 2× 后刻度与快捷键路径一致 {\"rateNow\":2,\"button\":null,\"shortcut\":null}",
+          "FAIL desktop-reduced UI-03 倍速按钮到 0.5× 后刻度与快捷键路径一致 {\"rateNow\":0.5,\"button\":null,\"shortcut\":null}",
+          "FAIL desktop-reduced UI-03 倍速按钮到 1× 后刻度与快捷键路径一致 {\"rateNow\":1,\"button\":null,\"shortcut\":null}",
+          "FAIL mobile-reduced UI-03 刹车实验显示 3 个步骤刻度 {\"info\":{\"template\":\"brake\",\"duration\":4,\"rate\":1},\"one\":null}",
+          "FAIL mobile-reduced UI-03 倍速按钮到 1.5× 后刻度与快捷键路径一致 {\"rateNow\":1.5,\"button\":null,\"shortcut\":null}",
+          "FAIL mobile-reduced UI-03 倍速按钮到 2× 后刻度与快捷键路径一致 {\"rateNow\":2,\"button\":null,\"shortcut\":null}",
+          "FAIL mobile-reduced UI-03 倍速按钮到 0.5× 后刻度与快捷键路径一致 {\"rateNow\":0.5,\"button\":null,\"shortcut\":null}",
+          "FAIL mobile-reduced UI-03 倍速按钮到 1× 后刻度与快捷键路径一致 {\"rateNow\":1,\"button\":null,\"shortcut\":null}",
+          "FAIL desktop 时间轴在 0% 时按下命中滑块（第 1 步刻度让开指针） {\"geo\":{\"x\":202,\"y\":384.078125,\"value\":0},\"hit\":{\"timeline\":true,\"target\":\"timeline um-p-0 um-pf-0\",\"covered\":[]}}"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "protocol-routing",
+        "command": "node scripts/verify-photosynthesis-routing-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:54:50.019Z",
+        "finished": "2026-11-26T14:57:37.944Z",
+        "counts": {
+          "failures": 0,
+          "checks": 118,
+          "cases": 117,
+          "layouts": 0
+        },
+        "stdoutSha256": "9fac69b032d98082b022226b7be64c758c877280bdf0f4b036354f4daf9f60dd",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "protocol-intent",
+        "command": "node scripts/verify-photosynthesis-routing-browser.js --intent",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T14:57:37.945Z",
+        "finished": "2026-11-26T15:01:15.609Z",
+        "counts": {
+          "failures": 0,
+          "checks": 273,
+          "cases": 272,
+          "layouts": 0
+        },
+        "stdoutSha256": "2a822161704be07ebe967dc29ffc7396d16caacaf48788397aa137221ae9b7c1",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "protocol-separators",
+        "command": "node scripts/verify-photosynthesis-separators-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:01:15.611Z",
+        "finished": "2026-11-26T15:04:51.156Z",
+        "counts": {
+          "failures": 0,
+          "checks": 320,
+          "cases": 320,
+          "layouts": 0
+        },
+        "stdoutSha256": "38f5b165f6f3d84a17d145bf2b22905aa559009bc4c4956aba684de7167682aa",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "protocol-review",
+        "command": "node scripts/verify-photosynthesis-review-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:04:51.157Z",
+        "finished": "2026-11-26T15:06:21.254Z",
+        "counts": {
+          "checks": 342,
+          "layouts": 0
+        },
+        "stdoutSha256": "ea4a58bc92d9e0669f405ada0ceab35cff3d156a92b2b4e4a1e59582a32ecdcf",
+        "stderrSha256": "13d5699ff7685da88e6bcb2fd7a2620c139c1ca3f26c588f455b339452ec0b02",
+        "failureEvidence": [
+          "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#playButton')\u001b[22m\n\u001b[2m    - locator resolved to <button title=\"播放（空格）\" id=\"playButton\" aria-label=\"播放实验\" class=\"play-button\" aria-pressed=\"false\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    58 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+        ],
+        "internalWaitTimeout": true,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "photosynthesis-integration",
+        "command": "node scripts/verify-photosynthesis-integration-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:06:21.255Z",
+        "finished": "2026-11-26T15:06:25.082Z",
+        "counts": {
+          "checks": 3,
+          "layouts": 0
+        },
+        "stdoutSha256": "23bf19f388cdaf6d0de9cbaeaaa5327671a3e2c9b6fcfae56465395157b1a01c",
+        "stderrSha256": "05a7c2622f0edc44177a639f58d73caa0fb30dbf84efa6ae00b8d628ec3d51ea",
+        "failureEvidence": [
+          "AssertionError [ERR_ASSERTION]: 1366: unique shared controls photosynthesis"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "photosynthesis-browser",
+        "command": "node scripts/verify-photosynthesis-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:06:25.083Z",
+        "finished": "2026-11-26T15:06:29.095Z",
+        "counts": {
+          "checks": 11,
+          "layouts": 1
+        },
+        "stdoutSha256": "32056f5d13d6f68741d1ee4a221ea53f580bddaabf2a3d70e51c2e619c21f55d",
+        "stderrSha256": "c5dff426f0d0d279604fe430eab5ceba17c90ed950f6077e3e10cd0ea7bbc0ea",
+        "failureEvidence": [
+          "AssertionError [ERR_ASSERTION]: photo-step4-1366: readable captions and touch targets"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "photosynthesis-model",
+        "command": "node --test test/biology-photosynthesis.test.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:06:29.096Z",
+        "finished": "2026-11-26T15:06:29.310Z",
+        "counts": {
+          "tests": 69,
+          "pass": 68,
+          "fail": 1,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "60505e329f9c4bc61ecf70f80f6510d27210b346ffdff1c4199bc7557ac19b00",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "failureEvidence": [
+          "✖ visual is local markup and does not echo untrusted input or add a player (0.8216ms)",
+          "✖ failing tests:"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "leaf-disks-browser",
+        "command": "node scripts/verify-leaf-disks-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:06:29.311Z",
+        "finished": "2026-11-26T15:06:33.340Z",
+        "counts": {
+          "checks": 8,
+          "layouts": 1
+        },
+        "stdoutSha256": "54c0873e31282095e34060c554073f6e67eb21f402c9a9d44fb7a6ccd1055f94",
+        "stderrSha256": "35aac197ff611b0f4bbb8a288342e39988db4d58a4f535bce7e2bc8a542f180d",
+        "failureEvidence": [
+          "AssertionError [ERR_ASSERTION]: leaf-step2-1366: readable captions and touch targets"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "leaf-disks-model",
+        "command": "node --test test/biology-leaf-disks.test.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:06:33.341Z",
+        "finished": "2026-11-26T15:06:33.577Z",
+        "counts": {
+          "tests": 94,
+          "pass": 93,
+          "fail": 1,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "eb26dda9a5abcffb8d87af9b8c52fd60c113b5a821790815d7f1060c34545f9e",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "failureEvidence": [
+          "✖ scene and tutor retain no measured data and distinguish mechanism from group results (0.9769ms)",
+          "✖ failing tests:"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "node",
+        "command": "node --test",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:06:33.578Z",
+        "finished": "2026-11-26T15:06:35.887Z",
+        "counts": {
+          "tests": 1345,
+          "pass": 1343,
+          "fail": 2,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "2fc1a466f4e6096a7b7e86ab3fb9ff31fddbaa390cb4fbbf61da5962f8df8f66",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "failureEvidence": [
+          "✖ scene and tutor retain no measured data and distinguish mechanism from group results (1.843ms)",
+          "✖ visual is local markup and does not echo untrusted input or add a player (1.92ms)",
+          "✖ failing tests:"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "question-bank",
+        "command": "node scripts/verify-question-bank-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:06:35.889Z",
+        "finished": "2026-11-26T15:14:16.072Z",
+        "counts": {},
+        "stdoutSha256": "b5624e7d896ed632ebbbf17349322d0c4b7d14456d9a49db811695c7d8a51e21",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "week1",
+        "command": "node scripts/verify-week1-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:14:16.073Z",
+        "finished": "2026-11-26T15:15:38.887Z",
+        "counts": {
+          "layouts": 50,
+          "failures": 15
+        },
+        "stdoutSha256": "07b1883b83f9045d97d0aa4032420541f2c51f5815f835bd0a0ac2b12aa189d2",
+        "stderrSha256": "5669966bf6aae315f563fe2de1981402772fe0e700f565cbfc82d538cd9c7118",
+        "failureEvidence": [
+          "768-planeMirror: explanations should be in reasoning, not diagram footnotes",
+          "768-planeMirror-1-1: explanations should be in reasoning, not diagram footnotes",
+          "768-planeMirror-30-30: explanations should be in reasoning, not diagram footnotes",
+          "768-planeMirror-6-3: explanations should be in reasoning, not diagram footnotes",
+          "1366-planeMirror: explanations should be in reasoning, not diagram footnotes",
+          "1366-planeMirror-1-1: explanations should be in reasoning, not diagram footnotes",
+          "1366-planeMirror-30-30: explanations should be in reasoning, not diagram footnotes",
+          "1366-planeMirror-6-3: explanations should be in reasoning, not diagram footnotes",
+          "1920-planeMirror: explanations should be in reasoning, not diagram footnotes",
+          "1920-planeMirror-1-1: explanations should be in reasoning, not diagram footnotes",
+          "1920-planeMirror-30-30: explanations should be in reasoning, not diagram footnotes",
+          "1920-planeMirror-6-3: explanations should be in reasoning, not diagram footnotes",
+          "large-mirror: explanations should be in reasoning, not diagram footnotes",
+          "precise-mirror: labels overlap [[\"u = 12.1234 cm\",\"v = 12.1234 cm\"]]",
+          "precise-mirror: explanations should be in reasoning, not diagram footnotes"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "week2",
+        "command": "node scripts/verify-week2-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:15:38.888Z",
+        "finished": "2026-11-26T15:16:14.573Z",
+        "counts": {
+          "checks": 33,
+          "failures": 1
+        },
+        "stdoutSha256": "59f98cd94b67a48093f4a5d137cc12e83e66adee3e53d6b648b5de744f508b31",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "failureEvidence": [
+          "摩擦双学段：locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#accelRange')\u001b[22m\n\u001b[2m    - locator resolved to <input min=\"1\" max=\"3\" step=\"1\" value=\"5\" type=\"range\" id=\"accelRange\" class=\"um-p-0 um-pf-0\"/>\u001b[22m\n\u001b[2m    - fill(\"3\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at <workspace>\\.handoff\\pedigree-v1-implementation-20261126\\candidate-release-source\\server\\scripts\\verify-week2-browser.js:249:39"
+        ],
+        "internalWaitTimeout": true,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "tutor",
+        "command": "node scripts/verify-tutor-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:16:14.575Z",
+        "finished": "2026-11-26T15:16:26.298Z",
+        "counts": {},
+        "stdoutSha256": "bdc3f9b9210089de40840e67f6d95471812ba708ce6a62687efa84bc646584b1",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "animation",
+        "command": "node scripts/verify-animation-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:16:26.299Z",
+        "finished": "2026-11-26T15:16:54.785Z",
+        "counts": {},
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "797d7f4002ccb58b18cb8a38fe078e1131bee6a7cbda9a84d05f08d1b960a986",
+        "failureEvidence": [
+          "AssertionError [ERR_ASSERTION]: [\n {\n  \"callback\": \"retypesetSceneFormulas\",\n  \"stack\": \"Error\\n    at window.requestAnimationFrame (<anonymous>:9:509)\\n    at MediaQueryList.<anonymous> (http://127.0.0.1:56225/mobile-shell.js?v=20261117-manual-steps-1:393:49)\",\n  \"pending\": [\n   {\n    \"callback\": \"frame\",\n    \"stack\": \"    at request (http://127.0.0.1:56225/app.js?v=20261126-pedigree-2:6100:24) |     at reconcile (http://127.0.0.1:56225/science-motion.js?v=20261108-diagram-fixes-1:17:43) |     at frame (http://127.0.0.1:56225/science-motion.js?v=20261108-diagram-fixes-1:25:67)\"\n   },\n   {\n    \"callback\": \"retypesetSceneFormulas\",\n    \"stack\": \"    at MediaQueryList.<anonymous> (http://127.0.0.1:56225/mobile-shell.js?v=20261117-manual-steps-1:393:49)\"\n   }\n  ]\n },\n {\n  \"callback\": \"frame\",\n  \"stack\": \"Error\\n    at window.requestAnimationFrame (<anonymous>:9:509)\\n    at request (http://127.0.0.1:56225/app.js?v=20261126-pedigree-2:6100:24)\\n    at reconcile (http://127.0.0.1:56225/science-motion.js?v=20261108-diagram-fixes-1:17:43)\\n    at frame (http://127.0.0.1:56225/science-motion.js?v=20261108-diagram-fixes-1:25:67)\\n    at <anonymous>:9:182\",\n  \"pending\": [\n   {\n    \"callback\": \"retypesetSceneFormulas\",\n    \"stack\": \"    at MediaQueryList.<anonymous> (http://127.0.0.1:56225/mobile-shell.js?v=20261117-manual-steps-1:393:49)\"\n   },\n   {\n    \"callback\": \"frame\",\n    \"stack\": \"    at request (http://127.0.0.1:56225/app.js?v=20261126-pedigree-2:6100:24) |     at reconcile (http://127.0.0.1:56225/science-motion.js?v=20261108-diagram-fixes-1:17:43) |     at frame (http://127.0.0.1:56225/science-motion.js?v=20261108-diagram-fixes-1:25:67)\"\n   }\n  ]\n }\n]\n\n2 !== 1\n"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "announcements",
+        "command": "node scripts/verify-announcements-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:16:54.787Z",
+        "finished": "2026-11-26T15:17:01.965Z",
+        "counts": {
+          "cases": 8
+        },
+        "stdoutSha256": "5ac226ba00919f3dc2f569db0d0448209b23f6fe01efd2f14722c2987a1c435d",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "formula",
+        "command": "node scripts/verify-formula-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:17:01.966Z",
+        "finished": "2026-11-26T15:21:35.675Z",
+        "counts": {
+          "layouts": 69,
+          "failures": 0
+        },
+        "stdoutSha256": "3d8131b56a569313c2e574c4f3c697fe5d481ad30c7b5a3d9b7e06e463a6e8a4",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "ai-quality",
+        "command": "node scripts/verify-ai-quality-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:21:35.676Z",
+        "finished": "2026-11-26T15:22:06.975Z",
+        "counts": {},
+        "stdoutSha256": "9f9fc24f9e3a1854af998b64ee794277fc22825f0751e44a8049953c9c5d40e9",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "share",
+        "command": "node scripts/verify-share-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:22:06.976Z",
+        "finished": "2026-11-26T15:22:55.699Z",
+        "counts": {
+          "checks": 14,
+          "roundTrips": 282,
+          "adjustedTemplates": 46
+        },
+        "stdoutSha256": "b4c97ce4d7180b151af7ad5044c1f8706166a557043710e3c197f3e8cb8e9e8c",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "instant",
+        "command": "node scripts/verify-instant-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:22:55.699Z",
+        "finished": "2026-11-26T15:23:15.279Z",
+        "counts": {},
+        "stdoutSha256": "3f19268087a437a03081e33593ebf9b930bdb22781f8902ab1b35e2e2cc8e8c7",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "instant-routing",
+        "command": "node scripts/verify-instant-routing-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:23:15.280Z",
+        "finished": "2026-11-26T15:23:26.345Z",
+        "counts": {},
+        "stdoutSha256": "74b94cc47f9737695b101949d305d9178812f2910ce439233d0d11e62bb5091a",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "tutor-diagram",
+        "command": "node scripts/verify-tutor-diagram-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:23:26.347Z",
+        "finished": "2026-11-26T15:23:43.837Z",
+        "counts": {
+          "cases": 19
+        },
+        "stdoutSha256": "dc1b1816df406233f5064d0c2838fc130dd4ee1cd9bbe87e4da3f949083f68a5",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "tutor-presentation",
+        "command": "node scripts/verify-tutor-presentation-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:23:43.839Z",
+        "finished": "2026-11-26T15:24:08.412Z",
+        "counts": {
+          "cases": 27
+        },
+        "stdoutSha256": "a5635e0dccffdc586a0e99e967f0f975433c989d42d74cdccf72d33c03c83fdd",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "incline-core",
+        "command": "node scripts/verify-incline-diagram-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:24:08.413Z",
+        "finished": "2026-11-26T15:24:17.019Z",
+        "counts": {
+          "cases": 7
+        },
+        "stdoutSha256": "a2e91740225da931f1d0512b5ab414df80cfd8f2e1b7826949f5ddded9c4fb8a",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "incline-render",
+        "command": "node scripts/verify-incline-diagram-browser.js --render",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:24:17.020Z",
+        "finished": "2026-11-26T15:24:28.750Z",
+        "counts": {
+          "cases": 11
+        },
+        "stdoutSha256": "dbb014a40a5d91ea012dd9323d8832394398582bd4bc111c1bdb653d96e1598a",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "incline-competition",
+        "command": "node scripts/verify-incline-diagram-browser.js --competition",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:24:28.751Z",
+        "finished": "2026-11-26T15:24:47.285Z",
+        "counts": {
+          "cases": 19
+        },
+        "stdoutSha256": "6b7fc922fd8eac0ae91d36baf98df31dd2c8432f0ce9d67e1c99743a19253d56",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "incline-data",
+        "command": "node scripts/verify-incline-diagram-browser.js --data",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:24:47.286Z",
+        "finished": "2026-11-26T15:25:17.050Z",
+        "counts": {
+          "cases": 32
+        },
+        "stdoutSha256": "bf2396644d9b878a2dda361a586217abf2ff83a9b0514a853cb54fd389d8bc35",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "chemistry-model",
+        "command": "node --test test/chemistry-experiments.test.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:25:17.051Z",
+        "finished": "2026-11-26T15:25:17.280Z",
+        "counts": {
+          "tests": 20,
+          "pass": 20,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "30a356729db6753010f369b915825ccc39c1cf034350c14daa2f6b12429d109e",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "chemistry-browser",
+        "command": "node scripts/verify-chemistry-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:25:17.282Z",
+        "finished": "2026-11-26T15:26:24.556Z",
+        "counts": {
+          "checks": 49,
+          "layouts": 3
+        },
+        "stdoutSha256": "bc8594eb2bdbedb3e827720ab86ea4fb3091c13599c0da02633d0ac3dbd3dccd",
+        "stderrSha256": "6071546c2129c9335003be94094626d70e40b6360e8dc61c406586c468c0cc45",
+        "failureEvidence": [
+          "{'message': 'locator.fill: Timeout 30000ms exceeded.\\nCall log:\\n\\x1b[2m  - waiting for locator(\\'#timeline\\')\\x1b[22m\\n\\x1b[2m    - locator resolved to <input min=\"0\" max=\"100\" value=\"0\" type=\"range\" id=\"timeline\" aria-label=\"实验进度\" class=\"timeline um-p-0 um-pf-0\"/>\\x1b[22m\\n\\x1b[2m    - fill(\"20\")\\x1b[22m\\n\\x1b[2m  - attempting fill action\\x1b[22m\\n\\x1b[2m    2 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m      - element is not visible\\x1b[22m\\n\\x1b[2m    - retrying fill action\\x1b[22m\\n\\x1b[2m    - waiting 20ms\\x1b[22m\\n\\x1b[2m    2 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m      - element is not visible\\x1b[22m\\n\\x1b[2m    - retrying fill action\\x1b[22m\\n\\x1b[2m      - waiting 100ms\\x1b[22m\\n\\x1b[2m    59 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m       - element is not visible\\x1b[22m\\n\\x1b[2m     - retrying fill action\\x1b[22m\\n\\x1b[2m       - waiting 500ms\\x1b[22m\\n', 'stack': 'locator.fill: Timeout 30000ms exceeded.\\nCall log:\\n\\x1b[2m  - waiting for locator(\\'#timeline\\')\\x1b[22m\\n\\x1b[2m    - locator resolved to <input min=\"0\" max=\"100\" value=\"0\" type=\"range\" id=\"timeline\" aria-label=\"实验进度\" class=\"timeline um-p-0 um-pf-0\"/>\\x1b[22m\\n\\x1b[2m    - fill(\"20\")\\x1b[22m\\n\\x1b[2m  - attempting fill action\\x1b[22m\\n\\x1b[2m    2 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m      - element is not visible\\x1b[22m\\n\\x1b[2m    - retrying fill action\\x1b[22m\\n\\x1b[2m    - waiting 20ms\\x1b[22m\\n\\x1b[2m    2 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m      - element is not visible\\x1b[22m\\n\\x1b[2m    - retrying fill action\\x1b[22m\\n\\x1b[2m      - waiting 100ms\\x1b[22m\\n\\x1b[2m    59 × waiting for element to be visible, enabled"
+        ],
+        "internalWaitTimeout": true,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "math-model",
+        "command": "node --test test/math-experiments.test.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:26:24.557Z",
+        "finished": "2026-11-26T15:26:24.752Z",
+        "counts": {
+          "tests": 25,
+          "pass": 25,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "4782cc7880df7df88c5c85e67767fa576ff4f7d828ea9c232966e2ef619c57fb",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "math-browser",
+        "command": "node scripts/verify-math-experiments-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:26:24.753Z",
+        "finished": "2026-11-26T15:26:28.294Z",
+        "counts": {
+          "checks": 5,
+          "layouts": 1
+        },
+        "stdoutSha256": "3abb70e01f6a269c9feef69663cbe1ecb2787aed8d32399a3bd9dba0dd63d278",
+        "stderrSha256": "576752794faa90618706328f49d6a67974e8390f56b0e8cdc6fd5563fb1e0f8c",
+        "failureEvidence": [
+          "{'message': 'pythagoras-1366: controls usable; public UI playback/scene/parameters order', 'stack': 'AssertionError [ERR_ASSERTION]: pythagoras-1366: controls usable; public UI playback/scene/parameters order\\n    at check (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-math-experiments-browser.js:23:28)\\n    at layout (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-math-experiments-browser.js:42:284)\\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-math-experiments-browser.js:86:183'}"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "experiment-layout",
+        "command": "node scripts/verify-experiment-layout-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:26:28.295Z",
+        "finished": "2026-11-26T15:28:04.276Z",
+        "counts": {
+          "cases": 46
+        },
+        "stdoutSha256": "f574aa0e51b7b7f7eb3907f997d4a450f37dac612fb0943eabc3f860f22b8094",
+        "stderrSha256": "27c20048d9a72ada18a70b24d44bc2c647091470a73a0f8f19590e1b177438ec",
+        "failureEvidence": [
+          "brake-1366x768 AssertionError [ERR_ASSERTION]: brake-1366x768: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "projectile-1366x768 AssertionError [ERR_ASSERTION]: projectile-1366x768: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "boardSlider-1366x768 AssertionError [ERR_ASSERTION]: boardSlider-1366x768: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "feCuSO4-1366x768 AssertionError [ERR_ASSERTION]: feCuSO4-1366x768: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "caco3Hcl-1366x768 AssertionError [ERR_ASSERTION]: caco3Hcl-1366x768: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "naclSolution-1366x768 AssertionError [ERR_ASSERTION]: naclSolution-1366x768: preserve playback visibility\n\nfalse !== true\n\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:63:10)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "brake-820x900 AssertionError [ERR_ASSERTION]: brake-820x900: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "projectile-820x900 AssertionError [ERR_ASSERTION]: projectile-820x900: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "boardSlider-820x900 AssertionError [ERR_ASSERTION]: boardSlider-820x900: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "feCuSO4-820x900 AssertionError [ERR_ASSERTION]: feCuSO4-820x900: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "caco3Hcl-820x900 AssertionError [ERR_ASSERTION]: caco3Hcl-820x900: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "naclSolution-820x900 AssertionError [ERR_ASSERTION]: naclSolution-820x900: preserve playback visibility\n\nfalse !== true\n\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:63:10)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "brake-390x844 AssertionError [ERR_ASSERTION]: brake-390x844: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "projectile-390x844 AssertionError [ERR_ASSERTION]: projectile-390x844: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "boardSlider-390x844 AssertionError [ERR_ASSERTION]: boardSlider-390x844: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "feCuSO4-390x844 AssertionError [ERR_ASSERTION]: feCuSO4-390x844: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "caco3Hcl-390x844 AssertionError [ERR_ASSERTION]: caco3Hcl-390x844: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "naclSolution-390x844 AssertionError [ERR_ASSERTION]: naclSolution-390x844: preserve playback visibility\n\nfalse !== true\n\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:63:10)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "brake-1265x638 AssertionError [ERR_ASSERTION]: brake-1265x638: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "projectile-1265x638 AssertionError [ERR_ASSERTION]: projectile-1265x638: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "boardSlider-1265x638 AssertionError [ERR_ASSERTION]: boardSlider-1265x638: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "feCuSO4-1265x638 AssertionError [ERR_ASSERTION]: feCuSO4-1265x638: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "caco3Hcl-1265x638 AssertionError [ERR_ASSERTION]: caco3Hcl-1265x638: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "naclSolution-1265x638 AssertionError [ERR_ASSERTION]: naclSolution-1265x638: preserve playback visibility\n\nfalse !== true\n\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:63:10)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:105:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:101:5",
+          "static-solenoid AssertionError [ERR_ASSERTION]: static-solenoid: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-circuit AssertionError [ERR_ASSERTION]: static-circuit: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-lever AssertionError [ERR_ASSERTION]: static-lever: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-lens AssertionError [ERR_ASSERTION]: static-lens: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-buoyancy AssertionError [ERR_ASSERTION]: static-buoyancy: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-friction AssertionError [ERR_ASSERTION]: static-friction: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-lampPower AssertionError [ERR_ASSERTION]: static-lampPower: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-parallelCircuit AssertionError [ERR_ASSERTION]: static-parallelCircuit: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-planeMirror AssertionError [ERR_ASSERTION]: static-planeMirror: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-seriesCircuit AssertionError [ERR_ASSERTION]: static-seriesCircuit: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-heatBalance AssertionError [ERR_ASSERTION]: static-heatBalance: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-liquidPressure AssertionError [ERR_ASSERTION]: static-liquidPressure: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-efficiency AssertionError [ERR_ASSERTION]: static-efficiency: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-sound AssertionError [ERR_ASSERTION]: static-sound: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-quadratic AssertionError [ERR_ASSERTION]: static-quadratic: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-linearSystem AssertionError [ERR_ASSERTION]: static-linearSystem: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "static-tangent AssertionError [ERR_ASSERTION]: static-tangent: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:122:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:119:5",
+          "demo-1366 AssertionError [ERR_ASSERTION]: demo-1366: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:141:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:136:5",
+          "demo-1265 AssertionError [ERR_ASSERTION]: demo-1265: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async harness.run.width (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:141:20)\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:136:5",
+          "transitions-favorites-and-share AssertionError [ERR_ASSERTION]: transition-to-math: parameters remain after the original scene\n    at geometry (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:65:36)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:150:5\n    at async Object.run (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/helpers/drawing-browser.js:83:7)\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-experiment-layout-browser.js:145:52"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "unit-circle-model",
+        "command": "node --test test/unit-circle.test.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:28:04.278Z",
+        "finished": "2026-11-26T15:28:04.510Z",
+        "counts": {
+          "tests": 73,
+          "pass": 73,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "bcceec84a9a1b2890b96eb38021c221e7e19a02bf2c5c6361de456d555d6dc0a",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "unit-circle-browser",
+        "command": "node scripts/verify-unit-circle-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:28:04.511Z",
+        "finished": "2026-11-26T15:28:08.211Z",
+        "counts": {
+          "checks": 10,
+          "layouts": 1
+        },
+        "stdoutSha256": "712ac99667e149b0bc95630c989f36ee7e2b52859192e8464abfd7f165f1b94e",
+        "stderrSha256": "ad49eb287094cadc00b6d58fc469aaffecd3e1f2222ff0de9dbe62846af6e311",
+        "failureEvidence": [
+          "{'message': 'unit-circle-1366: existing shared playback/scene/parameter order and controls', 'stack': 'AssertionError [ERR_ASSERTION]: unit-circle-1366: existing shared playback/scene/parameter order and controls\\n    at check (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-unit-circle-browser.js:24:38)\\n    at layout (<workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-unit-circle-browser.js:59:318)\\n    at async <workspace>/.handoff/pedigree-v1-implementation-20261126/candidate-release-source/server/scripts/verify-unit-circle-browser.js:70:59'}"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "equilibria-model",
+        "command": "node --test test/chemistry-equilibria.test.js test/chemistry-equilibria-templates.test.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:28:08.213Z",
+        "finished": "2026-11-26T15:28:08.656Z",
+        "counts": {
+          "tests": 63,
+          "pass": 63,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "7a1f7744e6aa9e9fb46b705a5ee1968bdbd055598687e7522f695edd6e08a37d",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "equilibria-browser",
+        "command": "node scripts/verify-chemistry-equilibria-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:28:08.657Z",
+        "finished": "2026-11-26T15:28:45.640Z",
+        "counts": {
+          "checks": 11,
+          "layouts": 1
+        },
+        "stdoutSha256": "febec68c1cd9c9ebf5f4650adc471aca6b367e8c9010dacfadfd52de379ffb3d",
+        "stderrSha256": "25a5ca7440e633ba21ae274d12ed1ae84c412c78152636965c3b4f1c6210f827",
+        "failureEvidence": [
+          "{'message': 'locator.fill: Timeout 30000ms exceeded.\\nCall log:\\n\\x1b[2m  - waiting for locator(\\'#timeline\\')\\x1b[22m\\n\\x1b[2m    - locator resolved to <input min=\"0\" max=\"100\" value=\"0\" type=\"range\" id=\"timeline\" aria-label=\"实验进度\" class=\"timeline um-p-0 um-pf-0\"/>\\x1b[22m\\n\\x1b[2m    - fill(\"100\")\\x1b[22m\\n\\x1b[2m  - attempting fill action\\x1b[22m\\n\\x1b[2m    2 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m      - element is not visible\\x1b[22m\\n\\x1b[2m    - retrying fill action\\x1b[22m\\n\\x1b[2m    - waiting 20ms\\x1b[22m\\n\\x1b[2m    2 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m      - element is not visible\\x1b[22m\\n\\x1b[2m    - retrying fill action\\x1b[22m\\n\\x1b[2m      - waiting 100ms\\x1b[22m\\n\\x1b[2m    59 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m       - element is not visible\\x1b[22m\\n\\x1b[2m     - retrying fill action\\x1b[22m\\n\\x1b[2m       - waiting 500ms\\x1b[22m\\n', 'stack': 'locator.fill: Timeout 30000ms exceeded.\\nCall log:\\n\\x1b[2m  - waiting for locator(\\'#timeline\\')\\x1b[22m\\n\\x1b[2m    - locator resolved to <input min=\"0\" max=\"100\" value=\"0\" type=\"range\" id=\"timeline\" aria-label=\"实验进度\" class=\"timeline um-p-0 um-pf-0\"/>\\x1b[22m\\n\\x1b[2m    - fill(\"100\")\\x1b[22m\\n\\x1b[2m  - attempting fill action\\x1b[22m\\n\\x1b[2m    2 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m      - element is not visible\\x1b[22m\\n\\x1b[2m    - retrying fill action\\x1b[22m\\n\\x1b[2m    - waiting 20ms\\x1b[22m\\n\\x1b[2m    2 × waiting for element to be visible, enabled and editable\\x1b[22m\\n\\x1b[2m      - element is not visible\\x1b[22m\\n\\x1b[2m    - retrying fill action\\x1b[22m\\n\\x1b[2m      - waiting 100ms\\x1b[22m\\n\\x1b[2m    59 × waiting for element to be visible, enabl"
+        ],
+        "internalWaitTimeout": true,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "mendel-model",
+        "command": "node --test test/biology-mendel.test.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:28:45.641Z",
+        "finished": "2026-11-26T15:28:45.818Z",
+        "counts": {
+          "tests": 17,
+          "pass": 17,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "7b5679dcb811bffa5e9ce4bf49bb3a4c44f637e0255a24d583a2c8678fb4d09a",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "mendel-browser",
+        "command": "node scripts/verify-mendel-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:28:45.819Z",
+        "finished": "2026-11-26T15:28:49.320Z",
+        "counts": {
+          "checks": 1,
+          "layouts": 0
+        },
+        "stdoutSha256": "faf587af858c3a312bc475764da8166e1a35efa91f28f969a67ac559e0bb6ec4",
+        "stderrSha256": "b8958a3bcf97b7aa8efaeae1df297b3d044d5ddd5796aa3f8d141c1c7bd8f0e7",
+        "failureEvidence": [
+          "AssertionError [ERR_ASSERTION]: 1366: scene encloses content before parameters"
+        ],
+        "internalWaitTimeout": false,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "acceptance-fixes",
+        "command": "node scripts/verify-acceptance-fixes-browser.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:28:49.321Z",
+        "finished": "2026-11-26T15:29:18.057Z",
+        "counts": {
+          "checks": 62,
+          "failures": 0
+        },
+        "stdoutSha256": "621a431fb5faa8a32e3737b068ba5279c3f7e91bcebf7ca237873a37bd25b530",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "microscope-model",
+        "command": "node --test test/biology-microscope.test.js test/biology-microscope-questions.test.js test/biology-microscope-templates.test.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:29:18.058Z",
+        "finished": "2026-11-26T15:29:18.288Z",
+        "counts": {
+          "tests": 36,
+          "pass": 36,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "49af1869d540f69c2855b5a5dc3dac66814f9979f039b64ea026e141f81b9603",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "microscope-browser",
+        "command": "node scripts/verify-microscope-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:29:18.289Z",
+        "finished": "2026-11-26T15:29:52.023Z",
+        "counts": {
+          "checks": 4,
+          "layouts": 0
+        },
+        "stdoutSha256": "ab67c703713491f4afcb2bcc32f13d200431b619f022f349bdfb7209bc84c86f",
+        "stderrSha256": "17865e5d5976f0f9448bb4cab23e950df0bcd76ce3a8858ee6a06340b5890cab",
+        "failureEvidence": [
+          "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.parameters input[type=range]').first()\u001b[22m\n\u001b[2m    - locator resolved to <input min=\"1\" max=\"100\" value=\"20\" step=\"0.01\" type=\"range\" id=\"speedRange\" class=\"um-p-39 um-pf-4 um-has-orig um-o-39 um-of-4\"/>\u001b[22m\n\u001b[2m    - fill(\"20\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+        ],
+        "internalWaitTimeout": true,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      },
+      {
+        "name": "population-model",
+        "command": "node --test test/biology-population.test.js test/biology-population-logistic.test.js",
+        "code": 0,
+        "status": "passed",
+        "timeout": false,
+        "started": "2026-11-26T15:29:52.024Z",
+        "finished": "2026-11-26T15:29:52.240Z",
+        "counts": {
+          "tests": 65,
+          "pass": 65,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "stdoutSha256": "04a84da082293ee87a156fee6e402712ef8854161810907d51536e082bff075f",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "population-browser",
+        "command": "node scripts/verify-population-browser.js",
+        "code": 1,
+        "status": "failed",
+        "timeout": false,
+        "started": "2026-11-26T15:29:52.242Z",
+        "finished": "2026-11-26T15:30:25.775Z",
+        "counts": {
+          "checks": 5,
+          "layouts": 0
+        },
+        "stdoutSha256": "9041a779168e6fb36dfec4baac1914392f3c6d11ee91a475115f146ddcb11773",
+        "stderrSha256": "15af3382218dd9963bc6a7f11c2c07494f05fafa547df80e74f98a5248f4d3ad",
+        "failureEvidence": [
+          "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.parameters input[type=range]').nth(1)\u001b[22m\n\u001b[2m    - locator resolved to <input min=\"0\" max=\"20\" step=\"1\" value=\"5\" type=\"range\" id=\"accelRange\" class=\"um-p-20 um-pf-0 um-has-orig um-o-20 um-of-0\"/>\u001b[22m\n\u001b[2m    - fill(\"0\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+        ],
+        "internalWaitTimeout": true,
+        "unreached": "该组首个致命错误后的未记录断言未到达，其他独立组继续执行。Node完整运行全部测试，失败测试内部的后续断言未到达。"
+      }
+    ],
+    "totals": {
+      "passed": 27,
+      "failed": 21,
+      "timeout": 0,
+      "notExecutedGroups": 0
+    }
+  },
+  "chromiumAffected": {
+    "command": "node server/scripts/verify-pedigree-browser.js",
+    "finished": "2026-11-26T14:53:20.8425733Z",
+    "browser": "chromium",
+    "exitCode": 0,
+    "quick": true,
+    "started": "2026-11-26T14:52:31.2274958Z",
+    "sourceSha": "582ceccf74d341e122fb6cdc988bc3882566c868"
+  },
+  "consoleAndStandalonePreviewCheck": {
+    "sourceSha": "582ceccf74d341e122fb6cdc988bc3882566c868",
+    "command": "node check-console-previews.mjs <same-web-source-with-corrected-documentation>",
+    "started": "2026-11-26T15:21:44.2930740Z",
+    "finished": "2026-11-26T15:21:56.1954189Z",
+    "exitCode": 0
+  },
+  "previewCorrection": "Initial exported SVG boolean attributes were invalid XML. Final documentation quotes these attributes. All six standalone SVG files were reloaded and checked; web runtime unchanged.",
+  "originalBankPreserved": {
+    "original": 600,
+    "total": 610,
+    "sameOrderAndContents": true
+  },
+  "intermediateRunsStopped": [
+    {
+      "completed": 6,
+      "sourceSha": "e5bbf77194a12b53564fe9b448137ebe17dd6c3d",
+      "reason": "The manual fullscreen control and its normal-button tests were added; complete regression restarted on e18ab3f.",
+      "fullRunCompleted": false
+    },
+    {
+      "fullRunCompleted": false,
+      "completed": 5,
+      "sourceSha": "e18ab3ffa2cc882d91b54d7f24ca8212a8466bd2",
+      "reason": "Added explicit genotype transmission explanations for conflicts and a specific affected-daughter regression. Complete set restarted on the release source."
+    }
+  ],
+  "notRun": [
+    "Firefox",
+    "Safari",
+    "real devices",
+    "live AI",
+    "real camera recognition",
+    "deployment",
+    "separate security scan"
+  ],
+  "ciStatus": "Local commands only. GitHub records for the final head are read after push and linked in the Issue reply."
+}
