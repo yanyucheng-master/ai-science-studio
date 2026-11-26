@@ -1,0 +1,124 @@
+{
+  "method": "Independent tuple genotype enumeration without importing JavaScript product logic",
+  "caseJsonSha256": "ee8198bf974ec9eb7f5d4ce266ef35160633b371e84222959149ab34b8b229f1",
+  "cases": [
+    {
+      "id": "P01",
+      "version": 1,
+      "expectedModes": [
+        "AD"
+      ],
+      "actualModes": [
+        "AD"
+      ]
+    },
+    {
+      "id": "P02",
+      "version": 2,
+      "expectedModes": [
+        "AR"
+      ],
+      "actualModes": [
+        "AR"
+      ]
+    },
+    {
+      "id": "P03",
+      "version": 1,
+      "expectedModes": [
+        "XD"
+      ],
+      "actualModes": [
+        "XD"
+      ]
+    },
+    {
+      "id": "P04",
+      "version": 1,
+      "expectedModes": [
+        "XR"
+      ],
+      "actualModes": [
+        "XR"
+      ]
+    },
+    {
+      "id": "P05",
+      "version": 1,
+      "expectedModes": [
+        "AD",
+        "AR",
+        "XD",
+        "XR"
+      ],
+      "actualModes": [
+        "AD",
+        "AR",
+        "XD",
+        "XR"
+      ]
+    },
+    {
+      "id": "P06",
+      "version": 1,
+      "expectedModes": [],
+      "actualModes": []
+    },
+    {
+      "id": "P03",
+      "condition": "X location removed",
+      "expectedModes": [
+        "AD",
+        "AR",
+        "XD"
+      ],
+      "actualModes": [
+        "AD",
+        "AR",
+        "XD"
+      ]
+    },
+    {
+      "id": "P04",
+      "condition": "X location removed",
+      "expectedModes": [
+        "AR",
+        "XR"
+      ],
+      "actualModes": [
+        "AR",
+        "XR"
+      ]
+    }
+  ],
+  "separateHandCross": {
+    "AR": [
+      "AA",
+      "Aa",
+      "Aa",
+      "aa"
+    ],
+    "AR_affected": "1/4",
+    "AR_carrierGivenUnaffected": "2/3",
+    "XR": [
+      [
+        "F",
+        "AA"
+      ],
+      [
+        "F",
+        "Aa"
+      ],
+      [
+        "M",
+        "A"
+      ],
+      [
+        "M",
+        "a"
+      ]
+    ],
+    "XR_affectedGivenBoy": "1/2",
+    "XR_affectedBoy": "1/4"
+  }
+}

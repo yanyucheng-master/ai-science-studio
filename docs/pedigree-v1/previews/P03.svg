@@ -1,0 +1,48 @@
+<svg width="500" height="420" xmlns="http://www.w3.org/2000/svg" class="pedigree-svg" viewBox="0 0 500 420" role="group" aria-label="P03版本1原创家系，成员可点选"><style>svg{--ink:#172c4c;--blue:#2669dc;--surface:#fff;--muted:#61758e;--line:#dce6f4;background:#fff}.scene.subject-generic-physics:has(.biology-pedigree-scene) { height: auto; min-height: 0; background: var(--surface); box-shadow: none; }
+.scene.subject-generic-physics:has(.biology-pedigree-scene)::before { content: none; }
+.generic-physics-stage:has(.biology-pedigree-scene) { position: relative; inset: auto; }
+.generic-physics-lab:has(.biology-pedigree-scene) { position: relative; inset: auto; display: block; margin: 18px; padding: 0; border: 0; background: none; box-shadow: none; }
+.generic-physics-visual:has(.biology-pedigree-scene) { height: auto; overflow: visible; border: 0; background: none; box-shadow: none; }
+.experiment-card:has(.biology-pedigree-scene) :is(#sceneFullscreenButton, .parameters) { display: none !important; }
+.biology-pedigree-scene { min-width: 0; font-size: 14px; line-height: 1.7; color: var(--ink); overflow-wrap: anywhere; }
+.biology-pedigree-scene h3 { margin: 0; font-size: 19px; }
+.biology-pedigree-scene h4 { margin: 16px 0 8px; font-size: 16px; }
+.pedigree-muted, .pedigree-conditions { color: var(--muted); font-size: 13px; }
+.pedigree-cases, .pedigree-members, .pedigree-modes, .pedigree-relations, .pedigree-legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.biology-pedigree-scene button { min-height: 44px; min-width: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: var(--surface); font: inherit; cursor: pointer; }
+.biology-pedigree-scene button[aria-pressed="true"], .biology-pedigree-scene button[aria-current="step"] { color: var(--blue); border-color: var(--blue); background: color-mix(in srgb, var(--blue) 9%, var(--surface)); }
+.biology-pedigree-scene :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+.pedigree-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 16px 0; }
+.pedigree-steps button { padding: 8px; font-size: 13px; }
+.pedigree-legend { padding: 10px 0; border-bottom: 1px solid var(--line); }
+.pedigree-scroll { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; border: 1px solid var(--line); border-radius: 12px; }
+.pedigree-svg { width: 100%; min-width: 360px; height: auto; display: block; }
+.pedigree-svg text { fill: var(--ink); stroke: none; font-family: inherit; font-size: 18px; }
+.pedigree-svg [data-pedigree-family] path { fill: none; stroke: var(--muted); stroke-width: 2; }
+.pedigree-svg [data-pedigree-family].chosen path { stroke: var(--blue); stroke-width: 3.5; }
+.pedigree-svg [data-pedigree-family].conflict path { stroke: #b14632; stroke-width: 4; stroke-dasharray: 6 3; }
+.pedigree-svg .pedigree-family-label { font-size: 14px; fill: var(--muted); }
+.pedigree-member { cursor: pointer; }
+.pedigree-member > :is(rect:not(.pedigree-hit), circle) { fill: var(--surface); stroke: var(--ink); stroke-width: 2; }
+.pedigree-member.affected > :is(rect:not(.pedigree-hit), circle) { fill: var(--blue); }
+.pedigree-member .pedigree-hit { fill: transparent; stroke: none; }
+.pedigree-member[aria-pressed="true"] .pedigree-hit, .pedigree-member:focus-visible .pedigree-hit { fill: color-mix(in srgb, var(--blue) 9%, transparent); stroke: var(--blue); stroke-width: 2; }
+.pedigree-id, .pedigree-unknown { text-anchor: middle; }
+.pedigree-svg .pedigree-carrier { font-size: 15px; fill: var(--blue); }
+.pedigree-selection { min-height: 70px; border-left: 3px solid var(--blue); padding: 8px 12px; }
+.biology-pedigree-scene table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+.biology-pedigree-scene :is(th, td) { border-bottom: 1px solid var(--line); text-align: left; padding: 9px 6px; overflow-wrap: anywhere; }
+.biology-pedigree-scene caption { text-align: left; color: var(--muted); padding: 8px 0; }
+.biology-pedigree-scene fieldset { min-width: 0; border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+.biology-pedigree-scene fieldset label { display: flex; align-items: center; min-height: 44px; gap: 10px; }
+.biology-pedigree-scene summary { cursor: pointer; padding: 12px 0; min-height: 44px; }
+.generic-physics-lab:has(.biology-pedigree-scene) .generic-physics-readout { margin-top: 16px; border: 0; border-top: 1px solid var(--line); background: none; box-shadow: none; }
+.experiment-card:is(:fullscreen, .immersive-mode) .scene:has(.biology-pedigree-scene) { flex: 0 0 auto; }
+@media (max-width: 600px) {
+  .generic-physics-lab:has(.biology-pedigree-scene) { margin: 10px; }
+  .pedigree-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pedigree-modes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .biology-pedigree-scene table { font-size: 13px; }
+  .biology-pedigree-scene :is(th, td) { padding: 8px 3px; }
+}
+.pedigree-svg{width:500px;min-width:0;height:auto}</style><text class="pedigree-generation" x="12" y="71">I</text><text class="pedigree-generation" x="12" y="206">II</text><text class="pedigree-generation" x="12" y="341">III</text><g data-pedigree-family="F1"><path d="M263 65H332M297.5 65V122M205 122H395M205 122V182M395 122V182"/><text class="pedigree-family-label" x="305.5" y="97">F1</text></g><g data-pedigree-family="F2"><path d="M113 200H187M150 200V257M95 257H205M95 257V317M205 257V317"/><text class="pedigree-family-label" x="158" y="232">F2</text></g><g class="pedigree-member affected" data-pedigree-member="I-1" role="button" tabindex="0" aria-label="I-1，男性，表型受累" aria-pressed="false" transform="translate(245 65)"><rect class="pedigree-hit" x="-32" y="-32" width="64" height="64" rx="9"/><rect x="-18" y="-18" width="36" height="36"/><text class="pedigree-id" y="44">I-1</text><text data-carrier-mark class="pedigree-carrier" x="27" y="-22"></text></g><g class="pedigree-member unaffected" data-pedigree-member="I-2" role="button" tabindex="0" aria-label="I-2，女性，表型未受累" aria-pressed="false" transform="translate(350 65)"><rect class="pedigree-hit" x="-32" y="-32" width="64" height="64" rx="9"/><circle r="18"/><text class="pedigree-id" y="44">I-2</text><text data-carrier-mark class="pedigree-carrier" x="27" y="-22"></text></g><g class="pedigree-member unaffected" data-pedigree-member="II-1" role="button" tabindex="0" aria-label="II-1，男性，表型未受累" aria-pressed="false" transform="translate(95 200)"><rect class="pedigree-hit" x="-32" y="-32" width="64" height="64" rx="9"/><rect x="-18" y="-18" width="36" height="36"/><text class="pedigree-id" y="44">II-1</text><text data-carrier-mark class="pedigree-carrier" x="27" y="-22"></text></g><g class="pedigree-member affected" data-pedigree-member="II-2" role="button" tabindex="0" aria-label="II-2，女性，表型受累" aria-pressed="false" transform="translate(205 200)"><rect class="pedigree-hit" x="-32" y="-32" width="64" height="64" rx="9"/><circle r="18"/><text class="pedigree-id" y="44">II-2</text><text data-carrier-mark class="pedigree-carrier" x="27" y="-22"></text></g><g class="pedigree-member unaffected" data-pedigree-member="II-3" role="button" tabindex="0" aria-label="II-3，男性，表型未受累" aria-pressed="false" transform="translate(395 200)"><rect class="pedigree-hit" x="-32" y="-32" width="64" height="64" rx="9"/><rect x="-18" y="-18" width="36" height="36"/><text class="pedigree-id" y="44">II-3</text><text data-carrier-mark class="pedigree-carrier" x="27" y="-22"></text></g><g class="pedigree-member affected" data-pedigree-member="III-1" role="button" tabindex="0" aria-label="III-1，女性，表型受累" aria-pressed="false" transform="translate(95 335)"><rect class="pedigree-hit" x="-32" y="-32" width="64" height="64" rx="9"/><circle r="18"/><text class="pedigree-id" y="44">III-1</text><text data-carrier-mark class="pedigree-carrier" x="27" y="-22"></text></g><g class="pedigree-member unaffected" data-pedigree-member="III-2" role="button" tabindex="0" aria-label="III-2，男性，表型未受累" aria-pressed="false" transform="translate(205 335)"><rect class="pedigree-hit" x="-32" y="-32" width="64" height="64" rx="9"/><rect x="-18" y="-18" width="36" height="36"/><text class="pedigree-id" y="44">III-2</text><text data-carrier-mark class="pedigree-carrier" x="27" y="-22"></text></g></svg>
