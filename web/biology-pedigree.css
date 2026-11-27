@@ -1,0 +1,47 @@
+.scene.subject-generic-physics:has(.biology-pedigree-scene) { height: auto; min-height: 0; background: var(--surface); box-shadow: none; }
+.scene.subject-generic-physics:has(.biology-pedigree-scene)::before { content: none; }
+.generic-physics-stage:has(.biology-pedigree-scene) { position: relative; inset: auto; }
+.generic-physics-lab:has(.biology-pedigree-scene) { position: relative; inset: auto; display: block; margin: 18px; padding: 0; border: 0; background: none; box-shadow: none; }
+.generic-physics-visual:has(.biology-pedigree-scene) { height: auto; overflow: visible; border: 0; background: none; box-shadow: none; }
+.experiment-card:has(.biology-pedigree-scene) :is(#sceneFullscreenButton, .parameters) { display: none !important; }
+.biology-pedigree-scene { min-width: 0; font-size: 14px; line-height: 1.7; color: var(--ink); overflow-wrap: anywhere; }
+.biology-pedigree-scene h3 { margin: 0; font-size: 19px; }
+.biology-pedigree-scene h4 { margin: 16px 0 8px; font-size: 16px; }
+.pedigree-muted, .pedigree-conditions { color: var(--muted); font-size: 13px; }
+.pedigree-cases, .pedigree-members, .pedigree-modes, .pedigree-relations, .pedigree-legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.biology-pedigree-scene button { min-height: 44px; min-width: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: var(--surface); font: inherit; cursor: pointer; }
+.biology-pedigree-scene button[aria-pressed="true"], .biology-pedigree-scene button[aria-current="step"] { color: var(--blue); border-color: var(--blue); background: color-mix(in srgb, var(--blue) 9%, var(--surface)); }
+.biology-pedigree-scene :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+.pedigree-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 16px 0; }
+.pedigree-steps button { padding: 8px; font-size: 13px; }
+.pedigree-legend { padding: 10px 0; border-bottom: 1px solid var(--line); }
+.pedigree-scroll { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; border: 1px solid var(--line); border-radius: 12px; }
+.pedigree-svg { width: 100%; min-width: 360px; height: auto; display: block; }
+.pedigree-svg text { fill: var(--ink); stroke: none; font-family: inherit; font-size: 18px; }
+.pedigree-svg [data-pedigree-family] path { fill: none; stroke: var(--muted); stroke-width: 2; }
+.pedigree-svg [data-pedigree-family].chosen path { stroke: var(--blue); stroke-width: 3.5; }
+.pedigree-svg [data-pedigree-family].conflict path { stroke: #b14632; stroke-width: 4; stroke-dasharray: 6 3; }
+.pedigree-svg .pedigree-family-label { font-size: 14px; fill: var(--muted); }
+.pedigree-member { cursor: pointer; }
+.pedigree-member > :is(rect:not(.pedigree-hit), circle) { fill: var(--surface); stroke: var(--ink); stroke-width: 2; }
+.pedigree-member.affected > :is(rect:not(.pedigree-hit), circle) { fill: var(--blue); }
+.pedigree-member .pedigree-hit { fill: transparent; stroke: none; }
+.pedigree-member[aria-pressed="true"] .pedigree-hit, .pedigree-member:focus-visible .pedigree-hit { fill: color-mix(in srgb, var(--blue) 9%, transparent); stroke: var(--blue); stroke-width: 2; }
+.pedigree-id, .pedigree-unknown { text-anchor: middle; }
+.pedigree-svg .pedigree-carrier { font-size: 15px; fill: var(--blue); }
+.pedigree-selection { min-height: 70px; border-left: 3px solid var(--blue); padding: 8px 12px; }
+.biology-pedigree-scene table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+.biology-pedigree-scene :is(th, td) { border-bottom: 1px solid var(--line); text-align: left; padding: 9px 6px; overflow-wrap: anywhere; }
+.biology-pedigree-scene caption { text-align: left; color: var(--muted); padding: 8px 0; }
+.biology-pedigree-scene fieldset { min-width: 0; border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+.biology-pedigree-scene fieldset label { display: flex; align-items: center; min-height: 44px; gap: 10px; }
+.biology-pedigree-scene summary { cursor: pointer; padding: 12px 0; min-height: 44px; }
+.generic-physics-lab:has(.biology-pedigree-scene) .generic-physics-readout { margin-top: 16px; border: 0; border-top: 1px solid var(--line); background: none; box-shadow: none; }
+.experiment-card:is(:fullscreen, .immersive-mode) .scene:has(.biology-pedigree-scene) { flex: 0 0 auto; }
+@media (max-width: 600px) {
+  .generic-physics-lab:has(.biology-pedigree-scene) { margin: 10px; }
+  .pedigree-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pedigree-modes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .biology-pedigree-scene table { font-size: 13px; }
+  .biology-pedigree-scene :is(th, td) { padding: 8px 3px; }
+}
