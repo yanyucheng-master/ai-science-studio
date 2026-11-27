@@ -9324,8 +9324,9 @@ document.addEventListener("keydown", event => {
 });
 
 function isExperimentShareRoute(hash = location.hash) {
-  return hash === "#/share" || hash.startsWith("#/share/")
-    || (!hash && new URLSearchParams(location.search).has("share"));
+  if (hash) return hash === "#/share" || hash.startsWith("#/share/");
+  const params = new URLSearchParams(location.search);
+  return params.has("share") || params.has("s");
 }
 
 $("#shareButton").addEventListener("click", () => {

@@ -264,7 +264,7 @@
   }
   function splashWanted() {
     const params = new URLSearchParams(location.search);
-    if (location.hash === "#/share" || location.hash.startsWith("#/share/") || params.has("share")) return false;
+    if (location.hash === "#/share" || location.hash.startsWith("#/share/") || params.has("share") || params.has("s")) return false;
     const q = params.get("splash");
     if (q === "0" || reducedMotion()) return false;
     if (q === "1") return true;

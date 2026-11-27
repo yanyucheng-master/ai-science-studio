@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: masterlab-share-api
+    runtime: node
+    region: singapore
+    plan: free
+    rootDir: share-service
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeployTrigger: 'off'
+    envVars:
+      - key: NODE_VERSION
+        value: 24.14.1
+      - key: SITE_ORIGIN
+        value: https://ai-science-studio.onrender.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: masterlab-share-db
+          property: connectionString
+
+databases:
+  - name: masterlab-share-db
+    region: singapore
+    plan: free
+    ipAllowList: []
