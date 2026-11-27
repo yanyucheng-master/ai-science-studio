@@ -36,11 +36,12 @@
   }
   function parse(input) {
     let source = compact(input);
-    const headers = [...source.matchAll(/高中遗传系谱图(P\d+)-v(\d+)/g)];
+    const headers = [...source.matchAll(/(?:高中)?遗传系谱图(P\d+)-v(\d+)/g)];
     if (headers.length !== 1) return { ok: false, message: '请使用一个版本化内置系谱图样例P01–P06，并保留题给成员、关系、条件和具体所问。' };
     const header = headers[0], data = find(header[1]);
     if (!data || header[2] !== String(data.version)) return { ok: false, message: '未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。' };
-    for (const clause of clauses(data).sort((a, b) => b.length - a.length)) {
+    source = source.slice(0, header.index) + source.slice(header.index + header[0].length);
+    for (const clause of clauses(data).slice(1).sort((a, b) => b.length - a.length)) {
       const expected = compact(clause);
       const index = source.indexOf(expected);
       if (index < 0) return { ok: false, message: `缺少或改动了题给条件：${clause}。请核对该项。` };
@@ -59,8 +60,8 @@
   }
   function candidate(input) {
     const source = compact(input);
-    const header = /高中遗传系谱图P\d+-v\d+/;
-    return /^(?:(?:请)?(?:求|计算|判断))?高中遗传系谱图P\d+-v\d+/.test(source)
+    const header = /(?:高中)?遗传系谱图P\d+-v\d+/;
+    return /^(?:(?:请)?(?:求|计算|判断))?(?:高中)?遗传系谱图P\d+-v\d+/.test(source)
       || /^(?:请)?(?:打开|生成|查看)(?:高中)?遗传系谱图/.test(source)
       || /^(?:请)?(?:求|计算|判断)(?:方式判读|I{1,3}-\d+与I{1,3}-\d+|双亲Aa×Aa)/.test(source) && header.test(source);
   }

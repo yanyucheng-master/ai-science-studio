@@ -39,6 +39,7 @@
     "test:photosynthesis:intent": "node scripts/verify-photosynthesis-routing-browser.js --intent",
     "test:photosynthesis:separators": "node scripts/verify-photosynthesis-separators-browser.js",
     "test:pedigree": "node --test test/biology-pedigree.test.js test/biology-pedigree-questions.test.js",
-    "test:pedigree:browser": "node scripts/verify-pedigree-browser.js"
+    "test:pedigree:browser": "node scripts/verify-pedigree-browser.js",
+    "test:pedigree:review": "node scripts/verify-pedigree-review-browser.js"
   }
 }

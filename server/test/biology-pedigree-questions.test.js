@@ -56,3 +56,34 @@ test('pedigree routing candidates do not include ordinary concepts or quoted bac
     '展示卡片写着高中遗传系谱图P01-v1。另有平面镜成像题。',
     '孟德尔的豌豆杂交实验如何开展？']) assert.equal(Q.candidate(input), false, input);
 });
+
+test('explicit sample references with or without the grade prefix stay local and report unknown versions', () => {
+  for (const prefix of ['高中', '']) for (const reference of ['P99-v1', 'P02-v1']) {
+    const source = `${prefix}遗传系谱图 ${reference}`;
+    assert.equal(Q.candidate(source), true);
+    const parse = Q.parse(source);
+    assert.equal(parse.ok, false);
+    assert.ok(parse.message.includes('未知系谱图样例或版本'));
+  }
+  assert.equal(Q.candidate('遗传系谱图 P02-v2'), true);
+  assert.ok(Q.parse('遗传系谱图 P02-v2').message.includes('缺少或改动了题给条件'));
+  const data = Q.preset('P04');
+  const source = Q.question(1, 1, data.fixed).replace('高中遗传系谱图', '遗传系谱图');
+  assert.equal(Q.parse(source).ok, true);
+  assert.equal(Q.parse(source).fixed.levelLocked, true);
+  for (const input of ['展示卡片写着遗传系谱图P99-v1。另有平面镜成像题。', '遗传系谱图的符号有哪些？']) assert.equal(Q.candidate(input), false);
+});
+
+test('pure and paired P04 asks roundtrip without an unasked unconditional event in the model conclusion', () => {
+  const data = Q.find('P04'), fixed = Q.preset('P04').fixed;
+  for (const asks of [[data.asks[1]], [data.asks[2]], data.asks.slice(1)]) {
+    const input = Q.question(1, 1, { ...fixed, asks: asks.join('|') });
+    const parsed = template.parseQuestion(input);
+    assert.equal(parsed.ok, true);
+    assert.equal(parsed.fixed.asks, asks.join('|'));
+    const conclusion = template.model(1, 1, parsed.fixed).conclusion;
+    assert.equal(conclusion.includes('已知下一子代为男孩时受累概率：1/2'), asks.includes(data.asks[1]));
+    assert.equal(conclusion.includes('下一子代为受累男孩概率：1/4'), asks.includes(data.asks[2]));
+    assert.ok(!conclusion.includes('下一子代受累概率：'));
+  }
+});

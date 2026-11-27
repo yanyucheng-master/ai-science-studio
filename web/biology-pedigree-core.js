@@ -173,6 +173,88 @@
     return null;
   }
 
+  // Match the catalog's complete subquestion, never a substring such as “男孩”.
+  function requestedProbabilities(data, analysis, asks, mode) {
+    const selected = asks.split('|'), couple = data.target.join('与');
+    if (selected.some(ask => !data.asks.includes(ask))) throw new RangeError('未支持的概率子问');
+    const definitions = new Map([
+      [couple + '下一子代受累概率', { label: '下一子代受累概率', field: 'probability', denominator: '全部子代，机会为1' }],
+      [couple + '下一子代受累概率及所缺信息', { label: '下一子代受累概率', field: 'probability', denominator: '全部子代，机会为1' }],
+      [couple + '已知下一子代为男孩时受累概率', { label: '已知下一子代为男孩时受累概率', field: 'boyConditional', denominator: '男孩，题设机会为1/2' }],
+      [couple + '下一子代为受累男孩概率', { label: '下一子代为受累男孩概率', field: 'affectedBoy', denominator: '全部子代，机会为1' }]
+    ]);
+    if (data.carrierTarget) definitions.set(`双亲Aa×Aa且${data.carrierTarget}未受累时${data.carrierTarget}的携带概率`,
+      { label: `${data.carrierTarget}的条件携带概率`, field: 'carrier', denominator: '双亲Aa×Aa所生的未受累子代，机会为3/4' });
+    const pairs = analysis.results[mode].pairs;
+    return selected.filter(ask => definitions.has(ask)).map(ask => {
+      const definition = definitions.get(ask);
+      const values = pairs.map(pair => definition.field === 'carrier'
+        ? probability(pair.father, pair.mother, mode, 'carrier', 'unaffected') : pair[definition.field]);
+      return { ask, ...definition, values, possibilities: [...new Set(values.map(value => value ? text(value) : '条件事件机会为0，未定义'))] };
+    });
+  }
+
+  // Explain eliminations using only facts already available at that iteration.
+  // Full enumeration remains the authority for the final feasible genotype set.
+  function genotypeDerivation(data, analysis, id, mode) {
+    const people = validate(data), person = people[id], solved = analysis.results[mode];
+    if (!person || !solved?.possible) return null;
+    const candidates = Object.fromEntries(data.people.map(p => [p.id, domain(p, mode)]));
+    const initial = [...candidates[id]], events = [];
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (const family of data.families) {
+        const members = [family.father, family.mother, ...family.children];
+        const before = Object.fromEntries(members.map(member => [member, [...candidates[member]]]));
+        const rows = [];
+        for (const father of before[family.father]) for (const mother of before[family.mother]) {
+          const children = family.children.map(child => ({ id: child, doses: before[child].filter(dose =>
+            offspring(father, mother, mode).some(row => row.sex === people[child].sex && row.dose === dose)) }));
+          if (children.every(child => child.doses.length)) rows.push({ father, mother, children });
+        }
+        // A possible graph always has at least one locally supported row.
+        for (const member of members) {
+          const after = before[member].filter(dose => rows.some(row => member === family.father ? row.father === dose
+            : member === family.mother ? row.mother === dose : row.children.find(child => child.id === member).doses.includes(dose)));
+          if (after.length === before[member].length) continue;
+          candidates[member] = after;
+          events.push({ member, family, before, remaining: after, removed: before[member].filter(dose => !after.includes(dose)) });
+          changed = true;
+        }
+      }
+    }
+    const names = doses => doses.map(dose => genotype(dose, person.sex, mode)).join('或');
+    const phenotype = person.phenotype === 'affected' ? '受累' : person.phenotype === 'unaffected' ? '未受累' : '未知';
+    const lines = [person.carrier === true ? `${id}题给为携带者，${modes[mode]}下为${names(initial)}；这不是从子女表现推断的标记。`
+      : `${id}题给表型${phenotype}，${modes[mode]}下初始可能为${names(initial)}。`];
+    if (mode === 'AD' && person.phenotype === 'affected') lines.push('受累说明至少有一个显性A，不能仅凭表型区分AA和Aa。');
+    if (mode.endsWith('R') && person.phenotype === 'unaffected' && initial.length > 1) lines.push('表型未受累不等于已知非携带，须保留两种可能。');
+    for (const event of events.filter(event => event.member === id)) {
+      const { family, before } = event;
+      const related = [family.father, family.mother, ...family.children].filter(member => member !== id)
+        .map(member => `${member}为${before[member].map(dose => genotype(dose, people[member].sex, mode)).join('或')}`).join('，');
+      lines.push(`${family.id}（${family.father}与${family.mother}→${family.children.join('、')}）：结合${related}逐项检查配子传递，排除${names(event.removed)}，剩余${names(event.remaining)}。`);
+      if (!isX(mode) && [family.father, family.mother].includes(id)) {
+        for (const child of family.children) {
+          const childDoses = before[child];
+          if (childDoses.length !== 1 || ![0, 2].includes(childDoses[0])) continue;
+          const alleleDose = childDoses[0] / 2;
+          if (!event.removed.some(dose => !gametes(dose, person.sex, mode).some(g => g.allele === alleleDose))) continue;
+          const allele = mode === 'AD' ? ['a', 'A'][alleleDose] : ['A', 'a'][alleleDose];
+          lines.push(`${family.id}的${child}为${genotype(childDoses[0], people[child].sex, mode)}，双亲必须各提供${allele}；${id}若为${names(event.removed)}无法提供${allele}。`);
+        }
+      }
+    }
+    const remaining = solved.genotypes[id];
+    lines.push(remaining.length > 1
+      ? `全图仍允许${names(remaining)}。${data.families.filter(f => f.children.includes(id)).length ? '已知双亲及同胞仍不能唯一决定该个体的基因型。' : '题面没有足够证据排除其中任一项。'}不能给未知基因型等权先验。`
+      : `与全图约束一致的基因型为${names(remaining)}。`);
+    if (data.id === 'P05' && id === 'II-3') lines.push('F2的III-1表型未知，不能用未知的子代表现推断外来配偶II-3的携带状态；须补题给携带信息或有效的亲子证据。');
+    return { id, mode, initial, remaining, source: person.carrier === true ? 'given'
+      : carrierEvidence(data, analysis, id, mode)?.source || (remaining.length > 1 ? 'undetermined' : 'inferred'), lines };
+  }
+
   window.MasterLabPedigree = Object.freeze({ modes, validate, fraction, add, multiply, text, genotype, affected,
-    isCarrier, gametes, offspring, probability, analyze, carrierEvidence });
+    isCarrier, gametes, offspring, probability, analyze, carrierEvidence, requestedProbabilities, genotypeDerivation });
 })();

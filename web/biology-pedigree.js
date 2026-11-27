@@ -39,13 +39,13 @@
     if (error) throw new RangeError(error);
     const data = Q.find(fixed.caseId), solved = analysis(data);
     const result = solved.possible.length ? solved.possible.map(mode => C.modes[mode]).join('、') : '四类均与题给条件冲突';
-    const arRisk = C.text(C.probability(1, 1, 'AR'));
-    const arCarrier = C.text(C.probability(1, 1, 'AR', 'carrier', 'unaffected'));
+    const answers = solved.possible.length === 1
+      ? C.requestedProbabilities(data, solved, fixed.asks, solved.possible[0]) : [];
     return { data, analysis: solved, level: 'senior', asks: fixed.asks, metrics: [1, 1, data.people.length], metricUnit: '人',
       facts: [fact('家系成员', `${data.people.length}人`), fact('样例与版本', `${data.id}-v${data.version}`), fact('题给定位', data.locus === 'X' ? 'X染色体非同源区' : '未知')],
       formula: '亲子传递与题给条件 → 可行基因型 → 有条件的概率',
       formulaDetail: '给定父母基因型和模型条件时，各次生育相互独立。父母基因型未知时，子代表型可提供证据。概率的分子、分母按所问事件分别计算。',
-      conclusion: `本图可行方式：${result}。${data.id === 'P02' ? `Aa×Aa下一子代受累${arRisk}；以双亲Aa×Aa及II-2未受累为条件，其携带概率${arCarrier}。` : ''}`,
+      conclusion: `本图可行方式：${result}。${answers.map(answer => `${answer.label}：${answer.possibilities.join('或')}（分母：${answer.denominator}）。`).join('')}`,
       sceneConclusion: '先选择候选与关系证据，再用六步核对基因型和所问事件。',
       readout: `${data.id}-v${data.version} · ${data.people.length}名成员`, badge: '遗传系谱图 · 有条件推导',
       contextParameters: `${data.id}-v${data.version}；${data.locus === 'X' ? 'X非同源区' : '位置未知'}；所问${fixed.asks}；本地可行${result}。完全外显、无新突变。给定父母基因型及模型时各次生育独立。${data.id === 'P05' ? '外来II-3携带状态未知，AR和XR各有0或1/4；没有候选先验权重。' : ''}` };
@@ -79,7 +79,7 @@
     return `${id}，${p.sex === 'M' ? '男性' : '女性'}，表型${Q.phenotypeText[p.phenotype]}${p.carrier ? '；题给为携带者' : ''}。${relatives.join('。') || '本图未列父母和子女'}。`;
   }
 
-  function genotypeTable(m, mode) {
+  function genotypeTable(m, mode, selected) {
     if (!m.analysis.results[mode]?.possible) return '<p>该候选存在冲突，无法给出一致基因型。</p>';
     return `<table><caption>${C.modes[mode]}下的全部可行基因型</caption><thead><tr><th>成员</th><th>可能基因型</th><th>携带标记来源</th></tr></thead><tbody>${m.data.people.map(p => {
       const evidence = C.carrierEvidence(m.data, m.analysis, p.id, mode);
@@ -87,16 +87,18 @@
       const possiblyCarrier = doses.some(dose => C.isCarrier(dose, p.sex, mode));
       const status = evidence?.text || (possiblyCarrier ? '携带状态未知，保留可能集合'
         : p.phenotype === 'affected' ? '受累，按已列基因型说明' : '按已列基因型说明');
-      return `<tr data-genotype-row="${p.id}"><th>${p.id}</th><td>${doses.map(dose => C.genotype(dose, p.sex, mode)).join(' 或 ')}</td><td data-carrier-source="${evidence?.source || (possiblyCarrier ? 'undetermined' : 'not-carrier')}">${status}</td></tr>`;
-    }).join('')}</tbody></table>`;
+      return `<tr data-genotype-row="${p.id}"><th><button type="button" data-pedigree-person="${p.id}" aria-pressed="${selected === p.id}">${p.id}</button></th><td>${doses.map(dose => C.genotype(dose, p.sex, mode)).join(' 或 ')}</td><td data-carrier-source="${evidence?.source || (possiblyCarrier ? 'undetermined' : 'not-carrier')}">${status}</td></tr>`;
+    }).join('')}</tbody></table>${selected ? `<section data-pedigree-derivation aria-label="${selected}的逐人推导"><h4>${selected}的推导依据</h4><ol>${C.genotypeDerivation(m.data, m.analysis, selected, mode).lines.map(line => `<li>${escape(line)}</li>`).join('')}</ol></section>` : '<p>点选表中或图上的成员，逐项查看表型、亲子传递和排除依据。</p>'}`;
   }
 
   function probabilityPanel(m, mode) {
     const solved = m.analysis.results[mode], data = m.data;
     if (!solved.possible) return '<p>当前候选无一致基因型，先核对冲突位置，概率不成立。</p>';
     const pairs = solved.pairs;
-    const rows = pairs.map(pair => `<tr><td>${C.genotype(pair.father, 'M', mode)} × ${C.genotype(pair.mother, 'F', mode)}</td><td>${C.text(pair.probability)}</td><td>${C.text(pair.boyConditional)}</td><td>${C.text(pair.affectedBoy)}</td></tr>`).join('');
-    const possibilities = [...new Set(pairs.map(pair => C.text(pair.probability)))];
+    const answers = C.requestedProbabilities(data, m.analysis, m.asks, mode);
+    if (!answers.length) return '<p data-pedigree-probability-summary>本题未问概率；请按所问核对方式判读或冲突依据。</p>';
+    const rows = pairs.map((pair, index) => `<tr><td>${C.genotype(pair.father, 'M', mode)} × ${C.genotype(pair.mother, 'F', mode)}</td>${answers.map(answer => `<td>${answer.values[index] ? C.text(answer.values[index]) : '条件事件机会为0，未定义'}</td>`).join('')}</tr>`).join('');
+    const summaries = answers.map(answer => `<p data-pedigree-probability-result="${answer.field}">所问：${escape(answer.ask)}。在${C.modes[mode]}下，${answer.label}${answer.possibilities.length === 1 ? `为${answer.possibilities[0]}` : `保留${answer.possibilities.join('或')}，需补携带信息`}；分母为${answer.denominator}。</p>`).join('');
     const matrix = pairs.map(pair => `<details open><summary>${data.target.join(' × ')}，${C.genotype(pair.father, 'M', mode)} × ${C.genotype(pair.mother, 'F', mode)}</summary><table class="pedigree-gametes"><caption>列配子与性别组合，合并相同基因型前各项概率如下</caption><thead><tr><th>父方配子</th><th>母方配子</th><th>子代</th><th>概率</th></tr></thead><tbody>${pair.outcomes.map(row => {
       const fatherAllele = row.fatherAllele === 'Y' ? 'Y' : C.genotype(row.fatherAllele, 'M', mode).replace(/Y$/, '');
       const motherAllele = C.genotype(row.motherAllele, 'M', mode).replace(/Y$/, '');
@@ -104,9 +106,9 @@
       return `<tr><td>${mode.startsWith('X') ? fatherAllele : autosomalAllele(row.fatherAllele)}</td><td>${mode.startsWith('X') ? motherAllele : autosomalAllele(row.motherAllele)}</td><td>${row.sex === 'M' ? '男' : '女'} ${row.genotype}</td><td>${C.text(row.probability)}</td></tr>`;
     }).join('')}</tbody></table></details>`).join('');
     const carrierProbability = C.text(C.probability(1, 1, 'AR', 'carrier', 'unaffected'));
-    const carrier = data.carrierTarget ? `<p data-carrier-probability>以双亲Aa×Aa及II-2未受累为条件，AA、Aa、Aa、aa四个配子组合各1/4。P(携带且未受累)=1/2，P(未受累)=3/4，所以P(携带 | 双亲Aa×Aa且II-2未受累)=(1/2)/(3/4)=${carrierProbability}。II-4题给携带这一事实不替代II-2的条件。</p>` : '';
+    const carrier = answers.some(answer => answer.field === 'carrier') ? `<p data-carrier-probability>以双亲Aa×Aa及II-2未受累为条件，AA、Aa、Aa、aa四个配子组合各1/4。P(携带且未受累)=1/2，P(未受累)=3/4，所以P(携带 | 双亲Aa×Aa且II-2未受累)=(1/2)/(3/4)=${carrierProbability}。II-4题给携带这一事实不替代II-2的条件。</p>` : '';
     const p05 = data.id === 'P05' ? `<p data-p05-conditions>AD下II-2及II-3均为aa，受累概率0；XD下II-2为XᵈY、II-3为XᵈXᵈ，受累概率0。AR下II-2为Aa，II-3为AA时0、为Aa时1/4。XR下II-2为XᴬY，II-3为XᴬXᴬ时0、为XᴬXᵃ时1/4。</p><p>在已确定的AR或XR模型下，补II-3携带状态即可确定该模型中的数值。常染色体定位保留AD或AR，X非同源区定位保留XD或XR，进一步的显隐性证据继续缩小方式。只知道外来配偶未受累，携带状态仍可能未知。III-1表型未知，未据此增加观测证据。</p>` : '';
-    return `<p>所问配偶为${data.target.join('与')}。${possibilities.length === 1 ? `在${C.modes[mode]}下的受累概率为${possibilities[0]}。` : `在${C.modes[mode]}下保留${possibilities.join('或')}，需补携带信息。`}</p><table data-pedigree-probabilities><caption>三种所问事件使用各自分母</caption><thead><tr><th>父母基因型</th><th>下一子代受累</th><th>已知为男孩时受累</th><th>生一个受累男孩</th></tr></thead><tbody>${rows}</tbody></table><p>给定父母基因型和模型条件时各次生育相互独立。男孩条件题的分母是男孩机会1/2，受累男孩题的分母是全部子代机会1。父母基因型未知时，子代表型可以提供推断证据，可行指派没有等权先验。</p>${carrier}${p05}${matrix}`;
+    return `<div data-pedigree-probability-summary><p>所问配偶为${data.target.join('与')}。</p>${summaries}</div><table data-pedigree-probabilities><caption>仅列本题受检子问，分别使用对应分母</caption><thead><tr><th>父母基因型</th>${answers.map(answer => `<th>${answer.label}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table><p>给定父母基因型和模型条件时各次生育相互独立。男孩条件题的分母是男孩机会1/2，受累男孩题的分母是全部子代机会1。父母基因型未知时，子代表型可以提供推断证据，可行指派没有等权先验。</p>${carrier}${p05}${matrix}`;
   }
 
   function pane(m, draft, step) {
@@ -116,7 +118,7 @@
     if (step === 0) return '<h4>读图，区分表型与已知信息</h4><p>点选成员，查看父母、配偶、同胞及子女。空心图形只说明表型未受累。问号说明表型还没有给出。携带事实在图例和成员说明中单独标注。</p>';
     if (step === 1) return `<h4>先选择所有可能方式</h4><p>允许多选，保留你的判断，下一步逐个核对证据。</p><div class="pedigree-modes">${Object.entries(C.modes).map(([key, title]) => `<button type="button" data-pedigree-predict="${key}" aria-pressed="${draft.prediction.has(key)}">${title}</button>`).join('')}</div><p data-prediction>当前预测${[...draft.prediction].join('、') || '尚未选择'}。</p>`;
     if (step === 2) return `<h4>点出支持或排除的亲子关系</h4><div class="pedigree-relations">${relationButtons}</div>${modeButtons}<p data-mode-result>${C.modes[mode]}${solved.possible ? '有可行基因型，当前证据不能排除' : '在给定条件下被排除'}。</p><ul>${solved.conflicts.map(c => `<li data-conflict="${c.family || c.type}">${escape(c.text)}</li>`).join('') || '<li>逐个家庭的配子传递与全图约束可以同时满足。可行性不表示该方式已经唯一确定。</li>'}</ul><p>全图可行方式${m.analysis.possible.map(key => C.modes[key]).join('、') || '为空，须核对冲突'}。</p>`;
-    if (step === 3) return `<h4>核对每人的基因型与证据来源</h4>${modeButtons}${genotypeTable(m, mode)}`;
+    if (step === 3) return `<h4>核对每人的基因型与证据来源</h4>${modeButtons}${genotypeTable(m, mode, draft.selected)}`;
     if (step === 4) return `<h4>从指定父母的配子计算</h4>${modeButtons}${probabilityPanel(m, mode)}`;
     const correct = m.analysis.possible.length === 0 ? 'none' : m.analysis.possible.length === 1 ? 'one' : 'many';
     return `<h4>比较并解释</h4><p>原预测${[...draft.prediction].join('、') || '未选择'}；本地可行方式${m.analysis.possible.join('、') || '四类均冲突'}。你选的证据${[...draft.evidence].join('、') || '尚未选择'}。</p><fieldset><legend>这张图在题给假设下能得出什么？</legend>${[['one', '有且只有一种可行方式'], ['many', '多种方式仍可行，需说明所缺信息'], ['none', '四类均有冲突，需核对题给关系或假设']].map(([value, title]) => `<label><input type="radio" name="pedigree-explanation" value="${value}" ${draft.answer === value ? 'checked' : ''}>${title}</label>`).join('')}</fieldset><button type="button" data-pedigree-check>核对解释</button><p aria-live="polite" data-explanation-feedback>${draft.checked ? draft.answer === correct ? '与全图约束一致。请结合所选关系和概率分母说明理由。' : '请回看候选排除与亲子关系，按可行集合重新判断。' : '先选结论，再核对解释。'}</p>${m.data.id === 'P05' ? '<p>补II-3携带状态确定某个隐性模型下的概率，补定位与显隐性证据缩小遗传方式，这两类信息作用不同。</p>' : ''}`;
@@ -163,8 +165,8 @@
       node.setAttribute('aria-pressed', (node.dataset.pedigreeMember || node.dataset.pedigreePerson) === draft.selected ? 'true' : 'false');
     });
     const selection = draft.selected ? relationText(m.data, draft.selected) : '点选一个成员查看其亲缘与题给信息。';
-    const evidence = draft.selected && step >= 3 ? C.carrierEvidence(m.data, m.analysis, draft.selected, draft.mode) : null;
-    el.querySelector('[data-pedigree-selection]').textContent = selection + (evidence ? `${evidence.text}，${evidence.genotype}。` : '');
+    const derivation = draft.selected && step >= 3 ? C.genotypeDerivation(m.data, m.analysis, draft.selected, draft.mode) : null;
+    el.querySelector('[data-pedigree-selection]').textContent = selection + (derivation ? derivation.lines.join('') : '');
     el.querySelectorAll('[data-pedigree-family]').forEach(node => {
       const conflict = step >= 2 && m.analysis.results[draft.mode].conflicts.some(c => c.family === node.dataset.pedigreeFamily);
       node.classList.toggle('conflict', conflict);
@@ -177,7 +179,17 @@
       node.dataset.carrierSource = info?.source || (m.data.people.find(p => p.id === id).carrier ? 'given' : 'undetermined');
     });
     const html = pane(m, draft, step), panel = el.querySelector('[data-pedigree-pane]');
-    if (panel._html !== html) { panel.innerHTML = html; panel._html = html; }
+    if (panel._html !== html) {
+      const active = document.activeElement;
+      const focusAttribute = panel.contains(active) && ['data-pedigree-predict', 'data-pedigree-mode',
+        'data-pedigree-evidence', 'data-pedigree-check', 'data-pedigree-person'].find(name => active.hasAttribute(name));
+      const focusValue = focusAttribute ? active.getAttribute(focusAttribute) : '';
+      const radioValue = panel.contains(active) && active.name === 'pedigree-explanation' ? active.value : '';
+      panel.innerHTML = html; panel._html = html;
+      const replacement = focusAttribute ? [...panel.querySelectorAll(`[${focusAttribute}]`)].find(node => node.getAttribute(focusAttribute) === focusValue)
+        : radioValue ? [...panel.querySelectorAll('input[name="pedigree-explanation"]')].find(node => node.value === radioValue) : null;
+      replacement?.focus({ preventScroll: true });
+    }
   }
 
   function clearDraft(root) {

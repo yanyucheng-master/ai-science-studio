@@ -44,6 +44,79 @@ test('XR sex conditional and joint questions have different denominators', () =>
   assert.ok(outcomes.every(row => C.text(row.probability) === '1/4'));
 });
 
+test('requested probability answers select only the exact conditional or joint event', () => {
+  const data = Q.find('P04'), analysis = C.analyze(data);
+  const conditional = data.asks[1], joint = data.asks[2];
+  for (const [asks, labels, values, denominators] of [
+    [conditional, ['boyConditional'], ['1/2'], ['男孩，题设机会为1/2']],
+    [joint, ['affectedBoy'], ['1/4'], ['全部子代，机会为1']],
+    [conditional + '|' + joint, ['boyConditional', 'affectedBoy'], ['1/2', '1/4'], ['男孩，题设机会为1/2', '全部子代，机会为1']]
+  ]) {
+    const answers = Array.from(C.requestedProbabilities(data, analysis, asks, 'XR'));
+    assert.deepEqual(answers.map(answer => answer.field), labels);
+    assert.deepEqual(answers.map(answer => answer.possibilities[0]), values);
+    assert.deepEqual(answers.map(answer => answer.denominator), denominators);
+  }
+  assert.equal(C.requestedProbabilities(data, analysis, '方式判读', 'XR').length, 0);
+  assert.throws(() => C.requestedProbabilities(data, analysis, conditional + '|无条件受累概率', 'XR'));
+});
+
+test('P02 carrier-only and P05 conditional sets keep the requested event', () => {
+  const data = Q.find('P02');
+  const answer = C.requestedProbabilities(data, C.analyze(data), data.asks[2], 'AR')[0];
+  assert.equal(answer.field, 'carrier');
+  assert.equal(answer.possibilities[0], '2/3');
+  const multi = Q.find('P05');
+  assert.deepEqual(Array.from(C.requestedProbabilities(multi, C.analyze(multi), multi.asks[1], 'AR')[0].possibilities).sort(), ['0', '1/4']);
+});
+
+test('P01 II-2 derivation uses the unaffected child to exclude AA', () => {
+  const data = Q.find('P01'), explanation = C.genotypeDerivation(data, C.analyze(data), 'II-2', 'AD');
+  const text = explanation.lines.join('');
+  assert.deepEqual(Array.from(explanation.initial), [1, 2]);
+  assert.deepEqual(Array.from(explanation.remaining), [1]);
+  for (const fact of ['至少有一个显性A', 'F2', 'III-2为aa', '双亲必须各提供a', 'II-2若为AA无法提供a', '排除AA，剩余Aa']) assert.ok(text.includes(fact), fact);
+});
+
+test('P02 per-person proofs distinguish inferred, given and undetermined carriers', () => {
+  const data = Q.find('P02'), result = C.analyze(data);
+  const father = C.genotypeDerivation(data, result, 'I-1', 'AR');
+  assert.equal(father.source, 'inferred');
+  assert.ok(father.lines.join('').includes('II-1为aa'));
+  assert.ok(father.lines.join('').includes('排除AA，剩余Aa'));
+  const given = C.genotypeDerivation(data, result, 'II-4', 'AR');
+  assert.equal(given.source, 'given');
+  assert.ok(given.lines[0].includes('不是从子女表现推断'));
+  const unknown = C.genotypeDerivation(data, result, 'II-2', 'AR');
+  assert.equal(unknown.source, 'undetermined');
+  assert.ok(unknown.lines.join('').includes('全图仍允许AA或Aa'));
+});
+
+test('P05 outsider proof preserves all possibilities without using unknown offspring as evidence', () => {
+  const data = Q.find('P05'), result = C.analyze(data);
+  for (const mode of ['AR', 'XR']) {
+    const proof = C.genotypeDerivation(data, result, 'II-3', mode);
+    assert.equal(proof.source, 'undetermined');
+    assert.deepEqual(Array.from(proof.remaining), [0, 1]);
+    assert.ok(proof.lines.join('').includes('III-1表型未知'));
+    assert.ok(proof.lines.join('').includes('不能给未知基因型等权先验'));
+  }
+});
+
+test('every person in each feasible model has a consistent finite proof, conflicts do not invent genotypes', () => {
+  for (const data of cases) {
+    const result = C.analyze(data);
+    for (const mode of Object.keys(C.modes)) for (const person of data.people) {
+      const proof = C.genotypeDerivation(data, result, person.id, mode);
+      if (!result.results[mode].possible) assert.equal(proof, null);
+      else {
+        assert.ok(proof.lines.length >= 2);
+        assert.deepEqual(Array.from(proof.remaining), Array.from(result.results[mode].genotypes[person.id]));
+      }
+    }
+  }
+});
+
 test('all crosses conserve probability and use male X haploidy', () => {
   for (const mode of Object.keys(C.modes)) for (let father = 0; father <= (mode.startsWith('X') ? 1 : 2); father++) {
     for (let mother = 0; mother <= 2; mother++) {
