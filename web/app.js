@@ -8645,22 +8645,25 @@ async function generateExperiment(options = {}) {
     return;
   }
 
-  const inputBefore = $("#questionInput").value;
-  const subjectBefore = state.subject;
-  experimentConditionsPending = true;
-  let prepared;
-  try {
-    prepared = await window.MasterLabQuestionConditions?.resolve(question, { forExperiment: true,
-      isCurrent: () => $("#questionInput").value === inputBefore && state.subject === subjectBefore });
-  } finally { experimentConditionsPending = false; }
-  if (!prepared?.ok) {
-    showToast(prepared?.cancelled ? "已保留题目，请补充或确认条件后再生成" : "条件检查组件未加载，请刷新后重试");
-    return;
-  }
-  if (prepared.changed) {
-    question = prepared.question;
-    displayQuestion = question;
-    $("#questionInput").value = question;
+  // Share imports already carry a validated local plan for the sender's experiment.
+  if (!options.shared) {
+    const inputBefore = $("#questionInput").value;
+    const subjectBefore = state.subject;
+    experimentConditionsPending = true;
+    let prepared;
+    try {
+      prepared = await window.MasterLabQuestionConditions?.resolve(question, { forExperiment: true,
+        isCurrent: () => $("#questionInput").value === inputBefore && state.subject === subjectBefore });
+    } finally { experimentConditionsPending = false; }
+    if (!prepared?.ok) {
+      showToast(prepared?.cancelled ? "已保留题目，请补充或确认条件后再生成" : "条件检查组件未加载，请刷新后重试");
+      return;
+    }
+    if (prepared.changed) {
+      question = prepared.question;
+      displayQuestion = question;
+      $("#questionInput").value = question;
+    }
   }
 
   const plan = options.shared ? window.MasterLabShare.planFor(options.shared)
@@ -9321,7 +9324,8 @@ document.addEventListener("keydown", event => {
 });
 
 function isExperimentShareRoute(hash = location.hash) {
-  return hash === "#/share" || hash.startsWith("#/share/");
+  return hash === "#/share" || hash.startsWith("#/share/")
+    || (!hash && new URLSearchParams(location.search).has("share"));
 }
 
 $("#shareButton").addEventListener("click", () => {
