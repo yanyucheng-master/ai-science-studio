@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f6f8fd">
+  <title>Android 下载 · 大师实验室</title>
+  <link rel="icon" href="../assets/brand/orbit-flask-2026-10-04/favicon.ico">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px;
+      background: #f6f8fd; color: #10284a; font: 1rem/1.65 system-ui, sans-serif; }
+    main { width: min(100%, 32rem); }
+    img { border-radius: 20px; }
+    h1 { margin: 16px 0 0; font-size: clamp(1.8rem, 6vw, 2.45rem); line-height: 1.3; }
+    p { margin: 8px 0 20px; color: #405777; }
+    a { color: #244e97; text-underline-offset: 3px; }
+    .download { display: inline-block; padding: 12px 24px; background: #244e97; border-radius: 12px;
+      color: white; text-decoration: none; font-weight: 650; }
+    [hidden] { display: none; }
+    details { margin: 24px 0; padding: 14px 0; border-block: 1px solid #ccd6e5; }
+    code { overflow-wrap: anywhere; font-size: .85rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <img src="../assets/brand/orbit-flask-2026-10-04/icon-192.png" width="76" height="76" alt="">
+    <h1>大师实验室 Android 版</h1>
+    <p id="version" role="status">正在获取最新安装包…</p>
+    <a id="download" class="download" hidden download>下载 APK</a>
+    <p>下载后点开 APK，按手机提示安装。进入实验室即可访问公网最新内容，安装包有新版时可在启动页下载。</p>
+    <details id="checksum" hidden>
+      <summary>查看安装包 SHA-256</summary>
+      <code id="hash"></code>
+    </details>
+    <noscript><p>请启用 JavaScript，以获取当前发布的 APK 下载链接。</p></noscript>
+    <a href="/">打开网页版</a>
+  </main>
+  <script>
+    async function loadRelease() {
+      const version = document.getElementById("version");
+      try {
+        const response = await fetch("./latest.json?t=" + Date.now(), { cache: "no-store" });
+        if (!response.ok) throw new Error("release unavailable");
+        const release = await response.json();
+        if (release.packageName !== "cn.masterlab.publicdemo" || !Number.isSafeInteger(release.versionCode) ||
+            release.versionCode < 1 || release.apk !== "master-lab-" + release.versionCode + ".apk" ||
+            !/^\d+(\.\d+){2}$/.test(release.versionName) || !Number.isSafeInteger(release.sizeBytes) ||
+            release.sizeBytes <= 0 || !/^[0-9a-f]{64}$/.test(release.sha256)) throw new Error("invalid release");
+        version.textContent = "版本 " + release.versionName + " · " + Math.ceil(release.sizeBytes / 1024) + " KiB · Android 6.0 及以上";
+        const link = document.getElementById("download");
+        link.href = "./" + release.apk;
+        link.hidden = false;
+        document.getElementById("hash").textContent = release.sha256;
+        document.getElementById("checksum").hidden = false;
+      } catch {
+        version.textContent = "未能读取安装包版本。请联网后刷新此页重试。";
+      }
+    }
+    loadRelease();
+  </script>
+</body>
+</html>

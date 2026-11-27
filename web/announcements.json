@@ -2,6 +2,17 @@
   "version": 1,
   "announcements": [
     {
+      "id": "20261127-android-public-apk",
+      "revision": 1,
+      "date": "2026-11-27",
+      "title": "公网版新增 Android 安装包",
+      "summary": "Android 手机可从正式站点下载大师实验室，打开应用即可进入公网实验室。",
+      "details": [
+        "在手机浏览器打开 https://ai-science-studio.onrender.com/android/index.html 下载 APK。实验页面随公网部署更新，重新进入或刷新网页即可获取。",
+        "启动页会自动检查安装包版本，也可点“检查安装包更新”。发现新版后，点“下载新版 APK”，下载完成后按系统提示覆盖安装。"
+      ]
+    },
+    {
       "id": "20261124-favorite-cards",
       "revision": 1,
       "date": "2026-11-24",
