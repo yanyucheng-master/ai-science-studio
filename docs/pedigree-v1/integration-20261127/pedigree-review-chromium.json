@@ -1,0 +1,2624 @@
+{
+  "rawReportSha256": "27da80095b0dc8c2ca79a26cf3cc4482e02d3802af0baf4a38805586ad150b45",
+  "report": {
+    "sourceSha": "08460c0a607516fe6e76b78702bbb67c22101940",
+    "browser": "151.0.7922.34",
+    "checks": [
+      "manual step 5 synchronizes reasoning",
+      "primary results contain exactly the requested probability events",
+      "boyConditional primary statement, value and denominator match the subquestion",
+      "active asks match the restored subquestions",
+      "P04 has no unasked unconditional primary result",
+      "table columns follow the requested events",
+      "pure or paired subquestions saved by the normal favorite button",
+      "manual step 5 synchronizes reasoning",
+      "primary results contain exactly the requested probability events",
+      "boyConditional primary statement, value and denominator match the subquestion",
+      "active asks match the restored subquestions",
+      "P04 has no unasked unconditional primary result",
+      "table columns follow the requested events",
+      "independent share starts at the initial step",
+      "manual step 5 synchronizes reasoning",
+      "primary results contain exactly the requested probability events",
+      "boyConditional primary statement, value and denominator match the subquestion",
+      "active asks match the restored subquestions",
+      "P04 has no unasked unconditional primary result",
+      "table columns follow the requested events",
+      "manual step 5 synchronizes reasoning",
+      "primary results contain exactly the requested probability events",
+      "boyConditional primary statement, value and denominator match the subquestion",
+      "active asks match the restored subquestions",
+      "P04 has no unasked unconditional primary result",
+      "table columns follow the requested events",
+      "subquestion reset returns to the initial step",
+      "manual step 5 synchronizes reasoning",
+      "primary results contain exactly the requested probability events",
+      "boyConditional primary statement, value and denominator match the subquestion",
+      "active asks match the restored subquestions",
+      "P04 has no unasked unconditional primary result",
+      "table columns follow the requested events",
+      "probability generation and all restore paths make zero automatic AI POST",
+      "manual step 5 synchronizes reasoning",
+      "primary results contain exactly the requested probability events",
+      "affectedBoy primary statement, value and denominator match the subquestion",
+      "active asks match the restored subquestions",
+      "P04 has no unasked unconditional primary result",
+      "table columns follow the requested events",
+      "pure or paired subquestions saved by the normal favorite button",
+      "manual step 5 synchronizes reasoning",
+      "primary results contain exactly the requested probability events",
+      "affectedBoy primary statement, value and denominator match the subquestion",
+      "active asks match the restored subquestions",
+      "P04 has no unasked unconditional primary result",
+      "table columns follow the requested events",
+      "independent share starts at the initial step",
+      "manual step 5 synchronizes reasoning",
+      "primary results contain exactly the requested probability events",
+      "affectedBoy primary statement, value and denominator match the subquestion",
+      "active asks match the restored subquestions",
+      "P04 has no unasked unconditional primary result",
+      "table columns follow the requested events",
+      "manual step 5 synchronizes reasoning",
+      "primary results contain exactly the requested probability events",
+      "affectedBoy primary statement, value and denominator match the subquestion",
+      "active asks match the restored subquestions",
+      "P04 has no unasked unconditional primary result",
+      "table columns follow the requested events",
+      "subquestion reset returns to the initial step",
+      "manual step 5 synchronizes reasoning",
+      "primary results contain exactly the requested probability events",
+      "affectedBoy primary statement, value and denominator match the subquestion",
+      "active asks match the restored subquestions",
+      "P04 has no unasked unconditional primary result",
+      "table columns follow the requested events",
+      "probability generation and all restore paths make zero automatic AI POST",
+      "manual step 5 synchronizes reasoning",
+      "primary results contain exactly the requested probability events",
+      "boyConditional primary statement, value and denominator match the subquestion",
+      "affectedBoy primary statement, value and denominator match the subquestion",
+      "active asks match the restored subquestions",
+      "P04 has no unasked unconditional primary result",
+      "table columns follow the requested events",
+      "pure or paired subquestions saved by the normal favorite button",
+      "manual step 5 synchronizes reasoning",
+      "primary results contain exactly the requested probability events",
+      "boyConditional primary statement, value and denominator match the subquestion",
+      "affectedBoy primary statement, value and denominator match the subquestion",
+      "active asks match the restored subquestions",
+      "P04 has no unasked unconditional primary result",
+      "table columns follow the requested events",
+      "independent share starts at the initial step",
+      "manual step 5 synchronizes reasoning",
+      "primary results contain exactly the requested probability events",
+      "boyConditional primary statement, value and denominator match the subquestion",
+      "affectedBoy primary statement, value and denominator match the subquestion",
+      "active asks match the restored subquestions",
+      "P04 has no unasked unconditional primary result",
+      "table columns follow the requested events",
+      "manual step 5 synchronizes reasoning",
+      "primary results contain exactly the requested probability events",
+      "boyConditional primary statement, value and denominator match the subquestion",
+      "affectedBoy primary statement, value and denominator match the subquestion",
+      "active asks match the restored subquestions",
+      "P04 has no unasked unconditional primary result",
+      "table columns follow the requested events",
+      "subquestion reset returns to the initial step",
+      "manual step 5 synchronizes reasoning",
+      "primary results contain exactly the requested probability events",
+      "boyConditional primary statement, value and denominator match the subquestion",
+      "affectedBoy primary statement, value and denominator match the subquestion",
+      "active asks match the restored subquestions",
+      "P04 has no unasked unconditional primary result",
+      "table columns follow the requested events",
+      "probability generation and all restore paths make zero automatic AI POST",
+      "manual step 4 synchronizes reasoning",
+      "explicit sample reference displays the actual local gap",
+      "reference refusal preserves current graph and step",
+      "reference refusal preserves complete graph identity",
+      "reference refusal tutor sees the new question without the old answer",
+      "reference refusal tutor retains the specific local gap",
+      "reference refusal sends zero automatic AI POST",
+      "explicit sample reference displays the actual local gap",
+      "reference refusal preserves current graph and step",
+      "reference refusal preserves complete graph identity",
+      "reference refusal tutor sees the new question without the old answer",
+      "reference refusal tutor retains the specific local gap",
+      "reference refusal sends zero automatic AI POST",
+      "explicit sample reference displays the actual local gap",
+      "reference refusal preserves current graph and step",
+      "reference refusal preserves complete graph identity",
+      "reference refusal tutor sees the new question without the old answer",
+      "reference refusal tutor retains the specific local gap",
+      "reference refusal sends zero automatic AI POST",
+      "explicit sample reference displays the actual local gap",
+      "reference refusal preserves current graph and step",
+      "reference refusal preserves complete graph identity",
+      "reference refusal tutor sees the new question without the old answer",
+      "reference refusal tutor retains the specific local gap",
+      "reference refusal sends zero automatic AI POST",
+      "explicit sample reference displays the actual local gap",
+      "reference refusal preserves current graph and step",
+      "reference refusal preserves complete graph identity",
+      "reference refusal tutor sees the new question without the old answer",
+      "reference refusal tutor retains the specific local gap",
+      "reference refusal sends zero automatic AI POST",
+      "manual step 4 synchronizes reasoning",
+      "explicit sample reference displays the actual local gap",
+      "reference refusal preserves current graph and step",
+      "reference refusal preserves complete graph identity",
+      "reference refusal tutor sees the new question without the old answer",
+      "reference refusal tutor retains the specific local gap",
+      "reference refusal sends zero automatic AI POST",
+      "explicit sample reference displays the actual local gap",
+      "reference refusal preserves current graph and step",
+      "reference refusal preserves complete graph identity",
+      "reference refusal tutor sees the new question without the old answer",
+      "reference refusal tutor retains the specific local gap",
+      "reference refusal sends zero automatic AI POST",
+      "explicit sample reference displays the actual local gap",
+      "reference refusal preserves current graph and step",
+      "reference refusal preserves complete graph identity",
+      "reference refusal tutor sees the new question without the old answer",
+      "reference refusal tutor retains the specific local gap",
+      "reference refusal sends zero automatic AI POST",
+      "explicit sample reference displays the actual local gap",
+      "reference refusal preserves current graph and step",
+      "reference refusal preserves complete graph identity",
+      "reference refusal tutor sees the new question without the old answer",
+      "reference refusal tutor retains the specific local gap",
+      "reference refusal sends zero automatic AI POST",
+      "explicit sample reference displays the actual local gap",
+      "reference refusal preserves current graph and step",
+      "reference refusal preserves complete graph identity",
+      "reference refusal tutor sees the new question without the old answer",
+      "reference refusal tutor retains the specific local gap",
+      "reference refusal sends zero automatic AI POST",
+      "manual step 4 synchronizes reasoning",
+      "selected member and derivation show the actual relation and remaining possibilities",
+      "P01-II-2-AD 390px text and page fit",
+      "P01-II-2-AD 390px equal SVG scale and visible legend",
+      "P01-II-2-AD 390px SVG targets at least 44px",
+      "P01-II-2-AD all member IDs rendered",
+      "P01-II-2-AD F1 spouse connection uses correct endpoints",
+      "P01-II-2-AD F1 child II-1 connects to sibling bar",
+      "P01-II-2-AD F1 child II-2 connects to sibling bar",
+      "P01-II-2-AD F2 spouse connection uses correct endpoints",
+      "P01-II-2-AD F2 child III-1 connects to sibling bar",
+      "P01-II-2-AD F2 child III-2 connects to sibling bar",
+      "manual step 4 synchronizes reasoning",
+      "selected member and derivation show the actual relation and remaining possibilities",
+      "P02-I-1-AR 390px text and page fit",
+      "P02-I-1-AR 390px equal SVG scale and visible legend",
+      "P02-I-1-AR 390px SVG targets at least 44px",
+      "P02-I-1-AR all member IDs rendered",
+      "P02-I-1-AR F1 spouse connection uses correct endpoints",
+      "P02-I-1-AR F1 child II-1 connects to sibling bar",
+      "P02-I-1-AR F1 child II-2 connects to sibling bar",
+      "P02-I-1-AR F1 child II-3 connects to sibling bar",
+      "P02-I-1-AR F1 child II-4 connects to sibling bar",
+      "manual step 4 synchronizes reasoning",
+      "selected member and derivation show the actual relation and remaining possibilities",
+      "P02-II-4-AR 390px text and page fit",
+      "P02-II-4-AR 390px equal SVG scale and visible legend",
+      "P02-II-4-AR 390px SVG targets at least 44px",
+      "P02-II-4-AR all member IDs rendered",
+      "P02-II-4-AR F1 spouse connection uses correct endpoints",
+      "P02-II-4-AR F1 child II-1 connects to sibling bar",
+      "P02-II-4-AR F1 child II-2 connects to sibling bar",
+      "P02-II-4-AR F1 child II-3 connects to sibling bar",
+      "P02-II-4-AR F1 child II-4 connects to sibling bar",
+      "manual step 4 synchronizes reasoning",
+      "selected member and derivation show the actual relation and remaining possibilities",
+      "P02-II-2-AR 390px text and page fit",
+      "P02-II-2-AR 390px equal SVG scale and visible legend",
+      "P02-II-2-AR 390px SVG targets at least 44px",
+      "P02-II-2-AR all member IDs rendered",
+      "P02-II-2-AR F1 spouse connection uses correct endpoints",
+      "P02-II-2-AR F1 child II-1 connects to sibling bar",
+      "P02-II-2-AR F1 child II-2 connects to sibling bar",
+      "P02-II-2-AR F1 child II-3 connects to sibling bar",
+      "P02-II-2-AR F1 child II-4 connects to sibling bar",
+      "manual step 4 synchronizes reasoning",
+      "selected member and derivation show the actual relation and remaining possibilities",
+      "P05-II-3-AR 390px text and page fit",
+      "P05-II-3-AR 390px equal SVG scale and visible legend",
+      "P05-II-3-AR 390px SVG targets at least 44px",
+      "P05-II-3-AR all member IDs rendered",
+      "P05-II-3-AR F1 spouse connection uses correct endpoints",
+      "P05-II-3-AR F1 child II-1 connects to sibling bar",
+      "P05-II-3-AR F1 child II-2 connects to sibling bar",
+      "P05-II-3-AR F2 spouse connection uses correct endpoints",
+      "P05-II-3-AR F2 child III-1 connects to sibling bar",
+      "manual step 4 synchronizes reasoning",
+      "selected member and derivation show the actual relation and remaining possibilities",
+      "P05-II-3-XR 390px text and page fit",
+      "P05-II-3-XR 390px equal SVG scale and visible legend",
+      "P05-II-3-XR 390px SVG targets at least 44px",
+      "P05-II-3-XR all member IDs rendered",
+      "P05-II-3-XR F1 spouse connection uses correct endpoints",
+      "P05-II-3-XR F1 child II-1 connects to sibling bar",
+      "P05-II-3-XR F1 child II-2 connects to sibling bar",
+      "P05-II-3-XR F2 spouse connection uses correct endpoints",
+      "P05-II-3-XR F2 child III-1 connects to sibling bar",
+      "manual step 2 synchronizes reasoning",
+      "Enter prediction retains XR focus",
+      "Enter prediction changes state",
+      "Space prediction retains XR focus",
+      "Space prediction toggles state",
+      "backward tab continues at the adjacent prediction",
+      "second prediction keeps focus",
+      "forward tab continues at the adjacent prediction",
+      "manual step 3 synchronizes reasoning",
+      "evidence selection retains focus",
+      "evidence tab continues to the second family",
+      "second family selection retains focus",
+      "candidate model switch retains focus",
+      "candidate tab continues at adjacent model",
+      "Space candidate keeps focus",
+      "manual step 4 synchronizes reasoning",
+      "table member selection retains focus",
+      "keyboard table member opens its derivation",
+      "manual step 6 synchronizes reasoning",
+      "radio arrow selection retains focus",
+      "radio state follows arrow selection",
+      "second radio arrow continues in group",
+      "Tab from explanation continues to check button",
+      "checking explanation retains focus",
+      "keyboard check displays actual explanation feedback",
+      "manual step 4 synchronizes reasoning",
+      "selected member and derivation show the actual relation and remaining possibilities",
+      "P01-II-2-AD 360px text and page fit",
+      "P01-II-2-AD 360px equal SVG scale and visible legend",
+      "P01-II-2-AD 360px SVG targets at least 44px",
+      "P01-II-2-AD all member IDs rendered",
+      "P01-II-2-AD F1 spouse connection uses correct endpoints",
+      "P01-II-2-AD F1 child II-1 connects to sibling bar",
+      "P01-II-2-AD F1 child II-2 connects to sibling bar",
+      "P01-II-2-AD F2 spouse connection uses correct endpoints",
+      "P01-II-2-AD F2 child III-1 connects to sibling bar",
+      "P01-II-2-AD F2 child III-2 connects to sibling bar",
+      "manual step 4 synchronizes reasoning",
+      "selected member and derivation show the actual relation and remaining possibilities",
+      "P02-I-1-AR 360px text and page fit",
+      "P02-I-1-AR 360px equal SVG scale and visible legend",
+      "P02-I-1-AR 360px SVG targets at least 44px",
+      "P02-I-1-AR all member IDs rendered",
+      "P02-I-1-AR F1 spouse connection uses correct endpoints",
+      "P02-I-1-AR F1 child II-1 connects to sibling bar",
+      "P02-I-1-AR F1 child II-2 connects to sibling bar",
+      "P02-I-1-AR F1 child II-3 connects to sibling bar",
+      "P02-I-1-AR F1 child II-4 connects to sibling bar",
+      "manual step 4 synchronizes reasoning",
+      "selected member and derivation show the actual relation and remaining possibilities",
+      "P02-II-4-AR 360px text and page fit",
+      "P02-II-4-AR 360px equal SVG scale and visible legend",
+      "P02-II-4-AR 360px SVG targets at least 44px",
+      "P02-II-4-AR all member IDs rendered",
+      "P02-II-4-AR F1 spouse connection uses correct endpoints",
+      "P02-II-4-AR F1 child II-1 connects to sibling bar",
+      "P02-II-4-AR F1 child II-2 connects to sibling bar",
+      "P02-II-4-AR F1 child II-3 connects to sibling bar",
+      "P02-II-4-AR F1 child II-4 connects to sibling bar",
+      "manual step 4 synchronizes reasoning",
+      "selected member and derivation show the actual relation and remaining possibilities",
+      "P02-II-2-AR 360px text and page fit",
+      "P02-II-2-AR 360px equal SVG scale and visible legend",
+      "P02-II-2-AR 360px SVG targets at least 44px",
+      "P02-II-2-AR all member IDs rendered",
+      "P02-II-2-AR F1 spouse connection uses correct endpoints",
+      "P02-II-2-AR F1 child II-1 connects to sibling bar",
+      "P02-II-2-AR F1 child II-2 connects to sibling bar",
+      "P02-II-2-AR F1 child II-3 connects to sibling bar",
+      "P02-II-2-AR F1 child II-4 connects to sibling bar",
+      "manual step 4 synchronizes reasoning",
+      "selected member and derivation show the actual relation and remaining possibilities",
+      "P05-II-3-AR 360px text and page fit",
+      "P05-II-3-AR 360px equal SVG scale and visible legend",
+      "P05-II-3-AR 360px SVG targets at least 44px",
+      "P05-II-3-AR all member IDs rendered",
+      "P05-II-3-AR F1 spouse connection uses correct endpoints",
+      "P05-II-3-AR F1 child II-1 connects to sibling bar",
+      "P05-II-3-AR F1 child II-2 connects to sibling bar",
+      "P05-II-3-AR F2 spouse connection uses correct endpoints",
+      "P05-II-3-AR F2 child III-1 connects to sibling bar",
+      "manual step 4 synchronizes reasoning",
+      "selected member and derivation show the actual relation and remaining possibilities",
+      "P05-II-3-XR 360px text and page fit",
+      "P05-II-3-XR 360px equal SVG scale and visible legend",
+      "P05-II-3-XR 360px SVG targets at least 44px",
+      "P05-II-3-XR all member IDs rendered",
+      "P05-II-3-XR F1 spouse connection uses correct endpoints",
+      "P05-II-3-XR F1 child II-1 connects to sibling bar",
+      "P05-II-3-XR F1 child II-2 connects to sibling bar",
+      "P05-II-3-XR F2 spouse connection uses correct endpoints",
+      "P05-II-3-XR F2 child III-1 connects to sibling bar",
+      "manual step 2 synchronizes reasoning",
+      "Enter prediction retains XR focus",
+      "Enter prediction changes state",
+      "Space prediction retains XR focus",
+      "Space prediction toggles state",
+      "backward tab continues at the adjacent prediction",
+      "second prediction keeps focus",
+      "forward tab continues at the adjacent prediction",
+      "manual step 3 synchronizes reasoning",
+      "evidence selection retains focus",
+      "evidence tab continues to the second family",
+      "second family selection retains focus",
+      "candidate model switch retains focus",
+      "candidate tab continues at adjacent model",
+      "Space candidate keeps focus",
+      "manual step 4 synchronizes reasoning",
+      "table member selection retains focus",
+      "keyboard table member opens its derivation",
+      "manual step 6 synchronizes reasoning",
+      "radio arrow selection retains focus",
+      "radio state follows arrow selection",
+      "second radio arrow continues in group",
+      "Tab from explanation continues to check button",
+      "checking explanation retains focus",
+      "keyboard check displays actual explanation feedback",
+      "ordinary concept question keeps the original single mock AI fallback",
+      "review paths have no page script exceptions"
+    ],
+    "requests": [
+      {
+        "method": "POST",
+        "path": "/api/v1/experiment/generate"
+      }
+    ],
+    "pages": [],
+    "errors": [],
+    "layouts": [
+      {
+        "id": "P01-II-2-AD",
+        "viewport": 390,
+        "width": 390,
+        "documentWidth": 390,
+        "people": [
+          {
+            "id": "I-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.078575134277344
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "I-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.078575134277344
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-1",
+            "hit": {
+              "width": 46.07857131958008,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-3",
+            "hit": {
+              "width": 46.078582763671875,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "III-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -16.026973724365234,
+              "y": 23.1660213470459,
+              "width": 32.05394744873047,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "III-2",
+            "hit": {
+              "width": 46.078582763671875,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -16.026973724365234,
+              "y": 23.1660213470459,
+              "width": 32.05394744873047,
+              "height": 26.389705657958984
+            }
+          }
+        ],
+        "families": [
+          {
+            "id": "F1",
+            "path": "M158 65H222M190 65V122M80 122H220M80 122V182M220 122V182"
+          },
+          {
+            "id": "F2",
+            "path": "M238 200H312M275 200V257M220 257H330M220 257V317M330 257V317"
+          }
+        ],
+        "outside": [],
+        "xScale": 0.72,
+        "yScale": 0.7199776785714286,
+        "legendVisible": true
+      },
+      {
+        "id": "P02-I-1-AR",
+        "viewport": 390,
+        "width": 390,
+        "documentWidth": 390,
+        "people": [
+          {
+            "id": "I-1",
+            "hit": {
+              "width": 46.07719421386719,
+              "height": 46.07720184326172
+            },
+            "label": {
+              "x": -10.753692626953125,
+              "y": 23.16539764404297,
+              "width": 21.50738525390625,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "I-2",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07720184326172
+            },
+            "label": {
+              "x": -10.753692626953125,
+              "y": 23.16539764404297,
+              "width": 21.50738525390625,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-1",
+            "hit": {
+              "width": 46.07719039916992,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-2",
+            "hit": {
+              "width": 46.07719421386719,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-3",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-4",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 27.89381217956543,
+              "height": 26.39049530029297
+            }
+          }
+        ],
+        "families": [
+          {
+            "id": "F1",
+            "path": "M208 65H272M240 65V122M80 122H395M80 122V182M185 122V182M290 122V182M395 122V182"
+          }
+        ],
+        "outside": [],
+        "xScale": 0.72,
+        "yScale": 0.7199561403508772,
+        "legendVisible": true
+      },
+      {
+        "id": "P02-II-4-AR",
+        "viewport": 390,
+        "width": 390,
+        "documentWidth": 390,
+        "people": [
+          {
+            "id": "I-1",
+            "hit": {
+              "width": 46.07719421386719,
+              "height": 46.07720184326172
+            },
+            "label": {
+              "x": -10.753692626953125,
+              "y": 23.16539764404297,
+              "width": 21.50738525390625,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "I-2",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07720184326172
+            },
+            "label": {
+              "x": -10.753692626953125,
+              "y": 23.16539764404297,
+              "width": 21.50738525390625,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-1",
+            "hit": {
+              "width": 46.07719039916992,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-2",
+            "hit": {
+              "width": 46.07719421386719,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-3",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-4",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 27.89381217956543,
+              "height": 26.39049530029297
+            }
+          }
+        ],
+        "families": [
+          {
+            "id": "F1",
+            "path": "M208 65H272M240 65V122M80 122H395M80 122V182M185 122V182M290 122V182M395 122V182"
+          }
+        ],
+        "outside": [],
+        "xScale": 0.72,
+        "yScale": 0.7199561403508772,
+        "legendVisible": true
+      },
+      {
+        "id": "P02-II-2-AR",
+        "viewport": 390,
+        "width": 390,
+        "documentWidth": 390,
+        "people": [
+          {
+            "id": "I-1",
+            "hit": {
+              "width": 46.07719421386719,
+              "height": 46.07720184326172
+            },
+            "label": {
+              "x": -10.753692626953125,
+              "y": 23.16539764404297,
+              "width": 21.50738525390625,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "I-2",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07720184326172
+            },
+            "label": {
+              "x": -10.753692626953125,
+              "y": 23.16539764404297,
+              "width": 21.50738525390625,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-1",
+            "hit": {
+              "width": 46.07719039916992,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-2",
+            "hit": {
+              "width": 46.07719421386719,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-3",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-4",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 27.89381217956543,
+              "height": 26.39049530029297
+            }
+          }
+        ],
+        "families": [
+          {
+            "id": "F1",
+            "path": "M208 65H272M240 65V122M80 122H395M80 122V182M185 122V182M290 122V182M395 122V182"
+          }
+        ],
+        "outside": [],
+        "xScale": 0.72,
+        "yScale": 0.7199561403508772,
+        "legendVisible": true
+      },
+      {
+        "id": "P05-II-3-AR",
+        "viewport": 390,
+        "width": 390,
+        "documentWidth": 390,
+        "people": [
+          {
+            "id": "I-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "I-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.078582763671875
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.078582763671875
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-3",
+            "hit": {
+              "width": 46.078582763671875,
+              "height": 46.078582763671875
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "III-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07855224609375
+            },
+            "label": {
+              "x": -16.026973724365234,
+              "y": 23.1660213470459,
+              "width": 32.05394744873047,
+              "height": 26.389705657958984
+            }
+          }
+        ],
+        "families": [
+          {
+            "id": "F1",
+            "path": "M153 65H227M190 65V122M100 122H245M100 122V182M245 122V182"
+          },
+          {
+            "id": "F2",
+            "path": "M263 200H347M305 200V257M305 257H305M305 257V317"
+          }
+        ],
+        "outside": [],
+        "xScale": 0.72,
+        "yScale": 0.7199776785714286,
+        "legendVisible": true
+      },
+      {
+        "id": "P05-II-3-XR",
+        "viewport": 390,
+        "width": 390,
+        "documentWidth": 390,
+        "people": [
+          {
+            "id": "I-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "I-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.078582763671875
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.078582763671875
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-3",
+            "hit": {
+              "width": 46.078582763671875,
+              "height": 46.078582763671875
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "III-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07855224609375
+            },
+            "label": {
+              "x": -16.026973724365234,
+              "y": 23.1660213470459,
+              "width": 32.05394744873047,
+              "height": 26.389705657958984
+            }
+          }
+        ],
+        "families": [
+          {
+            "id": "F1",
+            "path": "M153 65H227M190 65V122M100 122H245M100 122V182M245 122V182"
+          },
+          {
+            "id": "F2",
+            "path": "M263 200H347M305 200V257M305 257H305M305 257V317"
+          }
+        ],
+        "outside": [],
+        "xScale": 0.72,
+        "yScale": 0.7199776785714286,
+        "legendVisible": true
+      },
+      {
+        "id": "P01-II-2-AD",
+        "viewport": 360,
+        "width": 360,
+        "documentWidth": 360,
+        "people": [
+          {
+            "id": "I-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.078575134277344
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "I-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.078575134277344
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-1",
+            "hit": {
+              "width": 46.07857131958008,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-3",
+            "hit": {
+              "width": 46.078582763671875,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "III-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -16.026973724365234,
+              "y": 23.1660213470459,
+              "width": 32.05394744873047,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "III-2",
+            "hit": {
+              "width": 46.078582763671875,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -16.026973724365234,
+              "y": 23.1660213470459,
+              "width": 32.05394744873047,
+              "height": 26.389705657958984
+            }
+          }
+        ],
+        "families": [
+          {
+            "id": "F1",
+            "path": "M158 65H222M190 65V122M80 122H220M80 122V182M220 122V182"
+          },
+          {
+            "id": "F2",
+            "path": "M238 200H312M275 200V257M220 257H330M220 257V317M330 257V317"
+          }
+        ],
+        "outside": [],
+        "xScale": 0.72,
+        "yScale": 0.7199776785714286,
+        "legendVisible": true
+      },
+      {
+        "id": "P02-I-1-AR",
+        "viewport": 360,
+        "width": 360,
+        "documentWidth": 360,
+        "people": [
+          {
+            "id": "I-1",
+            "hit": {
+              "width": 46.07719421386719,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -10.753692626953125,
+              "y": 23.16539764404297,
+              "width": 21.50738525390625,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "I-2",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -10.753692626953125,
+              "y": 23.16539764404297,
+              "width": 21.50738525390625,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-1",
+            "hit": {
+              "width": 46.07719039916992,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-2",
+            "hit": {
+              "width": 46.07719421386719,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-3",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-4",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 27.89381217956543,
+              "height": 26.39049530029297
+            }
+          }
+        ],
+        "families": [
+          {
+            "id": "F1",
+            "path": "M208 65H272M240 65V122M80 122H395M80 122V182M185 122V182M290 122V182M395 122V182"
+          }
+        ],
+        "outside": [],
+        "xScale": 0.72,
+        "yScale": 0.7199561403508772,
+        "legendVisible": true
+      },
+      {
+        "id": "P02-II-4-AR",
+        "viewport": 360,
+        "width": 360,
+        "documentWidth": 360,
+        "people": [
+          {
+            "id": "I-1",
+            "hit": {
+              "width": 46.07719421386719,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -10.753692626953125,
+              "y": 23.16539764404297,
+              "width": 21.50738525390625,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "I-2",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -10.753692626953125,
+              "y": 23.16539764404297,
+              "width": 21.50738525390625,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-1",
+            "hit": {
+              "width": 46.07719039916992,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-2",
+            "hit": {
+              "width": 46.07719421386719,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-3",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-4",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 27.89381217956543,
+              "height": 26.39049530029297
+            }
+          }
+        ],
+        "families": [
+          {
+            "id": "F1",
+            "path": "M208 65H272M240 65V122M80 122H395M80 122V182M185 122V182M290 122V182M395 122V182"
+          }
+        ],
+        "outside": [],
+        "xScale": 0.72,
+        "yScale": 0.7199561403508772,
+        "legendVisible": true
+      },
+      {
+        "id": "P02-II-2-AR",
+        "viewport": 360,
+        "width": 360,
+        "documentWidth": 360,
+        "people": [
+          {
+            "id": "I-1",
+            "hit": {
+              "width": 46.07719421386719,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -10.753692626953125,
+              "y": 23.16539764404297,
+              "width": 21.50738525390625,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "I-2",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -10.753692626953125,
+              "y": 23.16539764404297,
+              "width": 21.50738525390625,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-1",
+            "hit": {
+              "width": 46.07719039916992,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-2",
+            "hit": {
+              "width": 46.07719421386719,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-3",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 26.781145095825195,
+              "height": 26.39049530029297
+            }
+          },
+          {
+            "id": "II-4",
+            "hit": {
+              "width": 46.07720947265625,
+              "height": 46.07719421386719
+            },
+            "label": {
+              "x": -13.390572547912598,
+              "y": 23.16539764404297,
+              "width": 27.89381217956543,
+              "height": 26.39049530029297
+            }
+          }
+        ],
+        "families": [
+          {
+            "id": "F1",
+            "path": "M208 65H272M240 65V122M80 122H395M80 122V182M185 122V182M290 122V182M395 122V182"
+          }
+        ],
+        "outside": [],
+        "xScale": 0.72,
+        "yScale": 0.7199561403508772,
+        "legendVisible": true
+      },
+      {
+        "id": "P05-II-3-AR",
+        "viewport": 360,
+        "width": 360,
+        "documentWidth": 360,
+        "people": [
+          {
+            "id": "I-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.078575134277344
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "I-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.078575134277344
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-3",
+            "hit": {
+              "width": 46.078582763671875,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "III-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -16.026973724365234,
+              "y": 23.1660213470459,
+              "width": 32.05394744873047,
+              "height": 26.389705657958984
+            }
+          }
+        ],
+        "families": [
+          {
+            "id": "F1",
+            "path": "M153 65H227M190 65V122M100 122H245M100 122V182M245 122V182"
+          },
+          {
+            "id": "F2",
+            "path": "M263 200H347M305 200V257M305 257H305M305 257V317"
+          }
+        ],
+        "outside": [],
+        "xScale": 0.72,
+        "yScale": 0.7199776785714286,
+        "legendVisible": true
+      },
+      {
+        "id": "P05-II-3-XR",
+        "viewport": 360,
+        "width": 360,
+        "documentWidth": 360,
+        "people": [
+          {
+            "id": "I-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.078575134277344
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "I-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.078575134277344
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-3",
+            "hit": {
+              "width": 46.078582763671875,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "III-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07856750488281
+            },
+            "label": {
+              "x": -16.026973724365234,
+              "y": 23.1660213470459,
+              "width": 32.05394744873047,
+              "height": 26.389705657958984
+            }
+          }
+        ],
+        "families": [
+          {
+            "id": "F1",
+            "path": "M153 65H227M190 65V122M100 122H245M100 122V182M245 122V182"
+          },
+          {
+            "id": "F2",
+            "path": "M263 200H347M305 200V257M305 257H305M305 257V317"
+          }
+        ],
+        "outside": [],
+        "xScale": 0.72,
+        "yScale": 0.7199776785714286,
+        "legendVisible": true
+      }
+    ],
+    "restores": [],
+    "refusals": [],
+    "probabilities": [
+      {
+        "name": "conditional",
+        "question": "高中遗传系谱图P04-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位于X染色体非同源区。I-1男性表型受累。I-2女性表型未受累。II-1男性表型未受累。II-2女性表型未受累。II-3男性表型未受累。III-1男性表型受累。III-2女性表型未受累。I-1与I-2的子女为II-2、II-3。II-1与II-2的子女为III-1、III-2。求II-1与II-2已知下一子代为男孩时受累概率。",
+        "normal": {
+          "asks": "II-1与II-2已知下一子代为男孩时受累概率",
+          "summary": "所问配偶为II-1与II-2。所问：II-1与II-2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。",
+          "tutor": {
+            "resultText": "本图可行方式：伴X隐性。已知下一子代为男孩时受累概率：1/2（分母：男孩，题设机会为1/2）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2已知下一子代为男孩时受累概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "step": "5"
+        },
+        "favoriteRestored": {
+          "asks": "II-1与II-2已知下一子代为男孩时受累概率",
+          "summary": "所问配偶为II-1与II-2。所问：II-1与II-2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。",
+          "tutor": {
+            "resultText": "本图可行方式：伴X隐性。已知下一子代为男孩时受累概率：1/2（分母：男孩，题设机会为1/2）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2已知下一子代为男孩时受累概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "step": "5"
+        },
+        "shareRestored": {
+          "asks": "II-1与II-2已知下一子代为男孩时受累概率",
+          "summary": "所问配偶为II-1与II-2。所问：II-1与II-2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。",
+          "tutor": {
+            "resultText": "本图可行方式：伴X隐性。已知下一子代为男孩时受累概率：1/2（分母：男孩，题设机会为1/2）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2已知下一子代为男孩时受累概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "step": "5"
+        },
+        "refreshed": {
+          "asks": "II-1与II-2已知下一子代为男孩时受累概率",
+          "summary": "所问配偶为II-1与II-2。所问：II-1与II-2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。",
+          "tutor": {
+            "resultText": "本图可行方式：伴X隐性。已知下一子代为男孩时受累概率：1/2（分母：男孩，题设机会为1/2）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2已知下一子代为男孩时受累概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "step": "5"
+        },
+        "reset": {
+          "asks": "II-1与II-2已知下一子代为男孩时受累概率",
+          "summary": "所问配偶为II-1与II-2。所问：II-1与II-2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。",
+          "tutor": {
+            "resultText": "本图可行方式：伴X隐性。已知下一子代为男孩时受累概率：1/2（分母：男孩，题设机会为1/2）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2已知下一子代为男孩时受累概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "step": "5"
+        },
+        "requests": [],
+        "file": "P04-conditional-390.png"
+      },
+      {
+        "name": "joint",
+        "question": "高中遗传系谱图P04-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位于X染色体非同源区。I-1男性表型受累。I-2女性表型未受累。II-1男性表型未受累。II-2女性表型未受累。II-3男性表型未受累。III-1男性表型受累。III-2女性表型未受累。I-1与I-2的子女为II-2、II-3。II-1与II-2的子女为III-1、III-2。求II-1与II-2下一子代为受累男孩概率。",
+        "normal": {
+          "asks": "II-1与II-2下一子代为受累男孩概率",
+          "summary": "所问配偶为II-1与II-2。所问：II-1与II-2下一子代为受累男孩概率。在伴X隐性下，下一子代为受累男孩概率为1/4；分母为全部子代，机会为1。",
+          "tutor": {
+            "resultText": "本图可行方式：伴X隐性。下一子代为受累男孩概率：1/4（分母：全部子代，机会为1）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2下一子代为受累男孩概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "step": "5"
+        },
+        "favoriteRestored": {
+          "asks": "II-1与II-2下一子代为受累男孩概率",
+          "summary": "所问配偶为II-1与II-2。所问：II-1与II-2下一子代为受累男孩概率。在伴X隐性下，下一子代为受累男孩概率为1/4；分母为全部子代，机会为1。",
+          "tutor": {
+            "resultText": "本图可行方式：伴X隐性。下一子代为受累男孩概率：1/4（分母：全部子代，机会为1）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2下一子代为受累男孩概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "step": "5"
+        },
+        "shareRestored": {
+          "asks": "II-1与II-2下一子代为受累男孩概率",
+          "summary": "所问配偶为II-1与II-2。所问：II-1与II-2下一子代为受累男孩概率。在伴X隐性下，下一子代为受累男孩概率为1/4；分母为全部子代，机会为1。",
+          "tutor": {
+            "resultText": "本图可行方式：伴X隐性。下一子代为受累男孩概率：1/4（分母：全部子代，机会为1）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2下一子代为受累男孩概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "step": "5"
+        },
+        "refreshed": {
+          "asks": "II-1与II-2下一子代为受累男孩概率",
+          "summary": "所问配偶为II-1与II-2。所问：II-1与II-2下一子代为受累男孩概率。在伴X隐性下，下一子代为受累男孩概率为1/4；分母为全部子代，机会为1。",
+          "tutor": {
+            "resultText": "本图可行方式：伴X隐性。下一子代为受累男孩概率：1/4（分母：全部子代，机会为1）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2下一子代为受累男孩概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "step": "5"
+        },
+        "reset": {
+          "asks": "II-1与II-2下一子代为受累男孩概率",
+          "summary": "所问配偶为II-1与II-2。所问：II-1与II-2下一子代为受累男孩概率。在伴X隐性下，下一子代为受累男孩概率为1/4；分母为全部子代，机会为1。",
+          "tutor": {
+            "resultText": "本图可行方式：伴X隐性。下一子代为受累男孩概率：1/4（分母：全部子代，机会为1）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2下一子代为受累男孩概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "step": "5"
+        },
+        "requests": [],
+        "file": "P04-joint-390.png"
+      },
+      {
+        "name": "both",
+        "question": "高中遗传系谱图P04-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位于X染色体非同源区。I-1男性表型受累。I-2女性表型未受累。II-1男性表型未受累。II-2女性表型未受累。II-3男性表型未受累。III-1男性表型受累。III-2女性表型未受累。I-1与I-2的子女为II-2、II-3。II-1与II-2的子女为III-1、III-2。求II-1与II-2已知下一子代为男孩时受累概率、II-1与II-2下一子代为受累男孩概率。",
+        "normal": {
+          "asks": "II-1与II-2已知下一子代为男孩时受累概率|II-1与II-2下一子代为受累男孩概率",
+          "summary": "所问配偶为II-1与II-2。所问：II-1与II-2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。所问：II-1与II-2下一子代为受累男孩概率。在伴X隐性下，下一子代为受累男孩概率为1/4；分母为全部子代，机会为1。",
+          "tutor": {
+            "resultText": "本图可行方式：伴X隐性。已知下一子代为男孩时受累概率：1/2（分母：男孩，题设机会为1/2）。下一子代为受累男孩概率：1/4（分母：全部子代，机会为1）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2已知下一子代为男孩时受累概率|II-1与II-2下一子代为受累男孩概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "step": "5"
+        },
+        "favoriteRestored": {
+          "asks": "II-1与II-2已知下一子代为男孩时受累概率|II-1与II-2下一子代为受累男孩概率",
+          "summary": "所问配偶为II-1与II-2。所问：II-1与II-2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。所问：II-1与II-2下一子代为受累男孩概率。在伴X隐性下，下一子代为受累男孩概率为1/4；分母为全部子代，机会为1。",
+          "tutor": {
+            "resultText": "本图可行方式：伴X隐性。已知下一子代为男孩时受累概率：1/2（分母：男孩，题设机会为1/2）。下一子代为受累男孩概率：1/4（分母：全部子代，机会为1）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2已知下一子代为男孩时受累概率|II-1与II-2下一子代为受累男孩概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "step": "5"
+        },
+        "shareRestored": {
+          "asks": "II-1与II-2已知下一子代为男孩时受累概率|II-1与II-2下一子代为受累男孩概率",
+          "summary": "所问配偶为II-1与II-2。所问：II-1与II-2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。所问：II-1与II-2下一子代为受累男孩概率。在伴X隐性下，下一子代为受累男孩概率为1/4；分母为全部子代，机会为1。",
+          "tutor": {
+            "resultText": "本图可行方式：伴X隐性。已知下一子代为男孩时受累概率：1/2（分母：男孩，题设机会为1/2）。下一子代为受累男孩概率：1/4（分母：全部子代，机会为1）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2已知下一子代为男孩时受累概率|II-1与II-2下一子代为受累男孩概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "step": "5"
+        },
+        "refreshed": {
+          "asks": "II-1与II-2已知下一子代为男孩时受累概率|II-1与II-2下一子代为受累男孩概率",
+          "summary": "所问配偶为II-1与II-2。所问：II-1与II-2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。所问：II-1与II-2下一子代为受累男孩概率。在伴X隐性下，下一子代为受累男孩概率为1/4；分母为全部子代，机会为1。",
+          "tutor": {
+            "resultText": "本图可行方式：伴X隐性。已知下一子代为男孩时受累概率：1/2（分母：男孩，题设机会为1/2）。下一子代为受累男孩概率：1/4（分母：全部子代，机会为1）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2已知下一子代为男孩时受累概率|II-1与II-2下一子代为受累男孩概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "step": "5"
+        },
+        "reset": {
+          "asks": "II-1与II-2已知下一子代为男孩时受累概率|II-1与II-2下一子代为受累男孩概率",
+          "summary": "所问配偶为II-1与II-2。所问：II-1与II-2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。所问：II-1与II-2下一子代为受累男孩概率。在伴X隐性下，下一子代为受累男孩概率为1/4；分母为全部子代，机会为1。",
+          "tutor": {
+            "resultText": "本图可行方式：伴X隐性。已知下一子代为男孩时受累概率：1/2（分母：男孩，题设机会为1/2）。下一子代为受累男孩概率：1/4（分母：全部子代，机会为1）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2已知下一子代为男孩时受累概率|II-1与II-2下一子代为受累男孩概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "step": "5"
+        },
+        "requests": [],
+        "file": "P04-both-390.png"
+      }
+    ],
+    "references": [
+      {
+        "input": "遗传系谱图 P99-v1",
+        "noTutor": false,
+        "feedback": "识别提示\n未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。 如需讲解，请主动打开 AI 导师提问。",
+        "before": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "title": "遗传系谱图 P02-v2 · 四名同胞与携带证据",
+            "originalQuestion": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "resultText": "本图可行方式：常染色体隐性。下一子代受累概率：1/4（分母：全部子代，机会为1）。II-2的条件携带概率：2/3（分母：双亲Aa×Aa所生的未受累子代，机会为3/4）。",
+              "metrics": "P02-v2；位置未知；所问方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率；本地可行常染色体隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：6人｜样例与版本：P02-v2｜题给定位：未知",
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "亲子传递与题给条件 → 可行基因型 → 有条件的概率",
+            "currentStep": "P02-v2，当前第4步，逐人推基因型。尚未点选成员。可行方式AR。未知创始者没有等权先验，概率按模型及父母基因型分别列出。"
+          }
+        },
+        "after": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "遗传系谱图 P99-v1",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。"
+          }
+        },
+        "requests": []
+      },
+      {
+        "input": "遗传系谱图 P02-v1",
+        "noTutor": false,
+        "feedback": "识别提示\n未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。 如需讲解，请主动打开 AI 导师提问。",
+        "before": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "遗传系谱图 P99-v1",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。"
+          }
+        },
+        "after": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "遗传系谱图 P02-v1",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。"
+          }
+        },
+        "requests": []
+      },
+      {
+        "input": "高中遗传系谱图 P99-v1",
+        "noTutor": false,
+        "feedback": "识别提示\n未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。 如需讲解，请主动打开 AI 导师提问。",
+        "before": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "遗传系谱图 P02-v1",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。"
+          }
+        },
+        "after": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "高中遗传系谱图 P99-v1",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。"
+          }
+        },
+        "requests": []
+      },
+      {
+        "input": "高中遗传系谱图 P02-v1",
+        "noTutor": false,
+        "feedback": "识别提示\n未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。 如需讲解，请主动打开 AI 导师提问。",
+        "before": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "高中遗传系谱图 P99-v1",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。"
+          }
+        },
+        "after": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "高中遗传系谱图 P02-v1",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。"
+          }
+        },
+        "requests": []
+      },
+      {
+        "input": "遗传系谱图 P02-v2",
+        "noTutor": false,
+        "feedback": "识别提示\n缺少或改动了题给条件：I-1与I-2的子女为II-1、II-2、II-3、II-4。请核对该项。 如需讲解，请主动打开 AI 导师提问。",
+        "before": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "高中遗传系谱图 P02-v1",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。"
+          }
+        },
+        "after": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "遗传系谱图 P02-v2",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：缺少或改动了题给条件：I-1与I-2的子女为II-1、II-2、II-3、II-4。请核对该项。"
+          }
+        },
+        "requests": []
+      },
+      {
+        "input": "遗传系谱图 P99-v1",
+        "noTutor": true,
+        "feedback": "识别提示\n未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。 如需讲解，请主动打开 AI 导师提问。",
+        "before": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "title": "遗传系谱图 P02-v2 · 四名同胞与携带证据",
+            "originalQuestion": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "resultText": "本图可行方式：常染色体隐性。下一子代受累概率：1/4（分母：全部子代，机会为1）。II-2的条件携带概率：2/3（分母：双亲Aa×Aa所生的未受累子代，机会为3/4）。",
+              "metrics": "P02-v2；位置未知；所问方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率；本地可行常染色体隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：6人｜样例与版本：P02-v2｜题给定位：未知",
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "亲子传递与题给条件 → 可行基因型 → 有条件的概率",
+            "currentStep": "P02-v2，当前第4步，逐人推基因型。尚未点选成员。可行方式AR。未知创始者没有等权先验，概率按模型及父母基因型分别列出。"
+          }
+        },
+        "after": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "遗传系谱图 P99-v1",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。"
+          }
+        },
+        "requests": []
+      },
+      {
+        "input": "遗传系谱图 P02-v1",
+        "noTutor": true,
+        "feedback": "识别提示\n未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。 如需讲解，请主动打开 AI 导师提问。",
+        "before": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "遗传系谱图 P99-v1",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。"
+          }
+        },
+        "after": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "遗传系谱图 P02-v1",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。"
+          }
+        },
+        "requests": []
+      },
+      {
+        "input": "高中遗传系谱图 P99-v1",
+        "noTutor": true,
+        "feedback": "识别提示\n未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。 如需讲解，请主动打开 AI 导师提问。",
+        "before": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "遗传系谱图 P02-v1",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。"
+          }
+        },
+        "after": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "高中遗传系谱图 P99-v1",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。"
+          }
+        },
+        "requests": []
+      },
+      {
+        "input": "高中遗传系谱图 P02-v1",
+        "noTutor": true,
+        "feedback": "识别提示\n未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。 如需讲解，请主动打开 AI 导师提问。",
+        "before": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "高中遗传系谱图 P99-v1",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。"
+          }
+        },
+        "after": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "高中遗传系谱图 P02-v1",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。"
+          }
+        },
+        "requests": []
+      },
+      {
+        "input": "遗传系谱图 P02-v2",
+        "noTutor": true,
+        "feedback": "识别提示\n缺少或改动了题给条件：I-1与I-2的子女为II-1、II-2、II-3、II-4。请核对该项。 如需讲解，请主动打开 AI 导师提问。",
+        "before": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "高中遗传系谱图 P02-v1",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。"
+          }
+        },
+        "after": {
+          "fixed": {
+            "caseId": "P02",
+            "version": 2,
+            "level": "senior",
+            "levelLocked": true,
+            "asks": "方式判读|I-1与I-2下一子代受累概率|双亲Aa×Aa且II-2未受累时II-2的携带概率"
+          },
+          "question": "高中遗传系谱图P02-v2。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型未受累。I-2女性表型未受累。II-1女性表型受累。II-2男性表型未受累。II-3男性表型受累。II-4女性表型未受累且题给为携带者。I-1与I-2的子女为II-1、II-2、II-3、II-4。求方式判读、I-1与I-2下一子代受累概率、双亲Aa×Aa且II-2未受累时II-2的携带概率。",
+          "time": 3.5,
+          "step": "4",
+          "context": {
+            "mode": "question",
+            "subject": "生物",
+            "originalQuestion": "遗传系谱图 P02-v2",
+            "templateId": "",
+            "parameters": {},
+            "deterministicResult": {
+              "gradeLevel": "高中",
+              "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+            },
+            "formula": "",
+            "currentStep": "系谱图本地核对：缺少或改动了题给条件：I-1与I-2的子女为II-1、II-2、II-3、II-4。请核对该项。"
+          }
+        },
+        "requests": []
+      }
+    ],
+    "derivations": [
+      {
+        "width": 390,
+        "id": "P01",
+        "person": "II-2",
+        "mode": "AD",
+        "panel": "II-2的推导依据II-2题给表型受累，常染色体显性下初始可能为Aa或AA。受累说明至少有一个显性A，不能仅凭表型区分AA和Aa。F2（II-2与II-3→III-1、III-2）：结合II-3为aa，III-1为Aa或AA，III-2为aa逐项检查配子传递，排除AA，剩余Aa。F2的III-2为aa，双亲必须各提供a；II-2若为AA无法提供a。与全图约束一致的基因型为Aa。",
+        "selection": "II-2，男性，表型受累。父母I-1、I-2；同胞II-1。配偶II-3；子女III-1、III-2。II-2题给表型受累，常染色体显性下初始可能为Aa或AA。受累说明至少有一个显性A，不能仅凭表型区分AA和Aa。F2（II-2与II-3→III-1、III-2）：结合II-3为aa，III-1为Aa或AA，III-2为aa逐项检查配子传递，排除AA，剩余Aa。F2的III-2为aa，双亲必须各提供a；II-2若为AA无法提供a。与全图约束一致的基因型为Aa。",
+        "file": "P01-II-2-AD-390.png"
+      },
+      {
+        "width": 390,
+        "id": "P02",
+        "person": "I-1",
+        "mode": "AR",
+        "panel": "I-1的推导依据I-1题给表型未受累，常染色体隐性下初始可能为AA或Aa。表型未受累不等于已知非携带，须保留两种可能。F1（I-1与I-2→II-1、II-2、II-3、II-4）：结合I-2为AA或Aa，II-1为aa，II-2为AA或Aa，II-3为aa，II-4为Aa逐项检查配子传递，排除AA，剩余Aa。F1的II-1为aa，双亲必须各提供a；I-1若为AA无法提供a。F1的II-3为aa，双亲必须各提供a；I-1若为AA无法提供a。与全图约束一致的基因型为Aa。",
+        "selection": "I-1，男性，表型未受累。配偶I-2；子女II-1、II-2、II-3、II-4。I-1题给表型未受累，常染色体隐性下初始可能为AA或Aa。表型未受累不等于已知非携带，须保留两种可能。F1（I-1与I-2→II-1、II-2、II-3、II-4）：结合I-2为AA或Aa，II-1为aa，II-2为AA或Aa，II-3为aa，II-4为Aa逐项检查配子传递，排除AA，剩余Aa。F1的II-1为aa，双亲必须各提供a；I-1若为AA无法提供a。F1的II-3为aa，双亲必须各提供a；I-1若为AA无法提供a。与全图约束一致的基因型为Aa。",
+        "file": "P02-I-1-AR-390.png"
+      },
+      {
+        "width": 390,
+        "id": "P02",
+        "person": "II-4",
+        "mode": "AR",
+        "panel": "II-4的推导依据II-4题给为携带者，常染色体隐性下为Aa；这不是从子女表现推断的标记。与全图约束一致的基因型为Aa。",
+        "selection": "II-4，女性，表型未受累；题给为携带者。父母I-1、I-2；同胞II-1、II-2、II-3。II-4题给为携带者，常染色体隐性下为Aa；这不是从子女表现推断的标记。与全图约束一致的基因型为Aa。",
+        "file": "P02-II-4-AR-390.png"
+      },
+      {
+        "width": 390,
+        "id": "P02",
+        "person": "II-2",
+        "mode": "AR",
+        "panel": "II-2的推导依据II-2题给表型未受累，常染色体隐性下初始可能为AA或Aa。表型未受累不等于已知非携带，须保留两种可能。全图仍允许AA或Aa。已知双亲及同胞仍不能唯一决定该个体的基因型。不能给未知基因型等权先验。",
+        "selection": "II-2，男性，表型未受累。父母I-1、I-2；同胞II-1、II-3、II-4。II-2题给表型未受累，常染色体隐性下初始可能为AA或Aa。表型未受累不等于已知非携带，须保留两种可能。全图仍允许AA或Aa。已知双亲及同胞仍不能唯一决定该个体的基因型。不能给未知基因型等权先验。",
+        "file": "P02-II-2-AR-390.png"
+      },
+      {
+        "width": 390,
+        "id": "P05",
+        "person": "II-3",
+        "mode": "AR",
+        "panel": "II-3的推导依据II-3题给表型未受累，常染色体隐性下初始可能为AA或Aa。表型未受累不等于已知非携带，须保留两种可能。全图仍允许AA或Aa。题面没有足够证据排除其中任一项。不能给未知基因型等权先验。F2的III-1表型未知，不能用未知的子代表现推断外来配偶II-3的携带状态；须补题给携带信息或有效的亲子证据。",
+        "selection": "II-3，女性，表型未受累。配偶II-2；子女III-1。II-3题给表型未受累，常染色体隐性下初始可能为AA或Aa。表型未受累不等于已知非携带，须保留两种可能。全图仍允许AA或Aa。题面没有足够证据排除其中任一项。不能给未知基因型等权先验。F2的III-1表型未知，不能用未知的子代表现推断外来配偶II-3的携带状态；须补题给携带信息或有效的亲子证据。",
+        "file": "P05-II-3-AR-390.png"
+      },
+      {
+        "width": 390,
+        "id": "P05",
+        "person": "II-3",
+        "mode": "XR",
+        "panel": "II-3的推导依据II-3题给表型未受累，伴X隐性下初始可能为XᴬXᴬ或XᴬXᵃ。表型未受累不等于已知非携带，须保留两种可能。全图仍允许XᴬXᴬ或XᴬXᵃ。题面没有足够证据排除其中任一项。不能给未知基因型等权先验。F2的III-1表型未知，不能用未知的子代表现推断外来配偶II-3的携带状态；须补题给携带信息或有效的亲子证据。",
+        "selection": "II-3，女性，表型未受累。配偶II-2；子女III-1。II-3题给表型未受累，伴X隐性下初始可能为XᴬXᴬ或XᴬXᵃ。表型未受累不等于已知非携带，须保留两种可能。全图仍允许XᴬXᴬ或XᴬXᵃ。题面没有足够证据排除其中任一项。不能给未知基因型等权先验。F2的III-1表型未知，不能用未知的子代表现推断外来配偶II-3的携带状态；须补题给携带信息或有效的亲子证据。",
+        "file": "P05-II-3-XR-390.png"
+      },
+      {
+        "width": 360,
+        "id": "P01",
+        "person": "II-2",
+        "mode": "AD",
+        "panel": "II-2的推导依据II-2题给表型受累，常染色体显性下初始可能为Aa或AA。受累说明至少有一个显性A，不能仅凭表型区分AA和Aa。F2（II-2与II-3→III-1、III-2）：结合II-3为aa，III-1为Aa或AA，III-2为aa逐项检查配子传递，排除AA，剩余Aa。F2的III-2为aa，双亲必须各提供a；II-2若为AA无法提供a。与全图约束一致的基因型为Aa。",
+        "selection": "II-2，男性，表型受累。父母I-1、I-2；同胞II-1。配偶II-3；子女III-1、III-2。II-2题给表型受累，常染色体显性下初始可能为Aa或AA。受累说明至少有一个显性A，不能仅凭表型区分AA和Aa。F2（II-2与II-3→III-1、III-2）：结合II-3为aa，III-1为Aa或AA，III-2为aa逐项检查配子传递，排除AA，剩余Aa。F2的III-2为aa，双亲必须各提供a；II-2若为AA无法提供a。与全图约束一致的基因型为Aa。",
+        "file": null
+      },
+      {
+        "width": 360,
+        "id": "P02",
+        "person": "I-1",
+        "mode": "AR",
+        "panel": "I-1的推导依据I-1题给表型未受累，常染色体隐性下初始可能为AA或Aa。表型未受累不等于已知非携带，须保留两种可能。F1（I-1与I-2→II-1、II-2、II-3、II-4）：结合I-2为AA或Aa，II-1为aa，II-2为AA或Aa，II-3为aa，II-4为Aa逐项检查配子传递，排除AA，剩余Aa。F1的II-1为aa，双亲必须各提供a；I-1若为AA无法提供a。F1的II-3为aa，双亲必须各提供a；I-1若为AA无法提供a。与全图约束一致的基因型为Aa。",
+        "selection": "I-1，男性，表型未受累。配偶I-2；子女II-1、II-2、II-3、II-4。I-1题给表型未受累，常染色体隐性下初始可能为AA或Aa。表型未受累不等于已知非携带，须保留两种可能。F1（I-1与I-2→II-1、II-2、II-3、II-4）：结合I-2为AA或Aa，II-1为aa，II-2为AA或Aa，II-3为aa，II-4为Aa逐项检查配子传递，排除AA，剩余Aa。F1的II-1为aa，双亲必须各提供a；I-1若为AA无法提供a。F1的II-3为aa，双亲必须各提供a；I-1若为AA无法提供a。与全图约束一致的基因型为Aa。",
+        "file": null
+      },
+      {
+        "width": 360,
+        "id": "P02",
+        "person": "II-4",
+        "mode": "AR",
+        "panel": "II-4的推导依据II-4题给为携带者，常染色体隐性下为Aa；这不是从子女表现推断的标记。与全图约束一致的基因型为Aa。",
+        "selection": "II-4，女性，表型未受累；题给为携带者。父母I-1、I-2；同胞II-1、II-2、II-3。II-4题给为携带者，常染色体隐性下为Aa；这不是从子女表现推断的标记。与全图约束一致的基因型为Aa。",
+        "file": null
+      },
+      {
+        "width": 360,
+        "id": "P02",
+        "person": "II-2",
+        "mode": "AR",
+        "panel": "II-2的推导依据II-2题给表型未受累，常染色体隐性下初始可能为AA或Aa。表型未受累不等于已知非携带，须保留两种可能。全图仍允许AA或Aa。已知双亲及同胞仍不能唯一决定该个体的基因型。不能给未知基因型等权先验。",
+        "selection": "II-2，男性，表型未受累。父母I-1、I-2；同胞II-1、II-3、II-4。II-2题给表型未受累，常染色体隐性下初始可能为AA或Aa。表型未受累不等于已知非携带，须保留两种可能。全图仍允许AA或Aa。已知双亲及同胞仍不能唯一决定该个体的基因型。不能给未知基因型等权先验。",
+        "file": null
+      },
+      {
+        "width": 360,
+        "id": "P05",
+        "person": "II-3",
+        "mode": "AR",
+        "panel": "II-3的推导依据II-3题给表型未受累，常染色体隐性下初始可能为AA或Aa。表型未受累不等于已知非携带，须保留两种可能。全图仍允许AA或Aa。题面没有足够证据排除其中任一项。不能给未知基因型等权先验。F2的III-1表型未知，不能用未知的子代表现推断外来配偶II-3的携带状态；须补题给携带信息或有效的亲子证据。",
+        "selection": "II-3，女性，表型未受累。配偶II-2；子女III-1。II-3题给表型未受累，常染色体隐性下初始可能为AA或Aa。表型未受累不等于已知非携带，须保留两种可能。全图仍允许AA或Aa。题面没有足够证据排除其中任一项。不能给未知基因型等权先验。F2的III-1表型未知，不能用未知的子代表现推断外来配偶II-3的携带状态；须补题给携带信息或有效的亲子证据。",
+        "file": null
+      },
+      {
+        "width": 360,
+        "id": "P05",
+        "person": "II-3",
+        "mode": "XR",
+        "panel": "II-3的推导依据II-3题给表型未受累，伴X隐性下初始可能为XᴬXᴬ或XᴬXᵃ。表型未受累不等于已知非携带，须保留两种可能。全图仍允许XᴬXᴬ或XᴬXᵃ。题面没有足够证据排除其中任一项。不能给未知基因型等权先验。F2的III-1表型未知，不能用未知的子代表现推断外来配偶II-3的携带状态；须补题给携带信息或有效的亲子证据。",
+        "selection": "II-3，女性，表型未受累。配偶II-2；子女III-1。II-3题给表型未受累，伴X隐性下初始可能为XᴬXᴬ或XᴬXᵃ。表型未受累不等于已知非携带，须保留两种可能。全图仍允许XᴬXᴬ或XᴬXᵃ。题面没有足够证据排除其中任一项。不能给未知基因型等权先验。F2的III-1表型未知，不能用未知的子代表现推断外来配偶II-3的携带状态；须补题给携带信息或有效的亲子证据。",
+        "file": null
+      }
+    ],
+    "keyboard": [
+      {
+        "width": 390,
+        "checks": [
+          {
+            "label": "Enter prediction retains XR focus",
+            "selector": "[data-pedigree-predict=\"XR\"]",
+            "focused": true
+          },
+          {
+            "label": "Space prediction retains XR focus",
+            "selector": "[data-pedigree-predict=\"XR\"]",
+            "focused": true
+          },
+          {
+            "label": "backward tab continues at the adjacent prediction",
+            "selector": "[data-pedigree-predict=\"XD\"]",
+            "focused": true
+          },
+          {
+            "label": "second prediction keeps focus",
+            "selector": "[data-pedigree-predict=\"XD\"]",
+            "focused": true
+          },
+          {
+            "label": "forward tab continues at the adjacent prediction",
+            "selector": "[data-pedigree-predict=\"XR\"]",
+            "focused": true
+          },
+          {
+            "label": "evidence selection retains focus",
+            "selector": "[data-pedigree-evidence=\"F1\"]",
+            "focused": true
+          },
+          {
+            "label": "evidence tab continues to the second family",
+            "selector": "[data-pedigree-evidence=\"F2\"]",
+            "focused": true
+          },
+          {
+            "label": "second family selection retains focus",
+            "selector": "[data-pedigree-evidence=\"F2\"]",
+            "focused": true
+          },
+          {
+            "label": "candidate model switch retains focus",
+            "selector": "[data-pedigree-mode=\"AR\"]",
+            "focused": true
+          },
+          {
+            "label": "candidate tab continues at adjacent model",
+            "selector": "[data-pedigree-mode=\"XD\"]",
+            "focused": true
+          },
+          {
+            "label": "Space candidate keeps focus",
+            "selector": "[data-pedigree-mode=\"XD\"]",
+            "focused": true
+          },
+          {
+            "label": "table member selection retains focus",
+            "selector": "[data-genotype-row=\"II-2\"] [data-pedigree-person]",
+            "focused": true
+          },
+          {
+            "label": "radio arrow selection retains focus",
+            "selector": "input[name=\"pedigree-explanation\"][value=\"many\"]",
+            "focused": true
+          },
+          {
+            "label": "second radio arrow continues in group",
+            "selector": "input[name=\"pedigree-explanation\"][value=\"none\"]",
+            "focused": true
+          },
+          {
+            "label": "Tab from explanation continues to check button",
+            "selector": "[data-pedigree-check]",
+            "focused": true
+          },
+          {
+            "label": "checking explanation retains focus",
+            "selector": "[data-pedigree-check]",
+            "focused": true
+          }
+        ]
+      },
+      {
+        "width": 360,
+        "checks": [
+          {
+            "label": "Enter prediction retains XR focus",
+            "selector": "[data-pedigree-predict=\"XR\"]",
+            "focused": true
+          },
+          {
+            "label": "Space prediction retains XR focus",
+            "selector": "[data-pedigree-predict=\"XR\"]",
+            "focused": true
+          },
+          {
+            "label": "backward tab continues at the adjacent prediction",
+            "selector": "[data-pedigree-predict=\"XD\"]",
+            "focused": true
+          },
+          {
+            "label": "second prediction keeps focus",
+            "selector": "[data-pedigree-predict=\"XD\"]",
+            "focused": true
+          },
+          {
+            "label": "forward tab continues at the adjacent prediction",
+            "selector": "[data-pedigree-predict=\"XR\"]",
+            "focused": true
+          },
+          {
+            "label": "evidence selection retains focus",
+            "selector": "[data-pedigree-evidence=\"F1\"]",
+            "focused": true
+          },
+          {
+            "label": "evidence tab continues to the second family",
+            "selector": "[data-pedigree-evidence=\"F2\"]",
+            "focused": true
+          },
+          {
+            "label": "second family selection retains focus",
+            "selector": "[data-pedigree-evidence=\"F2\"]",
+            "focused": true
+          },
+          {
+            "label": "candidate model switch retains focus",
+            "selector": "[data-pedigree-mode=\"AR\"]",
+            "focused": true
+          },
+          {
+            "label": "candidate tab continues at adjacent model",
+            "selector": "[data-pedigree-mode=\"XD\"]",
+            "focused": true
+          },
+          {
+            "label": "Space candidate keeps focus",
+            "selector": "[data-pedigree-mode=\"XD\"]",
+            "focused": true
+          },
+          {
+            "label": "table member selection retains focus",
+            "selector": "[data-genotype-row=\"II-2\"] [data-pedigree-person]",
+            "focused": true
+          },
+          {
+            "label": "radio arrow selection retains focus",
+            "selector": "input[name=\"pedigree-explanation\"][value=\"many\"]",
+            "focused": true
+          },
+          {
+            "label": "second radio arrow continues in group",
+            "selector": "input[name=\"pedigree-explanation\"][value=\"none\"]",
+            "focused": true
+          },
+          {
+            "label": "Tab from explanation continues to check button",
+            "selector": "[data-pedigree-check]",
+            "focused": true
+          },
+          {
+            "label": "checking explanation retains focus",
+            "selector": "[data-pedigree-check]",
+            "focused": true
+          }
+        ]
+      }
+    ],
+    "ordinaryConcept": {
+      "question": "遗传系谱图的符号有哪些？",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/api/v1/experiment/generate"
+        }
+      ],
+      "responseStatus": 503,
+      "feedback": "待重新识别\nAI 导师暂时没有完成回答，请稍后重试。"
+    }
+  }
+}

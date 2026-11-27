@@ -1,0 +1,194 @@
+{
+  "sourceSha": "08460c0a607516fe6e76b78702bbb67c22101940",
+  "browser": "151.0.7922.34",
+  "checks": [
+    "same-document share navigation preserves the original JS document",
+    "changing only the P04 subquestions starts at the reset baseline",
+    "manual step 5 synchronizes reasoning",
+    "same case and same parameters restore exactly the requested event columns",
+    "same-document conditional result matches 1/2 only when asked",
+    "same-document joint result matches 1/4 only when asked",
+    "same-document share navigation preserves the original JS document",
+    "changing only the P04 subquestions starts at the reset baseline",
+    "manual step 5 synchronizes reasoning",
+    "same case and same parameters restore exactly the requested event columns",
+    "same-document conditional result matches 1/2 only when asked",
+    "same-document joint result matches 1/4 only when asked",
+    "same-document share navigation preserves the original JS document",
+    "changing only the P04 subquestions starts at the reset baseline",
+    "manual step 5 synchronizes reasoning",
+    "same case and same parameters restore exactly the requested event columns",
+    "same-document conditional result matches 1/2 only when asked",
+    "same-document joint result matches 1/4 only when asked",
+    "same-document share navigation preserves the original JS document",
+    "changing only the P04 subquestions starts at the reset baseline",
+    "manual step 5 synchronizes reasoning",
+    "same case and same parameters restore exactly the requested event columns",
+    "same-document conditional result matches 1/2 only when asked",
+    "same-document joint result matches 1/4 only when asked",
+    "AI page roundtrip keeps the single active conditional question and step",
+    "reset preserves the original single subquestion",
+    "same-document event sharing and AI page roundtrip send zero automatic AI POST",
+    "same-document event sharing has no page exceptions"
+  ],
+  "requests": [],
+  "pages": [],
+  "errors": [],
+  "layouts": [],
+  "restores": [],
+  "refusals": [],
+  "eventRoutes": [
+    {
+      "asks": "II-1与II-2已知下一子代为男孩时受累概率",
+      "fields": [
+        {
+          "field": "boyConditional",
+          "text": "所问：II−1与II−2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。\n"
+        }
+      ],
+      "state": {
+        "fixed": {
+          "caseId": "P04",
+          "version": 1,
+          "level": "senior",
+          "levelLocked": true,
+          "asks": "II-1与II-2已知下一子代为男孩时受累概率"
+        },
+        "question": "高中遗传系谱图P04-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位于X染色体非同源区。I-1男性表型受累。I-2女性表型未受累。II-1男性表型未受累。II-2女性表型未受累。II-3男性表型未受累。III-1男性表型受累。III-2女性表型未受累。I-1与I-2的子女为II-2、II-3。II-1与II-2的子女为III-1、III-2。求II-1与II-2已知下一子代为男孩时受累概率。",
+        "time": 4.5,
+        "step": "5",
+        "context": {
+          "mode": "question",
+          "subject": "生物",
+          "title": "遗传系谱图 P04-v1 · 条件概率与受累男孩",
+          "originalQuestion": "高中遗传系谱图P04-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位于X染色体非同源区。I-1男性表型受累。I-2女性表型未受累。II-1男性表型未受累。II-2女性表型未受累。II-3男性表型未受累。III-1男性表型受累。III-2女性表型未受累。I-1与I-2的子女为II-2、II-3。II-1与II-2的子女为III-1、III-2。求II-1与II-2已知下一子代为男孩时受累概率。",
+          "templateId": "",
+          "parameters": {},
+          "deterministicResult": {
+            "resultText": "本图可行方式：伴X隐性。已知下一子代为男孩时受累概率：1/2（分母：男孩，题设机会为1/2）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2已知下一子代为男孩时受累概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "formula": "亲子传递与题给条件 → 可行基因型 → 有条件的概率",
+          "currentStep": "P04-v1，当前第5步，配子与概率。尚未点选成员。可行方式XR。未知创始者没有等权先验，概率按模型及父母基因型分别列出。"
+        }
+      }
+    },
+    {
+      "asks": "II-1与II-2下一子代为受累男孩概率",
+      "fields": [
+        {
+          "field": "affectedBoy",
+          "text": "所问：II−1与II−2下一子代为受累男孩概率。在伴X隐性下，下一子代为受累男孩概率为1/4；分母为全部子代，机会为1。\n"
+        }
+      ],
+      "state": {
+        "fixed": {
+          "caseId": "P04",
+          "version": 1,
+          "level": "senior",
+          "levelLocked": true,
+          "asks": "II-1与II-2下一子代为受累男孩概率"
+        },
+        "question": "高中遗传系谱图P04-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位于X染色体非同源区。I-1男性表型受累。I-2女性表型未受累。II-1男性表型未受累。II-2女性表型未受累。II-3男性表型未受累。III-1男性表型受累。III-2女性表型未受累。I-1与I-2的子女为II-2、II-3。II-1与II-2的子女为III-1、III-2。求II-1与II-2下一子代为受累男孩概率。",
+        "time": 4.5,
+        "step": "5",
+        "context": {
+          "mode": "question",
+          "subject": "生物",
+          "title": "遗传系谱图 P04-v1 · 条件概率与受累男孩",
+          "originalQuestion": "高中遗传系谱图P04-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位于X染色体非同源区。I-1男性表型受累。I-2女性表型未受累。II-1男性表型未受累。II-2女性表型未受累。II-3男性表型未受累。III-1男性表型受累。III-2女性表型未受累。I-1与I-2的子女为II-2、II-3。II-1与II-2的子女为III-1、III-2。求II-1与II-2下一子代为受累男孩概率。",
+          "templateId": "",
+          "parameters": {},
+          "deterministicResult": {
+            "resultText": "本图可行方式：伴X隐性。下一子代为受累男孩概率：1/4（分母：全部子代，机会为1）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2下一子代为受累男孩概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "formula": "亲子传递与题给条件 → 可行基因型 → 有条件的概率",
+          "currentStep": "P04-v1，当前第5步，配子与概率。尚未点选成员。可行方式XR。未知创始者没有等权先验，概率按模型及父母基因型分别列出。"
+        }
+      }
+    },
+    {
+      "asks": "II-1与II-2已知下一子代为男孩时受累概率|II-1与II-2下一子代为受累男孩概率",
+      "fields": [
+        {
+          "field": "boyConditional",
+          "text": "所问：II−1与II−2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。\n"
+        },
+        {
+          "field": "affectedBoy",
+          "text": "所问：II−1与II−2下一子代为受累男孩概率。在伴X隐性下，下一子代为受累男孩概率为1/4；分母为全部子代，机会为1。\n"
+        }
+      ],
+      "state": {
+        "fixed": {
+          "caseId": "P04",
+          "version": 1,
+          "level": "senior",
+          "levelLocked": true,
+          "asks": "II-1与II-2已知下一子代为男孩时受累概率|II-1与II-2下一子代为受累男孩概率"
+        },
+        "question": "高中遗传系谱图P04-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位于X染色体非同源区。I-1男性表型受累。I-2女性表型未受累。II-1男性表型未受累。II-2女性表型未受累。II-3男性表型未受累。III-1男性表型受累。III-2女性表型未受累。I-1与I-2的子女为II-2、II-3。II-1与II-2的子女为III-1、III-2。求II-1与II-2已知下一子代为男孩时受累概率、II-1与II-2下一子代为受累男孩概率。",
+        "time": 4.5,
+        "step": "5",
+        "context": {
+          "mode": "question",
+          "subject": "生物",
+          "title": "遗传系谱图 P04-v1 · 条件概率与受累男孩",
+          "originalQuestion": "高中遗传系谱图P04-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位于X染色体非同源区。I-1男性表型受累。I-2女性表型未受累。II-1男性表型未受累。II-2女性表型未受累。II-3男性表型未受累。III-1男性表型受累。III-2女性表型未受累。I-1与I-2的子女为II-2、II-3。II-1与II-2的子女为III-1、III-2。求II-1与II-2已知下一子代为男孩时受累概率、II-1与II-2下一子代为受累男孩概率。",
+          "templateId": "",
+          "parameters": {},
+          "deterministicResult": {
+            "resultText": "本图可行方式：伴X隐性。已知下一子代为男孩时受累概率：1/2（分母：男孩，题设机会为1/2）。下一子代为受累男孩概率：1/4（分母：全部子代，机会为1）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2已知下一子代为男孩时受累概率|II-1与II-2下一子代为受累男孩概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "formula": "亲子传递与题给条件 → 可行基因型 → 有条件的概率",
+          "currentStep": "P04-v1，当前第5步，配子与概率。尚未点选成员。可行方式XR。未知创始者没有等权先验，概率按模型及父母基因型分别列出。"
+        }
+      }
+    },
+    {
+      "asks": "II-1与II-2已知下一子代为男孩时受累概率",
+      "fields": [
+        {
+          "field": "boyConditional",
+          "text": "所问：II−1与II−2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。\n"
+        }
+      ],
+      "state": {
+        "fixed": {
+          "caseId": "P04",
+          "version": 1,
+          "level": "senior",
+          "levelLocked": true,
+          "asks": "II-1与II-2已知下一子代为男孩时受累概率"
+        },
+        "question": "高中遗传系谱图P04-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位于X染色体非同源区。I-1男性表型受累。I-2女性表型未受累。II-1男性表型未受累。II-2女性表型未受累。II-3男性表型未受累。III-1男性表型受累。III-2女性表型未受累。I-1与I-2的子女为II-2、II-3。II-1与II-2的子女为III-1、III-2。求II-1与II-2已知下一子代为男孩时受累概率。",
+        "time": 4.5,
+        "step": "5",
+        "context": {
+          "mode": "question",
+          "subject": "生物",
+          "title": "遗传系谱图 P04-v1 · 条件概率与受累男孩",
+          "originalQuestion": "高中遗传系谱图P04-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位于X染色体非同源区。I-1男性表型受累。I-2女性表型未受累。II-1男性表型未受累。II-2女性表型未受累。II-3男性表型未受累。III-1男性表型受累。III-2女性表型未受累。I-1与I-2的子女为II-2、II-3。II-1与II-2的子女为III-1、III-2。求II-1与II-2已知下一子代为男孩时受累概率。",
+          "templateId": "",
+          "parameters": {},
+          "deterministicResult": {
+            "resultText": "本图可行方式：伴X隐性。已知下一子代为男孩时受累概率：1/2（分母：男孩，题设机会为1/2）。",
+            "metrics": "P04-v1；X非同源区；所问II-1与II-2已知下一子代为男孩时受累概率；本地可行伴X隐性。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：7人｜样例与版本：P04-v1｜题给定位：X染色体非同源区",
+            "gradeLevel": "高中",
+            "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+          },
+          "formula": "亲子传递与题给条件 → 可行基因型 → 有条件的概率",
+          "currentStep": "P04-v1，当前第5步，配子与概率。尚未点选成员。可行方式XR。未知创始者没有等权先验，概率按模型及父母基因型分别列出。"
+        }
+      }
+    }
+  ]
+}

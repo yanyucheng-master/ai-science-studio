@@ -1,0 +1,4997 @@
+{
+  "rawReportSha256": "712dda1597189173d57e4df71a080b8024a1a0a8098d0ff5c53d346ee5d125ee",
+  "report": {
+    "sourceSha": "08460c0a607516fe6e76b78702bbb67c22101940",
+    "browser": "151.0.7922.34",
+    "checks": [
+      "normal button finishes exactly one generation overlay",
+      "requested graph is prepared and reset before hiding the shared overlay",
+      "normal motion exposes completion and leaving phases",
+      "completion check has at least 600ms before exit",
+      "completion check CSS animation is enabled",
+      "current master brand-motion resource is retained",
+      "current master mobile resource is retained",
+      "manual step 5 synchronizes reasoning",
+      "integrated normal-motion entry retains the conditional-only result",
+      "P04-desktop-normal 1366px text and page fit",
+      "P04-desktop-normal 1366px equal SVG scale and visible legend",
+      "P04-desktop-normal 1366px SVG targets at least 44px",
+      "P04-desktop-normal all member IDs rendered",
+      "P04-desktop-normal F1 spouse connection uses correct endpoints",
+      "P04-desktop-normal F1 child II-2 connects to sibling bar",
+      "P04-desktop-normal F1 child II-3 connects to sibling bar",
+      "P04-desktop-normal F2 spouse connection uses correct endpoints",
+      "P04-desktop-normal F2 child III-1 connects to sibling bar",
+      "P04-desktop-normal F2 child III-2 connects to sibling bar",
+      "normal-motion local rejection preserves active graph and step",
+      "manual step 5 synchronizes reasoning",
+      "independent normal-motion share keeps the requested event",
+      "independent normal-motion share keeps 1/2",
+      "integrated generation, rejection and sharing send zero automatic AI POST",
+      "normal button finishes exactly one generation overlay",
+      "requested graph is prepared and reset before hiding the shared overlay",
+      "normal motion exposes completion and leaving phases",
+      "completion check has at least 600ms before exit",
+      "completion check CSS animation is enabled",
+      "current master brand-motion resource is retained",
+      "current master mobile resource is retained",
+      "manual step 5 synchronizes reasoning",
+      "integrated normal-motion entry retains the conditional-only result",
+      "P04-mobile-normal 390px text and page fit",
+      "P04-mobile-normal 390px equal SVG scale and visible legend",
+      "P04-mobile-normal 390px SVG targets at least 44px",
+      "P04-mobile-normal all member IDs rendered",
+      "P04-mobile-normal F1 spouse connection uses correct endpoints",
+      "P04-mobile-normal F1 child II-2 connects to sibling bar",
+      "P04-mobile-normal F1 child II-3 connects to sibling bar",
+      "P04-mobile-normal F2 spouse connection uses correct endpoints",
+      "P04-mobile-normal F2 child III-1 connects to sibling bar",
+      "P04-mobile-normal F2 child III-2 connects to sibling bar",
+      "normal-motion local rejection preserves active graph and step",
+      "manual step 5 synchronizes reasoning",
+      "independent normal-motion share keeps the requested event",
+      "independent normal-motion share keeps 1/2",
+      "integrated generation, rejection and sharing send zero automatic AI POST",
+      "normal button finishes exactly one generation overlay",
+      "requested graph is prepared and reset before hiding the shared overlay",
+      "normal motion exposes completion and leaving phases",
+      "completion check has at least 600ms before exit",
+      "completion check CSS animation is enabled",
+      "current master brand-motion resource is retained",
+      "current master mobile resource is retained",
+      "manual step 5 synchronizes reasoning",
+      "integrated normal-motion entry retains the conditional-only result",
+      "P04-mobile-no-idle-api 360px text and page fit",
+      "P04-mobile-no-idle-api 360px equal SVG scale and visible legend",
+      "P04-mobile-no-idle-api 360px SVG targets at least 44px",
+      "P04-mobile-no-idle-api all member IDs rendered",
+      "P04-mobile-no-idle-api F1 spouse connection uses correct endpoints",
+      "P04-mobile-no-idle-api F1 child II-2 connects to sibling bar",
+      "P04-mobile-no-idle-api F1 child II-3 connects to sibling bar",
+      "P04-mobile-no-idle-api F2 spouse connection uses correct endpoints",
+      "P04-mobile-no-idle-api F2 child III-1 connects to sibling bar",
+      "P04-mobile-no-idle-api F2 child III-2 connects to sibling bar",
+      "normal-motion local rejection preserves active graph and step",
+      "manual step 5 synchronizes reasoning",
+      "independent normal-motion share keeps the requested event",
+      "independent normal-motion share keeps 1/2",
+      "integrated generation, rejection and sharing send zero automatic AI POST",
+      "normal button finishes exactly one generation overlay",
+      "requested graph is prepared and reset before hiding the shared overlay",
+      "reduced motion leaves no lingering overlay",
+      "current master brand-motion resource is retained",
+      "current master mobile resource is retained",
+      "manual step 5 synchronizes reasoning",
+      "integrated normal-motion entry retains the conditional-only result",
+      "P04-mobile-reduced 390px text and page fit",
+      "P04-mobile-reduced 390px equal SVG scale and visible legend",
+      "P04-mobile-reduced 390px SVG targets at least 44px",
+      "P04-mobile-reduced all member IDs rendered",
+      "P04-mobile-reduced F1 spouse connection uses correct endpoints",
+      "P04-mobile-reduced F1 child II-2 connects to sibling bar",
+      "P04-mobile-reduced F1 child II-3 connects to sibling bar",
+      "P04-mobile-reduced F2 spouse connection uses correct endpoints",
+      "P04-mobile-reduced F2 child III-1 connects to sibling bar",
+      "P04-mobile-reduced F2 child III-2 connects to sibling bar",
+      "normal-motion local rejection preserves active graph and step",
+      "manual step 5 synchronizes reasoning",
+      "independent normal-motion share keeps the requested event",
+      "independent normal-motion share keeps 1/2",
+      "integrated generation, rejection and sharing send zero automatic AI POST",
+      "overlay integration has no page exceptions"
+    ],
+    "requests": [],
+    "pages": [],
+    "errors": [],
+    "layouts": [
+      {
+        "id": "P04-desktop-normal",
+        "viewport": 1366,
+        "width": 1366,
+        "documentWidth": 1366,
+        "people": [
+          {
+            "id": "I-1",
+            "hit": {
+              "width": 109.05471801757812,
+              "height": 109.05474853515625
+            },
+            "label": {
+              "x": -10.756064414978027,
+              "y": 22.873001098632812,
+              "width": 21.512128829956055,
+              "height": 26.408750534057617
+            }
+          },
+          {
+            "id": "I-2",
+            "hit": {
+              "width": 109.0548095703125,
+              "height": 109.05474853515625
+            },
+            "label": {
+              "x": -10.756064414978027,
+              "y": 22.873001098632812,
+              "width": 21.512128829956055,
+              "height": 26.408750534057617
+            }
+          },
+          {
+            "id": "II-1",
+            "hit": {
+              "width": 109.05477905273438,
+              "height": 109.05474853515625
+            },
+            "label": {
+              "x": -13.392354011535645,
+              "y": 22.873001098632812,
+              "width": 26.78470802307129,
+              "height": 26.408750534057617
+            }
+          },
+          {
+            "id": "II-2",
+            "hit": {
+              "width": 109.05477905273438,
+              "height": 109.05474853515625
+            },
+            "label": {
+              "x": -13.392354011535645,
+              "y": 22.873001098632812,
+              "width": 26.78470802307129,
+              "height": 26.408750534057617
+            }
+          },
+          {
+            "id": "II-3",
+            "hit": {
+              "width": 109.05474853515625,
+              "height": 109.05474853515625
+            },
+            "label": {
+              "x": -13.392354011535645,
+              "y": 22.873001098632812,
+              "width": 26.78470802307129,
+              "height": 26.408750534057617
+            }
+          },
+          {
+            "id": "III-1",
+            "hit": {
+              "width": 109.05477905273438,
+              "height": 109.0546875
+            },
+            "label": {
+              "x": -16.028644561767578,
+              "y": 22.873001098632812,
+              "width": 32.057289123535156,
+              "height": 26.408750534057617
+            }
+          },
+          {
+            "id": "III-2",
+            "hit": {
+              "width": 109.05477905273438,
+              "height": 109.0546875
+            },
+            "label": {
+              "x": -16.028644561767578,
+              "y": 22.873001098632812,
+              "width": 32.057289123535156,
+              "height": 26.408750534057617
+            }
+          }
+        ],
+        "families": [
+          {
+            "id": "F1",
+            "path": "M263 65H332M297.5 65V122M205 122H395M205 122V182M395 122V182"
+          },
+          {
+            "id": "F2",
+            "path": "M113 200H187M150 200V257M95 257H205M95 257V317M205 257V317"
+          }
+        ],
+        "outside": [],
+        "xScale": 1.704,
+        "yScale": 1.7039806547619047,
+        "legendVisible": true
+      },
+      {
+        "id": "P04-mobile-normal",
+        "viewport": 390,
+        "width": 390,
+        "documentWidth": 390,
+        "people": [
+          {
+            "id": "I-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07855224609375
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "I-2",
+            "hit": {
+              "width": 46.07855224609375,
+              "height": 46.07855224609375
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-1",
+            "hit": {
+              "width": 46.078575134277344,
+              "height": 46.07855224609375
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07855224609375
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-3",
+            "hit": {
+              "width": 46.07855224609375,
+              "height": 46.07855224609375
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "III-1",
+            "hit": {
+              "width": 46.078575134277344,
+              "height": 46.07855224609375
+            },
+            "label": {
+              "x": -16.026973724365234,
+              "y": 23.1660213470459,
+              "width": 32.05394744873047,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "III-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07855224609375
+            },
+            "label": {
+              "x": -16.026973724365234,
+              "y": 23.1660213470459,
+              "width": 32.05394744873047,
+              "height": 26.389705657958984
+            }
+          }
+        ],
+        "families": [
+          {
+            "id": "F1",
+            "path": "M263 65H332M297.5 65V122M205 122H395M205 122V182M395 122V182"
+          },
+          {
+            "id": "F2",
+            "path": "M113 200H187M150 200V257M95 257H205M95 257V317M205 257V317"
+          }
+        ],
+        "outside": [],
+        "xScale": 0.72,
+        "yScale": 0.7199776785714286,
+        "legendVisible": true
+      },
+      {
+        "id": "P04-mobile-no-idle-api",
+        "viewport": 360,
+        "width": 360,
+        "documentWidth": 360,
+        "people": [
+          {
+            "id": "I-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07855224609375
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "I-2",
+            "hit": {
+              "width": 46.07855224609375,
+              "height": 46.07855224609375
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-1",
+            "hit": {
+              "width": 46.078575134277344,
+              "height": 46.07855224609375
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07855224609375
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-3",
+            "hit": {
+              "width": 46.07855224609375,
+              "height": 46.07855224609375
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "III-1",
+            "hit": {
+              "width": 46.078575134277344,
+              "height": 46.07855224609375
+            },
+            "label": {
+              "x": -16.026973724365234,
+              "y": 23.1660213470459,
+              "width": 32.05394744873047,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "III-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07855224609375
+            },
+            "label": {
+              "x": -16.026973724365234,
+              "y": 23.1660213470459,
+              "width": 32.05394744873047,
+              "height": 26.389705657958984
+            }
+          }
+        ],
+        "families": [
+          {
+            "id": "F1",
+            "path": "M263 65H332M297.5 65V122M205 122H395M205 122V182M395 122V182"
+          },
+          {
+            "id": "F2",
+            "path": "M113 200H187M150 200V257M95 257H205M95 257V317M205 257V317"
+          }
+        ],
+        "outside": [],
+        "xScale": 0.72,
+        "yScale": 0.7199776785714286,
+        "legendVisible": true
+      },
+      {
+        "id": "P04-mobile-reduced",
+        "viewport": 390,
+        "width": 390,
+        "documentWidth": 390,
+        "people": [
+          {
+            "id": "I-1",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07861328125
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "I-2",
+            "hit": {
+              "width": 46.07855224609375,
+              "height": 46.07861328125
+            },
+            "label": {
+              "x": -10.753372192382812,
+              "y": 23.1660213470459,
+              "width": 21.506744384765625,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-1",
+            "hit": {
+              "width": 46.078575134277344,
+              "height": 46.0784912109375
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.0784912109375
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "II-3",
+            "hit": {
+              "width": 46.07855224609375,
+              "height": 46.0784912109375
+            },
+            "label": {
+              "x": -13.390172004699707,
+              "y": 23.1660213470459,
+              "width": 26.780344009399414,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "III-1",
+            "hit": {
+              "width": 46.078575134277344,
+              "height": 46.07861328125
+            },
+            "label": {
+              "x": -16.026973724365234,
+              "y": 23.1660213470459,
+              "width": 32.05394744873047,
+              "height": 26.389705657958984
+            }
+          },
+          {
+            "id": "III-2",
+            "hit": {
+              "width": 46.07856750488281,
+              "height": 46.07861328125
+            },
+            "label": {
+              "x": -16.026973724365234,
+              "y": 23.1660213470459,
+              "width": 32.05394744873047,
+              "height": 26.389705657958984
+            }
+          }
+        ],
+        "families": [
+          {
+            "id": "F1",
+            "path": "M263 65H332M297.5 65V122M205 122H395M205 122V182M395 122V182"
+          },
+          {
+            "id": "F2",
+            "path": "M113 200H187M150 200V257M95 257H205M95 257V317M205 257V317"
+          }
+        ],
+        "outside": [],
+        "xScale": 0.72,
+        "yScale": 0.7199776785714286,
+        "legendVisible": true
+      }
+    ],
+    "restores": [],
+    "refusals": [],
+    "overlayCases": [
+      {
+        "name": "desktop-normal",
+        "width": 1366,
+        "normalMotion": true,
+        "noIdle": false,
+        "question": "高中遗传系谱图P04-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位于X染色体非同源区。I-1男性表型受累。I-2女性表型未受累。II-1男性表型未受累。II-2女性表型未受累。II-3男性表型未受累。III-1男性表型受累。III-2女性表型未受累。I-1与I-2的子女为II-2、II-3。II-1与II-2的子女为III-1、III-2。求II-1与II-2已知下一子代为男孩时受累概率。",
+        "trace": {
+          "frames": [
+            {
+              "at": 4110.400000095367,
+              "stage": "complete",
+              "show": false,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 4125.900000095367,
+              "stage": "complete",
+              "show": false,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 4145.5,
+              "stage": "complete",
+              "show": false,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 4168.900000095367,
+              "stage": "complete",
+              "show": false,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 4229.799999952316,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4255.200000047684,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4266.299999952316,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4286.700000047684,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4311.700000047684,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4325.799999952316,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4348.600000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4370.5,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4387.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4405.5,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4427.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4447.400000095367,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4465.600000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4488.400000095367,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4505.600000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4525.5,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4549.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4566.600000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4588.600000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4609.799999952316,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4628.600000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4649.5,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4664.799999952316,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4685.299999952316,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4708,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4725.299999952316,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4746.799999952316,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4772.400000095367,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4789.5,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4807.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4824.700000047684,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4848.700000047684,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4865.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4886.100000143051,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4906.200000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4926.200000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4946.700000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4971,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4985,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5007.799999952316,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5026.200000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5049.900000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5068.400000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5086.700000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5104.700000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5127.400000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5148.200000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5166.799999952316,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5185,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5205.100000143051,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5230,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5246.600000143051,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5269.5,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5285.400000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5308.900000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5329.700000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5347,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5370.900000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5389.299999952316,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5408.299999952316,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5424.700000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5446.5,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5469.100000143051,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5487.900000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5507.799999952316,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5526.5,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5548.5,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5568,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5587,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5607.299999952316,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5626.600000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5644.600000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5669.700000047684,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5687.100000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5706.400000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5724.799999952316,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5744.799999952316,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5766,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5785.400000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5807.100000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5829.700000047684,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5849.600000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5865,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5887.600000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5908.5,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5925,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5948.400000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5965.400000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5988,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6006.299999952316,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6024.900000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6047.200000047684,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6070.100000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6085.200000047684,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6106.5,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6125.400000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6147.600000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6167.600000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6186.5,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6205,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6227.200000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6249,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6271.200000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6287,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6309.700000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6330.700000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6351.299999952316,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6365.799999952316,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6387.600000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6408.400000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6429.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6450.100000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6467.600000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6486.5,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6505.600000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6525.299999952316,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6544.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6566.400000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6585.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6605.600000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6629.700000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6648.299999952316,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6668.5,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6687.400000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6704.600000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6728.100000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6746.799999952316,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6768.400000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6785,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6807.5,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6830.400000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6845.400000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6868.400000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6885.100000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6914.100000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6928.200000047684,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6948.700000047684,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6968.5,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6989.700000047684,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7006.600000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7029,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7045.900000095367,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7068.299999952316,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7084.700000047684,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7106.600000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7127.400000095367,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7146.100000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7164.700000047684,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7185,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7206.600000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7228.799999952316,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7245.200000047684,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7267.600000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7286.799999952316,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7306.299999952316,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7327.900000095367,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7344.700000047684,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7366.799999952316,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7389.400000095367,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            }
+          ],
+          "hide": [
+            {
+              "at": 6918,
+              "caseId": "P04",
+              "asks": "II-1与II-2已知下一子代为男孩时受累概率",
+              "time": 0,
+              "reasonStep": 1,
+              "playing": false
+            }
+          ]
+        },
+        "primary": "所问：II−1与II−2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。\n",
+        "rejection": "识别提示\n未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。 如需讲解，请主动打开 AI 导师提问。",
+        "requests": []
+      },
+      {
+        "name": "mobile-normal",
+        "width": 390,
+        "normalMotion": true,
+        "noIdle": false,
+        "question": "高中遗传系谱图P04-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位于X染色体非同源区。I-1男性表型受累。I-2女性表型未受累。II-1男性表型未受累。II-2女性表型未受累。II-3男性表型未受累。III-1男性表型受累。III-2女性表型未受累。I-1与I-2的子女为II-2、II-3。II-1与II-2的子女为III-1、III-2。求II-1与II-2已知下一子代为男孩时受累概率。",
+        "trace": {
+          "frames": [
+            {
+              "at": 3688.7000000476837,
+              "stage": "complete",
+              "show": false,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 3696.800000190735,
+              "stage": "complete",
+              "show": false,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 3761.2000000476837,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3779.600000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3798.4000000953674,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3820.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3836.600000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3858.7000000476837,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3875.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3897.2000000476837,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3920.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3936.300000190735,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3958.9000000953674,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3975.4000000953674,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3998.2000000476837,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4016.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4036.7000000476837,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4058.300000190735,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4075.5,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4097.300000190735,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4115.300000190735,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4135.700000047684,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4156.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4180.200000047684,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4197.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4219.600000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4238.5,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4258.200000047684,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4275.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4297.5,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4319.300000190735,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4335.700000047684,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4358.400000095367,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4374.900000095367,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4397.5,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4419.800000190735,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4436.600000143051,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4458.900000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4475.600000143051,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4497.400000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4520.200000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4536.700000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4558.900000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4575.300000190735,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4597.5,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4620.400000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4636.5,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4663.900000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4676,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4697.700000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4716,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4736.5,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4760.100000143051,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4775,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4797.400000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4819.400000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4836,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4859,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4875.700000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4897.200000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4919.100000143051,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4936.700000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4959.100000143051,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4975.200000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4997.200000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5019.400000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5037.5,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5056,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5075.200000047684,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5098.100000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5114.900000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5136.700000047684,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5158.300000190735,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5175,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5198.400000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5215.100000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5238.100000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5259.200000047684,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5275.700000047684,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5298.5,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5314.900000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5337.300000190735,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5355.400000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5378.700000047684,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5398.5,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5419.5,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5436.700000047684,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5459.800000190735,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5475.100000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5497.800000190735,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5520.300000190735,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5536,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5558.700000047684,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5577.300000190735,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5598.700000047684,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5620,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5637.400000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5658.700000047684,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5675.300000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5695.200000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5717.800000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5736.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5755.700000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5779.300000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5795.200000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5816.400000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5839,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5855,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5877.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5897.100000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5916.100000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5935.800000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5954.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5980.200000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5999.5,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6014.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6037.800000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6060.800000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6075.800000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6098.200000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6114.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6136.600000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6158.800000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6175.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6197.800000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6215.100000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6234.700000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6258.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6275.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6295,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6319.5,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6336.5,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6355.5,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6375.600000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6396.600000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6418.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6452.400000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6458.5,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6476.400000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6497.400000095367,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6519,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6538.300000190735,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6563.700000047684,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6575.600000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6598.700000047684,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6618.100000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6637.600000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6658.300000190735,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6676.100000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6698.5,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6715.5,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6737,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6760.100000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6779.900000095367,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6795.600000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6815.5,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6841.400000095367,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6857,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6875,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6895.5,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6917.600000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6940.200000047684,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            }
+          ],
+          "hide": [
+            {
+              "at": 6477.100000143051,
+              "caseId": "P04",
+              "asks": "II-1与II-2已知下一子代为男孩时受累概率",
+              "time": 0,
+              "reasonStep": 1,
+              "playing": false
+            }
+          ]
+        },
+        "primary": "所问：II−1与II−2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。\n",
+        "rejection": "识别提示\n未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。 如需讲解，请主动打开 AI 导师提问。",
+        "requests": []
+      },
+      {
+        "name": "mobile-no-idle-api",
+        "width": 360,
+        "normalMotion": true,
+        "noIdle": true,
+        "question": "高中遗传系谱图P04-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位于X染色体非同源区。I-1男性表型受累。I-2女性表型未受累。II-1男性表型未受累。II-2女性表型未受累。II-3男性表型未受累。III-1男性表型受累。III-2女性表型未受累。I-1与I-2的子女为II-2、II-3。II-1与II-2的子女为III-1、III-2。求II-1与II-2已知下一子代为男孩时受累概率。",
+        "trace": {
+          "frames": [
+            {
+              "at": 3779,
+              "stage": "complete",
+              "show": false,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 3786.5,
+              "stage": "complete",
+              "show": false,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 3853.7000000476837,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3869.2000000476837,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3887.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3908,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3930,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3946.600000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3969.300000190735,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 3986.5,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4007.4000000953674,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4030.5,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4046.7000000476837,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4068.5,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4091.4000000953674,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4108.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4130.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4148.900000095367,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4167.700000047684,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4189.800000190735,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4206.800000190735,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4229,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4251.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4268.800000190735,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4289.800000190735,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4306.600000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4328.900000095367,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4351.100000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4367.700000047684,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4389.900000095367,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4406.600000143051,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4430.5,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4448.900000095367,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4467.400000095367,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 4489.200000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4506.600000143051,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4529.700000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4551,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4568.600000143051,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4590.5,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4606.700000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4629.300000190735,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4651.5,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4668,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4691.200000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4707.900000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4729.400000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4746.700000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4768.600000143051,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4787,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4807.800000190735,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4829.900000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4852.400000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4868.400000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4891.400000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4907.200000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4930.400000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4953.200000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4967.900000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 4990.200000047684,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5007,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5029,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5046.600000143051,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5067.900000095367,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5091,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5107.600000143051,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 5130.800000190735,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5151.600000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5168.200000047684,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5190.700000047684,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5208.5,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5229.900000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5246.800000190735,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5269.5,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5286.600000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5307,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5333.600000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5347.300000190735,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5369.300000190735,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5386.400000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5409.600000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5430.400000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5452,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5468.400000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5487.300000190735,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5507,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5530.600000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5548.200000047684,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5569.800000190735,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5588.600000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5607.100000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5629.800000190735,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5651.100000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5668,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5687.900000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5706.900000095367,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5729.5,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5746.600000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5768.100000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5787.5,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5809.300000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5830.5,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5847.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5871.300000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5891,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5908.700000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5932,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5948.600000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5969.200000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 5992,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6010.5,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6027.400000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6049.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6069,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6091.100000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6107.300000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6130.700000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6147.5,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6171.800000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6187.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6207.700000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6229.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6246.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6268.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6297.100000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6307.600000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6331.800000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6347.600000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6368.300000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6390.700000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6407.300000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6429.100000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6451.300000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6468.900000095367,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6490.300000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6520.800000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6528.100000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6550.800000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6568.700000047684,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6590.600000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6606.5,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6629.300000190735,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6651.100000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6667.800000190735,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6689.700000047684,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6713.600000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6728.800000190735,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6752.600000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6779.900000095367,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6786.700000047684,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6812.5,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6836.5,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6848.100000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6869.200000047684,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6893.100000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6913,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6931.700000047684,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6948.400000095367,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6974.5,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 6988.400000095367,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7010.5,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7032.5,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7050.200000047684,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7067.400000095367,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7087.200000047684,
+              "stage": "complete",
+              "show": false,
+              "leaving": true,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 7113.600000143051,
+              "stage": "complete",
+              "show": false,
+              "leaving": false,
+              "checkAnimation": "fxDraw",
+              "transform": "translateX(0%)"
+            }
+          ],
+          "hide": [
+            {
+              "at": 6629.600000143051,
+              "caseId": "P04",
+              "asks": "II-1与II-2已知下一子代为男孩时受累概率",
+              "time": 0,
+              "reasonStep": 1,
+              "playing": false
+            }
+          ]
+        },
+        "primary": "所问：II−1与II−2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。\n",
+        "rejection": "识别提示\n未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。 如需讲解，请主动打开 AI 导师提问。",
+        "requests": []
+      },
+      {
+        "name": "mobile-reduced",
+        "width": 390,
+        "normalMotion": false,
+        "noIdle": false,
+        "question": "高中遗传系谱图P04-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位于X染色体非同源区。I-1男性表型受累。I-2女性表型未受累。II-1男性表型未受累。II-2女性表型未受累。II-3男性表型未受累。III-1男性表型受累。III-2女性表型未受累。I-1与I-2的子女为II-2、II-3。II-1与II-2的子女为III-1、III-2。求II-1与II-2已知下一子代为男孩时受累概率。",
+        "trace": {
+          "frames": [
+            {
+              "at": 1639.4000000953674,
+              "stage": "complete",
+              "show": false,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 1676.5,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 1679.9000000953674,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 1698.9000000953674,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 1719.9000000953674,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 1740,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 1759,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 1780,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 1799,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 1820,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 1839.9000000953674,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 1859.1000001430511,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 1879.1000001430511,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 1898.6000001430511,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 1919.1000001430511,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 1940.2999999523163,
+              "stage": "0",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-72%)"
+            },
+            {
+              "at": 1959.5,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 1980.2000000476837,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 1999,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 2019,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 2039,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 2059.2999999523163,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 2080.2000000476837,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 2099.5,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 2119.2000000476837,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 2139.5,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 2158.7000000476837,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 2179.7000000476837,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 2199.2999999523163,
+              "stage": "1",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(-37%)"
+            },
+            {
+              "at": 2219.4000000953674,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2239.2999999523163,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2259.600000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2279.2999999523163,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2300.2999999523163,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2320.2000000476837,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2340.2999999523163,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2359.7000000476837,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2380.2999999523163,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2398.600000143051,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2419.7000000476837,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2440.4000000953674,
+              "stage": "2",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2459.600000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2478.7000000476837,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2499.7999999523163,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2520.100000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2539.100000143051,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2559.2999999523163,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2578.9000000953674,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2600,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2619.2999999523163,
+              "stage": "complete",
+              "show": true,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            },
+            {
+              "at": 2638.5,
+              "stage": "complete",
+              "show": false,
+              "leaving": false,
+              "checkAnimation": "none",
+              "transform": "translateX(0%)"
+            }
+          ],
+          "hide": [
+            {
+              "at": 2624.100000143051,
+              "caseId": "P04",
+              "asks": "II-1与II-2已知下一子代为男孩时受累概率",
+              "time": 0,
+              "reasonStep": 1,
+              "playing": false
+            }
+          ]
+        },
+        "primary": "所问：II−1与II−2已知下一子代为男孩时受累概率。在伴X隐性下，已知下一子代为男孩时受累概率为1/2；分母为男孩，题设机会为1/2。\n",
+        "rejection": "识别提示\n未知系谱图样例或版本，请从六张内置图重新选择。P02使用v2。 如需讲解，请主动打开 AI 导师提问。",
+        "requests": []
+      }
+    ]
+  }
+}
