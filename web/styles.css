@@ -8027,7 +8027,7 @@ body.fullscreen-lock {
   background: linear-gradient(135deg, var(--gen-blue), var(--gen-mint));
 }
 
-.generation-overlay.show .gen-kicker i { animation: gen-live 1.6s ease-out infinite; }
+.generation-overlay.show:not([data-stage="complete"]) .gen-kicker i { animation: gen-live 1.6s ease-out infinite; }
 .generation-overlay[data-stage="complete"] .gen-kicker {
   color: #0d8a6f;
   background: rgba(47, 213, 178, .13);
@@ -8333,12 +8333,13 @@ body.fullscreen-lock {
 .generation-progress i {
   position: relative;
   display: block;
-  width: 0;
+  width: 100%;
   height: 100%;
   border-radius: 0 3px 3px 0;
   background: linear-gradient(90deg, var(--gen-mint), var(--gen-blue) 45%, var(--gen-violet));
   box-shadow: 0 0 12px rgba(59, 123, 246, .5);
-  transition: width 700ms cubic-bezier(.35, .1, .25, 1);
+  transform: translateX(-100%);
+  transition: transform 700ms cubic-bezier(.35, .1, .25, 1);
 }
 
 .generation-progress i::after {
@@ -10768,8 +10769,8 @@ body.subject-math-active.subject-generic-template-active:not(.awaiting-generatio
 .is-done .fx-ring { animation: fxRingFlash .8s ease-out both; }
 .is-done .fx-streak use { animation: fxStreak .62s cubic-bezier(.5, 0, .3, 1) both; }
 .is-done .fx-surge { animation: fxSurge .7s ease-out both; }
-.is-done.with-badge .fx-badge { animation: fxBadge .5s cubic-bezier(.34, 1.56, .64, 1) .2s both; }
-.is-done.with-badge .fx-check { animation: fxDraw .36s cubic-bezier(.65, 0, .35, 1) .42s both; }
+.is-done.with-badge .fx-badge { animation: fxBadge .42s cubic-bezier(.34, 1.56, .64, 1) .12s both; }
+.is-done.with-badge .fx-check { animation: fxDraw .32s cubic-bezier(.65, 0, .35, 1) .3s both; }
 /* error / offline */
 .is-error .fx-root { --c-outline: #8e9db7; --c-liquid: #c8d3e3; --c-ring: #cfd8e5; --c-comet: #a9b5c9; }
 .is-error .fx-bub, .is-error .fx-mb, .is-error .fx-dot, .is-error .fx-sheen use { opacity: 0 !important; }
@@ -10911,9 +10912,12 @@ body.subject-math-active.subject-generic-template-active:not(.awaiting-generatio
 .ai-thinking-flask .fx { width: 54px; height: 54px; }
 
 /* 生成实验等待层：液面就是进度 */
-.gen-core.gen-core-flask .fx { width: 100%; height: 100%; }
+/* 烧瓶 SVG 每帧都要重绘：单独成层并隔离布局，重绘只限于这个小图标，不牵动整张卡片。 */
+.gen-core.gen-core-flask { contain: layout style; }
+.gen-core.gen-core-flask .fx { width: 100%; height: 100%; will-change: transform; }
 .gen-core-flask .fx-burst { transform: scale(.72); transform-origin: 626px 208px; }
-.generation-overlay:not(.show) .gen-core-flask * { animation-play-state: paused; }
+/* 退场（is-leaving）期间不暂停，否则完成徽章和对勾会停在半途。 */
+.generation-overlay:not(.show):not(.is-leaving) .gen-core-flask * { animation-play-state: paused; }
 
 /* 连不上 AI 服务：错误气泡里的断环小图标 */
 .ai-message.error.is-offline .ai-message-bubble { display: grid; grid-template-columns: 30px minmax(0, 1fr); column-gap: 10px; align-items: start; }

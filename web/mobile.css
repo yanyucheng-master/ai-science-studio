@@ -85,6 +85,9 @@ button, summary, label, select, a[href], [role="button"], [role="tab"], input[ty
   .generation-overlay.show .gen-core-orb { animation: none; }
   .gen-step-text, .gen-step[data-state="active"] .gen-step-text, .gen-step[data-state="done"] .gen-step-text { filter: none; }
   .gen-aurora-blob.blob-c { display: none; }
+  /* 背景光斑在手机上静止：每块都是超过整屏大小的半透明图层，持续移动会占满手机 GPU 的填充率和显存。 */
+  .gen-aurora-blob, .gen-halo-blob,
+  .generation-overlay.show :is(.gen-aurora-blob, .gen-halo-blob) { animation: none; will-change: auto; }
   @keyframes gen-skeleton-pulse { from { opacity: .45; } to { opacity: 1; } }
 }
 
