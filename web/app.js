@@ -7565,7 +7565,9 @@ function clearGenerationTimers() {
 }
 
 const GENERATION_TIMING = Object.freeze({
-  full: Object.freeze({ stageStarts: [0, 700, 1400], complete: 2080, resolve: 2440, exit: 460 }),
+  // complete → resolve 留出 760ms：完成徽章（.12s 起）和对勾（.30–.62s）画完后再生成实验页、退场。
+  // 原来只留 360ms，退场时对勾还没开始画，就被暂停、淡出了。
+  full: Object.freeze({ stageStarts: [0, 640, 1280], complete: 1900, resolve: 2660, exit: 460 }),
   reduced: Object.freeze({ stageStarts: [0, 260, 520], complete: 760, resolve: 940, exit: 0 })
 });
 
@@ -7657,6 +7659,12 @@ function renderGenerationSteps(stages) {
   }));
 }
 
+// 进度条只改 transform（由 GPU 合成），不改 width，避免进度推进时每一帧都重新布局。
+function setGenerationProgress(percent) {
+  const value = Math.max(0, Math.min(100, Number(percent) || 0));
+  elements.generationProgress.style.transform = `translateX(${(value - 100).toFixed(2)}%)`;
+}
+
 function moveGenerationHighlight() {
   const highlight = elements.generationStepsHighlight;
   const active = elements.generationSteps && $('.gen-step[data-state="active"]', elements.generationSteps);
@@ -7680,7 +7688,7 @@ function setGenerationStage(index) {
   window.MasterLabBrandMotion?.loaderStage(elements.generationOverlay, index, stage.progress);
   elements.generationStatus.textContent = `${stage.label}：${stage.text}`;
   elements.generationProgress.style.transitionDuration = `${Math.max(0, nextStart - timing.stageStarts[index])}ms`;
-  elements.generationProgress.style.width = `${stage.progress}%`;
+  setGenerationProgress(stage.progress);
   $$(".gen-step", elements.generationSteps).forEach((item, itemIndex) => {
     item.dataset.state = itemIndex < index ? "done" : itemIndex === index ? "active" : "pending";
   });
@@ -7694,7 +7702,7 @@ function completeGenerationOverlay() {
   $$(".gen-step", elements.generationSteps).forEach(item => { item.dataset.state = "done"; });
   moveGenerationHighlight();
   elements.generationProgress.style.transitionDuration = "240ms";
-  elements.generationProgress.style.width = "100%";
+  setGenerationProgress(100);
   elements.generationTitle.textContent = "实验已生成";
   elements.generationKicker.textContent = "READY";
   elements.generationStatus.textContent = "实验已生成";
@@ -7718,17 +7726,17 @@ function showGenerationOverlay(stages = null, options = {}) {
   renderGenerationQuestion(options.question);
   renderGenerationSteps(activeStages);
   elements.generationProgress.style.transitionDuration = "0ms";
-  elements.generationProgress.style.width = "0%";
-  overlay.classList.add("show");
-  overlay.setAttribute("aria-hidden", "false");
-  // Bundled local templates do not need the simulated web generation delay.
-  if (document.body.classList.contains("harmony-compat-mode")) {
-    setGenerationStage(activeStages.length - 1);
-    return Promise.resolve();
-  }
+  setGenerationProgress(0);
+  // 先在隐藏状态下准备好第一阶段（内容、高亮位置、进度起点），最后才加 .show。
+  // 原来先显示再多次强制布局，每次都要重算整个等待层的样式，入场动画的前一两百毫秒在手机上被跳过。
+  const compat = document.body.classList.contains("harmony-compat-mode");
   // Commit the 0% state before the first stage starts its progress transition.
   void elements.generationProgress.offsetWidth;
-  setGenerationStage(0);
+  // Bundled local templates do not need the simulated web generation delay.
+  setGenerationStage(compat ? activeStages.length - 1 : 0);
+  overlay.classList.add("show");
+  overlay.setAttribute("aria-hidden", "false");
+  if (compat) return Promise.resolve();
 
   const timing = generationTiming();
   return new Promise(resolve => {
@@ -7737,6 +7745,21 @@ function showGenerationOverlay(stages = null, options = {}) {
       setTimeout(completeGenerationOverlay, timing.complete),
       setTimeout(resolve, timing.resolve)
     ];
+  });
+}
+
+// 等主线程空闲（实验页已绘制）再退场；最多等 260ms。Safari 没有 requestIdleCallback，固定等 120ms。
+// 不用 requestAnimationFrame：实验动画按“同一时刻只有一个待执行的动画帧”验收。
+function waitForGenerationSettle() {
+  return new Promise(resolve => {
+    let idle = 0;
+    const finish = () => {
+      clearTimeout(timer);
+      if (idle && typeof cancelIdleCallback === "function") cancelIdleCallback(idle);
+      resolve();
+    };
+    const timer = setTimeout(finish, typeof requestIdleCallback === "function" ? 260 : 120);
+    if (typeof requestIdleCallback === "function") idle = requestIdleCallback(finish, { timeout: 260 });
   });
 }
 
@@ -8828,18 +8851,23 @@ async function generateExperiment(options = {}) {
   state.generatedSubjects.add(detected);
   saveCurrentSubjectSnapshot();
   state.generated = Math.min(3, state.generated + 1);
+  clearDemoTimers();
+  resetExperiment({ restoreQuestion: false });
+  updateGradeTag();
+  dispatchAIContextChanged();
+  setDemoStep(3, "点击播放或请求 AI 导师提示");
+  // 实验页先在等待层后面完成样式、布局和首次绘制，再开始退场。原来退场和这些主线程工作挤在同一帧里，
+  // 退场动画被跳过大半，看起来是“卡一下后突然消失”。
+  if (!options.shared && generationTiming().exit > 0 && !document.body.classList.contains("harmony-compat-mode")) {
+    await waitForGenerationSettle();
+  }
   button.classList.remove("loading");
   $("span", button).textContent = "生成实验";
   hideGenerationOverlay();
-  clearDemoTimers();
-  resetExperiment({ restoreQuestion: false });
   if (!options.shared) {
     setTimeout(focusExperimentCard, 80);
     scheduleReasoningAutoAdvance();
   }
-  updateGradeTag();
-  dispatchAIContextChanged();
-  setDemoStep(3, "点击播放或请求 AI 导师提示");
   if (!options.shared) showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : genericParse?.templateId === "leafDisks" ? "高中光合作用教材流程已生成，可播放或回看六步操作": genericParse?.templateId === "photosynthesis" ? "教材光合作用实验已生成，可播放或回看六步操作" : genericParse ? `${GENERIC_TEMPLATES[genericParse.templateId].subject}典型题模板已生成，可拖动参数观察变化` : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
   return true;
 }

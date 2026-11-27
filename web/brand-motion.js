@@ -136,7 +136,7 @@
     const svg = loaderSvg(root); if (!svg) return;
     svg.classList.remove("is-done");
     setLevel(svg, 0, true);
-    rampRate(svg, 1, 1, isComet);
+    rampRate(svg, 1, 1);
   }
   function loaderStage(root, index, progress) {
     const svg = loaderSvg(root); if (!svg) return;
@@ -147,7 +147,8 @@
     const svg = loaderSvg(root); if (!svg) return;
     setLevel(svg, 1);
     retrigger(svg, "is-done");
-    rampRate(svg, 1, 700, isComet);
+    // 完成后彗星和液面波动在 0.6 秒内缓停：随后生成实验页会占用主线程，静止的图标不会出现“卡住”的帧。
+    rampRate(svg, 0, 600);
   }
 
   /* ---------- 断网 ---------- */
