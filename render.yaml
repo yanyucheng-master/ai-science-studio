@@ -6,6 +6,10 @@ services:
     plan: free
     buildCommand: echo "No build step"
     staticPublishPath: web
+    routes:
+      - type: redirect
+        source: /s/*
+        destination: /?s=*
     headers:
       - path: /
         name: Cache-Control

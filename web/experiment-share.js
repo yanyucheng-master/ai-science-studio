@@ -3,6 +3,8 @@
 (() => {
   "use strict";
   const PREFIX = "#/share/";
+  const SHORT_CODE = /^[A-Za-z0-9_-]{10}$/;
+  const SHORT_API = (window.MASTER_LAB_SHORT_SHARE_API || "").replace(/\/$/, "");
   const MAX_URL = 12000;
   const MAX_BYTES = 8000;
   // Padded-length coarse screen: 10668. Actual unpadded output is at most 10667.
@@ -301,32 +303,98 @@
     state.time = 0;
   }
 
-  async function copy() {
-    let link;
+  async function shortShareRequest(path, timeout, payload) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeout);
     try {
-      const prepared = capture();
-      if (location.protocol !== "https:" && location.protocol !== "http:") fail("请通过 HTTP 或 HTTPS 网页打开实验后分享");
-      const url = new URL(location.pathname, location.origin);
-      link = encodeShare(prepared.payload).then(token => {
-        url.searchParams.set("share", token);
-        if (url.href.length > MAX_URL) fail("分享链接过长，请缩短题目后重新生成实验");
-        return url.href;
+      const response = await fetch(SHORT_API + path, {
+        method: payload ? "POST" : "GET",
+        headers: payload ? { "Content-Type": "application/json" } : undefined,
+        body: payload ? JSON.stringify(payload) : undefined,
+        cache: "no-store",
+        credentials: "omit",
+        signal: controller.signal
       });
+      if (!response.headers.get("Content-Type")?.includes("application/json")) {
+        throw new TypeError("Share API is not ready");
+      }
+      if (response.status === 404 && !payload) fail("短链接不存在或已过期");
+      if (!response.ok) fail("短链接服务暂时无法使用，请稍后重试");
+      return await response.json();
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async function shortOrSelfContainedLink(payload) {
+    if (SHORT_API) {
+      try {
+        const { code } = await shortShareRequest("/v1/shares", 4000, payload);
+        if (typeof code !== "string" || !SHORT_CODE.test(code)) fail("短链接服务返回无效");
+        return { url: new URL("/s/" + code, location.origin).href, short: true };
+      } catch {
+        // Use the same validated snapshot even if the network or storage is unavailable.
+      }
+    }
+    const url = new URL(location.pathname, location.origin);
+    url.searchParams.set("share", await encodeShare(payload));
+    if (url.href.length > MAX_URL) fail("分享链接过长，请缩短题目后重新生成实验");
+    return { url: url.href, short: false };
+  }
+
+  async function readShortShare(params, href) {
+    const codes = params.getAll("s");
+    if (codes.length !== 1 || !SHORT_CODE.test(codes[0])) fail("短链接格式无效");
+    if (!SHORT_API) fail("短链接服务暂时无法使用，请稍后重试");
+    const path = "/v1/shares/" + codes[0];
+    const deadline = Date.now() + (location.protocol === "https:" ? 75000 : 8000);
+    const notice = setTimeout(() => {
+      if (location.href === href && !state.hasGenerated) {
+        setRecognitionPending("正在连接实验分享服务，休眠后的首次打开可能需要约一分钟。");
+      }
+    }, 450);
+    try {
+      // The Render startup page and its CORS failures can precede a healthy API.
+      while (location.href === href && navigator.onLine !== false && Date.now() < deadline) {
+        try {
+          const { payload } = await shortShareRequest(path, Math.min(15000, deadline - Date.now()));
+          return payload;
+        } catch (error) {
+          if (error?.name !== "AbortError" && !(error instanceof TypeError)) throw error;
+          const delay = Math.min(2000, deadline - Date.now());
+          if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
+      fail("短链接服务连接失败，请稍后重试");
+    } finally {
+      clearTimeout(notice);
+    }
+  }
+
+  async function copy() {
+    let prepared;
+    try {
+      prepared = capture();
+      if (location.protocol !== "https:" && location.protocol !== "http:") fail("请通过 HTTP 或 HTTPS 网页打开实验后分享");
     } catch (error) {
       showToast(`无法分享：${error.message}`);
       return;
     }
     try {
-      // To preserve the click's user activation in Safari, start the write before encoding finishes.
-      if (navigator.clipboard?.write && typeof ClipboardItem === "function") {
-        const blob = link.then(value => new Blob([value], { type: "text/plain" }));
-        await Promise.all([navigator.clipboard.write([new ClipboardItem({ "text/plain": blob })]), blob]);
+      const clipboard = navigator.clipboard;
+      const supportsItem = clipboard?.write && typeof ClipboardItem === "function";
+      if (!supportsItem && !clipboard?.writeText) fail("剪贴板不可用");
+      const link = shortOrSelfContainedLink(prepared.payload);
+      // Start the write during the click to preserve Safari's user activation.
+      if (supportsItem) {
+        const blob = link.then(({ url }) => new Blob([url], { type: "text/plain" }));
+        await Promise.all([clipboard.write([new ClipboardItem({ "text/plain": blob })]), blob]);
       } else {
-        const value = await link;
-        if (!navigator.clipboard?.writeText) fail("剪贴板不可用");
-        await navigator.clipboard.writeText(value);
+        await clipboard.writeText((await link).url);
       }
-      showToast("实验分享链接已复制");
+      const { short } = await link;
+      showToast(short ? "实验短链接已复制（24 小时有效）"
+        : SHORT_API ? "短链接暂不可用，已复制完整分享链接" : "实验分享链接已复制");
     } catch {
       showToast("复制失败，链接未复制；请检查浏览器的剪贴板权限及安全连接");
     }
@@ -361,7 +429,9 @@
     let prepared;
     try {
       if (href.length > MAX_URL) fail("分享链接过长");
-      const data = hash ? decodeLegacy(hash) : await decodeShare(new URLSearchParams(search).get("share"));
+      const params = new URLSearchParams(search);
+      const data = hash ? decodeLegacy(hash)
+        : params.has("s") ? await readShortShare(params, href) : await decodeShare(params.get("share"));
       if (location.href !== href || restoring) return;
       prepared = prepare(data);
     } catch (error) {
