@@ -3,9 +3,13 @@
     package="cn.masterlab.publicdemo">
     <uses-permission android:name="android.permission.INTERNET" />
     <application android:label="大师实验室" android:icon="@drawable/lab_icon"
-        android:allowBackup="false" android:usesCleartextTraffic="false"
+        android:allowBackup="false" android:usesCleartextTraffic="false" android:enableOnBackInvokedCallback="false"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
-        <activity android:name=".MainActivity" android:exported="true">
+        <provider android:name=".PhotoProvider" android:authorities="cn.masterlab.publicdemo.photos"
+            android:exported="false" android:grantUriPermissions="true" />
+        <activity android:name=".MainActivity" android:exported="true"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboardHidden"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

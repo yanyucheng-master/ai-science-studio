@@ -49,10 +49,25 @@ try {
     $jar = Join-Path $jdk 'jar.exe'
     $signer = Join-Path $buildTools 'lib/apksigner.jar'
 
+    $assets = Join-Path $work 'assets'
+    $webFiles = Invoke-BuildTool 'git' @('-C',$repo,'-c','core.quotepath=false','ls-files','--','web',':(exclude)web/android/**')
+    foreach ($tracked in $webFiles) {
+        $target = Join-Path $assets $tracked.Substring(4)
+        $null = [IO.Directory]::CreateDirectory((Split-Path $target -Parent))
+        [IO.File]::Copy((Join-Path $repo $tracked), $target)
+    }
+    $homePage = Join-Path $assets 'index.html'
+    $html = [IO.File]::ReadAllText($homePage)
+    $html = [regex]::Replace($html, '(?m)^.*https://fonts\.g(?:oogleapis|static)\.com[^<\r\n]*.*\r?\n', '')
+    if (!$html.Contains('</body>')) { throw 'Missing experiment entry page' }
+    $html = $html.Replace('</body>', '<script src="android-app.js"></script></body>')
+    [IO.File]::WriteAllText($homePage, $html, [Text.UTF8Encoding]::new($false))
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'android-app.js') -Destination $assets
+
     Invoke-BuildTool $aapt @('compile','--dir',$res,'-o',$compiled)
     Invoke-BuildTool $aapt @('link','-I',$platform,'--manifest',(Join-Path $PSScriptRoot 'AndroidManifest.xml'),
         '--min-sdk-version','23','--target-sdk-version','35','--version-code',"$VersionCode",
-        '--version-name',$VersionName,'--java',$generated.FullName,'-o',$unsigned,$compiled)
+        '--version-name',$VersionName,'-A',$assets,'--java',$generated.FullName,'-o',$unsigned,$compiled)
     $sources = @(Get-ChildItem -Path (Join-Path $PSScriptRoot 'src'),$generated.FullName -Filter '*.java' -Recurse |
         ForEach-Object { $_.FullName })
     $bootClasspath = $platform + [IO.Path]::PathSeparator + (Join-Path $buildTools 'core-lambda-stubs.jar')

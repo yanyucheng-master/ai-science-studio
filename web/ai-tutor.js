@@ -2703,6 +2703,10 @@ mode 不使用 check 或 variant；需要时用 explain。parameterPatch 只可�
     }
     const pad = value => String(value).padStart(2, "0");
     const name = `大师实验室-AI对话-${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}.md`;
+    if (window.masterLabAndroid?.saveMarkdown) {
+      window.masterLabAndroid.saveMarkdown(name, lines.join("\n"));
+      return;
+    }
     const url = URL.createObjectURL(new Blob([lines.join("\n")], { type: "text/markdown;charset=utf-8" }));
     const link = createElement("a");
     link.href = url;

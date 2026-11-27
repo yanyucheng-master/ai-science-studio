@@ -1,28 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root" android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="#F6F8FD" android:fillViewport="true">
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:gravity="center_vertical"
-        android:paddingStart="28dp" android:paddingEnd="28dp" android:paddingTop="28dp" android:paddingBottom="28dp">
-        <ImageView android:layout_width="80dp" android:layout_height="80dp"
-            android:importantForAccessibility="no" android:src="@drawable/lab_icon" />
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" android:text="大师实验室" android:textColor="#10284A"
-            android:textSize="32sp" android:textStyle="bold" />
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" android:text="公网实验工作台 · 联网使用" android:textColor="#415774" android:textSize="16sp" />
-        <Button android:id="@+id/open_lab" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="28dp" android:minHeight="52dp" android:backgroundTint="#244E97"
-            android:text="进入实验室" android:textColor="#FFFFFF" android:textSize="16sp" />
-        <TextView android:id="@+id/installed" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginTop="32dp" android:textColor="#10284A" android:textSize="16sp" android:textStyle="bold" />
-        <TextView android:id="@+id/status" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="6dp" android:textColor="#415774" android:textSize="15sp" android:accessibilityLiveRegion="polite" />
-        <Button android:id="@+id/download" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" android:text="下载新版 APK" android:visibility="gone" />
-        <Button android:id="@+id/check" style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="检查安装包更新" android:textColor="#244E97" />
-    </LinearLayout>
-</ScrollView>
+    android:background="#f7f9fd">
+    <WebView android:id="@+id/lab" android:layout_width="match_parent" android:layout_height="match_parent" />
+</FrameLayout>

@@ -347,7 +347,7 @@
 
   els.cameraButton.addEventListener("click", () => {
     if (state.busy) return;
-    if (prefersSystemCamera() && els.cameraInput) {
+    if ((window.masterLabAndroid || prefersSystemCamera()) && els.cameraInput) {
       els.cameraInput.click();
       return;
     }

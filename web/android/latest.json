@@ -1,8 +1,8 @@
 {
   "packageName": "cn.masterlab.publicdemo",
-  "versionCode": 1,
-  "versionName": "1.0.0",
-  "apk": "master-lab-1.apk",
-  "sizeBytes": 25124,
-  "sha256": "5b21037408d34351c9b7b6f385e31a946ad5f5872b50bffaa5d89b4e8d58fef4"
+  "versionCode": 2,
+  "versionName": "1.1.0",
+  "apk": "master-lab-2.apk",
+  "sizeBytes": 2004025,
+  "sha256": "bc7c6710b45c84909edf06a9a17a0e2de3d730e8b8b592c23f24e2204eaad16b"
 }
