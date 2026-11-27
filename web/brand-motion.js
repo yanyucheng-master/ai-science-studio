@@ -263,8 +263,9 @@
     R.skip.style.opacity = seg(t, 300, 600).toFixed(3);
   }
   function splashWanted() {
-    let q = null;
-    try { q = new URLSearchParams(location.search).get("splash"); } catch { /* 无参数 */ }
+    const params = new URLSearchParams(location.search);
+    if (location.hash === "#/share" || location.hash.startsWith("#/share/") || params.has("share")) return false;
+    const q = params.get("splash");
     if (q === "0" || reducedMotion()) return false;
     if (q === "1") return true;
     if (navigator.webdriver) return false;

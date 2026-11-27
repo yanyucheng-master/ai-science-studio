@@ -1,4 +1,4 @@
-/* share-v1: loaded after app.js. All calculations and generation use its local planners.
+/* Experiment sharing: loaded after app.js. All calculations and generation use its local planners.
    This module owns transport/validation only; URL objects never become application state. */
 (() => {
   "use strict";
@@ -45,15 +45,19 @@
     if (param.locked && value !== param.value) fail(`${param.label}是锁定参数`);
     if (!param.locked && typeof param.valueText === "function" && !Number.isInteger(value)) fail(`${param.label}必须为整数选项`);
   }
-  function encode(data) {
+  function jsonBytes(data) {
     const bytes = new TextEncoder().encode(JSON.stringify(data));
     if (bytes.length > MAX_BYTES) fail("分享数据过长，请缩短题目后重新生成实验");
-    return btoa(Array.from(bytes, byte => String.fromCharCode(byte)).join(""))
-      .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    return bytes;
   }
-  function decode(hash) {
-    if (location.href.length > MAX_URL || hash.length > PREFIX.length + MAX_ENCODED_SCAN) fail("分享链接过长");
-    const encoded = hash.slice(PREFIX.length);
+  function base64url(bytes) {
+    return btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function encode(data) {
+    return base64url(jsonBytes(data));
+  }
+  function readBase64url(encoded) {
+    if (encoded.length > MAX_ENCODED_SCAN) fail("分享链接过长");
     if (!encoded || !/^[A-Za-z0-9_-]+$/.test(encoded) || encoded.length % 4 === 1) fail("分享链接编码已损坏");
     let binary;
     try {
@@ -62,15 +66,72 @@
       fail("分享链接编码已损坏");
     }
     if (binary.length > MAX_BYTES) fail("分享数据过长");
-    let data;
+    const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+    if (base64url(bytes) !== encoded) fail("分享链接编码不规范或已损坏");
+    return bytes;
+  }
+  function readJson(bytes) {
     try {
-      const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
-      data = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
+      return JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
     } catch {
       fail("分享链接编码或 JSON 数据已损坏");
     }
+  }
+  function decodeLegacy(hash) {
+    if (!hash.startsWith(PREFIX)) fail("分享链接格式无效");
+    const encoded = hash.slice(PREFIX.length);
+    const data = readJson(readBase64url(encoded));
     if (encode(data) !== encoded) fail("分享链接编码不规范或已损坏");
     return data;
+  }
+
+  async function encodeShare(payload) {
+    // Version 2 stores only the fields that cannot be derived from the template.
+    const bytes = jsonBytes([payload.template, payload.question, payload.grade === "senior" ? 1 : 0,
+      payload.params, payload.mode]);
+    const plain = "2." + base64url(bytes);
+    if (typeof CompressionStream !== "function" || typeof DecompressionStream !== "function") return plain;
+    try {
+      const stream = new Blob([bytes]).stream().pipeThrough(new CompressionStream("deflate"));
+      const compressed = "2z." + base64url(new Uint8Array(await new Response(stream).arrayBuffer()));
+      return compressed.length < plain.length ? compressed : plain;
+    } catch {
+      return plain;
+    }
+  }
+
+  async function decodeShare(token) {
+    const separator = token.indexOf(".");
+    const format = token.slice(0, separator);
+    if (separator < 0 || (format !== "2" && format !== "2z")) fail("分享链接格式无效或版本不支持");
+    let bytes = readBase64url(token.slice(separator + 1));
+    if (format === "2z") {
+      if (typeof DecompressionStream !== "function") fail("当前浏览器无法打开压缩分享链接，请更新浏览器");
+      const reader = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate")).getReader();
+      let length = 0;
+      const buffer = new Uint8Array(MAX_BYTES);
+      try {
+        for (let chunk = await reader.read(); !chunk.done; chunk = await reader.read()) {
+          if (length + chunk.value.length > MAX_BYTES) {
+            await reader.cancel();
+            fail("分享数据过长");
+          }
+          buffer.set(chunk.value, length);
+          length += chunk.value.length;
+        }
+      } finally {
+        reader.releaseLock();
+      }
+      bytes = buffer.subarray(0, length);
+    }
+    const data = readJson(bytes);
+    if (!Array.isArray(data) || data.length !== 5) fail("分享数据格式无效");
+    const [template, question, grade, params, mode] = data;
+    if (typeof template !== "string" || !(grade === 0 || grade === 1)) fail("分享模板或学段无效");
+    const subject = own(SPECIAL, template) ? SPECIAL[template]
+      : own(GENERIC_TEMPLATES, template) ? GENERIC_TEMPLATES[template].subject : null;
+    if (!subject) fail("未知实验模板，当前网页无法恢复");
+    return { v: 1, subject, question, grade: grade === 1 ? "senior" : "junior", template, params, mode };
   }
 
   function modeKeys(template) {
@@ -241,20 +302,30 @@
   }
 
   async function copy() {
-    let url;
+    let link;
     try {
       const prepared = capture();
       if (location.protocol !== "https:" && location.protocol !== "http:") fail("请通过 HTTP 或 HTTPS 网页打开实验后分享");
-      url = new URL(location.pathname, location.origin);
-      url.hash = PREFIX + encode(prepared.payload);
-      if (url.href.length > MAX_URL) fail("分享链接过长，请缩短题目后重新生成实验");
+      const url = new URL(location.pathname, location.origin);
+      link = encodeShare(prepared.payload).then(token => {
+        url.searchParams.set("share", token);
+        if (url.href.length > MAX_URL) fail("分享链接过长，请缩短题目后重新生成实验");
+        return url.href;
+      });
     } catch (error) {
       showToast(`无法分享：${error.message}`);
       return;
     }
     try {
-      if (!navigator.clipboard?.writeText) fail("剪贴板不可用");
-      await navigator.clipboard.writeText(url.href);
+      // To preserve the click's user activation in Safari, start the write before encoding finishes.
+      if (navigator.clipboard?.write && typeof ClipboardItem === "function") {
+        const blob = link.then(value => new Blob([value], { type: "text/plain" }));
+        await Promise.all([navigator.clipboard.write([new ClipboardItem({ "text/plain": blob })]), blob]);
+      } else {
+        const value = await link;
+        if (!navigator.clipboard?.writeText) fail("剪贴板不可用");
+        await navigator.clipboard.writeText(value);
+      }
       showToast("实验分享链接已复制");
     } catch {
       showToast("复制失败，链接未复制；请检查浏览器的剪贴板权限及安全连接");
@@ -262,7 +333,7 @@
   }
 
   async function restoreRoute() {
-    const hash = location.hash;
+    const { href, hash, search } = location;
     if (restoring) return;
     if (!isExperimentShareRoute(hash)) {
       // Legacy fragments only select a subject; no experiment was encoded in them.
@@ -289,10 +360,12 @@
     if (state.autoDemoTimer) clearTimeout(state.autoDemoTimer);
     let prepared;
     try {
-      if (!hash.startsWith(PREFIX)) fail("分享链接格式无效");
-      prepared = prepare(decode(hash));
+      if (href.length > MAX_URL) fail("分享链接过长");
+      const data = hash ? decodeLegacy(hash) : await decodeShare(new URLSearchParams(search).get("share"));
+      if (location.href !== href || restoring) return;
+      prepared = prepare(data);
     } catch (error) {
-      reportFailure(`未恢复实验：${error.message}`);
+      if (location.href === href) reportFailure(`未恢复实验：${error.message}`);
       return;
     }
     // Only the currently active share is deduplicated. A -> B -> A must restore A again.
@@ -314,6 +387,7 @@
       const restored = await generateExperiment({ shared: prepared, questionOverride: prepared.payload.question, allowAiFallback: false });
       if (!restored) fail("实验生成未完成，请手动重试");
       activeImportKey = importKey;
+      if (location.href === href) focusExperimentCard();
       showToast("已恢复分享实验、学段与参数，动画从初始暂停状态开始");
     } catch (error) {
       // Unexpected rendering failures leave an explicit waiting surface, never a default experiment.
@@ -350,7 +424,8 @@
   window.MasterLabShare = Object.freeze({ copy, restoreRoute, applyParameters, leaveContext,
     get handlesCacheReturn() { return hasShareNavigation; },
     planFor: value => trusted(value).plan });
-  window.addEventListener("hashchange", () => restoreRoute());
+  window.addEventListener("hashchange", restoreRoute);
+  window.addEventListener("popstate", restoreRoute);
   window.addEventListener("masterlab:context-changed", () => {
     if (window.MasterLabInstant?.getContext()) leaveContext();
   });

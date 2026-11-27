@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
+import { deflateSync, inflateSync } from 'node:zlib';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
@@ -27,7 +28,13 @@ const report = { browser: browser.version(), checks: [], roundTrips: [], errors:
 const contexts = [];
 const prefix = '#/share/';
 const hash = value => prefix + Buffer.from(JSON.stringify(value)).toString('base64url');
-const decode = url => JSON.parse(Buffer.from(new URL(url).hash.slice(prefix.length), 'base64url').toString('utf8'));
+async function decode(page, url) {
+  const [version, value] = new URL(url).searchParams.get('share').split('.');
+  const bytes = Buffer.from(value, 'base64url');
+  const [template, question, grade, params, mode] = JSON.parse(version === '2z' ? inflateSync(bytes) : bytes);
+  return { v: 1, subject: await page.evaluate(() => state.subject), question,
+    grade: grade ? 'senior' : 'junior', template, params, mode };
+}
 const mark = label => { report.checks.push(label); console.log('PASS', label); };
 async function fresh(width = 1366, suffix = '') {
   const context = await browser.newContext({ viewport: { width, height: 950 }, reducedMotion: 'reduce' });
@@ -41,6 +48,10 @@ async function fresh(width = 1366, suffix = '') {
   await context.addInitScript(() => {
     window.__shareCopies = [];
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: {
+      async write(items) {
+        const blob = await items[0].getType('text/plain');
+        await navigator.clipboard.writeText(await blob.text());
+      },
       async writeText(value) { if (window.__denyClipboard) throw new Error('denied'); window.__shareCopies.push(value); }
     } });
     window.addEventListener('pageshow', event => { window.__lastPageShowPersisted = event.persisted; });
@@ -67,7 +78,11 @@ function snapshot() {
     mode: state.subject === '生物' ? [state.cellType, state.cellLevel, state.cellLevelLocked] : null };
 }
 async function open(page, payload) {
-  await page.evaluate(async value => { location.hash = value; await MasterLabShare.restoreRoute(); }, typeof payload === 'string' ? payload : hash(payload));
+  await page.evaluate(async value => {
+    if (value.startsWith('http') || value.startsWith('?')) history.pushState(null, '', value);
+    else history.pushState(null, '', '/' + value);
+    await MasterLabShare.restoreRoute();
+  }, typeof payload === 'string' ? payload : hash(payload));
 }
 async function copy(page) {
   const count = await page.evaluate(() => __shareCopies.length);
@@ -98,10 +113,15 @@ try {
   await sender.waitForFunction(() => state.hasGenerated && !document.querySelector('#generateButton').classList.contains('loading'));
   await sender.evaluate(() => { clearReasoningTimers(); clearDemoTimers(); });
   await sender.locator('#shareButton').click();
+  await sender.waitForFunction(() => __shareCopies.length === 1);
   const first = await sender.evaluate(() => __shareCopies.at(-1));
-  assert.equal(new URL(first).search, ''); assert.equal(first.split('#').length, 2);
-  const A = decode(first);
-  await open(receiver, A);
+  assert.deepEqual([...new URL(first).searchParams.keys()], ['share']);
+  assert.equal(new URL(first).hash, '');
+  const A = await decode(sender, first);
+  assert.ok(first.length < new URL(first).origin.length + 1 + hash(A).length);
+  report.brakeLinkLengths = { previous: 'https://ai-science-studio.onrender.com/'.length + hash(A).length,
+    compact: 'https://ai-science-studio.onrender.com/'.length + new URL(first).search.length };
+  await open(receiver, first);
   assert.deepEqual(await receiver.evaluate(snapshot), await sender.evaluate(snapshot));
   assert.equal(await receiver.evaluate(() => physicsBrakeModel().stopDistance), 40);
   const afterStorage = await receiver.evaluate(() => ({ ...localStorage }));
@@ -115,7 +135,7 @@ try {
   }
   mark('UI share restores braking result 40m; URL query stripped and receiver storage unchanged');
   await sender.evaluate(() => { elements.ranges[0].value = 25; updateParameters(); resetExperiment(); });
-  const adjusted = decode(await copy(sender));
+  const adjusted = await copy(sender);
   await open(receiver, adjusted);
   assert.equal(await receiver.evaluate(() => physicsBrakeModel().stopDistance), 62.5);
   mark('current parameters restore 62.5m instead of original-question defaults');
@@ -131,7 +151,7 @@ try {
     }, item);
     const expected = await sender.evaluate(snapshot);
     let url;
-    try { url = await copy(sender); await open(receiver, decode(url));
+    try { url = await copy(sender); await open(receiver, url);
       assert.deepEqual(await receiver.evaluate(snapshot), expected);
       assert.equal(await receiver.evaluate(() => state.time), 0);
       assert.equal(await receiver.evaluate(() => state.playing), false);
@@ -158,7 +178,7 @@ try {
       clearReasoningTimers(); clearDemoTimers(); resetExperiment();
     },item);
     const expected = await sender.evaluate(snapshot);
-    try { await open(receiver,decode(await copy(sender))); assert.deepEqual(await receiver.evaluate(snapshot),expected); }
+    try { await open(receiver,await copy(sender)); assert.deepEqual(await receiver.evaluate(snapshot),expected); }
     catch(error) { throw new Error('Adjusted '+key+': '+error.message,{cause:error}); }
     report.adjustedTemplates.push(key);
   }
@@ -167,8 +187,9 @@ try {
   await sender.evaluate(async q=>{await generateExperiment({questionOverride:q,allowAiFallback:false});clearReasoningTimers();clearDemoTimers();},coilQuestion);
   for(const action of ['view','reverse','core']) {
     await sender.evaluate(action=>document.querySelector(`[data-solenoid-action="${action}"]`).click(),action);
-    const data=decode(await copy(sender));await open(receiver,data);
-    assert.deepEqual(decode(await copy(receiver)).mode,data.mode);
+    const url = await copy(sender), data = await decode(sender, url);
+    await open(receiver,url);
+    assert.deepEqual((await decode(receiver,await copy(receiver))).mode,data.mode);
     assert.equal(await receiver.evaluate(()=>state.solenoidPaused),true);
   }
   mark('solenoid view, current direction and core controls restore exactly and start paused');
@@ -178,7 +199,8 @@ try {
     document.querySelector('.cell-level-toggle button[data-level="senior"]').click();
     state.gradeLevel='junior';syncGradeSwitches();
   },cellQuestion);
-  const cellPayload=decode(await copy(sender));await open(receiver,cellPayload);
+  const cellLink=await copy(sender), cellPayload=await decode(sender,cellLink);
+  await open(receiver,cellLink);
   assert.deepEqual(await receiver.evaluate(snapshot),await sender.evaluate(snapshot));
   assert.equal(cellPayload.mode.locked,true);assert.equal(cellPayload.mode.level,'senior');assert.equal(cellPayload.grade,'junior');
   mark('independently locked cell explanation level survives a different global grade');
@@ -203,6 +225,9 @@ try {
   mark('real refresh reimports initial shared parameters');
 
   const invalid = [
+    ['compressed over limit', '?share=2z.'+deflateSync(Buffer.alloc(8001, 32)).toString('base64url')],
+    ['malformed deflate', '?share=2z.Zm9v'],
+    ['missing compact value', '?share='],
     ['version', {...A,v:2}], ['unknown field', {...A,secret:'x'}], ['missing', {...A,mode:undefined}],
     ['wrong type', {...A,params:['20',5]}], ['range', {...A,params:[1e9,5]}],
     ['null',null], ['array',[]], ['template', {...A,template:'__proto__'}],
@@ -222,7 +247,7 @@ try {
   for (const [template,label,mutate] of variants) {
     const item=bank.find(item => item.expect==='local' && (item.templateId||item.kind)===template && (template!=='friction'||item.level==='junior'));
     await sender.evaluate(async item => {state.gradeLevel=item.level||'senior';await generateExperiment({questionOverride:item.q,allowAiFallback:false});clearReasoningTimers();clearDemoTimers();},item);
-    const payload=decode(await copy(sender));mutate(payload);invalid.push([label,payload]);
+    const payload=await decode(sender,await copy(sender));mutate(payload);invalid.push([label,payload]);
   }
   // 8000 bytes passes the transport limit but still fails payload shape; 8001 fails the byte limit.
   invalid.push(['bytes 8000',prefix+Buffer.from('"'+'a'.repeat(7998)+'"').toString('base64url')]);
@@ -272,8 +297,22 @@ try {
   await cachePage.waitForFunction(()=>window.MasterLabShare && window.__cachePersisted===true && state.hasGenerated&&state.p1===20);
   assert.equal(await cachePage.evaluate(()=>window.__cachePersisted),true);
   mark('real BFCache keeps active edits and reimports after leaving the share context');
-  const mobile = await fresh(390, hash(A));
-  await mobile.waitForFunction(() => state.hasGenerated);
+  const mobile = await fresh(390, new URL(adjusted).search);
+  await mobile.waitForFunction(() => state.hasGenerated && state.p1 === 25 && scrollY > 0);
+  assert.equal(await mobile.evaluate(() => physicsBrakeModel().stopDistance), 62.5);
+  assert.equal(await mobile.locator('.ml-splash').count(), 0);
+  await mobile.reload();
+  await mobile.waitForFunction(() => state.hasGenerated && state.p1 === 25);
+  const fallback = await sender.evaluate(async () => {
+    const compressor = window.CompressionStream;
+    window.CompressionStream = undefined;
+    try { await MasterLabShare.copy(); return __shareCopies.at(-1); }
+    finally { window.CompressionStream = compressor; }
+  });
+  assert.ok(new URL(fallback).searchParams.get('share').startsWith('2.'));
+  await open(receiver, fallback);
+  assert.deepEqual(await receiver.evaluate(snapshot), await sender.evaluate(snapshot));
+  mark('fresh compact share opens without a fragment, reloads and scrolls to the experiment; plain fallback restores');
   assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth > innerWidth+2),false);
   await mobile.screenshot({path:resolve(output,'share-mobile.png'),fullPage:true});
   await open(receiver,A);

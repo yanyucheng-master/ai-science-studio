@@ -26,7 +26,9 @@ node server/scripts/check-announcement-release.js --base origin/codex/public-dem
 
 ## 发布下一条公告
 
-在 `announcements` 数组里加入一项，保留 `version: 1`：
+`announcements` 每天只展示一项。同日有多个更新时，合并到当天的汇总公告并增加其 `revision`。小更新和补丁统一写为「修复了已知问题」。合并已发布的多条公告时，沿用其中一个 `id` 作为当天的公告，把其余原始条目移入 `archivedAnnouncements`。归档保留原文、标识和修订号，铃铛仅显示汇总公告。
+
+当天还没有公告时，在 `announcements` 数组中新增一项，保留 `version: 1`：
 
 ```json
 {
@@ -39,7 +41,7 @@ node server/scripts/check-announcement-release.js --base origin/codex/public-dem
 }
 ```
 
-示例日期和文字需替换为真实内容。新公告使用唯一 `id`；修改已发布公告的重要内容时增加 `revision`，使读过旧内容的用户重新收到提示。相同日期按文件中的顺序展示，最新项放在前面。
+示例日期和文字需替换为真实内容。新公告使用唯一 `id`；修改已发布公告的重要内容时增加 `revision`，使读过旧内容的用户重新收到提示。按日期从新到旧排列。
 
 字段限制：`id` 为 1–80 个英文字母、数字、短横线或下划线；`revision` 为正整数；`date` 为有效的 `YYYY-MM-DD` 日期；标题最多 100 字符，摘要最多 300 字符，正文为 1–8 条、每条最多 1000 字符；最多 100 条公告。全部按纯文本显示。
 
