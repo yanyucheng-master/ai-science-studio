@@ -1,0 +1,170 @@
+{
+  "sourceSha": "25f498993decbf3c761667c24fbaab0a1361353c",
+  "browser": "158.0.4370.45",
+  "checks": [
+    "senior biology genetics menu loads the versioned pedigree sample",
+    "normal library entry generates pedigree",
+    "P01 space key selects SVG member",
+    "P01 normal generation and explanation",
+    "P02 space key selects SVG member",
+    "P02 normal generation and explanation",
+    "P03 space key selects SVG member",
+    "P03 normal generation and explanation",
+    "P04 space key selects SVG member",
+    "P04 normal generation and explanation",
+    "P05 space key selects SVG member",
+    "P05 normal generation and explanation",
+    "P06 space key selects SVG member",
+    "P06 normal generation and explanation",
+    "six fixed samples generate and explain without automatic AI POST",
+    "subject roundtrip retains the active pedigree and step",
+    "actual tutor entry retains current graph and step context",
+    "actual tutor return retains graph step",
+    "no console errors or page exceptions during six-sample operation",
+    "P01 standalone SVG parses and contains the correct members",
+    "P02 standalone SVG parses and contains the correct members",
+    "P03 standalone SVG parses and contains the correct members",
+    "P04 standalone SVG parses and contains the correct members",
+    "P05 standalone SVG parses and contains the correct members",
+    "P06 standalone SVG parses and contains the correct members",
+    "standalone previews introduce no console errors or script exceptions"
+  ],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "apiRequests": [],
+  "previews": [
+    {
+      "id": "P01",
+      "root": "svg",
+      "members": 7,
+      "families": [
+        "F1",
+        "F2"
+      ],
+      "labels": [
+        "I-1",
+        "I-2",
+        "II-1",
+        "II-2",
+        "II-3",
+        "III-1",
+        "III-2"
+      ],
+      "scripts": 0,
+      "sha256": "6dc08aadf59fbd91234fe919dd2e73512b627c3bf3023a48a8e9ac09de79a45c"
+    },
+    {
+      "id": "P02",
+      "root": "svg",
+      "members": 6,
+      "families": [
+        "F1"
+      ],
+      "labels": [
+        "I-1",
+        "I-2",
+        "II-1",
+        "II-2",
+        "II-3",
+        "II-4"
+      ],
+      "scripts": 0,
+      "sha256": "84c472e7146c4d1aedfec5da3c8217f3f8dcff7421def4e6eb51c14946709403"
+    },
+    {
+      "id": "P03",
+      "root": "svg",
+      "members": 7,
+      "families": [
+        "F1",
+        "F2"
+      ],
+      "labels": [
+        "I-1",
+        "I-2",
+        "II-1",
+        "II-2",
+        "II-3",
+        "III-1",
+        "III-2"
+      ],
+      "scripts": 0,
+      "sha256": "36fde7f0d0b56bfb17f91f76413215d26e8c8fdab03050a941e07950a0c937fc"
+    },
+    {
+      "id": "P04",
+      "root": "svg",
+      "members": 7,
+      "families": [
+        "F1",
+        "F2"
+      ],
+      "labels": [
+        "I-1",
+        "I-2",
+        "II-1",
+        "II-2",
+        "II-3",
+        "III-1",
+        "III-2"
+      ],
+      "scripts": 0,
+      "sha256": "887b45e70f36dee35a34a3cf34676c109736b1f946efa32e80981f579fd2e939"
+    },
+    {
+      "id": "P05",
+      "root": "svg",
+      "members": 6,
+      "families": [
+        "F1",
+        "F2"
+      ],
+      "labels": [
+        "I-1",
+        "I-2",
+        "II-1",
+        "II-2",
+        "II-3",
+        "III-1"
+      ],
+      "scripts": 0,
+      "sha256": "4e38b87411e3868ed2c8c6baed265416c11adff08a2be6c015802adf0ece5fd6"
+    },
+    {
+      "id": "P06",
+      "root": "svg",
+      "members": 5,
+      "families": [
+        "F1",
+        "F2"
+      ],
+      "labels": [
+        "I-1",
+        "I-2",
+        "II-1",
+        "II-2",
+        "III-1"
+      ],
+      "scripts": 0,
+      "sha256": "ed81aee3eb52be40864f984b77428b9a39f52aed8209c3c789b1bc8975091d6f"
+    }
+  ],
+  "previewState": "Corrected standalone XML in final documentation. Web runtime source is unchanged.",
+  "tutorContext": {
+    "mode": "question",
+    "subject": "生物",
+    "title": "遗传系谱图 P06-v1 · 两处关系中的冲突",
+    "originalQuestion": "高中遗传系谱图P06-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型受累。I-2女性表型受累。II-1男性表型未受累。II-2女性表型未受累。III-1女性表型受累。I-1与I-2的子女为II-1。II-1与II-2的子女为III-1。求方式判读、冲突关系与违反的条件。",
+    "templateId": "",
+    "parameters": {},
+    "deterministicResult": {
+      "resultText": "本图可行方式：四类均与题给条件冲突。",
+      "metrics": "P06-v1；位置未知；所问方式判读|冲突关系与违反的条件；本地可行四类均与题给条件冲突。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：5人｜样例与版本：P06-v1｜题给定位：未知",
+      "gradeLevel": "高中",
+      "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+    },
+    "formula": "亲子传递与题给条件 → 可行基因型 → 有条件的概率",
+    "currentStep": "P06-v1，当前第5步，配子与概率。尚未点选成员。可行方式为空。未知创始者没有等权先验，概率按模型及父母基因型分别列出。"
+  },
+  "userInitiatedTutorRequests": []
+}

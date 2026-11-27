@@ -1,0 +1,58 @@
+[
+  {
+    "file": "P04-conditional-390.png",
+    "sha256": "5655da80d3612a4e57096d54ee4d9f4b8e30f8fdd905f8145f5a3a9d4f695b21",
+    "sourceSha": "25f498993decbf3c761667c24fbaab0a1361353c",
+    "width": 334,
+    "height": 2039,
+    "viewportWidth": 390
+  },
+  {
+    "file": "P04-joint-390.png",
+    "sha256": "2ecef98a83ea06c3a7e98319d48b808c285efec045976918506d4b7369a10207",
+    "sourceSha": "25f498993decbf3c761667c24fbaab0a1361353c",
+    "width": 334,
+    "height": 2000,
+    "viewportWidth": 390
+  },
+  {
+    "file": "P04-both-390.png",
+    "sha256": "5f4aec904de520d299d84c3e6f33f7d8d5ae836cd85c3ca862816f3e730082b3",
+    "sourceSha": "25f498993decbf3c761667c24fbaab0a1361353c",
+    "width": 334,
+    "height": 2142,
+    "viewportWidth": 390
+  },
+  {
+    "file": "P01-II-2-AD-390.png",
+    "sha256": "b57759ac1698803197f0b1e8c58488ba47a9d66d502ef79ee2525f142ad32c61",
+    "sourceSha": "25f498993decbf3c761667c24fbaab0a1361353c",
+    "width": 334,
+    "height": 2188,
+    "viewportWidth": 390
+  },
+  {
+    "file": "P02-I-1-AR-390.png",
+    "sha256": "d3986743029faabf4b92ac5ed6ec257b74d7e0fd135ca7340785d58f0365ea98",
+    "sourceSha": "25f498993decbf3c761667c24fbaab0a1361353c",
+    "width": 334,
+    "height": 2073,
+    "viewportWidth": 390
+  },
+  {
+    "file": "P02-II-4-AR-390.png",
+    "sha256": "ce2773cfdeeaec64834e94ec87d6be7ff2a2d0fb464f7015ffacb7a4b7e1f71f",
+    "sourceSha": "25f498993decbf3c761667c24fbaab0a1361353c",
+    "width": 334,
+    "height": 1692,
+    "viewportWidth": 390
+  },
+  {
+    "file": "P05-II-3-AR-390.png",
+    "sha256": "576d938d591e9c319bd0025c45722e449c26c508c65bda40e9c11df6735edb3c",
+    "sourceSha": "25f498993decbf3c761667c24fbaab0a1361353c",
+    "width": 334,
+    "height": 2028,
+    "viewportWidth": 390
+  }
+]

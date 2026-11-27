@@ -1,0 +1,179 @@
+{
+  "process": {
+    "sourceSha": "582ceccf74d341e122fb6cdc988bc3882566c868",
+    "command": "node check-console-previews.mjs <same-web-source-with-corrected-documentation>",
+    "started": "2026-11-26T15:21:44.2930740Z",
+    "finished": "2026-11-26T15:21:56.1954189Z",
+    "exitCode": 0
+  },
+  "report": {
+    "sourceSha": "582ceccf74d341e122fb6cdc988bc3882566c868",
+    "browser": "158.0.4370.33",
+    "checks": [
+      "senior biology genetics menu loads the versioned pedigree sample",
+      "normal library entry generates pedigree",
+      "P01 space key selects SVG member",
+      "P01 normal generation and explanation",
+      "P02 space key selects SVG member",
+      "P02 normal generation and explanation",
+      "P03 space key selects SVG member",
+      "P03 normal generation and explanation",
+      "P04 space key selects SVG member",
+      "P04 normal generation and explanation",
+      "P05 space key selects SVG member",
+      "P05 normal generation and explanation",
+      "P06 space key selects SVG member",
+      "P06 normal generation and explanation",
+      "six fixed samples generate and explain without automatic AI POST",
+      "subject roundtrip retains the active pedigree and step",
+      "actual tutor entry retains current graph and step context",
+      "actual tutor return retains graph step",
+      "no console errors or page exceptions during six-sample operation",
+      "P01 standalone SVG parses and contains the correct members",
+      "P02 standalone SVG parses and contains the correct members",
+      "P03 standalone SVG parses and contains the correct members",
+      "P04 standalone SVG parses and contains the correct members",
+      "P05 standalone SVG parses and contains the correct members",
+      "P06 standalone SVG parses and contains the correct members",
+      "standalone previews introduce no console errors or script exceptions"
+    ],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "apiRequests": [],
+    "previews": [
+      {
+        "id": "P01",
+        "root": "svg",
+        "members": 7,
+        "families": [
+          "F1",
+          "F2"
+        ],
+        "labels": [
+          "I-1",
+          "I-2",
+          "II-1",
+          "II-2",
+          "II-3",
+          "III-1",
+          "III-2"
+        ],
+        "scripts": 0,
+        "sha256": "e9edefaec198a6323b534e9246ef14573625a5d5d7a9b236ad4b4e47ce76f6dc"
+      },
+      {
+        "id": "P02",
+        "root": "svg",
+        "members": 6,
+        "families": [
+          "F1"
+        ],
+        "labels": [
+          "I-1",
+          "I-2",
+          "II-1",
+          "II-2",
+          "II-3",
+          "II-4"
+        ],
+        "scripts": 0,
+        "sha256": "e41397612e6bf01cf45add40df2b718f43148838bb0ef60eceb0223a1e08087c"
+      },
+      {
+        "id": "P03",
+        "root": "svg",
+        "members": 7,
+        "families": [
+          "F1",
+          "F2"
+        ],
+        "labels": [
+          "I-1",
+          "I-2",
+          "II-1",
+          "II-2",
+          "II-3",
+          "III-1",
+          "III-2"
+        ],
+        "scripts": 0,
+        "sha256": "f4f50d8c53ec680bcab2bff70def867444bb4b893c55c9e55b8f3c10b2fb2087"
+      },
+      {
+        "id": "P04",
+        "root": "svg",
+        "members": 7,
+        "families": [
+          "F1",
+          "F2"
+        ],
+        "labels": [
+          "I-1",
+          "I-2",
+          "II-1",
+          "II-2",
+          "II-3",
+          "III-1",
+          "III-2"
+        ],
+        "scripts": 0,
+        "sha256": "33e3f715ba58b7665aec25d352daf42c33960cd3cf4fc6f16522a5d42bf04335"
+      },
+      {
+        "id": "P05",
+        "root": "svg",
+        "members": 6,
+        "families": [
+          "F1",
+          "F2"
+        ],
+        "labels": [
+          "I-1",
+          "I-2",
+          "II-1",
+          "II-2",
+          "II-3",
+          "III-1"
+        ],
+        "scripts": 0,
+        "sha256": "37e8b3b66765b5d761596a6bf5d1a68cb85b2e6688637a6a1fa126c757ebcfc6"
+      },
+      {
+        "id": "P06",
+        "root": "svg",
+        "members": 5,
+        "families": [
+          "F1",
+          "F2"
+        ],
+        "labels": [
+          "I-1",
+          "I-2",
+          "II-1",
+          "II-2",
+          "III-1"
+        ],
+        "scripts": 0,
+        "sha256": "1768f822d8feaa033a22fc6e598b4beef41ea6ad14a1e70b6c817252396d6b6c"
+      }
+    ],
+    "previewState": "Corrected standalone XML in final documentation. Web runtime source is unchanged.",
+    "tutorContext": {
+      "mode": "question",
+      "subject": "生物",
+      "title": "遗传系谱图 P06-v1 · 两处关系中的冲突",
+      "originalQuestion": "高中遗传系谱图P06-v1。同一家系研究同一单基因性状。完全外显。无新突变。无表型误判。亲缘关系已知。常染色体按二倍体、伴X按XX或XY及X非同源区处理。配子等概率且随机结合。男女机会相等且无存活选择。给定父母基因型和模型条件时各次生育相互独立。基因位置未知。I-1男性表型受累。I-2女性表型受累。II-1男性表型未受累。II-2女性表型未受累。III-1女性表型受累。I-1与I-2的子女为II-1。II-1与II-2的子女为III-1。求方式判读、冲突关系与违反的条件。",
+      "templateId": "",
+      "parameters": {},
+      "deterministicResult": {
+        "resultText": "本图可行方式：四类均与题给条件冲突。",
+        "metrics": "P06-v1；位置未知；所问方式判读|冲突关系与违反的条件；本地可行四类均与题给条件冲突。完全外显、无新突变。给定父母基因型及模型时各次生育独立。｜家系成员：5人｜样例与版本：P06-v1｜题给定位：未知",
+        "gradeLevel": "高中",
+        "levelGuide": "学生选择高中学段：按高中教材讲解，可以使用物质的量、导数等高中方法。"
+      },
+      "formula": "亲子传递与题给条件 → 可行基因型 → 有条件的概率",
+      "currentStep": "P06-v1，当前第5步，配子与概率。尚未点选成员。可行方式为空。未知创始者没有等权先验，概率按模型及父母基因型分别列出。"
+    },
+    "userInitiatedTutorRequests": []
+  }
+}

@@ -3689,6 +3689,20 @@ elements.genericPhysicsVisual?.addEventListener("click", event => {
 });
 
 elements.genericPhysicsVisual?.addEventListener("click", event => {
+  if (activeGenericId() === "pedigree") {
+    if (event.target.closest?.("[data-pedigree-fullscreen]")) {
+      toggleExperimentFullscreen();
+      return;
+    }
+    const example = event.target.closest?.("[data-pedigree-case]");
+    if (example) {
+      const preset = window.MasterLabPedigreeQuestions.preset(example.dataset.pedigreeCase);
+      $("#questionInput").value = GENERIC_TEMPLATES.pedigree.question(preset.p1, preset.p2, preset.fixed);
+      $("#questionInput").dispatchEvent(new Event("input", { bubbles: true }));
+      generateExperiment({ allowAiFallback: false });
+      return;
+    }
+  }
   if (activeGenericId() === "population") {
     const example = event.target.closest?.("[data-population-example]");
     if (example) {
@@ -4816,6 +4830,16 @@ function planLocalExperiment(question, context = {}) {
   const presetQuestion = context.presetQuestion ?? SUBJECTS[subjectContext]?.question;
   const strictSubject = presetQuestion && question === presetQuestion ? subjectContext : detectSubjectStrict(question);
   const detected = strictSubject || subjectContext;
+  const pedigree = GENERIC_TEMPLATES.pedigree;
+  const pedigreeQuestions = window.MasterLabPedigreeQuestions;
+  if (pedigree && pedigreeQuestions) {
+    const parsed = pedigreeQuestions.parse(question);
+    if (parsed.ok || pedigreeQuestions.candidate(question)) {
+      const parse = parseGenericQuestion(question, "pedigree", { subject: "生物", gradeLevel: "senior" });
+      return parse.ok ? { ok: true, subject: "生物", kind: "extra", templateId: "pedigree", parse }
+        : { ok: false, subject: "生物", localOnly: true, diagnosticTemplateId: "pedigree", parse };
+    }
+  }
   // The complete protocol parser still validates the original text before any routing inference.
   const protocolPlans = genericTemplatesOf("生物").filter(template => template.localOnly && template.protocolAssessment).map(template => ({
     template, parse:parseGenericQuestion(question, template.id, { subject:"生物", gradeLevel }), assessment:template.protocolAssessment(question)
@@ -6833,6 +6857,7 @@ function renderWaitingReasoning() {
 }
 
 function applyWaitingState(subject = state.subject, options = {}) {
+  activeGenericTemplate()?.clearDraft?.(elements.genericPhysicsVisual);
   window.MasterLabPhotosynthesisLearning?.clear(elements.genericPhysicsVisual);
   window.MasterLabShare?.leaveContext();
   window.MasterLabInstant?.dismiss();
@@ -7202,6 +7227,8 @@ function buildMasterLabAIContext() {
   const generatedQuestion = state.generatedQuestion || "";
   const currentExperimentIsActive = state.hasGenerated && generatedQuestion && inputQuestion === generatedQuestion;
   if (!currentExperimentIsActive) {
+    const pedigreeQuestion = window.MasterLabPedigreeQuestions;
+    const localGap = pedigreeQuestion?.candidate(inputQuestion) ? pedigreeQuestion.parse(inputQuestion) : null;
     return {
       mode: "question",
       subject: state.subject,
@@ -7210,7 +7237,7 @@ function buildMasterLabAIContext() {
       parameters: {},
       deterministicResult: gradeLevelContext(),
       formula: "",
-      currentStep: ""
+      currentStep: localGap && !localGap.ok ? `系谱图本地核对：${localGap.message}` : ""
     };
   }
   const metricText = elements.metricLabels.map((label, index) => {
@@ -7511,6 +7538,7 @@ function resetExperiment({ restoreQuestion = true } = {}) {
   pauseExperiment();
   state.time = 0;
   const resetTemplate = activeGenericTemplate();
+  resetTemplate?.clearDraft?.(elements.genericPhysicsVisual);
   const baseline = state.genericQuestionBaseline;
   if (restoreQuestion && resetTemplate?.resetToQuestion && baseline?.id === resetTemplate.id) {
     const parsed = resetTemplate.parseQuestion(baseline.question, { gradeLevel: state.gradeLevel });
@@ -8686,6 +8714,7 @@ async function generateExperiment(options = {}) {
   // A prompt can switch subjects without clicking a subject tab. Save the
   // still-active experiment before assigning the new template and parameters.
   if (detected !== state.subject) saveCurrentSubjectSnapshot();
+  activeGenericTemplate()?.clearDraft?.(elements.genericPhysicsVisual);
   window.MasterLabShare?.leaveContext();
   window.MasterLabInstant?.dismiss();
   let physicsParse = null;
@@ -8868,7 +8897,7 @@ async function generateExperiment(options = {}) {
     setTimeout(focusExperimentCard, 80);
     scheduleReasoningAutoAdvance();
   }
-  if (!options.shared) showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : genericParse?.templateId === "leafDisks" ? "高中光合作用教材流程已生成，可播放或回看六步操作": genericParse?.templateId === "photosynthesis" ? "教材光合作用实验已生成，可播放或回看六步操作" : genericParse ? `${GENERIC_TEMPLATES[genericParse.templateId].subject}典型题模板已生成，可拖动参数观察变化` : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
+  if (!options.shared) showToast(boardSliderParse ? "木板—滑块实验已生成，点击播放观察相对运动" : solenoidParse ? "通电螺线管实验已生成，可反转电流或插入铁芯观察" : projectileParse ? "平抛实验已生成，点击播放观察轨迹" : circuitParse ? "欧姆定律电路已生成，可调电压和电阻观察电流" : genericParse?.templateId === "pedigree" ? "遗传系谱图已生成，点击成员和步骤开始判读" : genericParse?.templateId === "leafDisks" ? "高中光合作用教材流程已生成，可播放或回看六步操作": genericParse?.templateId === "photosynthesis" ? "教材光合作用实验已生成，可播放或回看六步操作" : genericParse ? `${GENERIC_TEMPLATES[genericParse.templateId].subject}典型题模板已生成，可拖动参数观察变化` : detected === "生物" ? "生物模型已生成，可拖动旋转或点击结构识别" : `${detected}实验已生成，点击播放开始观察`);
   return true;
 }
 
