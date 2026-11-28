@@ -1,0 +1,27 @@
+{
+  "result": "pass",
+  "scope": "offline hand-table design verification only",
+  "structural_combinations": {
+    "single": 9,
+    "x": 6,
+    "two_autosomal": 81,
+    "autosomal_x": 54
+  },
+  "total_structural": 150,
+  "phenotype_mode_evaluations_planned": 165,
+  "six_normal_genotypes": {
+    "AA X:BB": "1/16",
+    "AA X:Bb": "1/16",
+    "AA X:BY": "1/16",
+    "Aa X:BB": "1/8",
+    "Aa X:Bb": "1/8",
+    "Aa X:BY": "1/8"
+  },
+  "independent_targets": [
+    "1/4",
+    "2/3",
+    "1/2 vs 1/4",
+    "9:3:3:1",
+    "9/16,3/16,3/16,1/16,1/8"
+  ]
+}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>遗传的线索 · 大师实验室教材预览</title>
+  <link rel="stylesheet" href="../../../web/styles.css">
+  <link rel="stylesheet" href="preview.css">
+  <script src="preview.js" defer></script>
+</head>
+<body class="genetics-preview">
+  <header class="gp-header"><a class="gp-brand" href="#" aria-label="大师实验室预览首页"><span class="gp-brand-mark">M</span>大师实验室</a><span class="gp-context">高中 / 生物 / 遗传</span><span class="gp-review">教材页面预览</span></header>
+  <main class="gp-main">
+    <div class="gp-intro"><div><p class="gp-eyebrow">从家系到配子</p><h1>遗传的线索</h1></div><p class="gp-intro-note">先读亲子关系，再解释基因怎样传递。</p></div>
+    <nav class="gp-cases" aria-label="教材主例"><button type="button" data-case="color" aria-pressed="true">红绿色盲家系 <small>p35</small></button><button type="button" data-case="combined" aria-pressed="false">白化病 + 红绿色盲 <small>p38</small></button></nav>
+    <section class="gp-question" aria-labelledby="question-title"><span class="gp-label" id="question-kind">教材主例</span><h2 id="question-title"></h2><p id="question-detail"></p><details id="original-question"><summary>查看教材原问的完整范围</summary><p id="question-full"></p></details></section>
+    <div class="gp-workspace">
+      <section class="gp-card gp-family" aria-labelledby="family-title">
+        <div class="gp-card-heading"><div><p class="gp-eyebrow">读图</p><h2 id="family-title">三代家系</h2></div><button type="button" id="reset" class="gp-quiet">重置</button></div>
+        <div class="gp-legend" id="legend"></div>
+        <div class="gp-graph-viewport" id="graph-viewport" tabindex="0" aria-label="家系图区域，窄屏可横向滚动"><svg id="family-svg" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="可点选的家系成员"></svg></div>
+        <p class="gp-pan-hint" id="pan-hint">左右滑动看完整家系 · 也可用 Tab 键选择成员</p>
+        <div class="gp-member-info" aria-live="polite"><span class="gp-info-dot"></span><p id="member-info">点选一名成员，查看亲缘关系。</p></div>
+        <p class="gp-source" id="graph-source"></p>
+      </section>
+      <section class="gp-card gp-reasoning" aria-labelledby="reason-title">
+        <div class="gp-card-heading"><div><p class="gp-eyebrow">讲题路径</p><h2 id="reason-title">一步一步推导</h2></div><span class="gp-count" id="step-count">1 / 4</span></div>
+        <ol class="gp-steps" aria-label="推导步骤"><li><button type="button" data-step="0" aria-current="step"><span>1</span>读图找关系</button></li><li><button type="button" data-step="1"><span>2</span>推基因型</button></li><li><button type="button" data-step="2"><span>3</span>列配子</button></li><li><button type="button" data-step="3"><span>4</span>回答所问</button></li></ol>
+        <div class="gp-step-content" id="step-content" aria-live="polite"></div>
+        <div class="gp-step-controls"><button type="button" id="previous" class="gp-quiet">上一步</button><button type="button" id="next" class="gp-primary">下一步 <span aria-hidden="true">→</span></button></div>
+        <details class="gp-boundaries"><summary>本题采用的课堂模型</summary><p>按教材的单基因显隐性、完全外显、无新突变模型分析；X 连锁位点在 Y 上没有对应等位基因。联合题的两位点独立遗传，男女机会各为 1/2。给定亲本基因型与这些条件时，各次生育相互独立。</p><p>表型正常不等于一定不携带。教材家系是教学案例，不用于真实个人的遗传诊断。</p></details>
+      </section>
+    </div>
+    <section class="gp-extension gp-card" aria-labelledby="extension-title"><div><p class="gp-eyebrow">题后变式</p><h2 id="extension-title">换一个问法，条件概率也会变</h2></div><div id="extension-options" class="gp-extension-options"></div><div id="extension-result" aria-live="polite"></div></section>
+    <footer class="gp-footer"><span>人教版高中生物学必修2《遗传与进化》· 2019 审核体系</span><a href="../README.md">题面、手算与设计范围 ↗</a></footer>
+  </main>
+</body>
+</html>

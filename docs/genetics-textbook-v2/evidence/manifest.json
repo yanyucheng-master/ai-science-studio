@@ -1,0 +1,42 @@
+{
+  "base": "ef7af5d8df18e66b2631a4c117abf959c221a0f9",
+  "scope": "Design preview only. Final design commit SHA is reported in Issue #11 after post-commit rerun.",
+  "codeHashNormalization": "UTF-8 text; CRLF normalized to LF; media hashes are original bytes.",
+  "sourceSha256": {
+    "web/styles.css": "80ca8775d96e46654521385dc470faaef8cd4a31778c549fd723aff74d4bb06e",
+    "docs/genetics-textbook-v2/preview/index.html": "8986ea1dac47162ae0a5ae6b49b2ac61bc4e58d8366eab51b56b2442cb0241d0",
+    "docs/genetics-textbook-v2/preview/preview.css": "8d9a235726fee96202e2e794b456a5a712c837a0b01e0af51c0b37b85b375f0a",
+    "docs/genetics-textbook-v2/preview/preview.js": "c103cb58b4350d93527f9c792583a9cffa4916528313930e123d0f0ba429df39",
+    "docs/genetics-textbook-v2/checks/preview-check.cjs": "67946a358884a65bc3dbb4ed19831cb77c45fb9e3481bb1c729312da0516da36",
+    "docs/genetics-textbook-v2/checks/verify-design-arithmetic.py": "929dd65b3527b33d61db9ab483e63f112dd15642052a0fc154a6296abe37d651"
+  },
+  "media": [
+    {
+      "name": "p35-desktop-1366.png",
+      "sha256": "355473976f5b67a2fc7c59e0ebca34227675c64f5e72e82f308cfbfcc1729313"
+    },
+    {
+      "name": "p38-desktop-1366.png",
+      "sha256": "0307fbd83994c1b1175b1e713c374950f691c83a5a2ba091b7b8376317bb67ad"
+    },
+    {
+      "name": "p35-mobile-390.png",
+      "sha256": "36dde4ee1c4d6ccd5a3454d53532c93a26b098101764eb0d91763c3cccb7220a"
+    },
+    {
+      "name": "p38-mobile-390.png",
+      "sha256": "3874985368ce0ba1f6f898860c9b3b9c602932b32f6b5ac8614fc2f8b987afbf"
+    },
+    {
+      "name": "textbook-walkthrough-390.webm",
+      "sha256": "454af41596c2d3fe1d4a04069f95b344a2cac9e0b537857bf9d790fdf6b07965"
+    }
+  ],
+  "video": {
+    "durationSeconds": 27.48,
+    "width": 390,
+    "height": 844,
+    "codec": "VP8",
+    "audio": false
+  }
+}
