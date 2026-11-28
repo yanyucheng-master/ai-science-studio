@@ -1,6 +1,6 @@
 {
   "base": "ef7af5d8df18e66b2631a4c117abf959c221a0f9",
-  "scope": "Design preview only. Final design commit SHA is reported in Issue #11 after post-commit rerun.",
+  "scope": "Design preview only, tracked in Issue #13 and a separate Draft. Preview run source is b9570df65584fb59d991c0c96db6f9ae451a9cfd; task-link metadata changes do not change the source or media fingerprints below.",
   "codeHashNormalization": "UTF-8 text; CRLF normalized to LF; media hashes are original bytes.",
   "sourceSha256": {
     "web/styles.css": "80ca8775d96e46654521385dc470faaef8cd4a31778c549fd723aff74d4bb06e",
