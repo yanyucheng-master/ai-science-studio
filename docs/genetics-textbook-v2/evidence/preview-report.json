@@ -1,0 +1,72 @@
+{
+  "scope": "Two review-only textbook previews; no product entry/favorites/share/full regression claims",
+  "checks": [
+    {
+      "label": "p35 complete family",
+      "result": "pass",
+      "detail": "20 members; III-10 and III-11 female; four male affected members"
+    },
+    {
+      "label": "selection and keyboard",
+      "result": "pass",
+      "detail": "Click and Enter change only selection outline/info; glyph geometry, fill and stroke remain unchanged"
+    },
+    {
+      "label": "p35 steps and reset",
+      "result": "pass",
+      "detail": "All four actual step buttons, separate conditional/joint questions, reset clears selection and extension"
+    },
+    {
+      "label": "p38 original vs extensions",
+      "result": "pass",
+      "detail": "Three people only, pattern+dot dual mark, six normal genotypes, five separately selected probability extensions"
+    },
+    {
+      "label": "responsive geometry",
+      "result": "pass",
+      "detail": "360/390/820/1366 and 844×390: no document horizontal overflow; every member hit target ≥44 CSS px; p35 uses internal pan"
+    },
+    {
+      "label": "touch-context recording",
+      "result": "pass",
+      "detail": "Actual step/case/member/reset buttons in a clean 390×844 Chromium-engine context; no AI requests"
+    },
+    {
+      "label": "network and runtime",
+      "result": "pass",
+      "detail": "0 outbound requests, 0 page errors; the preview contains no AI/API/storage integration"
+    }
+  ],
+  "screenshots": [
+    {
+      "name": "p35-desktop-1366.png",
+      "sha256": "355473976f5b67a2fc7c59e0ebca34227675c64f5e72e82f308cfbfcc1729313"
+    },
+    {
+      "name": "p38-desktop-1366.png",
+      "sha256": "0307fbd83994c1b1175b1e713c374950f691c83a5a2ba091b7b8376317bb67ad"
+    },
+    {
+      "name": "p35-mobile-390.png",
+      "sha256": "36dde4ee1c4d6ccd5a3454d53532c93a26b098101764eb0d91763c3cccb7220a"
+    },
+    {
+      "name": "p38-mobile-390.png",
+      "sha256": "3874985368ce0ba1f6f898860c9b3b9c602932b32f6b5ac8614fc2f8b987afbf"
+    }
+  ],
+  "outbound": [],
+  "posts": [],
+  "errors": [],
+  "browser": {
+    "version": "158.0.4370.45",
+    "channel": "msedge",
+    "platform": "win32",
+    "node": "v24.22.1"
+  },
+  "recording": {
+    "name": "textbook-walkthrough-390.webm",
+    "sha256": "454af41596c2d3fe1d4a04069f95b344a2cac9e0b537857bf9d790fdf6b07965"
+  },
+  "result": "pass"
+}
